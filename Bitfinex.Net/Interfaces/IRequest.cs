@@ -6,6 +6,7 @@ namespace Bitfinex.Net.Interfaces
     {
         WebHeaderCollection Headers { get; set; }
         string Method { get; set; }
+        string ContentType { get; set; }
 
         IResponse GetResponse();
     }

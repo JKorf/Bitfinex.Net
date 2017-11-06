@@ -35,6 +35,10 @@ namespace Bitfinex.Net
         private const string LastCandleEndpoint = "candles/trade:{}:{}/last";
         private const string CandlesEndpoint = "candles/trade:{}:{}/hist";
         private const string MarketAverageEndpoint = "calc/trade/avg";
+
+        private const string WalletsEndpoint = "auth/r/wallets";
+
+        private long nonce => DateTime.UtcNow.Ticks;
         #endregion
 
         #region properties
@@ -163,6 +167,12 @@ namespace Bitfinex.Net
             return await ExecuteRequest<BitfinexMarketAveragePrice>(GetUrl(MarketAverageEndpoint, ApiVersion, parameters), PostMethod);
         }
 
+        public BitfinexApiResult<BitfinexMarketAveragePrice> GetWallets() => GetWalletsAsync().Result;
+        public async Task<BitfinexApiResult<BitfinexMarketAveragePrice>> GetWalletsAsync()
+        {
+            return await ExecuteRequest<BitfinexMarketAveragePrice>(GetUrl(WalletsEndpoint, ApiVersion), PostMethod, true);
+        }
+
         #region private
         private async Task<BitfinexApiResult<T>> ExecuteRequest<T>(Uri uri, string httpMethod, bool signed = false)
         {
@@ -170,11 +180,17 @@ namespace Bitfinex.Net
             try
             {
                 var uriString = uri.ToString();
+                var request = RequestFactory.Create(uriString);
+                request.ContentType = "application/json";
                 if (signed)
                 {
+                    var n = nonce.ToString();
+                    var signature = $"/api{uri.PathAndQuery}{n}{{}}";
+                    request.Headers.Add("bfx-nonce", n);
+                    request.Headers.Add("bfx-apikey", apiKey);
+                    request.Headers.Add("bfx-signature", ByteToString(encryptor.ComputeHash(Encoding.UTF8.GetBytes(signature))));
                 }
 
-                var request = RequestFactory.Create(uriString);
                 request.Method = httpMethod;
                 log.Write(LogVerbosity.Debug, $"Sending request to {uriString}");
                 var response = request.GetResponse();
@@ -216,9 +232,9 @@ namespace Bitfinex.Net
 
         private Uri GetUrl(string endpoint, string version, Dictionary<string, string> parameters = null)
         {
-            var result = $"{BaseAddress}/v{version}/{endpoint}?";
+            var result = $"{BaseAddress}/v{version}/{endpoint}";
             if (parameters != null && parameters.Count > 0)
-                result += $"{string.Join("&", parameters.Select(s => $"{s.Key}={s.Value}"))}";
+                result += $"?{string.Join("&", parameters.Select(s => $"{s.Key}={s.Value}"))}";
             return new Uri(result);
         }
 

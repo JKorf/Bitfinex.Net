@@ -10,7 +10,7 @@ namespace Bitfinex.Net
     public abstract class BitfinexAbstractClient
     {
         protected string apiKey;
-        protected HMACSHA512 encryptor;
+        protected HMACSHA384 encryptor;
         internal Log log;
 
         protected BitfinexAbstractClient()
@@ -54,7 +54,7 @@ namespace Bitfinex.Net
             if (string.IsNullOrEmpty(apiSecret))
                 throw new ArgumentException("Api secret empty");
 
-            encryptor = new HMACSHA512(Encoding.UTF8.GetBytes(apiSecret));
+            encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(apiSecret));
         }
 
         /// <summary>

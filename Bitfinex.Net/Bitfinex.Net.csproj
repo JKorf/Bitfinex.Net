@@ -55,6 +55,7 @@
     <Compile Include="Converters\StatSideConverter.cs" />
     <Compile Include="Converters\TimeFrameConverter.cs" />
     <Compile Include="Converters\TimestampConverter.cs" />
+    <Compile Include="Converters\WalletTypeConverter.cs" />
     <Compile Include="Implementations\Request.cs" />
     <Compile Include="Implementations\RequestFactory.cs" />
     <Compile Include="Implementations\Response.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Objects\BitfinexPlatformStatus.cs" />
     <Compile Include="Objects\BitfinexStats.cs" />
     <Compile Include="Objects\BitfinexTrade.cs" />
+    <Compile Include="Objects\BitfinexWallet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -56,4 +56,11 @@
         FourteenDay,
         OneMonth
     }
+
+    public enum WalletType
+    {
+        Exchange,
+        Margin,
+        Funding
+    }
 }

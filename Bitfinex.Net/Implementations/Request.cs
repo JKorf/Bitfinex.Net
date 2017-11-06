@@ -17,6 +17,13 @@ namespace Bitfinex.Net.Implementations
             get => request.Headers;
             set => request.Headers = value;
         }
+
+        public string ContentType
+        {
+            get => request.ContentType;
+            set => request.ContentType = value;
+        }
+
         public string Method
         {
             get => request.Method;
