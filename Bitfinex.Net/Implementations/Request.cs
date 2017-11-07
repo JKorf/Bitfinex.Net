@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.IO;
+using System.Net;
 using Bitfinex.Net.Interfaces;
 
 namespace Bitfinex.Net.Implementations
@@ -24,10 +25,27 @@ namespace Bitfinex.Net.Implementations
             set => request.ContentType = value;
         }
 
+        public string Accept
+        {
+            get => ((HttpWebRequest) request).Accept;
+            set => ((HttpWebRequest) request).Accept = value;
+        }
+
+        public long ContentLength
+        {
+            get => ((HttpWebRequest)request).ContentLength;
+            set => ((HttpWebRequest)request).ContentLength = value;
+        }
+
         public string Method
         {
             get => request.Method;
             set => request.Method = value;
+        }
+
+        public Stream GetRequestStream()
+        {
+            return request.GetRequestStream();
         }
 
         public IResponse GetResponse()

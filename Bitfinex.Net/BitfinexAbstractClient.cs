@@ -54,7 +54,7 @@ namespace Bitfinex.Net
             if (string.IsNullOrEmpty(apiSecret))
                 throw new ArgumentException("Api secret empty");
 
-            encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(apiSecret));
+            encryptor = new HMACSHA384(Encoding.ASCII.GetBytes(apiSecret));
         }
 
         /// <summary>

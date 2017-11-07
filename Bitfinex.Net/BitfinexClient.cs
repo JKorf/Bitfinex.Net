@@ -38,7 +38,7 @@ namespace Bitfinex.Net
 
         private const string WalletsEndpoint = "auth/r/wallets";
 
-        private long nonce => DateTime.UtcNow.Ticks;
+        private string nonce => Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 10).ToString();
         #endregion
 
         #region properties
@@ -167,14 +167,14 @@ namespace Bitfinex.Net
             return await ExecuteRequest<BitfinexMarketAveragePrice>(GetUrl(MarketAverageEndpoint, ApiVersion, parameters), PostMethod);
         }
 
-        public BitfinexApiResult<BitfinexMarketAveragePrice> GetWallets() => GetWalletsAsync().Result;
-        public async Task<BitfinexApiResult<BitfinexMarketAveragePrice>> GetWalletsAsync()
+        public BitfinexApiResult<BitfinexWallet[]> GetWallets() => GetWalletsAsync().Result;
+        public async Task<BitfinexApiResult<BitfinexWallet[]>> GetWalletsAsync()
         {
-            return await ExecuteRequest<BitfinexMarketAveragePrice>(GetUrl(WalletsEndpoint, ApiVersion), PostMethod, true);
+            return await ExecuteRequest<BitfinexWallet[]>(GetUrl(WalletsEndpoint, ApiVersion), PostMethod, true);
         }
 
         #region private
-        private async Task<BitfinexApiResult<T>> ExecuteRequest<T>(Uri uri, string httpMethod, bool signed = false)
+        private async Task<BitfinexApiResult<T>> ExecuteRequest<T>(Uri uri, string httpMethod, bool signed = false, Dictionary<string, string> bodyParameters = null)
         {
             string returnedData = "";
             try
@@ -182,16 +182,29 @@ namespace Bitfinex.Net
                 var uriString = uri.ToString();
                 var request = RequestFactory.Create(uriString);
                 request.ContentType = "application/json";
+                request.Accept = "application/json";
                 if (signed)
                 {
-                    var n = nonce.ToString();
+                    var n = nonce;
                     var signature = $"/api{uri.PathAndQuery}{n}{{}}";
-                    request.Headers.Add("bfx-nonce", n);
-                    request.Headers.Add("bfx-apikey", apiKey);
-                    request.Headers.Add("bfx-signature", ByteToString(encryptor.ComputeHash(Encoding.UTF8.GetBytes(signature))));
+                    var signedData = ByteToString(encryptor.ComputeHash(Encoding.ASCII.GetBytes(signature)));
+                    request.Headers.Add($"bfx-nonce: {n}");
+                    request.Headers.Add($"bfx-apikey: {apiKey}");
+                    request.Headers.Add($"bfx-signature: {signedData}");
                 }
 
                 request.Method = httpMethod;
+
+                if (bodyParameters == null)
+                    bodyParameters = new Dictionary<string, string>();
+
+                var json = JsonConvert.SerializeObject(bodyParameters);
+                var data = Encoding.ASCII.GetBytes(json);
+                request.ContentLength = data.Length;
+
+                using (var stream = request.GetRequestStream())
+                    stream.Write(data, 0, data.Length);
+
                 log.Write(LogVerbosity.Debug, $"Sending request to {uriString}");
                 var response = request.GetResponse();
                 using (var reader = new StreamReader(response.GetResponseStream()))
@@ -203,6 +216,24 @@ namespace Bitfinex.Net
             catch (WebException we)
             {
                 var response = (HttpWebResponse)we.Response;
+                if ((int)response.StatusCode >= 400)
+                {
+                    try
+                    {
+                        // Try read error response
+                        using (var reader = new StreamReader(response.GetResponseStream()))
+                        {
+                            var data = await reader.ReadToEndAsync();
+                            var error = JsonConvert.DeserializeObject<BitfinexErrorResponse>(data);
+                            return ThrowErrorMessage<T>($"{error.ErrorCode} - {error.ErrorMessage}");
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        log.Write(LogVerbosity.Warning, $"Couldn't parse error response for status code {response.StatusCode}");
+                    }
+                }
+
                 var errorMessage =
                     $"Request to {uri} failed because of a webexception. Status: {response.StatusCode}-{response.StatusDescription}, Message: {we.Message}";
                 log.Write(LogVerbosity.Warning, errorMessage);
@@ -262,7 +293,7 @@ namespace Bitfinex.Net
         {
             var sbinary = "";
             foreach (byte t in buff)
-                sbinary += t.ToString("X2"); /* hex format */
+                sbinary += t.ToString("x2"); /* hex format */
             return sbinary;
         }
 

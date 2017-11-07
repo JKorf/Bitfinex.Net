@@ -67,6 +67,7 @@
     <Compile Include="Objects\BitfinexApiResult.cs" />
     <Compile Include="Objects\BitfinexCandle.cs" />
     <Compile Include="Objects\BitfinexEnums.cs" />
+    <Compile Include="Objects\BitfinexErrorResponse.cs" />
     <Compile Include="Objects\BitfinexMarketAveragePrice.cs" />
     <Compile Include="Objects\BitfinexMarketOverview.cs" />
     <Compile Include="Objects\BitfinexOrderBookEntry.cs" />
