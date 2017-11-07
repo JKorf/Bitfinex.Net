@@ -31,8 +31,11 @@ namespace Bitfinex.Net.Converters
                 }
                 else
                     value = arr[attribute.Index];
-
-                property.SetValue(result, Convert.ChangeType(value, property.PropertyType));
+                
+                if(value == null)
+                    property.SetValue(result, null);
+                else
+                    property.SetValue(result, Convert.ChangeType(value, property.PropertyType));
             }
             return result;
         }

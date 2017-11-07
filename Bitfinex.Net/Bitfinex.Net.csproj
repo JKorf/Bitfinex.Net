@@ -48,7 +48,12 @@
     <Compile Include="BitfinexDefaults.cs" />
     <Compile Include="Converters\BitfinexPropertyAttribute.cs" />
     <Compile Include="Converters\BitfinexResultConverter.cs" />
+    <Compile Include="Converters\FundingTypeConverter.cs" />
+    <Compile Include="Converters\MarginFundingTypeConverter.cs" />
+    <Compile Include="Converters\OrderStatusConverter.cs" />
+    <Compile Include="Converters\OrderTypeConverter.cs" />
     <Compile Include="Converters\PlatformStatusConverter.cs" />
+    <Compile Include="Converters\PositionStatusConverter.cs" />
     <Compile Include="Converters\SortingConverter.cs" />
     <Compile Include="Converters\StatKeyConverter.cs" />
     <Compile Include="Converters\StatSectionConverter.cs" />
@@ -68,12 +73,18 @@
     <Compile Include="Objects\BitfinexCandle.cs" />
     <Compile Include="Objects\BitfinexEnums.cs" />
     <Compile Include="Objects\BitfinexErrorResponse.cs" />
+    <Compile Include="Objects\BitfinexFundingLoan.cs" />
+    <Compile Include="Objects\BitfinexFundingOffer.cs" />
     <Compile Include="Objects\BitfinexMarketAveragePrice.cs" />
     <Compile Include="Objects\BitfinexMarketOverview.cs" />
+    <Compile Include="Objects\BitfinexOrder.cs" />
     <Compile Include="Objects\BitfinexOrderBookEntry.cs" />
     <Compile Include="Objects\BitfinexPlatformStatus.cs" />
+    <Compile Include="Objects\BitfinexPosition.cs" />
     <Compile Include="Objects\BitfinexStats.cs" />
-    <Compile Include="Objects\BitfinexTrade.cs" />
+    <Compile Include="Objects\BitfinexSymbol.cs" />
+    <Compile Include="Objects\BitfinexTradeDetails.cs" />
+    <Compile Include="Objects\BitfinexTradeSimple.cs" />
     <Compile Include="Objects\BitfinexWallet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -63,4 +63,44 @@
         Margin,
         Funding
     }
+
+    public enum OrderType
+    {
+        Limit,
+        Market,
+        Stop,
+        TrailingStop,
+        ExchangeMarket,
+        ExchangeLimit,
+        ExchangeStop,
+        ExchangeTrailingStop,
+        FOK,
+        ExchangeFOK
+    }
+
+    public enum OrderStatus
+    {
+        Active,
+        Executed,
+        PartiallyFilled,
+        Canceled
+    }
+
+    public enum PositionStatus
+    {
+        Active,
+        Closed
+    }
+
+    public enum MarginFundingType
+    {
+        Daily,
+        Term
+    }
+
+    public enum FundingType
+    {
+        Lend,
+        Loan
+    }
 }

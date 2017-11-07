@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace Bitfinex.Net.Objects
 {
     [JsonConverter(typeof(BitfinexResultConverter))]
-    public class BitfinexTrade
+    public class BitfinexTradeSimple
     {
         [BitfinexProperty(0)]
         public long Id { get; set; }
