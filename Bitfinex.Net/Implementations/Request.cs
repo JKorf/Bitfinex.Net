@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using Bitfinex.Net.Interfaces;
 
@@ -41,6 +42,11 @@ namespace Bitfinex.Net.Implementations
         {
             get => request.Method;
             set => request.Method = value;
+        }
+
+        public Uri RequestUri
+        {
+            get => request.RequestUri;
         }
 
         public Stream GetRequestStream()

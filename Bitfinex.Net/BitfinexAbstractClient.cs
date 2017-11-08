@@ -75,11 +75,22 @@ namespace Bitfinex.Net
             log.TextWriter = writer;
         }
 
-        protected BitfinexApiResult<T> ThrowErrorMessage<T>(string message)
+        protected BitfinexApiResult<T> ThrowErrorMessage<T>(BitfinexErrorResponse error)
+        {
+            log.Write(LogVerbosity.Warning, $"Call failed: {error.ErrorCode} - {error.ErrorMessage}");
+            var result = (BitfinexApiResult<T>)Activator.CreateInstance(typeof(BitfinexApiResult<T>));
+            result.Error = error;
+            return result;
+        }
+
+        protected BitfinexApiResult<T> ThrowErrorMessage<T>(int errorcode, string message)
         {
             log.Write(LogVerbosity.Warning, $"Call failed: {message}");
             var result = (BitfinexApiResult<T>)Activator.CreateInstance(typeof(BitfinexApiResult<T>));
-            result.Message = message;
+            result.Error = new BitfinexErrorResponse()
+            {
+                ErrorMessage = message
+            };
             return result;
         }
 

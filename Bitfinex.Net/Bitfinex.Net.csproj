@@ -45,11 +45,17 @@
   <ItemGroup>
     <Compile Include="BitfinexAbstractClient.cs" />
     <Compile Include="BitfinexClient.cs" />
+    <Compile Include="BitfinexClient.V2.cs" />
     <Compile Include="BitfinexDefaults.cs" />
+    <Compile Include="Converters\BitfinexMarginSymbol.cs" />
+    <Compile Include="Converters\OrderType2Converter.cs" />
+    <Compile Include="Objects\BitfinexBaseOrder.cs" />
     <Compile Include="Converters\BitfinexPropertyAttribute.cs" />
     <Compile Include="Converters\BitfinexResultConverter.cs" />
+    <Compile Include="Converters\DepositMethodConverter.cs" />
     <Compile Include="Converters\FundingTypeConverter.cs" />
     <Compile Include="Converters\MarginFundingTypeConverter.cs" />
+    <Compile Include="Converters\OrderSideConverter.cs" />
     <Compile Include="Converters\OrderStatusConverter.cs" />
     <Compile Include="Converters\OrderTypeConverter.cs" />
     <Compile Include="Converters\PlatformStatusConverter.cs" />
@@ -60,7 +66,10 @@
     <Compile Include="Converters\StatSideConverter.cs" />
     <Compile Include="Converters\TimeFrameConverter.cs" />
     <Compile Include="Converters\TimestampConverter.cs" />
+    <Compile Include="Converters\BoolToIntConverter.cs" />
+    <Compile Include="Converters\WalletType2Converter.cs" />
     <Compile Include="Converters\WalletTypeConverter.cs" />
+    <Compile Include="Converters\WithdrawTypeConverter.cs" />
     <Compile Include="Implementations\Request.cs" />
     <Compile Include="Implementations\RequestFactory.cs" />
     <Compile Include="Implementations\Response.cs" />
@@ -69,27 +78,43 @@
     <Compile Include="Interfaces\IResponse.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\TraceTextWriter.cs" />
+    <Compile Include="Objects\BitfinexAccountFee.cs" />
+    <Compile Include="Objects\BitfinexAccountInfo.cs" />
+    <Compile Include="Objects\BitfinexAccountSummary.cs" />
+    <Compile Include="Objects\BitfinexAlert.cs" />
     <Compile Include="Objects\BitfinexApiResult.cs" />
     <Compile Include="Objects\BitfinexCandle.cs" />
+    <Compile Include="Objects\BitfinexDepositAddress.cs" />
     <Compile Include="Objects\BitfinexEnums.cs" />
     <Compile Include="Objects\BitfinexErrorResponse.cs" />
+    <Compile Include="Objects\BitfinexFundingCredit.cs" />
+    <Compile Include="Objects\BitfinexFundingInfo.cs" />
     <Compile Include="Objects\BitfinexFundingLoan.cs" />
     <Compile Include="Objects\BitfinexFundingOffer.cs" />
+    <Compile Include="Objects\BitfinexApiKeyPermissions.cs" />
+    <Compile Include="Objects\BitfinexMarginBase.cs" />
+    <Compile Include="Objects\BitfinexMarginInfo.cs" />
     <Compile Include="Objects\BitfinexMarketAveragePrice.cs" />
     <Compile Include="Objects\BitfinexMarketOverview.cs" />
     <Compile Include="Objects\BitfinexOrder.cs" />
     <Compile Include="Objects\BitfinexOrderBookEntry.cs" />
+    <Compile Include="Objects\BitfinexPerformance.cs" />
+    <Compile Include="Objects\BitfinexPlacedOrder.cs" />
     <Compile Include="Objects\BitfinexPlatformStatus.cs" />
     <Compile Include="Objects\BitfinexPosition.cs" />
+    <Compile Include="Objects\BitfinexResponseMessage.cs" />
     <Compile Include="Objects\BitfinexStats.cs" />
+    <Compile Include="Objects\BitfinexSuccessResult.cs" />
     <Compile Include="Objects\BitfinexSymbol.cs" />
     <Compile Include="Objects\BitfinexTradeDetails.cs" />
     <Compile Include="Objects\BitfinexTradeSimple.cs" />
     <Compile Include="Objects\BitfinexWallet.cs" />
+    <Compile Include="Objects\BitfinexWithdrawResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Compile Include="BitfinexClient.V1.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 
 namespace Bitfinex.Net.Interfaces
@@ -10,6 +11,7 @@ namespace Bitfinex.Net.Interfaces
         string ContentType { get; set; }
         string Accept { get; set; }
         long ContentLength { get; set; }
+        Uri RequestUri { get; }
 
         Stream GetRequestStream();
         IResponse GetResponse();

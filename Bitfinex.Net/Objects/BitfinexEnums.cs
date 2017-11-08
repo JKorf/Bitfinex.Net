@@ -64,6 +64,13 @@
         Funding
     }
 
+    public enum WalletType2
+    {
+        Exchange,
+        Trading,
+        Deposit
+    }
+
     public enum OrderType
     {
         Limit,
@@ -102,5 +109,63 @@
     {
         Lend,
         Loan
+    }
+
+    public enum DepositMethod
+    {
+        Bitcoin,
+        Litecoin,
+        Ethereum,
+        Tether,
+        EthereumClassic,
+        ZCash,
+        Monero,
+        Iota,
+        BCash
+    }
+
+    public enum WithdrawType
+    {
+        Bitcoin,
+        Litecoin,
+        Ethereum,
+        EthereumClassic,
+        MasterCoin,
+        ZCash,
+        Monero,
+        Wire,
+        Dash,
+        Ripple,
+        EOS,
+        Neo,
+        Aventus,
+        QTUM,
+        Eidoo,
+    }
+
+    public enum UseExpressWire
+    {
+        Yes,
+        No
+    }
+
+    public enum OrderSide
+    {
+        Buy,
+        Sell
+    }
+
+    public enum OrderType2
+    {
+        Market,
+        Limit,
+        Stop,
+        TrailingStop,
+        FillOrKill,
+        ExchangeMarket,
+        ExchangeLimit,
+        ExchangeStop,
+        ExchangeTrailingStop,
+        ExchangeFillOrKill
     }
 }
