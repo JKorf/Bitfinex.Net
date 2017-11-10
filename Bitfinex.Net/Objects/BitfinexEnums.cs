@@ -168,4 +168,10 @@
         ExchangeTrailingStop,
         ExchangeFillOrKill
     }
+
+    public enum WithdrawalDespositType
+    {
+        Withdrawal,
+        Deposit
+    }
 }

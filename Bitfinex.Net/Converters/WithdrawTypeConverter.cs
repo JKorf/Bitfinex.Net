@@ -49,7 +49,7 @@ namespace Bitfinex.Net.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return values.Single(v => v.Value == reader.Value.ToString()).Key;
+            return values.Single(v => v.Value.ToLower() == reader.Value.ToString().ToLower()).Key;
         }
 
         public override bool CanConvert(Type objectType)

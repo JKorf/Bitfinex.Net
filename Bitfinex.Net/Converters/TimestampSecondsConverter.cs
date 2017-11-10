@@ -4,16 +4,16 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Converters
 {
-    public class TimestampConverter : JsonConverter
+    public class TimestampSecondsConverter : JsonConverter
     {
         private readonly bool quotes;
 
-        public TimestampConverter()
+        public TimestampSecondsConverter()
         {
             quotes = true;
         }
 
-        public TimestampConverter(bool useQuotes = true)
+        public TimestampSecondsConverter(bool useQuotes = true)
         {
             quotes = useQuotes;
         }
@@ -25,16 +25,16 @@ namespace Bitfinex.Net.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var t = Convert.ToInt64(Math.Round(double.Parse(reader.Value.ToString())));
+            var t = Convert.ToInt64(Math.Round(double.Parse(reader.Value.ToString()) * 1000));
             return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(t);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             if (quotes)
-                writer.WriteValue(Math.Round(((DateTime)value - new DateTime(1970, 1, 1)).TotalMilliseconds));
+                writer.WriteValue(Math.Round(((DateTime)value - new DateTime(1970, 1, 1)).TotalMilliseconds / 1000));
             else
-                writer.WriteRawValue(Math.Round(((DateTime)value - new DateTime(1970, 1, 1)).TotalMilliseconds).ToString(CultureInfo.InvariantCulture));
+                writer.WriteRawValue(Math.Round(((DateTime)value - new DateTime(1970, 1, 1)).TotalMilliseconds / 1000).ToString(CultureInfo.InvariantCulture));
         }
     }
 }

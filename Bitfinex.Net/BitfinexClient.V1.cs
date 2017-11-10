@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using Bitfinex.Net.Converters;
@@ -23,6 +24,8 @@ namespace Bitfinex.Net
         private const string CancelAllOrdersEndpoint = "order/cancel/all";
         private const string OrderStatusEndpoint = "order/status";
         private const string ClaimPositionEndpoint = "position/claim";
+        private const string BalanceHistoryEndpoint = "history";
+        private const string WithdrawalDepositHistoryEndpoint = "history/movements";
 
 
         public BitfinexApiResult<string[]> GetSymbols() => GetSymbolsAsync().Result;
@@ -256,6 +259,35 @@ namespace Bitfinex.Net
                 {"amount", amount},
             };
             return await ExecuteAuthenticatedRequestV1<BitfinexClaimedPosition>(GetUrl(ClaimPositionEndpoint, OldApiVersion), PostMethod, parameters);
+        }
+
+        public BitfinexApiResult<BitfinexBalanceChange[]> GetBalanceHistory(string currency, DateTime? since = null, DateTime? until = null, int? limit = null, WalletType2? wallet = null) => GetBalanceHistoryAsync(currency, since, until, limit, wallet).Result;
+        public async Task<BitfinexApiResult<BitfinexBalanceChange[]>> GetBalanceHistoryAsync(string currency, DateTime? since = null, DateTime? until = null, int? limit = null, WalletType2? wallet = null)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                {"currency", currency},
+            };
+            AddOptionalParameter(parameters, "since", since != null ? JsonConvert.SerializeObject(since, new TimestampSecondsConverter(false)) : null);
+            AddOptionalParameter(parameters, "until", until != null ? JsonConvert.SerializeObject(until, new TimestampSecondsConverter(false)) : null);
+            AddOptionalParameter(parameters, "limit", limit);
+            AddOptionalParameter(parameters, "wallet", since != null ? JsonConvert.SerializeObject(since, new WalletType2Converter(false)) : null);
+            return await ExecuteAuthenticatedRequestV1<BitfinexBalanceChange[]>(GetUrl(BalanceHistoryEndpoint, OldApiVersion), PostMethod, parameters);
+        }
+
+        public BitfinexApiResult<BitfinexDepositWithdrawal[]> GetWithdrawDepositHistory(string currency, WithdrawType? type = null,  DateTime? since = null, DateTime? until = null, int? limit = null) => GetWithdrawDepositHistoryAsync(currency, type, since, until, limit).Result;
+        public async Task<BitfinexApiResult<BitfinexDepositWithdrawal[]>> GetWithdrawDepositHistoryAsync(string currency, WithdrawType? type = null, DateTime? since = null, DateTime? until = null, int? limit = null)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                {"currency", currency},
+            };
+            AddOptionalParameter(parameters, "since", since != null ? JsonConvert.SerializeObject(since, new TimestampSecondsConverter(false)) : null);
+            AddOptionalParameter(parameters, "until", until != null ? JsonConvert.SerializeObject(until, new TimestampSecondsConverter(false)) : null);
+            AddOptionalParameter(parameters, "limit", limit);
+            AddOptionalParameter(parameters, "method", type != null ? JsonConvert.SerializeObject(type, new WithdrawTypeConverter(false)) : null);
+
+            return await ExecuteAuthenticatedRequestV1<BitfinexDepositWithdrawal[]>(GetUrl(WithdrawalDepositHistoryEndpoint, OldApiVersion), PostMethod, parameters);
         }
     }
 }

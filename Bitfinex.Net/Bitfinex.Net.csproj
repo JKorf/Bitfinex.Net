@@ -49,6 +49,9 @@
     <Compile Include="BitfinexDefaults.cs" />
     <Compile Include="Converters\BitfinexMarginSymbol.cs" />
     <Compile Include="Converters\OrderType2Converter.cs" />
+    <Compile Include="Converters\TimestampSecondsConverter.cs" />
+    <Compile Include="Converters\WithdrawalDespositTypeConverter.cs" />
+    <Compile Include="Objects\BitfinexBalanceChange.cs" />
     <Compile Include="Objects\BitfinexBaseOrder.cs" />
     <Compile Include="Converters\BitfinexPropertyAttribute.cs" />
     <Compile Include="Converters\BitfinexResultConverter.cs" />
@@ -84,7 +87,9 @@
     <Compile Include="Objects\BitfinexAlert.cs" />
     <Compile Include="Objects\BitfinexApiResult.cs" />
     <Compile Include="Objects\BitfinexCandle.cs" />
+    <Compile Include="Objects\BitfinexClaimedPosition.cs" />
     <Compile Include="Objects\BitfinexDepositAddress.cs" />
+    <Compile Include="Objects\BitfinexDepositWithdrawal.cs" />
     <Compile Include="Objects\BitfinexEnums.cs" />
     <Compile Include="Objects\BitfinexErrorResponse.cs" />
     <Compile Include="Objects\BitfinexFundingCredit.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bitfinex.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
@@ -14,7 +15,8 @@ namespace Bitfinex.Net.Objects
         public string Status { get; set; }
         public double Base { get; set; }
         public double Amount { get; set; }
-        public string Timestamp { get; set; }
+        [JsonConverter(typeof(TimestampSecondsConverter))]
+        public DateTime Timestamp { get; set; }
         [JsonProperty("pl")]
         public double ProfitLoss { get; set; }
         public double Swap { get; set; }

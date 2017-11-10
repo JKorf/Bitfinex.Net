@@ -19,7 +19,8 @@ namespace Bitfinex.Net.Objects
         public OrderSide Side { get; set; }
         [JsonConverter(typeof(OrderType2Converter))]
         public OrderType2 Type { get; set; }
-        public string Timestamp { get; set; } // TODO what is this format?
+        [JsonConverter(typeof(TimestampSecondsConverter))]
+        public DateTime Timestamp { get; set; }
         [JsonProperty("is_live")]
         public bool Live { get; set; }
         [JsonProperty("is_cancelled")]
