@@ -6,33 +6,32 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Converters
 {
-    public class WalletTypeConverter: JsonConverter
+    public class SplitMergeConverter: JsonConverter
     {
         private readonly bool quotes;
 
-        public WalletTypeConverter()
+        public SplitMergeConverter()
         {
             quotes = true;
         }
 
-        public WalletTypeConverter(bool useQuotes = true)
+        public SplitMergeConverter(bool useQuotes = true)
         {
             quotes = useQuotes;
         }
 
-        private readonly Dictionary<WalletType, string> values = new Dictionary<WalletType, string>()
+        private readonly Dictionary<SplitMerge, string> values = new Dictionary<SplitMerge, string>()
         {
-            { WalletType.Exchange, "exchange" },
-            { WalletType.Funding, "funding" },
-            { WalletType.Margin, "margin" },
+            { SplitMerge.Split, "1" },
+            { SplitMerge.Merge, "-1" }
         };
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             if (quotes)
-                writer.WriteValue(values[(WalletType)value]);
+                writer.WriteValue(values[(SplitMerge)value]);
             else
-                writer.WriteRawValue(values[(WalletType)value]);
+                writer.WriteRawValue(values[(SplitMerge)value]);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -42,7 +41,7 @@ namespace Bitfinex.Net.Converters
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(WalletType);
+            return objectType == typeof(SplitMerge);
         }
     }
 }

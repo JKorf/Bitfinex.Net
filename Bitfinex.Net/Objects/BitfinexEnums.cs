@@ -174,4 +174,10 @@
         Withdrawal,
         Deposit
     }
+
+    public enum SplitMerge
+    {
+        Split,
+        Merge
+    }
 }

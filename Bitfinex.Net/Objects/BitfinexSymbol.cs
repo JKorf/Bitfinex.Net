@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Converters;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {

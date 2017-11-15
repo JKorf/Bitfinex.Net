@@ -7,7 +7,7 @@ using Bitfinex.Net.Objects;
 
 namespace Bitfinex.Net
 {
-    public abstract class BitfinexAbstractClient
+    public abstract class BitfinexAbstractClient: IDisposable
     {
         protected string apiKey;
         protected HMACSHA384 encryptor;
@@ -100,6 +100,11 @@ namespace Bitfinex.Net
             result.Result = data;
             result.Success = true;
             return result;
+        }
+
+        public void Dispose()
+        {
+            encryptor?.Dispose();
         }
     }
 }

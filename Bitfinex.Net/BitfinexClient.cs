@@ -14,7 +14,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Bitfinex.Net
 {
-    public partial class BitfinexClient : BitfinexAbstractClient, IDisposable
+    public partial class BitfinexClient : BitfinexAbstractClient
     {
         #region fields
         private const string GetMethod = "GET";
@@ -39,11 +39,6 @@ namespace Bitfinex.Net
         public BitfinexClient(string apiKey, string apiSecret)
         {
             SetApiCredentials(apiKey, apiSecret);
-        }
-
-        ~BitfinexClient()
-        {
-            Dispose(false);
         }
         #endregion
 
@@ -236,15 +231,6 @@ namespace Bitfinex.Net
             foreach (byte t in buff)
                 sbinary += t.ToString("x2"); /* hex format */
             return sbinary;
-        }
-
-        private void Dispose(bool disposing)
-        {
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
         }
         #endregion
     }

@@ -26,6 +26,14 @@ namespace Bitfinex.Net
         private const string ClaimPositionEndpoint = "position/claim";
         private const string BalanceHistoryEndpoint = "history";
         private const string WithdrawalDepositHistoryEndpoint = "history/movements";
+        private const string NewOfferEndpoint = "offer/new"; 
+        private const string CancelOfferEndpoint = "offer/cancel"; 
+        private const string OfferStatusEndpoint = "offer/status"; 
+        private const string ActiveFundingUsedEndpoint = "taken_funds";
+        private const string ActiveFundingNotUsedEndpoint = "unused_taken_funds";
+        private const string TotalTakenFundsEndpoint = "total_taken_funds"; 
+        private const string CloseMarginFundingEndpoint = "funding/close"; 
+        private const string BasketManageEndpoint = "basket_manage";
 
 
         public BitfinexApiResult<string[]> GetSymbols() => GetSymbolsAsync().Result;
@@ -288,6 +296,81 @@ namespace Bitfinex.Net
             AddOptionalParameter(parameters, "method", type != null ? JsonConvert.SerializeObject(type, new WithdrawTypeConverter(false)) : null);
 
             return await ExecuteAuthenticatedRequestV1<BitfinexDepositWithdrawal[]>(GetUrl(WithdrawalDepositHistoryEndpoint, OldApiVersion), PostMethod, parameters);
+        }
+
+        public BitfinexApiResult<BitfinexOffer> PlaceNewOffer(string currency, double amount, double rate, int period, FundingType type) => PlaceNewOfferAsync(currency, amount, rate, period, type).Result;
+        public async Task<BitfinexApiResult<BitfinexOffer>> PlaceNewOfferAsync(string currency, double amount, double rate, int period, FundingType type)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                {"currency", currency},
+                { "amount", amount},
+                { "rate", rate},
+                { "period", period},
+                { "direction", JsonConvert.SerializeObject(type, new FundingTypeConverter(false))}
+            };
+
+            return await ExecuteAuthenticatedRequestV1<BitfinexOffer>(GetUrl(NewOfferEndpoint, OldApiVersion), PostMethod, parameters);
+        }
+
+        public BitfinexApiResult<BitfinexOffer> CancelOffer(long offerId) => CancelOfferAsync(offerId).Result;
+        public async Task<BitfinexApiResult<BitfinexOffer>> CancelOfferAsync(long offerId)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                {"offer_id", offerId},
+            };
+            return await ExecuteAuthenticatedRequestV1<BitfinexOffer>(GetUrl(CancelOfferEndpoint, OldApiVersion), PostMethod, parameters);
+        }
+
+        public BitfinexApiResult<BitfinexOffer> GetOfferStatus(long offerId) => GetOfferStatusAsync(offerId).Result;
+        public async Task<BitfinexApiResult<BitfinexOffer>> GetOfferStatusAsync(long offerId)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                {"offer_id", offerId},
+            };
+            return await ExecuteAuthenticatedRequestV1<BitfinexOffer>(GetUrl(OfferStatusEndpoint, OldApiVersion), PostMethod, parameters);
+        }
+
+        public BitfinexApiResult<BitfinexActiveMarginFund[]> GetActiveFundingUsed() => GetActiveFundingUsedAsync().Result;
+        public async Task<BitfinexApiResult<BitfinexActiveMarginFund[]>> GetActiveFundingUsedAsync()
+        {
+            return await ExecuteAuthenticatedRequestV1<BitfinexActiveMarginFund[]>(GetUrl(ActiveFundingUsedEndpoint, OldApiVersion), PostMethod);
+        }
+
+        public BitfinexApiResult<BitfinexActiveMarginFund[]> GetActiveFundingNotUsed() => GetActiveFundingNotUsedAsync().Result;
+        public async Task<BitfinexApiResult<BitfinexActiveMarginFund[]>> GetActiveFundingNotUsedAsync()
+        {
+            return await ExecuteAuthenticatedRequestV1<BitfinexActiveMarginFund[]>(GetUrl(ActiveFundingNotUsedEndpoint, OldApiVersion), PostMethod);
+        }
+
+        public BitfinexApiResult<BitfinexTakenFund[]> GetTotalTakenFunds() => GetTotalTakenFundsAsync().Result;
+        public async Task<BitfinexApiResult<BitfinexTakenFund[]>> GetTotalTakenFundsAsync()
+        {
+            return await ExecuteAuthenticatedRequestV1<BitfinexTakenFund[]>(GetUrl(TotalTakenFundsEndpoint, OldApiVersion), PostMethod);
+        }
+
+        public BitfinexApiResult<BitfinexActiveMarginFund> CloseMarginFunding(long swapId) => CloseMarginFundingAsync(swapId).Result;
+        public async Task<BitfinexApiResult<BitfinexActiveMarginFund>> CloseMarginFundingAsync(long swapId)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                {"swap_id", swapId},
+            };
+            return await ExecuteAuthenticatedRequestV1<BitfinexActiveMarginFund>(GetUrl(CloseMarginFundingEndpoint, OldApiVersion), PostMethod, parameters);
+        }
+
+        public BitfinexApiResult<BitfinexErrorResult[]> BasketManage(double amount, SplitMerge splitMerge, string tokenName) => BasketManageAsync(amount, splitMerge, tokenName).Result;
+        public async Task<BitfinexApiResult<BitfinexErrorResult[]>> BasketManageAsync(double amount, SplitMerge splitMerge, string tokenName)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                {"amount", amount.ToString(CultureInfo.InvariantCulture)},
+                {"dir", int.Parse(JsonConvert.SerializeObject(splitMerge, new SplitMergeConverter(false)))},
+                {"name", tokenName},
+            };
+            return await ExecuteAuthenticatedRequestV1<BitfinexErrorResult[]>(GetUrl(BasketManageEndpoint, OldApiVersion), PostMethod, parameters);
         }
     }
 }

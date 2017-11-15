@@ -49,8 +49,10 @@
     <Compile Include="BitfinexDefaults.cs" />
     <Compile Include="Converters\BitfinexMarginSymbol.cs" />
     <Compile Include="Converters\OrderType2Converter.cs" />
+    <Compile Include="Converters\SplitMergeConverter.cs" />
     <Compile Include="Converters\TimestampSecondsConverter.cs" />
     <Compile Include="Converters\WithdrawalDespositTypeConverter.cs" />
+    <Compile Include="Objects\BitfinexActiveMarginFund.cs" />
     <Compile Include="Objects\BitfinexBalanceChange.cs" />
     <Compile Include="Objects\BitfinexBaseOrder.cs" />
     <Compile Include="Converters\BitfinexPropertyAttribute.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Objects\BitfinexDepositWithdrawal.cs" />
     <Compile Include="Objects\BitfinexEnums.cs" />
     <Compile Include="Objects\BitfinexErrorResponse.cs" />
+    <Compile Include="Objects\BitfinexErrorResult.cs" />
     <Compile Include="Objects\BitfinexFundingCredit.cs" />
     <Compile Include="Objects\BitfinexFundingInfo.cs" />
     <Compile Include="Objects\BitfinexFundingLoan.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="Objects\BitfinexMarginInfo.cs" />
     <Compile Include="Objects\BitfinexMarketAveragePrice.cs" />
     <Compile Include="Objects\BitfinexMarketOverview.cs" />
+    <Compile Include="Objects\BitfinexOffer.cs" />
     <Compile Include="Objects\BitfinexOrder.cs" />
     <Compile Include="Objects\BitfinexOrderBookEntry.cs" />
     <Compile Include="Objects\BitfinexPerformance.cs" />
@@ -111,6 +115,7 @@
     <Compile Include="Objects\BitfinexStats.cs" />
     <Compile Include="Objects\BitfinexSuccessResult.cs" />
     <Compile Include="Objects\BitfinexSymbol.cs" />
+    <Compile Include="Objects\BitfinexTakenFund.cs" />
     <Compile Include="Objects\BitfinexTradeDetails.cs" />
     <Compile Include="Objects\BitfinexTradeSimple.cs" />
     <Compile Include="Objects\BitfinexWallet.cs" />

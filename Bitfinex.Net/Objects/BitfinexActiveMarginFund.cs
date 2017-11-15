@@ -4,17 +4,17 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    public class BitfinexClaimedPosition
+    public class BitfinexActiveMarginFund
     {
         public long Id { get; set; }
-        public string Symbol { get; set; }
-        public string Status { get; set; }
-        public double Base { get; set; }
+        [JsonProperty("position_id")]
+        public long PositionId { get; set; }
+        public double Rate { get; set; }
+        public int Period { get; set; }
         public double Amount { get; set; }
         [JsonConverter(typeof(TimestampSecondsConverter))]
         public DateTime Timestamp { get; set; }
-        [JsonProperty("pl")]
-        public double ProfitLoss { get; set; }
-        public double Swap { get; set; }
+        [JsonProperty("auto_close")]
+        public bool AutoClose { get; set; }
     }
 }
