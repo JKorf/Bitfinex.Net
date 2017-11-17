@@ -20,8 +20,8 @@ namespace Bitfinex.Net
             if (BitfinexDefaults.LogWriter != null)
                 SetLogOutput(BitfinexDefaults.LogWriter);
 
-            if (BitfinexDefaults.LogVerbositySet)
-                SetLogVerbosity(BitfinexDefaults.LogVerbosity);
+            if (BitfinexDefaults.LogVerbosity != null)
+                SetLogVerbosity(BitfinexDefaults.LogVerbosity.Value);
 
             if (BitfinexDefaults.ApiKey != null && BitfinexDefaults.ApiSecret != null)
                 SetApiCredentials(BitfinexDefaults.ApiKey, BitfinexDefaults.ApiSecret);
@@ -75,22 +75,18 @@ namespace Bitfinex.Net
             log.TextWriter = writer;
         }
 
-        protected BitfinexApiResult<T> ThrowErrorMessage<T>(BitfinexErrorResponse error)
+        protected BitfinexApiResult<T> ThrowErrorMessage<T>(BitfinexError error)
         {
-            log.Write(LogVerbosity.Warning, $"Call failed: {error.ErrorCode} - {error.ErrorMessage}");
-            var result = (BitfinexApiResult<T>)Activator.CreateInstance(typeof(BitfinexApiResult<T>));
-            result.Error = error;
-            return result;
+            return ThrowErrorMessage<T>(error, null);
         }
 
-        protected BitfinexApiResult<T> ThrowErrorMessage<T>(int errorcode, string message)
+        protected BitfinexApiResult<T> ThrowErrorMessage<T>(BitfinexError error, string extraInformation)
         {
-            log.Write(LogVerbosity.Warning, $"Call failed: {message}");
+            log.Write(LogVerbosity.Warning, $"Call failed: {error.ErrorMessage}");
             var result = (BitfinexApiResult<T>)Activator.CreateInstance(typeof(BitfinexApiResult<T>));
-            result.Error = new BitfinexErrorResponse()
-            {
-                ErrorMessage = message
-            };
+            result.Error = error;
+            if (extraInformation != null)
+                result.Error.ErrorMessage += Environment.NewLine + extraInformation;
             return result;
         }
 
@@ -100,6 +96,14 @@ namespace Bitfinex.Net
             result.Result = data;
             result.Success = true;
             return result;
+        }
+
+        protected string ByteToString(byte[] buff)
+        {
+            var sbinary = "";
+            foreach (byte t in buff)
+                sbinary += t.ToString("x2"); /* hex format */
+            return sbinary;
         }
 
         public void Dispose()

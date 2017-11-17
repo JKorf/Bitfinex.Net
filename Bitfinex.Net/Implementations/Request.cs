@@ -44,10 +44,7 @@ namespace Bitfinex.Net.Implementations
             set => request.Method = value;
         }
 
-        public Uri RequestUri
-        {
-            get => request.RequestUri;
-        }
+        public Uri RequestUri => request.RequestUri;
 
         public Stream GetRequestStream()
         {

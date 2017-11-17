@@ -23,19 +23,20 @@ namespace Bitfinex.Net.Converters
                 if (attribute == null)
                     continue;
 
+                if (attribute.Index >= arr.Count)
+                    continue;
+
                 object value;
                 var converterAttribute = (JsonConverterAttribute) property.GetCustomAttribute(typeof(JsonConverterAttribute));
                 if (converterAttribute != null)
-                {
                     value = arr[attribute.Index].ToObject(property.PropertyType, new JsonSerializer() { Converters = { (JsonConverter)Activator.CreateInstance(converterAttribute.ConverterType) } });
-                }
                 else
-                    value = arr[attribute.Index];
-                
-                if(value == null)
-                    property.SetValue(result, null);
+                    value = arr[attribute.Index];                
+
+                if (property.PropertyType.IsAssignableFrom(value.GetType()))
+                    property.SetValue(result, value);
                 else
-                    property.SetValue(result, Convert.ChangeType(value, property.PropertyType));
+                    property.SetValue(result, value == null ? null : Convert.ChangeType(value, property.PropertyType));
             }
             return result;
         }

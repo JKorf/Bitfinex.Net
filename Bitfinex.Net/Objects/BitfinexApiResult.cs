@@ -22,6 +22,6 @@ namespace Bitfinex.Net.Objects
         /// The message if the call wasn't successful
         /// </summary>
         [JsonProperty("message")]
-        public BitfinexErrorResponse Error { get; internal set; }
+        public BitfinexError Error { get; internal set; }
     }
 }

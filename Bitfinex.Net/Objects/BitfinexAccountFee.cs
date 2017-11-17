@@ -1,11 +1,9 @@
-﻿namespace Bitfinex.Net.Objects
+﻿using System.Collections.Generic;
+
+namespace Bitfinex.Net.Objects
 {
     public class BitfinexAccountFee
     {
-        public BitfinexAccountFeeDetails Withdraw { get; set; }
-    }
-
-    public class BitfinexAccountFeeDetails
-    {
+        public Dictionary<string, double> Withdraw { get; set; }
     }
 }

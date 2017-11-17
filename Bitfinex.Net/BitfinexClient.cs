@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Bitfinex.Net.Errors;
 using Bitfinex.Net.Implementations;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Logging;
 using Bitfinex.Net.Objects;
+using Bitfinex.Net.RateLimiter;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -24,25 +27,59 @@ namespace Bitfinex.Net
         private const string NewApiVersion = "2";
         private const string OldApiVersion = "1";
 
-        private string nonce => Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 10).ToString();
+        private string nonce => Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 10).ToString(CultureInfo.InvariantCulture);
+        private List<IRateLimiter> rateLimiters = new List<IRateLimiter>();
         #endregion
 
         #region properties
         public IRequestFactory RequestFactory = new RequestFactory();
+
+        /// <summary>
+        /// The max amount of retries to do if the Bittrex service is temporarily unavailable
+        /// </summary>
+        public int MaxRetries { get; set; } = 2;
         #endregion
 
         #region constructor/destructor
         public BitfinexClient()
         {
+            if (BitfinexDefaults.MaxCallRetry != null)
+                MaxRetries = BitfinexDefaults.MaxCallRetry.Value;
+
+            foreach (var rateLimiter in BitfinexDefaults.RateLimiters)
+                rateLimiters.Add(rateLimiter);
         }
 
         public BitfinexClient(string apiKey, string apiSecret)
         {
+            if (BitfinexDefaults.MaxCallRetry != null)
+                MaxRetries = BitfinexDefaults.MaxCallRetry.Value;
+
+            foreach (var rateLimiter in BitfinexDefaults.RateLimiters)
+                rateLimiters.Add(rateLimiter);
+
             SetApiCredentials(apiKey, apiSecret);
         }
         #endregion
 
-        #region private
+        #region methods
+        /// <summary>
+        /// Adds a rate limiter to the client. There are 2 choices, the <see cref="RateLimiterTotal"/> and the <see cref="RateLimiterPerEndpoint"/>.
+        /// </summary>
+        /// <param name="limiter">The limiter to add</param>
+        public void AddRateLimiter(IRateLimiter limiter)
+        {
+            rateLimiters.Add(limiter);
+        }
+
+        /// <summary>
+        /// Removes all rate limiters from this client
+        /// </summary>
+        public void RemoveRateLimiters()
+        {
+            rateLimiters.Clear();
+        }
+
 
         private async Task<BitfinexApiResult<T>> ExecutePublicRequest<T>(Uri uri, string httpMethod)
         {
@@ -61,9 +98,11 @@ namespace Bitfinex.Net
             var path = uri.PathAndQuery;
             var n = nonce;
 
-            var signature = new JObject();
-            signature["request"] = path;
-            signature["nonce"] = n;
+            var signature = new JObject
+            {
+                ["request"] = path,
+                ["nonce"] = n
+            };
             if(bodyParameters != null)
                 foreach(var keyvalue in bodyParameters)
                     signature.Add(keyvalue.Key, JToken.FromObject(keyvalue.Value));
@@ -115,6 +154,13 @@ namespace Bitfinex.Net
             string returnedData = "";
             try
             {
+                foreach (var limiter in rateLimiters)
+                {
+                    double limitedBy = limiter.LimitRequest(request.RequestUri.AbsolutePath);
+                    if (limitedBy > 0)
+                        log.Write(LogVerbosity.Debug, $"Request {request.RequestUri.AbsolutePath} was limited by {limitedBy}ms by {limiter.GetType().Name}");
+                }
+
                 log.Write(LogVerbosity.Debug, $"Sending request to {request.RequestUri}");
                 var response = request.GetResponse();
                 using (var reader = new StreamReader(response.GetResponseStream()))
@@ -133,34 +179,23 @@ namespace Bitfinex.Net
                         return ThrowErrorMessage<T>(error);
                 }
 
-                var errorMessage =
-                    $"Request to {request.RequestUri} failed because of a webexception. Status: {response.StatusCode}-{response.StatusDescription}, Message: {we.Message}";
-                log.Write(LogVerbosity.Warning, errorMessage);
-                return ThrowErrorMessage<T>(-2000, errorMessage);
+                return ThrowErrorMessage<T>(BitfinexErrors.GetError(BitfinexErrorKey.ErrorWeb), $"Request to {request.RequestUri} failed because of a webexception. Status: {response.StatusCode}-{response.StatusDescription}, Message: {we.Message}");
             }
             catch (JsonReaderException jre)
             {
-                var errorMessage =
-                    $"Request to {request.RequestUri} failed, couldn't parse the returned data. Error occured at Path: {jre.Path}, LineNumber: {jre.LineNumber}, LinePosition: {jre.LinePosition}. Received data: {returnedData}";
-                log.Write(LogVerbosity.Warning, errorMessage);
-                return ThrowErrorMessage<T>(-2001, errorMessage);
+                return ThrowErrorMessage<T>(BitfinexErrors.GetError(BitfinexErrorKey.ParseErrorReader), $"Request to {request.RequestUri} failed, couldn't parse the returned data. Error occured at Path: {jre.Path}, LineNumber: {jre.LineNumber}, LinePosition: {jre.LinePosition}. Received data: {returnedData}");
             }
             catch (JsonSerializationException jse)
             {
-                var errorMessage =
-                    $"Request to {request.RequestUri} failed, couldn't deserialize the returned data. Message: {jse.Message}. Received data: {returnedData}";
-                log.Write(LogVerbosity.Warning, errorMessage);
-                return ThrowErrorMessage<T>(-2002, errorMessage);
+                return ThrowErrorMessage<T>(BitfinexErrors.GetError(BitfinexErrorKey.ParseErrorSerialization), $"Request to {request.RequestUri} failed, couldn't deserialize the returned data. Message: {jse.Message}. Received data: {returnedData}");
             }
             catch (Exception e)
             {
-                var errorMessage = $"Request to {request.RequestUri} failed with unknown error: " + e.Message;
-                log.Write(LogVerbosity.Warning, errorMessage);
-                return ThrowErrorMessage<T>(-2003, errorMessage);
+                return ThrowErrorMessage<T>(BitfinexErrors.GetError(BitfinexErrorKey.UnknownError), $"Request to {request.RequestUri} failed with unknown error: {e.Message}. Received data: {returnedData}");
             }
         }
 
-        private async Task<BitfinexErrorResponse> TryReadError(HttpWebResponse response)
+        private async Task<BitfinexError> TryReadError(HttpWebResponse response)
         {
             try
             {
@@ -170,17 +205,11 @@ namespace Bitfinex.Net
                     var data = await reader.ReadToEndAsync();
                     if (!data.Contains("\"message\":"))
                         // V2 error
-                        return JsonConvert.DeserializeObject<BitfinexErrorResponse>(data);
-                    else
-                    {
-                        // V1 error
-                        var json = JObject.Parse(data);
-                        return new BitfinexErrorResponse()
-                        {
-                            ErrorCode = -3000,
-                            ErrorMessage = json["message"].ToString()
-                        };
-                    }
+                        return JsonConvert.DeserializeObject<BitfinexError>(data);
+
+                    // V1 error
+                    var json = JObject.Parse(data);
+                    return new BitfinexError(6000, json["message"].ToString());
                 }
             }
             catch (Exception)
@@ -223,14 +252,6 @@ namespace Bitfinex.Net
         {
             if (value != null)
                 dictionary.Add(key, value);
-        }
-
-        private string ByteToString(byte[] buff)
-        {
-            var sbinary = "";
-            foreach (byte t in buff)
-                sbinary += t.ToString("x2"); /* hex format */
-            return sbinary;
         }
         #endregion
     }
