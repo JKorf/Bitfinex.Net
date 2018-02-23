@@ -79,6 +79,7 @@
     <Compile Include="BitfinexDefaults.cs" />
     <Compile Include="BitfinexSocketClient.cs" />
     <Compile Include="BitfinexSocketClient2.cs" />
+    <Compile Include="BitfinexSocketClient2Private.cs" />
     <Compile Include="Converters\BitfinexMarginSymbol.cs" />
     <Compile Include="Converters\OrderType2Converter.cs" />
     <Compile Include="Converters\SplitMergeConverter.cs" />
@@ -154,8 +155,13 @@
     <Compile Include="Objects\BitfinexTradeSimple.cs" />
     <Compile Include="Objects\BitfinexWallet.cs" />
     <Compile Include="Objects\BitfinexWithdrawResult.cs" />
-    <Compile Include="Objects\SocketObjects2\SubsciptionRequest.cs" />
+    <Compile Include="Objects\SocketObjects2\BookSubscription.cs" />
+    <Compile Include="Objects\SocketObjects2\CandleSubscription.cs" />
+    <Compile Include="Objects\SocketObjects2\SubscriptionRegistration.cs" />
+    <Compile Include="Objects\SocketObjects2\SubscriptionRequest.cs" />
     <Compile Include="Objects\SocketObjects2\TickerSubscription.cs" />
+    <Compile Include="Objects\SocketObjects2\TradesSubscription.cs" />
+    <Compile Include="Objects\SocketObjects2\WalletUpdateRegistration.cs" />
     <Compile Include="Objects\SocketObjets\BitfinexAuthentication.cs" />
     <Compile Include="Objects\SocketObjets\BitfinexAuthenticationResponse.cs" />
     <Compile Include="Objects\SocketObjets\BitfinexEventRegistration.cs" />
@@ -177,6 +183,7 @@
   <ItemGroup />
   <ItemGroup>
     <Compile Include="BitfinexClient.V1.cs" />
+    <Compile Include="BitfinexSocketClient2Public.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

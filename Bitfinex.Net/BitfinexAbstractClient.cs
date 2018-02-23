@@ -27,7 +27,7 @@ namespace Bitfinex.Net
                 SetApiCredentials(BitfinexDefaults.ApiKey, BitfinexDefaults.ApiSecret);
         }
 
-        public void SetApiCredentials(string apiKey, string apiSecret)
+        public virtual void SetApiCredentials(string apiKey, string apiSecret)
         {
             SetApiKey(apiKey);
             SetApiSecret(apiSecret);

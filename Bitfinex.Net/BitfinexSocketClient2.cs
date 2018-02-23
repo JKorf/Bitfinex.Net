@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Logging;
+using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects2;
 using Bitfinex.Net.Objects.SocketObjets;
 using Newtonsoft.Json;
@@ -14,7 +15,7 @@ using WebSocketSharp;
 
 namespace Bitfinex.Net
 {
-    public class BitfinexSocketClient2: BitfinexAbstractClient
+    public partial class BitfinexSocketClient2: BitfinexAbstractClient
     {
         private const string BaseAddress = "wss://api.bitfinex.com/ws/2";
         private static WebSocket socket;
@@ -24,7 +25,11 @@ namespace Bitfinex.Net
         private static ConcurrentQueue<string> receivedMessages;
         private static ConcurrentQueue<string> toSendMessages;
 
-        private static List<SubsciptionRequest> outstandingRequests;
+        private static Dictionary<string, Type> subscriptionResponseTypes;
+
+        private static List<SubscriptionRequest> outstandingRequests;
+        private static List<SubscriptionRequest> confirmedRequests;
+
         private static bool running;
         private static object subscriptionLock;
 
@@ -34,7 +39,18 @@ namespace Bitfinex.Net
             toSendMessages = new ConcurrentQueue<string>();
             messageEvent = new AutoResetEvent(true);
             sendEvent = new AutoResetEvent(true);
-            outstandingRequests = new List<SubsciptionRequest>();
+            outstandingRequests = new List<SubscriptionRequest>();
+            confirmedRequests = new List<SubscriptionRequest>();
+
+            subscriptionResponseTypes = new Dictionary<string, Type>();
+            foreach (Type t in typeof(SubscriptionResponse).Assembly.GetTypes())
+            {
+                if (typeof(SubscriptionResponse).IsAssignableFrom(t) && t.Name != typeof(SubscriptionResponse).Name)
+                {
+                    var attribute = (SubscriptionChannelAttribute)t.GetCustomAttributes(typeof(SubscriptionChannelAttribute), true)[0];
+                    subscriptionResponseTypes.Add(attribute.ChannelName, t);
+                }
+            }
         }
 
         public void Start()
@@ -53,19 +69,18 @@ namespace Bitfinex.Net
             Task.Run(() => ProcessSending());
         }
 
-        public async Task SubscribeToTicker(string symbol)
+        
+
+        private async Task SubscribeAndWait(SubscriptionRequest request)
         {
-            var request = new TickerSubscriptionRequest(symbol);
             outstandingRequests.Add(request);
             Send(JsonConvert.SerializeObject(request));
             await Task.Run(() =>
             {
                 bool result = request.ConfirmedEvent.WaitOne(2000);
                 outstandingRequests.Remove(request);
-                if (!result)
-                    log.Write(LogVerbosity.Warning, "No confirmation received");
-                else
-                    log.Write(LogVerbosity.Warning, "Subscription confirmed");
+                confirmedRequests.Add(request);
+                log.Write(LogVerbosity.Debug, !result ? "No confirmation received" : "Subscription confirmed");
             });
         }
 
@@ -104,7 +119,7 @@ namespace Bitfinex.Net
                 sendEvent.WaitOne();
                 if (!running)
                     break;
-
+                
                 string data;
                 while (toSendMessages.TryDequeue(out data))
                 {
@@ -131,20 +146,20 @@ namespace Bitfinex.Net
                     if (dataObject is JObject)
                     {
                         var evnt = dataObject["event"].ToString();
-                        if (evnt == "subscribed")
+                        if (evnt == "auth")
+                        {
+                            ProcessAuthenticationResponse(dataObject.ToObject<BitfinexAuthenticationResponse>());
+                        }
+                        else if (evnt == "subscribed")
                         {
                             var channel = dataObject["channel"].ToString();
-                            SubscriptionResponse subResponse = null;
-
-                            if (channel == "ticker")
-                                subResponse = dataObject.ToObject<TickerSubscriptionResponse>();
-
-                            if (subResponse == null)
+                            if (!subscriptionResponseTypes.ContainsKey(channel))
                             {
-                                log.Write(LogVerbosity.Debug, "Unknown subscription channel response");
+                                log.Write(LogVerbosity.Warning, "Unknown response channel name: " + channel);
                                 continue;
                             }
 
+                            SubscriptionResponse subResponse = (SubscriptionResponse) dataObject.ToObject(subscriptionResponseTypes[channel]);
                             var pending = outstandingRequests.SingleOrDefault(r => r.GetSubscriptionKey() == subResponse.GetSubscriptionKey());
                             if (pending == null)
                             {
@@ -152,7 +167,28 @@ namespace Bitfinex.Net
                                 continue;
                             }
                             // Do something with channelid
+                            pending.ChannelId = subResponse.ChannelId;
                             pending.ConfirmedEvent.Set();
+                        }
+                    }
+                    else
+                    {
+                        var channelId = (int)dataObject[0];
+                        if (dataObject[1].ToString() == "hb")
+                            continue;
+
+                        var channelReg = confirmedRequests.SingleOrDefault(c => c.ChannelId == channelId);
+                        if (channelReg != null)
+                        {
+                            channelReg.Handle((JArray) dataObject);
+                            return;
+                        }
+
+                        var accountReg = registrations.SingleOrDefault(r => r.UpdateKeys.Contains(dataObject[1].ToString()));
+                        if (accountReg != null)
+                        {
+                            accountReg.Handle((JArray)dataObject);
+                            return;
                         }
                     }
                 }
