@@ -26,10 +26,10 @@ namespace Bitfinex.Net.Objects
         public DateTime TimestampUpdated { get; set; }
 
         [BitfinexProperty(6)]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [BitfinexProperty(7)]
-        public double AmountOriginal { get; set; }
+        public decimal AmountOriginal { get; set; }
 
         [BitfinexProperty(8), JsonConverter(typeof(OrderTypeConverter))]
         public OrderType Type { get; set; }
@@ -55,16 +55,16 @@ namespace Bitfinex.Net.Objects
         internal string PlaceHolder4 { get; set; }
 
         [BitfinexProperty(16)]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
 
         [BitfinexProperty(17)]
-        public double? PriceAverage { get; set; }
+        public decimal? PriceAverage { get; set; }
 
         [BitfinexProperty(18)]
-        public double PriceTrailing { get; set; }
+        public decimal PriceTrailing { get; set; }
 
         [BitfinexProperty(19)]
-        public double PriceAuxilliaryLimit { get; set; }
+        public decimal PriceAuxilliaryLimit { get; set; }
         [BitfinexProperty(20)]
         internal string PlaceHolder5 { get; set; }
         [BitfinexProperty(21)]

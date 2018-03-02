@@ -7,9 +7,9 @@ namespace Bitfinex.Net.Objects
     public class BitfinexMarketAveragePrice
     {
         [BitfinexProperty(0)]
-        public double AverageRate { get; set; }
+        public decimal AverageRate { get; set; }
 
         [BitfinexProperty(1)]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
     }
 }

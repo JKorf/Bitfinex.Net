@@ -12,8 +12,8 @@ namespace Bitfinex.Net.Objects
         [BitfinexProperty(1), JsonConverter(typeof(TimestampConverter))]
         public DateTime Timestamp { get; set; }
         [BitfinexProperty(2)]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
         [BitfinexProperty(3)]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
     }
 }

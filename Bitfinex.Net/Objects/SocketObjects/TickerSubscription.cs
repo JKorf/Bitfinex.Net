@@ -8,15 +8,15 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.SocketObjects2
 {
-    [SubscriptionChannel("ticker", typeof(BitfinexSocketTradingPairTick), false)]
+    [SubscriptionChannel("ticker", typeof(BitfinexMarketOverview), false)]
     public class TickerSubscriptionRequest : SubscriptionRequest
     {
         [JsonProperty("symbol")]
         public string Symbol { get; set; }
 
-        private Action<BitfinexSocketTradingPairTick[]> handler;
+        private Action<BitfinexMarketOverview[]> handler;
 
-        public TickerSubscriptionRequest(string symbol, Action<BitfinexSocketTradingPairTick[]> handler)
+        public TickerSubscriptionRequest(string symbol, Action<BitfinexMarketOverview[]> handler)
         {
             Symbol = symbol;
             this.handler = handler;
@@ -29,7 +29,7 @@ namespace Bitfinex.Net.Objects.SocketObjects2
 
         protected override void Handle(object obj)
         {
-            handler((BitfinexSocketTradingPairTick[]) obj);
+            handler((BitfinexMarketOverview[]) obj);
         }
     }
 

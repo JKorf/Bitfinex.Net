@@ -31,12 +31,18 @@ namespace Bitfinex.Net.Converters
                 if (converterAttribute != null)
                     value = arr[attribute.Index].ToObject(property.PropertyType, new JsonSerializer() { Converters = { (JsonConverter)Activator.CreateInstance(converterAttribute.ConverterType) } });
                 else
-                    value = arr[attribute.Index];                
+                    value = arr[attribute.Index];
 
-                if (property.PropertyType.IsAssignableFrom(value.GetType()))
+                if (value != null && property.PropertyType.IsInstanceOfType(value))
                     property.SetValue(result, value);
                 else
+                {
+                    if(value is JToken)
+                        if (((JToken) value).Type == JTokenType.Null)
+                            value = null;
+
                     property.SetValue(result, value == null ? null : Convert.ChangeType(value, property.PropertyType));
+                }
             }
             return result;
         }

@@ -1,49 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Bitfinex.Net.Objects;
-using Newtonsoft.Json;
+using CryptoExchange.Net;
 
 namespace Bitfinex.Net.Converters
 {
-    public class OrderStatusConverter: JsonConverter
+    public class OrderStatusConverter: BaseConverter<OrderStatus>
     {
-        private readonly bool quotes;
+        public OrderStatusConverter(): this(true) { }
+        public OrderStatusConverter(bool quotes) : base(quotes) { }
 
-        public OrderStatusConverter()
-        {
-            quotes = true;
-        }
-
-        public OrderStatusConverter(bool useQuotes = true)
-        {
-            quotes = useQuotes;
-        }
-
-        private readonly Dictionary<OrderStatus, string> values = new Dictionary<OrderStatus, string>()
+        protected override Dictionary<OrderStatus, string> Mapping => new Dictionary<OrderStatus, string>()
         {
             { OrderStatus.Active, "ACTIVE" },
             { OrderStatus.Executed, "EXECUTED" },
             { OrderStatus.PartiallyFilled, "PARTIALLY FILLED" },
             { OrderStatus.Canceled, "CANCELED" },
         };
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            if (quotes)
-                writer.WriteValue(values[(OrderStatus)value]);
-            else
-                writer.WriteRawValue(values[(OrderStatus)value]);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            return values.Single(v => v.Value == reader.Value.ToString()).Key;
-        }
-
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(OrderStatus);
-        }
     }
 }

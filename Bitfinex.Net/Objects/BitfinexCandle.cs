@@ -10,14 +10,14 @@ namespace Bitfinex.Net.Objects
         [BitfinexProperty(0), JsonConverter(typeof(TimestampConverter))]
         public DateTime Timestamp { get; set; }
         [BitfinexProperty(1)]
-        public double Open { get; set; }
+        public decimal Open { get; set; }
         [BitfinexProperty(2)]
-        public double Close { get; set; }
+        public decimal Close { get; set; }
         [BitfinexProperty(3)]
-        public double High { get; set; }
+        public decimal High { get; set; }
         [BitfinexProperty(4)]
-        public double Low { get; set; }
+        public decimal Low { get; set; }
         [BitfinexProperty(5)]
-        public double Volume { get; set; }
+        public decimal Volume { get; set; }
     }
 }

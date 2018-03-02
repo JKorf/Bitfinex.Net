@@ -1,4 +1,6 @@
-﻿namespace Bitfinex.Net.Objects
+﻿using System;
+
+namespace Bitfinex.Net.Objects
 {
     public enum PlatformStatus
     {
@@ -64,13 +66,6 @@
         Funding
     }
 
-    public enum WalletType2
-    {
-        Exchange,
-        Trading,
-        Deposit
-    }
-
     public enum OrderType
     {
         Limit,
@@ -123,61 +118,19 @@
         Iota,
         BCash
     }
-
-    public enum WithdrawType
-    {
-        Bitcoin,
-        Litecoin,
-        Ethereum,
-        EthereumClassic,
-        MasterCoin,
-        ZCash,
-        Monero,
-        Wire,
-        Dash,
-        Ripple,
-        EOS,
-        Neo,
-        Aventus,
-        QTUM,
-        Eidoo,
-    }
-
-    public enum UseExpressWire
-    {
-        Yes,
-        No
-    }
-
+    
     public enum OrderSide
     {
         Buy,
         Sell
     }
 
-    public enum OrderType2
+    [Flags]
+    public enum OrderFlags
     {
-        Market,
-        Limit,
-        Stop,
-        TrailingStop,
-        FillOrKill,
-        ExchangeMarket,
-        ExchangeLimit,
-        ExchangeStop,
-        ExchangeTrailingStop,
-        ExchangeFillOrKill
-    }
-
-    public enum WithdrawalDespositType
-    {
-        Withdrawal,
-        Deposit
-    }
-
-    public enum SplitMerge
-    {
-        Split,
-        Merge
+        Hidden = 64,
+        Close = 512,
+        PostOnly = 4096,
+        OneCancelsOther = 16384
     }
 }

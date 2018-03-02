@@ -8,6 +8,6 @@ namespace Bitfinex.Net.Objects
         public string Message { get; set; }
         [JsonProperty("withdrawal_id")]
         public long WithdrawalId { get; set; }
-        public double Fees { get; set; }
+        public decimal Fees { get; set; }
     }
 }

@@ -11,6 +11,6 @@ namespace Bitfinex.Net.Objects
         public DateTime Timestamp { get; set; }
 
         [BitfinexProperty(1)]
-        public double Value { get; set; }
+        public decimal Value { get; set; }
     }
 }

@@ -1,49 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Bitfinex.Net.Objects;
-using Newtonsoft.Json;
+using CryptoExchange.Net;
 
 namespace Bitfinex.Net.Converters
 {
-    public class StatKeyConverter: JsonConverter
+    public class StatKeyConverter: BaseConverter<StatKey>
     {
-        private readonly bool quotes;
+        public StatKeyConverter(): this(true) { }
+        public StatKeyConverter(bool quotes) : base(quotes) { }
 
-        public StatKeyConverter()
-        {
-            quotes = true;
-        }
-
-        public StatKeyConverter(bool useQuotes = true)
-        {
-            quotes = useQuotes;
-        }
-
-        private readonly Dictionary<StatKey, string> values = new Dictionary<StatKey, string>()
+        protected override Dictionary<StatKey, string> Mapping => new Dictionary<StatKey, string>()
         {
             { StatKey.ActiveFundingInPositions, "credits.size" },
             { StatKey.ActiveFundingInPositionsPerTradingSymbol, "credits.size.sym" },
             { StatKey.TotalActiveFunding , "funding.size" },
             { StatKey.TotalOpenPosition , "pos.size" },
         };
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            if (quotes)
-                writer.WriteValue(values[(StatKey)value]);
-            else
-                writer.WriteRawValue(values[(StatKey)value]);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            return values.Single(v => v.Value == reader.Value.ToString()).Key;
-        }
-
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(StatKey);
-        }
     }
 }

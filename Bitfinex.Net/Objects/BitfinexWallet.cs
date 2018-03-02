@@ -13,12 +13,12 @@ namespace Bitfinex.Net.Objects
         public string Currency { get; set; }
 
         [BitfinexProperty(2)]
-        public double Balance { get; set; }
+        public decimal Balance { get; set; }
 
         [BitfinexProperty(3)]
-        public double UnsettledInterest { get; set; }
+        public decimal UnsettledInterest { get; set; }
 
         [BitfinexProperty(4)]
-        public double? BalanceAvailable { get; set; }
+        public decimal? BalanceAvailable { get; set; }
     }
 }

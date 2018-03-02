@@ -23,7 +23,7 @@ namespace Bitfinex.Net.Objects
         public DateTime TimestampUpdated { get; set; }
 
         [BitfinexProperty(5)]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [BitfinexProperty(6)]
         public int? Flags { get; set; }
@@ -41,7 +41,7 @@ namespace Bitfinex.Net.Objects
         internal string PlaceHolder3 { get; set; }
 
         [BitfinexProperty(11)]
-        public double Rate { get; set; }
+        public decimal Rate { get; set; }
 
         [BitfinexProperty(12)]
         public int Period { get; set; }
@@ -65,7 +65,7 @@ namespace Bitfinex.Net.Objects
         public bool Renew { get; set; }
 
         [BitfinexProperty(19)]
-        public double RateReal { get; set; }
+        public decimal RateReal { get; set; }
 
         [BitfinexProperty(20)]
         public bool NoClose { get; set; }

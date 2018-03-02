@@ -20,12 +20,12 @@ namespace Bitfinex.Net.Objects
     public class BitfinexFundingInfoDetails
     {
         [BitfinexProperty(0)]
-        public double YieldLoan { get; set; }
+        public decimal YieldLoan { get; set; }
         [BitfinexProperty(1)]
-        public double YieldLend { get; set; }
+        public decimal YieldLend { get; set; }
         [BitfinexProperty(2)]
-        public double DurationLoan { get; set; }
+        public decimal DurationLoan { get; set; }
         [BitfinexProperty(3)]
-        public double DurationLend { get; set; }
+        public decimal DurationLend { get; set; }
     }
 }

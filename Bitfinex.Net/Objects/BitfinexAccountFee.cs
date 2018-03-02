@@ -4,6 +4,6 @@ namespace Bitfinex.Net.Objects
 {
     public class BitfinexAccountFee
     {
-        public Dictionary<string, double> Withdraw { get; set; }
+        public Dictionary<string, decimal> Withdraw { get; set; }
     }
 }

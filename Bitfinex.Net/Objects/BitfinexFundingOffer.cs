@@ -20,10 +20,10 @@ namespace Bitfinex.Net.Objects
         public DateTime TimestampUpdated { get; set; }
 
         [BitfinexProperty(4)]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [BitfinexProperty(5)]
-        public double AmountOriginal { get; set; }
+        public decimal AmountOriginal { get; set; }
 
         [BitfinexProperty(6), JsonConverter(typeof(FundingTypeConverter))]
         public FundingType FundingType { get; set; }
@@ -50,7 +50,7 @@ namespace Bitfinex.Net.Objects
         internal string PlaceHolder5 { get; set; }
 
         [BitfinexProperty(14)]
-        public double Rate { get; set; }
+        public decimal Rate { get; set; }
 
         [BitfinexProperty(15)]
         public int Period { get; set; }
@@ -68,6 +68,6 @@ namespace Bitfinex.Net.Objects
         public bool Renew { get; set; }
 
         [BitfinexProperty(20)]
-        public double RateReal { get; set; }
+        public decimal RateReal { get; set; }
     }
 }

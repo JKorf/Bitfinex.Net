@@ -13,27 +13,27 @@ namespace Bitfinex.Net.Objects
         public PositionStatus Status { get; set; }
 
         [BitfinexProperty(2)]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [BitfinexProperty(3)]
-        public double BasePrice { get; set; }
+        public decimal BasePrice { get; set; }
 
         [BitfinexProperty(4)]
-        public double MarginFunding { get; set; }
+        public decimal MarginFunding { get; set; }
 
         [BitfinexProperty(5), JsonConverter(typeof(MarginFundingTypeConverter))]
         public MarginFundingType MarginFundingType { get; set; }
 
         [BitfinexProperty(6)]
-        public double ProfitLoss { get; set; }
+        public decimal ProfitLoss { get; set; }
 
         [BitfinexProperty(7)]
-        public double ProfitLossPercentage { get; set; }
+        public decimal ProfitLossPercentage { get; set; }
 
         [BitfinexProperty(8)]
-        public double LiquidationPrice { get; set; }
+        public decimal LiquidationPrice { get; set; }
 
         [BitfinexProperty(9)]
-        public double Leverage { get; set; }
+        public decimal Leverage { get; set; }
     }
 }

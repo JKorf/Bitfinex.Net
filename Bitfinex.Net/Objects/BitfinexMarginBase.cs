@@ -17,15 +17,15 @@ namespace Bitfinex.Net.Objects
     public class BitfinexMarginBaseInfo
     {
         [BitfinexProperty(0)]
-        public double UserProfitLoss { get; set; }
+        public decimal UserProfitLoss { get; set; }
 
         [BitfinexProperty(1)]
-        public double UserSwapsAmount { get; set; }
+        public decimal UserSwapsAmount { get; set; }
 
         [BitfinexProperty(2)]
-        public double MarginBalance { get; set; }
+        public decimal MarginBalance { get; set; }
 
         [BitfinexProperty(3)]
-        public double MarginNet { get; set; }
+        public decimal MarginNet { get; set; }
     }
 }

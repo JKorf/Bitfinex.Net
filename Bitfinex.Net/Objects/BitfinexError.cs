@@ -16,5 +16,7 @@ namespace Bitfinex.Net.Objects
             ErrorCode = errorCode;
             ErrorMessage = errorMessage;
         }
+
+        public BitfinexError() { }
     }
 }

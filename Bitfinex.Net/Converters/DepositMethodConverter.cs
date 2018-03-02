@@ -1,26 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Bitfinex.Net.Objects;
-using Newtonsoft.Json;
+using CryptoExchange.Net;
 
 namespace Bitfinex.Net.Converters
 {
-    public class DepositMethodConverter: JsonConverter
+    public class DepositMethodConverter: BaseConverter<DepositMethod>
     {
-        private readonly bool quotes;
+        public DepositMethodConverter(): this(true) { }
+        public DepositMethodConverter(bool quotes) : base(quotes) { }
 
-        public DepositMethodConverter()
-        {
-            quotes = true;
-        }
-
-        public DepositMethodConverter(bool useQuotes = true)
-        {
-            quotes = useQuotes;
-        }
-
-        private readonly Dictionary<DepositMethod, string> values = new Dictionary<DepositMethod, string>()
+        protected override Dictionary<DepositMethod, string> Mapping => new Dictionary<DepositMethod, string>()
         {
             { DepositMethod.Bitcoin, "bitcoin" },
             { DepositMethod.Litecoin, "litecoin" },
@@ -30,25 +19,7 @@ namespace Bitfinex.Net.Converters
             { DepositMethod.ZCash, "zcash" },
             { DepositMethod.Monero, "monero" },
             { DepositMethod.Iota, "iota" },
-            { DepositMethod.BCash, "bcash" },
+            { DepositMethod.BCash, "bcash" }
         };
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            if (quotes)
-                writer.WriteValue(values[(DepositMethod)value]);
-            else
-                writer.WriteRawValue(values[(DepositMethod)value]);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            return values.Single(v => v.Value == reader.Value.ToString()).Key;
-        }
-
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(DepositMethod);
-        }
     }
 }

@@ -1,47 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Bitfinex.Net.Objects;
-using Newtonsoft.Json;
+using CryptoExchange.Net;
 
 namespace Bitfinex.Net.Converters
 {
-    public class StatSectionConverter: JsonConverter
+    public class StatSectionConverter: BaseConverter<StatSection>
     {
-        private readonly bool quotes;
+        public StatSectionConverter(): this(true) { }
+        public StatSectionConverter(bool quotes) : base(quotes) { }
 
-        public StatSectionConverter()
-        {
-            quotes = true;
-        }
-
-        public StatSectionConverter(bool useQuotes = true)
-        {
-            quotes = useQuotes;
-        }
-
-        private readonly Dictionary<StatSection, string> values = new Dictionary<StatSection, string>()
+        protected override Dictionary<StatSection, string> Mapping => new Dictionary<StatSection, string>()
         {
             { StatSection.History, "hist" },
             { StatSection.Last, "last" }
         };
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            if (quotes)
-                writer.WriteValue(values[(StatSection)value]);
-            else
-                writer.WriteRawValue(values[(StatSection)value]);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            return values.Single(v => v.Value == reader.Value.ToString()).Key;
-        }
-
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(StatSection);
-        }
     }
 }

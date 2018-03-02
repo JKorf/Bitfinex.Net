@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Bitfinex.Net.Converters;
+using Newtonsoft.Json;
 
-namespace Bitfinex.Net.Converters
+namespace Bitfinex.Net.Objects
 {
     [JsonConverter(typeof(BitfinexResultConverter))]
     public class BitfinexMarginSymbol
@@ -19,15 +20,15 @@ namespace Bitfinex.Net.Converters
     public class BitfinexMarginSymbolInfo
     {
         [BitfinexProperty(0)]
-        public double TradeableBalance { get; set; }
+        public decimal TradeableBalance { get; set; }
 
         [BitfinexProperty(1)]
-        public double GrossBalance { get; set; }
+        public decimal GrossBalance { get; set; }
 
         [BitfinexProperty(2)]
-        public double Buy { get; set; }
+        public decimal Buy { get; set; }
 
         [BitfinexProperty(3)]
-        public double Sell { get; set; }
+        public decimal Sell { get; set; }
     }
 }

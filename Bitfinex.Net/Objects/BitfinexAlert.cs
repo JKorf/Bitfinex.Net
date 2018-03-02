@@ -16,10 +16,10 @@ namespace Bitfinex.Net.Objects
         public string Symbol { get; set; }
 
         [BitfinexProperty(3)]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
 
         [BitfinexProperty(4)]
         // TODO what is this value?
-        public double T { get; set; }
+        public decimal T { get; set; }
     }
 }

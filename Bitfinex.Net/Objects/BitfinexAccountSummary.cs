@@ -12,9 +12,9 @@ namespace Bitfinex.Net.Objects
         [JsonProperty("funding_profit_30d")]
         public BitfinexFundingProfit[] FundingProfit30Days { get; set; }
         [JsonProperty("maker_fee")]
-        public double MakerFee { get; set; }
+        public decimal MakerFee { get; set; }
         [JsonProperty("taker_fee")]
-        public double TakerFee { get; set; }
+        public decimal TakerFee { get; set; }
     }
 
     public class BitfinexTradeVolume
@@ -22,7 +22,7 @@ namespace Bitfinex.Net.Objects
         [JsonProperty("curr")]
         public string Currency { get; set; }
         [JsonProperty("vol")]
-        public double Volume { get; set; }
+        public decimal Volume { get; set; }
     }
 
     public class BitfinexFundingProfit
@@ -30,6 +30,6 @@ namespace Bitfinex.Net.Objects
         [JsonProperty("curr")]
         public string Currency { get; set; }
         [JsonProperty("amount")]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
     }
 }

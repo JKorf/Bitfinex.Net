@@ -17,6 +17,9 @@ namespace Bitfinex.Net.Objects.SocketObjects2
         public void Handle(JArray obj)
         {
             var data = obj[2];
+            if (!data.HasValues)
+                return;
+            
             if (data[0] is JArray)
             {
                 var typed = data.ToObject(EventType.MakeArrayType());

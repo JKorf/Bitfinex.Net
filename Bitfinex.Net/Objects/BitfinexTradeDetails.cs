@@ -20,22 +20,22 @@ namespace Bitfinex.Net.Objects
         public long OrderId { get; set; }
 
         [BitfinexProperty(4)]
-        public double ExecutedAmount { get; set; }
+        public decimal ExecutedAmount { get; set; }
 
         [BitfinexProperty(5)]
-        public double ExecutedPrice { get; set; }
+        public decimal ExecutedPrice { get; set; }
 
         [BitfinexProperty(6), JsonConverter(typeof(OrderTypeConverter))]
         public OrderType OrderType { get; set; }
 
         [BitfinexProperty(7)]
-        public double OrderPrice { get; set; }
+        public decimal OrderPrice { get; set; }
 
         [BitfinexProperty(8)]
         public bool Maker { get; set; }
 
         [BitfinexProperty(9)]
-        public double Fee { get; set; }
+        public decimal Fee { get; set; }
 
         [BitfinexProperty(10)]
         public string FeeCurrency { get; set; }
