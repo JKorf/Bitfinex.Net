@@ -190,7 +190,7 @@ namespace Bitfinex.Net
                                 log.Write(LogVerbosity.Debug, "Couldn't find sub request for response");
                                 continue;
                             }
-                            // Do something with channelid
+
                             pending.ChannelId = subResponse.ChannelId;
                             pending.ConfirmedEvent.Set();
                         }
