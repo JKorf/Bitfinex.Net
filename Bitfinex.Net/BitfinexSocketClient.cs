@@ -5,12 +5,12 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Bitfinex.Net.Converters;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects;
 using Bitfinex.Net.Objects.SocketObjects2;
 using Bitfinex.Net.Objects.SocketObjets;
 using CryptoExchange.Net;
+using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -79,6 +79,25 @@ namespace Bitfinex.Net
             }
 
             Configure(options);
+        }
+
+        /// <summary>
+        /// Sets the default options to use for new clients
+        /// </summary>
+        /// <param name="options">The options to use for new clients</param>
+        public static void SetDefaultOptions(BitfinexSocketClientOptions options)
+        {
+            defaultOptions = options;
+        }
+
+        /// <summary>
+        /// Set the API key and secret
+        /// </summary>
+        /// <param name="apiKey">The api key</param>
+        /// <param name="apiSecret">The api secret</param>
+        public void SetApiCredentials(string apiKey, string apiSecret)
+        {
+            SetAuthenticationProvider(new BitfinexAuthenticationProvider(new ApiCredentials(apiKey, apiSecret)));
         }
 
         public void Start()
@@ -283,7 +302,7 @@ namespace Bitfinex.Net
             if (response.Status == "OK")
             {
                 authenticated = true;
-                log.Write(LogVerbosity.Debug, "Authenticated");
+                log.Write(LogVerbosity.Info, "Authentication successful");
             }
             else
             {
@@ -294,6 +313,7 @@ namespace Bitfinex.Net
 
         public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, int? groupId = null, int? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOCOStop = null, OrderFlags? flags = null)
         {
+            log.Write(LogVerbosity.Info, "Going to place order");
             var order = new BitfinexNewOrder()
             {
                 Amount = amount,
@@ -324,11 +344,15 @@ namespace Bitfinex.Net
             Send(data);
             var done = evnt.WaitOne(20000);
             pendingOrders.Remove(order);
+            if(done)
+                log.Write(LogVerbosity.Info, "Order placed");
+
             return new CallResult<BitfinexOrder>(confirmedOrder, done ? null: new ServerError("No confirmation received for placed order"));
         }
 
         public CallResult<bool> CancelOrder(long orderId)
         {
+            log.Write(LogVerbosity.Info, "Going to cancel order");
             var obj = new JObject {["id"] = orderId};
             var wrapper = new JArray(0, "oc", null, obj);
             var data = JsonConvert.SerializeObject(wrapper);
@@ -343,62 +367,101 @@ namespace Bitfinex.Net
             Send(data);
             var done = evnt.WaitOne(20000);
             pendingCancels.Remove(orderId);
+            if (done)
+                log.Write(LogVerbosity.Info, "Order canceled");
+
             return new CallResult<bool>(confirmed, done ? null : new ServerError("No confirmation received for canceling order"));
+        }
+
+        public CallResult<bool> CancelOrders(params long[] orderIds)
+        {
+            log.Write(LogVerbosity.Info, $"Going to cancel {orderIds.Length} order");
+
+            var obj = new JObject { ["id"] = new JArray(orderIds) };
+            var wrapper = new JArray(0, "oc_multi", null, obj);
+            var data = JsonConvert.SerializeObject(wrapper);
+
+            // What do we get as response? 1 confirm or for each order?
+            //var evnt = new ManualResetEvent(false);
+            //bool confirmed = false;
+            //pendingCancels.Add(orderId, receivedOrder =>
+            //{
+            //    confirmed = true;
+            //    evnt.Set();
+            //});
+            //Send(data);
+            //var done = evnt.WaitOne(20000);
+            //pendingCancels.Remove(orderId);
+            //if (done)
+            //    log.Write(LogVerbosity.Info, "Order canceled");
+
+            //return new CallResult<bool>(confirmed, done ? null : new ServerError("No confirmation received for canceling order"));
         }
 
         #region subscribing
         public void SubscribeToWalletUpdates(Action<BitfinexWallet[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to wallet updates");
             registrations.Add(new WalletUpdateRegistration(handler));
         }
 
         public void SubscribeToOrderUpdates(Action<BitfinexOrder[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to order updates");
             registrations.Add(new OrderUpdateRegistration(handler));
         }
 
         public void SubscribeToPositionUpdates(Action<BitfinexPosition[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to position updates");
             registrations.Add(new PositionUpdateRegistration(handler));
         }
 
         public void SubscribeToTradeUpdates(Action<BitfinexTradeDetails[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to trade updates");
             registrations.Add(new TradesUpdateRegistration(handler));
         }
 
         public void SubscribeToFundingOfferUpdates(Action<BitfinexFundingOffer[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to funding offer updates");
             registrations.Add(new FundingOffersUpdateRegistration(handler));
         }
 
         public void SubscribeToFundingCreditsUpdates(Action<BitfinexFundingCredit[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to funding credit updates");
             registrations.Add(new FundingCreditsUpdateRegistration(handler));
         }
 
         public void SubscribeToFundingLoansUpdates(Action<BitfinexFundingLoan[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to funding loan updates");
             registrations.Add(new FundingLoansUpdateRegistration(handler));
         }
 
         public async Task SubscribeToTicker(string symbol, Action<BitfinexMarketOverview[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to ticker updates for "+ symbol);
             await SubscribeAndWait(new TickerSubscriptionRequest(symbol, handler));
         }
 
         public async Task SubscribeToTrades(string symbol, Action<BitfinexTradeSimple[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to trade updates for "+ symbol);
             await SubscribeAndWait(new TradesSubscriptionRequest(symbol, handler));
         }
 
         public async Task SubscribeToBook(string symbol, string precision, string frequency, int limit, Action<BitfinexOrderBookEntry[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to book updates for "+ symbol);
             await SubscribeAndWait(new BookSubscriptionRequest(symbol, precision, frequency, limit, handler));
         }
 
         public async Task SubscribeToCandles(string symbol, string interval, Action<BitfinexCandle[]> handler)
         {
+            log.Write(LogVerbosity.Debug, "Subscribing to candle updates for "+ symbol);
             await SubscribeAndWait(new CandleSubscriptionRequest(symbol, interval, handler));
         }
         #endregion

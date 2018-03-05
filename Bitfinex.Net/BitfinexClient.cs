@@ -9,15 +9,14 @@ using System.Threading.Tasks;
 using Bitfinex.Net.Converters;
 using Bitfinex.Net.Objects;
 using CryptoExchange.Net;
+using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
-using CryptoExchange.Net.Logging;
-using CryptoExchange.Net.Requests;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Bitfinex.Net
 {
-    public partial class BitfinexClient : ExchangeClient
+    public class BitfinexClient : ExchangeClient
     {
         #region fields
 
@@ -84,6 +83,25 @@ namespace Bitfinex.Net
         #endregion
 
         #region methods
+        /// <summary>
+        /// Sets the default options to use for new clients
+        /// </summary>
+        /// <param name="options">The options to use for new clients</param>
+        public static void SetDefaultOptions(BitfinexClientOptions options)
+        {
+            defaultOptions = options;
+        }
+
+        /// <summary>
+        /// Set the API key and secret
+        /// </summary>
+        /// <param name="apiKey">The api key</param>
+        /// <param name="apiSecret">The api secret</param>
+        public void SetApiCredentials(string apiKey, string apiSecret)
+        {
+            SetAuthenticationProvider(new BitfinexAuthenticationProvider(new ApiCredentials(apiKey, apiSecret)));
+        }
+
         public CallResult<BitfinexPlatformStatus> GetPlatformStatus() => GetPlatformStatusAsync().Result;
         public async Task<CallResult<BitfinexPlatformStatus>> GetPlatformStatusAsync()
         {
@@ -358,7 +376,6 @@ namespace Bitfinex.Net
         }
         
 
-
         protected override IRequest ConstructRequest(Uri uri, string method, Dictionary<string, object> parameters, bool signed)
         {
             var uriString = uri.ToString();
@@ -390,7 +407,7 @@ namespace Bitfinex.Net
                 request.Headers.Add($"bfx-apikey: {authProvider.Credentials.Key}");
                 request.Headers.Add($"bfx-signature: {signedData.ToLower()}");
 
-                using (var stream = request.GetRequestStream())
+                using (var stream = request.GetRequestStream().Result)
                     stream.Write(data, 0, data.Length);
             }
 
