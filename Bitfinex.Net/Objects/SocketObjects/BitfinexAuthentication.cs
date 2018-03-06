@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Bitfinex.Net.Objects.SocketObjets
+namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class BitfinexAuthentication
     {

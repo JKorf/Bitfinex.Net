@@ -1,17 +1,19 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 
-namespace Bitfinex.Net.Objects.SocketObjects2
+namespace Bitfinex.Net.Objects.SocketObjects
 {
     public abstract class SubscriptionRegistration
     {
         public string[] UpdateKeys { get; set; }
         public Type EventType { get; set; }
+        public int StreamId { get; set; }
 
-        public SubscriptionRegistration(Type eventType, params string[] updateKeys)
+        public SubscriptionRegistration(Type eventType, int streamId, params string[] updateKeys)
         {
             EventType = eventType;
             UpdateKeys = updateKeys;
+            StreamId = streamId;
         }
 
         public void Handle(JArray obj)

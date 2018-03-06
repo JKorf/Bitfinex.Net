@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Bitfinex.Net.Objects.SocketObjects2
+namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class WalletUpdateRegistration: SubscriptionRegistration
     {
         private Action<BitfinexWallet[]> handler;
+        public int StreamId { get; set; }
 
-        public WalletUpdateRegistration(Action<BitfinexWallet[]> handler) : base(typeof(BitfinexWallet), "ws", "wu")
+        public WalletUpdateRegistration(Action<BitfinexWallet[]> handler, int streamId) : base(typeof(BitfinexWallet), streamId, "ws", "wu")
         {
             this.handler = handler;
         }

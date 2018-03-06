@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Bitfinex.Net.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Bitfinex.Net.Objects.SocketObjects2
+namespace Bitfinex.Net.Objects.SocketObjects
 {
     public abstract class SubscriptionRequest
     {

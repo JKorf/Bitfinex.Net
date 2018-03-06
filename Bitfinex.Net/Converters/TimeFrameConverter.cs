@@ -20,8 +20,8 @@ namespace Bitfinex.Net.Converters
             { TimeFrame.SixHour, "6h" },
             { TimeFrame.TwelfHour, "12h" },
             { TimeFrame.OneDay, "1D" },
-            { TimeFrame.SevenDay, "1D" },
-            { TimeFrame.FourteenDay, "1D" },
+            { TimeFrame.SevenDay, "7D" },
+            { TimeFrame.FourteenDay, "14D" },
             { TimeFrame.OneMonth, "1M" },
         };
     }

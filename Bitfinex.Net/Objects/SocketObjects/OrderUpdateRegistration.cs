@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Bitfinex.Net.Objects.SocketObjects2
+namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class OrderUpdateRegistration: SubscriptionRegistration
     {
         private Action<BitfinexOrder[]> handler;
 
-        public OrderUpdateRegistration(Action<BitfinexOrder[]> handler) : base(typeof(BitfinexOrder), "os", "ou", "on", "oc")
+        public OrderUpdateRegistration(Action<BitfinexOrder[]> handler, int streamId) : base(typeof(BitfinexOrder), streamId, "os", "ou", "on", "oc")
         {
             this.handler = handler;
         }

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Bitfinex.Net.Objects.SocketObjects2
+namespace Bitfinex.Net.Objects.SocketObjects
 {
     [SubscriptionChannel("candles", typeof(BitfinexCandle), false)]
     public class CandleSubscriptionRequest : SubscriptionRequest

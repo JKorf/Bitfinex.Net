@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Bitfinex.Net.Objects.SocketObjects2
+namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class PositionUpdateRegistration : SubscriptionRegistration
     {
         private Action<BitfinexPosition[]> handler;
 
-        public PositionUpdateRegistration(Action<BitfinexPosition[]> handler) : base(typeof(BitfinexPosition), "ps", "pn", "pu", "pc")
+        public PositionUpdateRegistration(Action<BitfinexPosition[]> handler, int streamId) : base(typeof(BitfinexPosition), streamId, "ps", "pn", "pu", "pc")
         {
             this.handler = handler;
         }

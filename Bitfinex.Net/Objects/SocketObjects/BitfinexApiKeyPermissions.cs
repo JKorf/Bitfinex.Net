@@ -1,4 +1,4 @@
-﻿namespace Bitfinex.Net.Objects
+﻿namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class BitfinexApiKeyPermissions
     {

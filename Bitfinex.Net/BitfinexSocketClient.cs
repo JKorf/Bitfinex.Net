@@ -5,10 +5,9 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Bitfinex.Net.Converters;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects;
-using Bitfinex.Net.Objects.SocketObjects2;
-using Bitfinex.Net.Objects.SocketObjets;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Logging;
@@ -19,32 +18,63 @@ using WebSocket4Net;
 
 namespace Bitfinex.Net
 {
-    public partial class BitfinexSocketClient: ExchangeClient
+    public class BitfinexSocketClient: ExchangeClient
     {
         private static BitfinexSocketClientOptions defaultOptions = new BitfinexSocketClientOptions();
 
-        private const string BaseAddress = "wss://api.bitfinex.com/ws/2";
-        private static WebSocket socket;
+        private string baseAddress;
+        private WebSocket socket;
 
-        private static AutoResetEvent messageEvent;
-        private static AutoResetEvent sendEvent;
-        private static ConcurrentQueue<string> receivedMessages;
-        private static ConcurrentQueue<string> toSendMessages;
+        private AutoResetEvent messageEvent;
+        private AutoResetEvent sendEvent;
+        private ConcurrentQueue<string> receivedMessages;
+        private ConcurrentQueue<string> toSendMessages;
 
-        private static Dictionary<string, Type> subscriptionResponseTypes;
+        private Dictionary<string, Type> subscriptionResponseTypes;
 
-        private static Dictionary<BitfinexNewOrder, Action<BitfinexOrder>> pendingOrders;
-        private static Dictionary<long, Action<BitfinexOrder>> pendingCancels;
+        private Dictionary<BitfinexNewOrder, WaitAction<BitfinexOrder>> pendingOrders;
+        private Dictionary<long, WaitAction> pendingCancels;
 
-        private static List<SubscriptionRequest> outstandingRequests;
-        private static List<SubscriptionRequest> confirmedRequests;
+        private List<SubscriptionRequest> outstandingSubscriptionRequests;
+        private List<SubscriptionRequest> confirmedRequests;
+        private List<UnsubscriptionRequest> outstandingUnsubscriptionRequests;
+        private List<SubscriptionRegistration> registrations;
 
-        private static bool running;
-        private static object subscriptionLock;
-        private string nonce => Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 10).ToString(CultureInfo.InvariantCulture);
-        private bool authenticated;
-        private List<SubscriptionRegistration> registrations = new List<SubscriptionRegistration>();
+        private bool running;
+        private readonly object connectionLock = new object();
+        private static readonly object streamIdLock = new object();
+        private static readonly object nonceLock = new object();
+        private static int lastStreamId;
+        private static long lastNonce;
         
+        private bool authenticated;
+
+        private static string Nonce
+        {
+            get
+            {
+                lock (nonceLock)
+                {
+                    if (lastNonce == 0)
+                        lastNonce = (long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 10);
+
+                    lastNonce += 1;
+                    return lastNonce.ToString(CultureInfo.InvariantCulture);
+                }
+            }
+        }
+
+        private static int NextStreamId
+        {
+            get
+            {
+                lock (streamIdLock)
+                {
+                    lastStreamId -= 1;
+                    return lastStreamId;
+                }
+            }
+        }
 
         /// <summary>
         /// Create a new instance of BinanceClient using the default options
@@ -59,25 +89,7 @@ namespace Bitfinex.Net
         /// <param name="options">The options to use for this client</param>
         public BitfinexSocketClient(BitfinexSocketClientOptions options): base(options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
         {
-            receivedMessages = new ConcurrentQueue<string>();
-            toSendMessages = new ConcurrentQueue<string>();
-            messageEvent = new AutoResetEvent(true);
-            sendEvent = new AutoResetEvent(true);
-            outstandingRequests = new List<SubscriptionRequest>();
-            confirmedRequests = new List<SubscriptionRequest>();
-            pendingOrders = new Dictionary<BitfinexNewOrder, Action<BitfinexOrder>>();
-            pendingCancels = new Dictionary<long, Action<BitfinexOrder>>();
-
-            subscriptionResponseTypes = new Dictionary<string, Type>();
-            foreach (Type t in typeof(SubscriptionResponse).Assembly.GetTypes())
-            {
-                if (typeof(SubscriptionResponse).IsAssignableFrom(t) && t.Name != typeof(SubscriptionResponse).Name)
-                {
-                    var attribute = (SubscriptionChannelAttribute)t.GetCustomAttributes(typeof(SubscriptionChannelAttribute), true)[0];
-                    subscriptionResponseTypes.Add(attribute.ChannelName, t);
-                }
-            }
-
+            Init();
             Configure(options);
         }
 
@@ -100,32 +112,383 @@ namespace Bitfinex.Net
             SetAuthenticationProvider(new BitfinexAuthenticationProvider(new ApiCredentials(apiKey, apiSecret)));
         }
 
-        public void Start()
+        /// <summary>
+        /// Connect to the websocket and start processing data
+        /// </summary>
+        /// <returns></returns>
+        public bool Start()
         {
-            socket = new WebSocket(BaseAddress);
+            lock (connectionLock)
+            {
+                if (CheckConnection())
+                    return true;
+
+                log.Write(LogVerbosity.Info, "Starting the socket");
+                if (socket == null)
+                    Create();
+
+                return Open().Result;
+            }
+        }
+
+        /// <summary>
+        /// Disconnect from the socket and clear all subscriptions
+        /// </summary>
+        public void Stop()
+        {
+            lock (connectionLock)
+            {
+                log.Write(LogVerbosity.Info, "Stopping the socket");
+                socket.Close();
+            }
+
+            running = false;
+            messageEvent.Set();
+            sendEvent.Set();
+
+            Init();
+        }
+
+        /// <summary>
+        /// Places a new order
+        /// </summary>
+        /// <param name="type">The type of the order</param>
+        /// <param name="symbol">The symbol the order is for</param>
+        /// <param name="amount">The amount of the order, positive for buying, negative for selling</param>
+        /// <param name="groupId">Group id to assign to the order</param>
+        /// <param name="clientOrderId">Client order id to assign to the order</param>
+        /// <param name="price">Price of the order</param>
+        /// <param name="priceTrailing">Trailing price of the order</param>
+        /// <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
+        /// <param name="priceOcoStop">Oco stop price of ther order</param>
+        /// <param name="flags">Additional flags</param>
+        /// <returns></returns>
+        public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, int? groupId = null, int? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null)
+        {
+            if (!CheckConnection())
+                return new CallResult<BitfinexOrder>(null, new WebError("Socket needs to be started before placing an order"));
+
+            if (!authenticated)
+                return new CallResult<BitfinexOrder>(null, new NoApiCredentialsError());
+            
+            log.Write(LogVerbosity.Info, "Going to place order");
+            var order = new BitfinexNewOrder()
+            {
+                Amount = amount,
+                OrderType = type,
+                Symbol = symbol,
+                Price = price,
+                ClientOrderId = clientOrderId,
+                Flags = flags,
+                GroupId = groupId,
+                PriceAuxiliaryLimit = priceAuxiliaryLimit,
+                PriceOCOStop = priceOcoStop,
+                PriceTrailing = priceTrailing
+            };
+
+            var wrapper = new object[] { 0, "on", null, order };
+            var data = JsonConvert.SerializeObject(wrapper, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Culture = CultureInfo.InvariantCulture
+            });
+            var waitAction = new WaitAction<BitfinexOrder>();
+            pendingOrders.Add(order, waitAction);
+            Send(data);
+            var orderConfirm = waitAction.Wait(20000);
+            pendingOrders.Remove(order);
+            if (orderConfirm != null)
+                log.Write(LogVerbosity.Info, "Order canceled");
+            
+            return new CallResult<BitfinexOrder>(orderConfirm, orderConfirm != null ? null : new ServerError("No confirmation received for placed order"));
+        }
+
+        /// <summary>
+        /// Cancels an order
+        /// </summary>
+        /// <param name="orderId">The id of the order to cancel</param>
+        /// <returns></returns>
+        public CallResult<bool> CancelOrder(long orderId)
+        {
+            if (!CheckConnection())
+                return new CallResult<bool>(false, new WebError("Socket needs to be started before canceling an order"));
+
+            if (!authenticated)
+                return new CallResult<bool>(false, new NoApiCredentialsError());
+
+            log.Write(LogVerbosity.Info, "Going to cancel order " + orderId);
+            var obj = new JObject {["id"] = orderId};
+            var wrapper = new JArray(0, "oc", null, obj);
+            var data = JsonConvert.SerializeObject(wrapper);
+            
+            var waitAction = new WaitAction();
+            pendingCancels.Add(orderId, waitAction);
+            Send(data);
+            var done = waitAction.Wait(20000);
+            pendingCancels.Remove(orderId);
+            if (done)
+                log.Write(LogVerbosity.Info, "Order canceled");
+            
+            return new CallResult<bool>(done, done ? null : new ServerError("No confirmation received for canceling order"));
+        }
+
+        #region subscribing
+        /// <summary>
+        /// Subscribes to wallet updates. A snapshot will be send when opening the socket so consider subscribing to this before opening the socket.
+        /// </summary>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public CallResult<int> SubscribeToWalletUpdates(Action<BitfinexWallet[]> handler)
+        {
+            if (authProvider == null)
+                return new CallResult<int>(0, new NoApiCredentialsError());
+
+            log.Write(LogVerbosity.Debug, "Subscribing to wallet updates");
+            var id = NextStreamId;
+            registrations.Add(new WalletUpdateRegistration(handler, id));
+            return new CallResult<int>(id, null);
+        }
+
+        /// <summary>
+        /// Subscribes to order updates. A snapshot will be send when opening the socket so consider subscribing to this before opening the socket.
+        /// </summary>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public CallResult<int> SubscribeToOrderUpdates(Action<BitfinexOrder[]> handler)
+        {
+            if (authProvider == null)
+                return new CallResult<int>(0, new NoApiCredentialsError());
+
+            log.Write(LogVerbosity.Debug, "Subscribing to order updates");
+            var id = NextStreamId;
+            registrations.Add(new OrderUpdateRegistration(handler, id));
+            return new CallResult<int>(id, null);
+        }
+
+        /// <summary>
+        /// Subscribes to position updates. A snapshot will be send when opening the socket so consider subscribing to this before opening the socket.
+        /// </summary>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public CallResult<int> SubscribeToPositionUpdates(Action<BitfinexPosition[]> handler)
+        {
+            if (authProvider == null)
+                return new CallResult<int>(0, new NoApiCredentialsError());
+
+            log.Write(LogVerbosity.Debug, "Subscribing to position updates");
+            var id = NextStreamId;
+            registrations.Add(new PositionUpdateRegistration(handler, id));
+            return new CallResult<int>(id, null);
+        }
+
+        /// <summary>
+        /// Subscribes to trade updates. A snapshot will be send when opening the socket so consider subscribing to this before opening the socket.
+        /// </summary>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public CallResult<int> SubscribeToTradeUpdates(Action<BitfinexTradeDetails[]> handler)
+        {
+            if (authProvider == null)
+                return new CallResult<int>(0, new NoApiCredentialsError());
+
+            log.Write(LogVerbosity.Debug, "Subscribing to trade updates");
+            var id = NextStreamId;
+            registrations.Add(new TradesUpdateRegistration(handler, id));
+            return new CallResult<int>(id, null);
+        }
+
+        /// <summary>
+        /// Subscribes to funding offer updates. A snapshot will be send when opening the socket so consider subscribing to this before opening the socket.
+        /// </summary>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public CallResult<int> SubscribeToFundingOfferUpdates(Action<BitfinexFundingOffer[]> handler)
+        {
+            if (authProvider == null)
+                return new CallResult<int>(0, new NoApiCredentialsError());
+
+            log.Write(LogVerbosity.Debug, "Subscribing to funding offer updates");
+            var id = NextStreamId;
+            registrations.Add(new FundingOffersUpdateRegistration(handler, id));
+            return new CallResult<int>(id, null);
+        }
+
+        /// <summary>
+        /// Subscribes to funding credits updates. A snapshot will be send when opening the socket so consider subscribing to this before opening the socket.
+        /// </summary>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public CallResult<int> SubscribeToFundingCreditsUpdates(Action<BitfinexFundingCredit[]> handler)
+        {
+            if (authProvider == null)
+                return new CallResult<int>(0, new NoApiCredentialsError());
+
+            log.Write(LogVerbosity.Debug, "Subscribing to funding credit updates");
+            var id = NextStreamId;
+            registrations.Add(new FundingCreditsUpdateRegistration(handler, id));
+            return new CallResult<int>(id, null);
+        }
+
+        /// <summary>
+        /// Subscribes to funding loans updates. A snapshot will be send when opening the socket so consider subscribing to this before opening the socket.
+        /// </summary>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public CallResult<int> SubscribeToFundingLoansUpdates(Action<BitfinexFundingLoan[]> handler)
+        {
+            if (authProvider == null)
+                return new CallResult<int>(0, new NoApiCredentialsError());
+
+            log.Write(LogVerbosity.Debug, "Subscribing to funding loan updates");
+            var id = NextStreamId;
+            registrations.Add(new FundingLoansUpdateRegistration(handler, id));
+            return new CallResult<int>(id, null);
+        }
+
+        /// <summary>
+        /// Subscribes to ticker updates for a symbol. Requires socket to be connected
+        /// </summary>
+        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public async Task<CallResult<int>> SubscribeToTicker(string symbol, Action<BitfinexMarketOverview[]> handler)
+        {
+            log.Write(LogVerbosity.Debug, "Subscribing to ticker updates for "+ symbol);
+            return await SubscribeAndWait(new TickerSubscriptionRequest(symbol, handler));
+        }
+
+        /// <summary>
+        /// Subscribes to trade updates for a symbol. Requires socket to be connected
+        /// </summary>
+        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public async Task<CallResult<int>> SubscribeToTrades(string symbol, Action<BitfinexTradeSimple[]> handler)
+        {
+            log.Write(LogVerbosity.Debug, "Subscribing to trade updates for "+ symbol);
+            return await SubscribeAndWait(new TradesSubscriptionRequest(symbol, handler));
+        }
+
+        /// <summary>
+        /// Subscribes to orderbook update for a symbol. Requires socket to be connected
+        /// </summary>
+        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="precision">The pricision of the udpates</param>
+        /// <param name="frequency">The frequency of updates</param>
+        /// <param name="length">The amount of data to recive in updates</param>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public async Task<CallResult<int>> SubscribeToBook(string symbol, Precision precision, Frequency frequency, int length, Action<BitfinexOrderBookEntry[]> handler)
+        {
+            log.Write(LogVerbosity.Debug, "Subscribing to book updates for "+ symbol);
+            return await SubscribeAndWait(new BookSubscriptionRequest(symbol, JsonConvert.SerializeObject(precision, new PrecisionConverter(false)), JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)), length, handler));
+        }
+
+        /// <summary>
+        /// Subscribes to candle updates for a symbol. Requires socket to be connected
+        /// </summary>
+        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="interval">The interval of the candles</param>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public async Task<CallResult<int>> SubscribeToCandles(string symbol, TimeFrame interval, Action<BitfinexCandle[]> handler)
+        {
+            log.Write(LogVerbosity.Debug, "Subscribing to candle updates for "+ symbol);
+            return await SubscribeAndWait(new CandleSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false)), handler));
+        }
+
+        /// <summary>
+        /// Unsubscribe from a specific channel using the id acquired when subscribing
+        /// </summary>
+        /// <param name="channelId">The channel id to unsubscribe from</param>
+        /// <returns></returns>
+        public async Task<CallResult<bool>> UnsubscribeFromChannel(int channelId)
+        {
+            log.Write(LogVerbosity.Debug, "Unsubscribing from channel " + channelId);
+            if (confirmedRequests.Any(r => r.ChannelId == channelId))
+            {
+                var result = await UnsubscribeAndWait(new UnsubscriptionRequest(channelId));
+                if (!result.Success)
+                    return result;
+            }
+            else if (registrations.Any(r => r.StreamId == channelId))
+            {
+                registrations.Remove(registrations.Single(r => r.StreamId == channelId));
+            }
+            else
+            {
+                log.Write(LogVerbosity.Warning, "No subscription found for channel id " + channelId);
+                return new CallResult<bool>(false, new ArgumentError("No subscription found for channel id " + channelId));
+            }
+            
+            return new CallResult<bool>(true, null);
+        }
+        #endregion
+
+        #region private
+        private void Create()
+        {
+            socket = new WebSocket(baseAddress);
             socket.Closed += SocketClosed;
             socket.Error += SocketError;
             socket.Opened += SocketOpened;
             socket.MessageReceived += SocketMessage;
+        }
 
-            socket.Open();
+        private async Task<bool> Open()
+        {
+            bool connectResult = await socket.OpenAsync();
+            if (!connectResult)
+            {
+                log.Write(LogVerbosity.Warning, "Couldn't connect to socket");
+                return false;
+            }
 
             running = true;
+#pragma warning disable 4014
             Task.Run(() => ProcessData());
             Task.Run(() => ProcessSending());
+#pragma warning restore 4014
+            log.Write(LogVerbosity.Info, "Socket connection established");
+            return true;
         }
-        
-        private async Task SubscribeAndWait(SubscriptionRequest request)
+
+        private async Task<CallResult<int>> SubscribeAndWait(SubscriptionRequest request)
         {
-            outstandingRequests.Add(request);
+            if (!CheckConnection())
+                return new CallResult<int>(0, new WebError("Socket needs to be started before subscribing to this"));
+
+            outstandingSubscriptionRequests.Add(request);
             Send(JsonConvert.SerializeObject(request));
+            bool confirmed = false;
             await Task.Run(() =>
             {
-                bool result = request.ConfirmedEvent.WaitOne(2000);
-                outstandingRequests.Remove(request);
+                confirmed = request.ConfirmedEvent.WaitOne(2000);
+                outstandingSubscriptionRequests.Remove(request);
                 confirmedRequests.Add(request);
-                log.Write(LogVerbosity.Debug, !result ? "No confirmation received" : "Subscription confirmed");
+                log.Write(LogVerbosity.Debug, !confirmed ? "No confirmation received" : "Subscription confirmed");
             });
+
+            return new CallResult<int>(confirmed ? request.ChannelId : 0, confirmed ? null : new ServerError("No confirmation received"));
+        }
+
+        private async Task<CallResult<bool>> UnsubscribeAndWait(UnsubscriptionRequest request)
+        {
+            if (!CheckConnection())
+                return new CallResult<bool>(false, new WebError("Can't unsubscribe when not connected"));
+
+            outstandingUnsubscriptionRequests.Add(request);
+            Send(JsonConvert.SerializeObject(request));
+            bool confirmed = false;
+            await Task.Run(() =>
+            {
+                confirmed = request.ConfirmedEvent.WaitOne(2000);
+                outstandingUnsubscriptionRequests.Remove(request);
+                confirmedRequests.RemoveAll(r => r.ChannelId == request.ChannelId);
+                log.Write(LogVerbosity.Debug, !confirmed ? "No confirmation received" : "Subscription confirmed");
+            });
+
+            return new CallResult<bool>(confirmed, confirmed ? null : new ServerError("No confirmation received"));
         }
 
         private void SocketClosed(object sender, EventArgs args)
@@ -140,7 +503,7 @@ namespace Bitfinex.Net
 
         private void SocketOpened(object sender, EventArgs args)
         {
-            log.Write(LogVerbosity.Debug, $"Socket opened");
+            log.Write(LogVerbosity.Debug, "Socket opened");
             Authenticate();
         }
 
@@ -159,7 +522,7 @@ namespace Bitfinex.Net
 
         private void ProcessSending()
         {
-            while (true)
+            while (running)
             {
                 sendEvent.WaitOne();
                 if (!running)
@@ -175,7 +538,7 @@ namespace Bitfinex.Net
 
         private void ProcessData()
         {
-            while (true)
+            while (running)
             {
                 messageEvent.WaitOne();
                 if (!running)
@@ -185,61 +548,72 @@ namespace Bitfinex.Net
                 {
                     log.Write(LogVerbosity.Debug, "Processing " + dequeued);
 
-                    var dataObject = JToken.Parse(dequeued);
-                    if (dataObject is JObject)
+                    try
                     {
-                        var evnt = dataObject["event"].ToString();
-                        if (evnt == "auth")
+                        var dataObject = JToken.Parse(dequeued);
+                        if (dataObject is JObject)
                         {
-                            ProcessAuthenticationResponse(dataObject.ToObject<BitfinexAuthenticationResponse>());
+                            var evnt = dataObject["event"].ToString();
+                            if (evnt == "auth")
+                            {
+                                ProcessAuthenticationResponse(dataObject.ToObject<BitfinexAuthenticationResponse>());
+                            }
+                            else if (evnt == "subscribed")
+                            {
+                                var channel = dataObject["channel"].ToString();
+                                if (!subscriptionResponseTypes.ContainsKey(channel))
+                                {
+                                    log.Write(LogVerbosity.Warning, "Unknown response channel name: " + channel);
+                                    continue;
+                                }
+
+                                SubscriptionResponse subResponse = (SubscriptionResponse)dataObject.ToObject(subscriptionResponseTypes[channel]);
+                                var pending = outstandingSubscriptionRequests.SingleOrDefault(r => r.GetSubscriptionKey() == subResponse.GetSubscriptionKey());
+                                if (pending == null)
+                                {
+                                    log.Write(LogVerbosity.Debug, "Couldn't find sub request for response");
+                                    continue;
+                                }
+
+                                pending.ChannelId = subResponse.ChannelId;
+                                pending.ConfirmedEvent.Set();
+                            }
+                            else if (evnt == "unsubscribed")
+                            {
+                                var pending = outstandingUnsubscriptionRequests.SingleOrDefault(r => r.ChannelId == (int)dataObject["chanId"]);
+                                if (pending == null)
+                                {
+                                    log.Write(LogVerbosity.Debug, "Received unsub confirmation, but no pending unsubscriptions");
+                                    continue;
+                                }
+                                pending.ConfirmedEvent.Set();
+                            }
                         }
-                        else if (evnt == "subscribed")
+                        else
                         {
-                            var channel = dataObject["channel"].ToString();
-                            if (!subscriptionResponseTypes.ContainsKey(channel))
+                            var channelId = (int)dataObject[0];
+                            if (dataObject[1].ToString() == "hb")
+                                continue;
+
+                            var channelReg = confirmedRequests.SingleOrDefault(c => c.ChannelId == channelId);
+                            if (channelReg != null)
                             {
-                                log.Write(LogVerbosity.Warning, "Unknown response channel name: " + channel);
+                                channelReg.Handle((JArray)dataObject);
                                 continue;
                             }
 
-                            SubscriptionResponse subResponse = (SubscriptionResponse)dataObject.ToObject(subscriptionResponseTypes[channel]);
-                            var pending = outstandingRequests.SingleOrDefault(r => r.GetSubscriptionKey() == subResponse.GetSubscriptionKey());
-                            if (pending == null)
-                            {
-                                log.Write(LogVerbosity.Debug, "Couldn't find sub request for response");
-                                continue;
-                            }
-
-                            pending.ChannelId = subResponse.ChannelId;
-                            pending.ConfirmedEvent.Set();
+                            var messageType = dataObject[1].ToString();
+                            HandleRequestResponse(messageType, (JArray)dataObject);
+                            var accountReg = registrations.SingleOrDefault(r => r.UpdateKeys.Contains(messageType));
+                            accountReg?.Handle((JArray)dataObject);
                         }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        var channelId = (int)dataObject[0];
-                        if (dataObject[1].ToString() == "hb")
-                            continue;
-
-                        var channelReg = confirmedRequests.SingleOrDefault(c => c.ChannelId == channelId);
-                        if (channelReg != null)
-                        {
-                            channelReg.Handle((JArray)dataObject);
-                            continue;
-                        }
-
-                        var messageType = dataObject[1].ToString();
-                        HandleRequestResponse(messageType, (JArray)dataObject);
-                        var accountReg = registrations.SingleOrDefault(r => r.UpdateKeys.Contains(messageType));
-                        if (accountReg != null)
-                        {
-                            accountReg.Handle((JArray)dataObject);
-                            continue;
-                        }
+                        log.Write(LogVerbosity.Error, $"Error in processing loop. {e.GetType()}, {e.Message}, {e.StackTrace}, message: {dequeued}");
                     }
                 }
             }
-
-            socket.Close();
         }
 
         private void HandleRequestResponse(string messageType, JArray dataObject)
@@ -252,7 +626,7 @@ namespace Bitfinex.Net
                     var o = pendingOrder.Key;
                     if (o.Symbol == order.Symbol && o.Amount == order.AmountOriginal)
                     {
-                        pendingOrder.Value(order);
+                        pendingOrder.Value.Set(order);
                         break;
                     }
                 }
@@ -265,18 +639,11 @@ namespace Bitfinex.Net
                     var o = pendingCancel.Key;
                     if (o == order.Id)
                     {
-                        pendingCancel.Value(order);
+                        pendingCancel.Value.Set();
                         break;
                     }
                 }
             }
-        }
-
-        public void Stop()
-        {
-            running = false;
-            messageEvent.Set();
-            sendEvent.Set();
         }
 
         private void Authenticate()
@@ -284,7 +651,7 @@ namespace Bitfinex.Net
             if (authProvider == null)
                 return;
 
-            var n = nonce;
+            var n = Nonce;
             var authentication = new BitfinexAuthentication()
             {
                 Event = "auth",
@@ -311,159 +678,54 @@ namespace Bitfinex.Net
             }
         }
 
-        public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, int? groupId = null, int? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOCOStop = null, OrderFlags? flags = null)
+        private void GetSubscriptionResponseTypes()
         {
-            log.Write(LogVerbosity.Info, "Going to place order");
-            var order = new BitfinexNewOrder()
+            subscriptionResponseTypes = new Dictionary<string, Type>();
+            foreach (var t in typeof(SubscriptionResponse).Assembly.GetTypes())
             {
-                Amount = amount,
-                OrderType = type,
-                Symbol = symbol,
-                Price = price,
-                ClientOrderId = clientOrderId,
-                Flags = flags,
-                GroupId = groupId,
-                PriceAuxiliaryLimit = priceAuxiliaryLimit,
-                PriceOCOStop = priceOCOStop,
-                PriceTrailing = priceTrailing
-            };
-
-            var wrapper = new object[] { 0, "on", null, order };
-            var data = JsonConvert.SerializeObject(wrapper, new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                Culture = CultureInfo.InvariantCulture
-            });
-            var evnt = new ManualResetEvent(false);
-            BitfinexOrder confirmedOrder = null;
-            pendingOrders.Add(order, receivedOrder =>
-            {
-                confirmedOrder = receivedOrder;
-                evnt.Set();
-            });
-            Send(data);
-            var done = evnt.WaitOne(20000);
-            pendingOrders.Remove(order);
-            if(done)
-                log.Write(LogVerbosity.Info, "Order placed");
-
-            return new CallResult<BitfinexOrder>(confirmedOrder, done ? null: new ServerError("No confirmation received for placed order"));
+                if (typeof(SubscriptionResponse).IsAssignableFrom(t) && t.Name != typeof(SubscriptionResponse).Name)
+                {
+                    var attribute = (SubscriptionChannelAttribute)t.GetCustomAttributes(typeof(SubscriptionChannelAttribute), true)[0];
+                    subscriptionResponseTypes.Add(attribute.ChannelName, t);
+                }
+            }
         }
 
-        public CallResult<bool> CancelOrder(long orderId)
+        private void Configure(BitfinexSocketClientOptions options)
         {
-            log.Write(LogVerbosity.Info, "Going to cancel order");
-            var obj = new JObject {["id"] = orderId};
-            var wrapper = new JArray(0, "oc", null, obj);
-            var data = JsonConvert.SerializeObject(wrapper);
+            base.Configure(options);
 
-            var evnt = new ManualResetEvent(false);
-            bool confirmed = false;
-            pendingCancels.Add(orderId, receivedOrder =>
-            {
-                confirmed = true;
-                evnt.Set();
-            });
-            Send(data);
-            var done = evnt.WaitOne(20000);
-            pendingCancels.Remove(orderId);
-            if (done)
-                log.Write(LogVerbosity.Info, "Order canceled");
-
-            return new CallResult<bool>(confirmed, done ? null : new ServerError("No confirmation received for canceling order"));
+            baseAddress = options.BaseAddress;
         }
 
-        public CallResult<bool> CancelOrders(params long[] orderIds)
+        private bool CheckConnection()
         {
-            log.Write(LogVerbosity.Info, $"Going to cancel {orderIds.Length} order");
-
-            var obj = new JObject { ["id"] = new JArray(orderIds) };
-            var wrapper = new JArray(0, "oc_multi", null, obj);
-            var data = JsonConvert.SerializeObject(wrapper);
-
-            // What do we get as response? 1 confirm or for each order?
-            //var evnt = new ManualResetEvent(false);
-            //bool confirmed = false;
-            //pendingCancels.Add(orderId, receivedOrder =>
-            //{
-            //    confirmed = true;
-            //    evnt.Set();
-            //});
-            //Send(data);
-            //var done = evnt.WaitOne(20000);
-            //pendingCancels.Remove(orderId);
-            //if (done)
-            //    log.Write(LogVerbosity.Info, "Order canceled");
-
-            //return new CallResult<bool>(confirmed, done ? null : new ServerError("No confirmation received for canceling order"));
+            lock (connectionLock)
+                return socket != null && socket.State != WebSocketState.Closed;
         }
 
-        #region subscribing
-        public void SubscribeToWalletUpdates(Action<BitfinexWallet[]> handler)
+        private void Init()
         {
-            log.Write(LogVerbosity.Debug, "Subscribing to wallet updates");
-            registrations.Add(new WalletUpdateRegistration(handler));
+            receivedMessages = new ConcurrentQueue<string>();
+            toSendMessages = new ConcurrentQueue<string>();
+            messageEvent = new AutoResetEvent(true);
+            sendEvent = new AutoResetEvent(true);
+            outstandingSubscriptionRequests = new List<SubscriptionRequest>();
+            outstandingUnsubscriptionRequests = new List<UnsubscriptionRequest>();
+            confirmedRequests = new List<SubscriptionRequest>();
+            pendingOrders = new Dictionary<BitfinexNewOrder, WaitAction<BitfinexOrder>>();
+            pendingCancels = new Dictionary<long, WaitAction>();
+            registrations = new List<SubscriptionRegistration>();
+
+            GetSubscriptionResponseTypes();
         }
 
-        public void SubscribeToOrderUpdates(Action<BitfinexOrder[]> handler)
+        public override void Dispose()
         {
-            log.Write(LogVerbosity.Debug, "Subscribing to order updates");
-            registrations.Add(new OrderUpdateRegistration(handler));
+            base.Dispose();
+            Stop();
         }
 
-        public void SubscribeToPositionUpdates(Action<BitfinexPosition[]> handler)
-        {
-            log.Write(LogVerbosity.Debug, "Subscribing to position updates");
-            registrations.Add(new PositionUpdateRegistration(handler));
-        }
-
-        public void SubscribeToTradeUpdates(Action<BitfinexTradeDetails[]> handler)
-        {
-            log.Write(LogVerbosity.Debug, "Subscribing to trade updates");
-            registrations.Add(new TradesUpdateRegistration(handler));
-        }
-
-        public void SubscribeToFundingOfferUpdates(Action<BitfinexFundingOffer[]> handler)
-        {
-            log.Write(LogVerbosity.Debug, "Subscribing to funding offer updates");
-            registrations.Add(new FundingOffersUpdateRegistration(handler));
-        }
-
-        public void SubscribeToFundingCreditsUpdates(Action<BitfinexFundingCredit[]> handler)
-        {
-            log.Write(LogVerbosity.Debug, "Subscribing to funding credit updates");
-            registrations.Add(new FundingCreditsUpdateRegistration(handler));
-        }
-
-        public void SubscribeToFundingLoansUpdates(Action<BitfinexFundingLoan[]> handler)
-        {
-            log.Write(LogVerbosity.Debug, "Subscribing to funding loan updates");
-            registrations.Add(new FundingLoansUpdateRegistration(handler));
-        }
-
-        public async Task SubscribeToTicker(string symbol, Action<BitfinexMarketOverview[]> handler)
-        {
-            log.Write(LogVerbosity.Debug, "Subscribing to ticker updates for "+ symbol);
-            await SubscribeAndWait(new TickerSubscriptionRequest(symbol, handler));
-        }
-
-        public async Task SubscribeToTrades(string symbol, Action<BitfinexTradeSimple[]> handler)
-        {
-            log.Write(LogVerbosity.Debug, "Subscribing to trade updates for "+ symbol);
-            await SubscribeAndWait(new TradesSubscriptionRequest(symbol, handler));
-        }
-
-        public async Task SubscribeToBook(string symbol, string precision, string frequency, int limit, Action<BitfinexOrderBookEntry[]> handler)
-        {
-            log.Write(LogVerbosity.Debug, "Subscribing to book updates for "+ symbol);
-            await SubscribeAndWait(new BookSubscriptionRequest(symbol, precision, frequency, limit, handler));
-        }
-
-        public async Task SubscribeToCandles(string symbol, string interval, Action<BitfinexCandle[]> handler)
-        {
-            log.Write(LogVerbosity.Debug, "Subscribing to candle updates for "+ symbol);
-            await SubscribeAndWait(new CandleSubscriptionRequest(symbol, interval, handler));
-        }
         #endregion
     }
 }

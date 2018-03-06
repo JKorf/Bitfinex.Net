@@ -3,7 +3,6 @@ using System.Security.Cryptography;
 using System.Text;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net
 {

@@ -16,11 +16,17 @@ namespace Bitfinex.Net.Objects
 
     public enum Precision
     {
-        P0,
-        P1,
-        P2,
-        P3,
+        PrecisionLevel0,
+        PrecisionLevel1,
+        PrecisionLevel2,
+        PrecisionLevel3,
         R0
+    }
+
+    public enum Frequency
+    {
+        Realtime,
+        TwoSeconds
     }
 
     public enum StatKey
@@ -76,8 +82,22 @@ namespace Bitfinex.Net.Objects
         ExchangeLimit,
         ExchangeStop,
         ExchangeTrailingStop,
-        FOK,
-        ExchangeFOK
+        FillOrKill,
+        ExchangeFillOrKill
+    }
+
+    public enum OrderTypeV1
+    {
+        Market,
+        Limit,
+        Stop,
+        TrailingStop,
+        FillOrKill,
+        ExchangeMarket,
+        ExchangeLimit,
+        ExchangeStop,
+        ExchangeTrailingStop,
+        ExchangeFillOrKill
     }
 
     public enum OrderStatus

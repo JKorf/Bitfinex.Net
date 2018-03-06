@@ -4,23 +4,23 @@ using CryptoExchange.Net;
 
 namespace Bitfinex.Net.Converters
 {
-    public class OrderTypeConverter: BaseConverter<OrderType>
+    public class OrderTypeV1Converter: BaseConverter<OrderTypeV1>
     {
-        public OrderTypeConverter(): this(true) { }
-        public OrderTypeConverter(bool quotes) : base(quotes) { }
+        public OrderTypeV1Converter(): this(true) { }
+        public OrderTypeV1Converter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<OrderType, string> Mapping => new Dictionary<OrderType, string>()
+        protected override Dictionary<OrderTypeV1, string> Mapping => new Dictionary<OrderTypeV1, string>()
         {
-            { OrderType.Limit, "LIMIT" },
-            { OrderType.Market, "MARKET" },
-            { OrderType.Stop, "STOP" },
-            { OrderType.TrailingStop, "TRAILING STOP" },
-            { OrderType.ExchangeMarket, "EXCHANGE MARKET" },
-            { OrderType.ExchangeLimit, "EXCHANGE LIMIT" },
-            { OrderType.ExchangeStop, "EXCHANGE STOP" },
-            { OrderType.ExchangeTrailingStop, "EXCHANGE TRAILING STOP" },
-            { OrderType.FOK, "FOK" },
-            { OrderType.ExchangeFOK, "EXCHANGE FOK" },
+            { OrderTypeV1.Market, "market" },
+            { OrderTypeV1.Limit, "limit" },
+            { OrderTypeV1.Stop, "stop" },
+            { OrderTypeV1.TrailingStop, "trailing-stop" },
+            { OrderTypeV1.FillOrKill, "fill-or-kill" },
+            { OrderTypeV1.ExchangeMarket, "exchange market" },
+            { OrderTypeV1.ExchangeLimit, "exchange limit" },
+            { OrderTypeV1.ExchangeStop, "exchange stop" },
+            { OrderTypeV1.ExchangeTrailingStop, "exchange trailing-stop" },
+            { OrderTypeV1.ExchangeFillOrKill, "exchange fill-or-kill" },
         };
     }
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Bitfinex.Net.Objects;
 using CryptoExchange.Net;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Converters
 {
