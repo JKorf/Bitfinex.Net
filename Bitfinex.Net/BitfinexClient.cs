@@ -215,7 +215,6 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexStats>> GetStatsAsync(string symbol, StatKey key, StatSide side, StatSection section, Sorting? sorting)
         {
-            // TODO
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
 
@@ -245,7 +244,7 @@ namespace Bitfinex.Net
         {
             var endpoint = FillPathParameter(LastCandleEndpoint, JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)), symbol);
 
-            return await ExecuteRequest<BitfinexCandle>(GetUrl(endpoint, ApiVersion2), GetMethod);
+            return await ExecuteRequest<BitfinexCandle>(GetUrl(endpoint, ApiVersion2));
         }
 
         /// <summary>
@@ -893,7 +892,7 @@ namespace Bitfinex.Net
         {
             foreach (var value in values)
             {
-                int index = endpoint.IndexOf("{}");
+                int index = endpoint.IndexOf("{}", StringComparison.Ordinal);
                 if (index >= 0)
                 {
                     endpoint = endpoint.Remove(index, 2);
