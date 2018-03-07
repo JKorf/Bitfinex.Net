@@ -28,7 +28,7 @@ namespace Bitfinex.Net.Objects
         [BitfinexProperty(6)]
         public int? Flags { get; set; }
 
-        [BitfinexProperty(7), JsonConverter(typeof(FundingTypeConverter))]
+        [BitfinexProperty(7), JsonConverter(typeof(OrderStatusConverter))]
         public OrderStatus Status { get; set; }
 
         [BitfinexProperty(8)]
@@ -52,22 +52,22 @@ namespace Bitfinex.Net.Objects
         [BitfinexProperty(14), JsonConverter(typeof(TimestampConverter))]
         public DateTime TimestampLastPayout { get; set; }
 
-        [BitfinexProperty(15)]
+        [BitfinexProperty(15), JsonConverter(typeof(BoolToIntConverter))]
         public bool Notify { get; set; }
 
-        [BitfinexProperty(16)]
+        [BitfinexProperty(16), JsonConverter(typeof(BoolToIntConverter))]
         public bool Hidden { get; set; }
 
         [BitfinexProperty(17)]
         internal string PlaceHolder6 { get; set; }
 
-        [BitfinexProperty(18)]
+        [BitfinexProperty(18), JsonConverter(typeof(BoolToIntConverter))]
         public bool Renew { get; set; }
 
         [BitfinexProperty(19)]
         public decimal RateReal { get; set; }
 
-        [BitfinexProperty(20)]
+        [BitfinexProperty(20), JsonConverter(typeof(BoolToIntConverter))]
         public bool NoClose { get; set; }
     }
 }

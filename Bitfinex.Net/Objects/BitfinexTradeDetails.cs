@@ -31,7 +31,7 @@ namespace Bitfinex.Net.Objects
         [BitfinexProperty(7)]
         public decimal OrderPrice { get; set; }
 
-        [BitfinexProperty(8)]
+        [BitfinexProperty(8), JsonConverter(typeof(BoolToIntConverter))]
         public bool Maker { get; set; }
 
         [BitfinexProperty(9)]

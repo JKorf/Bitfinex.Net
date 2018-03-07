@@ -364,7 +364,7 @@ namespace Bitfinex.Net
         /// Synchronized version of the <see cref="GetTradesForOrderAsync"/> method
         /// </summary>
         /// <returns></returns>
-        public CallResult<BitfinexOrder[]> GetTradesForOrder(string symbol, long orderId) => GetTradesForOrderAsync(symbol, orderId).Result;
+        public CallResult<BitfinexTradeDetails[]> GetTradesForOrder(string symbol, long orderId) => GetTradesForOrderAsync(symbol, orderId).Result;
 
         /// <summary>
         /// Get the individual trades for an order
@@ -372,16 +372,16 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol of the order</param>
         /// <param name="orderId">The order Id</param>
         /// <returns></returns>
-        public async Task<CallResult<BitfinexOrder[]>> GetTradesForOrderAsync(string symbol, long orderId)
+        public async Task<CallResult<BitfinexTradeDetails[]>> GetTradesForOrderAsync(string symbol, long orderId)
         {
-            return await ExecuteRequest<BitfinexOrder[]>(GetUrl(FillPathParameter(OrderTradesEndpoint, symbol, orderId.ToString()), ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexTradeDetails[]>(GetUrl(FillPathParameter(OrderTradesEndpoint, symbol, orderId.ToString()), ApiVersion2), PostMethod, null, true);
         }
 
         /// <summary>
         /// Synchronized version of the <see cref="GetTradeHistoryAsync"/> method
         /// </summary>
         /// <returns></returns>
-        public CallResult<BitfinexOrder[]> GetTradeHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetTradeHistoryAsync(symbol, startTime, endTime, limit).Result;
+        public CallResult<BitfinexTradeDetails[]> GetTradeHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetTradeHistoryAsync(symbol, startTime, endTime, limit).Result;
 
         /// <summary>
         /// Get the trade history for a symbol
@@ -391,14 +391,14 @@ namespace Bitfinex.Net
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
-        public async Task<CallResult<BitfinexOrder[]>> GetTradeHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
+        public async Task<CallResult<BitfinexTradeDetails[]>> GetTradeHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("len", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter(false)) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter(false)) : null);
 
-            return await ExecuteRequest<BitfinexOrder[]>(GetUrl(FillPathParameter(MyTradesEndpoint, symbol), ApiVersion2), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexTradeDetails[]>(GetUrl(FillPathParameter(MyTradesEndpoint, symbol), ApiVersion2), PostMethod, parameters, true);
         }
 
         /// <summary>
@@ -540,7 +540,7 @@ namespace Bitfinex.Net
         /// Synchronized version of the <see cref="GetFundingTradesHistoryAsync"/> method
         /// </summary>
         /// <returns></returns>
-        public CallResult<BitfinexFundingCredit[]> GetFundingTradesHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetFundingTradesHistoryAsync(symbol, startTime, endTime, limit).Result;
+        public CallResult<BitfinexFundingTrade[]> GetFundingTradesHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetFundingTradesHistoryAsync(symbol, startTime, endTime, limit).Result;
 
         /// <summary>
         /// Get the funding trades history
@@ -550,14 +550,14 @@ namespace Bitfinex.Net
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
-        public async Task<CallResult<BitfinexFundingCredit[]>> GetFundingTradesHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
+        public async Task<CallResult<BitfinexFundingTrade[]>> GetFundingTradesHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("len", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter(false)) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter(false)) : null);
 
-            return await ExecuteRequest<BitfinexFundingCredit[]>(GetUrl(FillPathParameter(FundingTradesEndpoint, symbol), ApiVersion2), PostMethod);
+            return await ExecuteRequest<BitfinexFundingTrade[]>(GetUrl(FillPathParameter(FundingTradesEndpoint, symbol), ApiVersion2), PostMethod);
         }
 
         /// <summary>

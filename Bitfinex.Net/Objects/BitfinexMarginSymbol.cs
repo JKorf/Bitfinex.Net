@@ -6,13 +6,11 @@ namespace Bitfinex.Net.Objects
     [JsonConverter(typeof(BitfinexResultConverter))]
     public class BitfinexMarginSymbol
     {
-        [BitfinexProperty(0)]
-        public string Type { get; set; }
 
-        [BitfinexProperty(1)]
+        [BitfinexProperty(0)]
         public string Symbol { get; set; }
 
-        [BitfinexProperty(2), JsonConverter(typeof(BitfinexResultConverter))]
+        [BitfinexProperty(1), JsonConverter(typeof(BitfinexResultConverter))]
         public BitfinexMarginSymbolInfo Data { get; set; }
     }
 

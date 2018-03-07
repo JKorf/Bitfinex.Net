@@ -55,16 +55,16 @@ namespace Bitfinex.Net.Objects
         [BitfinexProperty(15)]
         public int Period { get; set; }
 
-        [BitfinexProperty(16)]
+        [BitfinexProperty(16), JsonConverter(typeof(BoolToIntConverter))]
         public bool Notify { get; set; }
 
-        [BitfinexProperty(17)]
+        [BitfinexProperty(17), JsonConverter(typeof(BoolToIntConverter))]
         public bool Hidden { get; set; }
 
         [BitfinexProperty(18)]
         internal string PlaceHolder6 { get; set; }
 
-        [BitfinexProperty(19)]
+        [BitfinexProperty(19), JsonConverter(typeof(BoolToIntConverter))]
         public bool Renew { get; set; }
 
         [BitfinexProperty(20)]
