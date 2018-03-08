@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Bitfinex.Net.Objects;
+using Bitfinex.Net.Objects.RestV1Objects;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.RateLimiter;
@@ -797,6 +798,137 @@ namespace Bitfinex.Net.UnitTests
             Assert.AreEqual(true, result.Success);
             Assert.IsTrue(ObjectComparer.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
         }
+
+        [TestCase]
+        public void GetAlertList_Should_RespondWithAlerts()
+        {
+            // arrange
+            var expected = new[]
+            {
+                new BitfinexAlert()
+                {
+                    AlertKey = "key",
+                    AlertType = "type",
+                    Price = 0.1m,
+                    Symbol = "symbol",
+                    T = 0.2m
+                }
+            };
+            var client = PrepareClient(JsonConvert.SerializeObject(new object[]
+            {
+                new object[] { "key", "type", "symbol", 0.1m, 0.2m }
+            }));
+
+            // act
+            var result = client.GetAlertList();
+
+            // assert
+            Assert.AreEqual(true, result.Success);
+            Assert.IsTrue(ObjectComparer.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
+        }
+
+        [TestCase]
+        public void SetAlert_Should_RespondWithAlert()
+        {
+            // arrange
+            var expected =
+                new BitfinexAlert()
+                {
+                    AlertKey = "key",
+                    AlertType = "type",
+                    Price = 0.1m,
+                    Symbol = "symbol",
+                    T = 0.2m
+                };
+            var client = PrepareClient(JsonConvert.SerializeObject(new object[]
+            {
+                "key", "type", "symbol", 0.1m, 0.2m 
+            }));
+
+            // act
+            var result = client.SetAlert("symbol", 0.1m);
+
+            // assert
+            Assert.AreEqual(true, result.Success);
+            Assert.IsTrue(ObjectComparer.PublicInstancePropertiesEqual(expected, result.Data));
+        }
+
+        [TestCase]
+        public void DeleteAlert_Should_ReturnSuccess()
+        {
+            // arrange
+            var expected =
+                new BitfinexSuccessResult()
+                {
+                    Success = true
+                };
+            var client = PrepareClient(JsonConvert.SerializeObject(new object[]
+            {
+                "true"
+            }));
+
+            // act
+            var result = client.DeleteAlert("symbol", 0.1m);
+
+            // assert
+            Assert.AreEqual(true, result.Success);
+            Assert.IsTrue(ObjectComparer.PublicInstancePropertiesEqual(expected, result.Data));
+        }
+
+        [TestCase]
+        public void GetAccountInfo_Should_ReturnAccountInfo()
+        {
+            // arrange
+            var expected =
+                new BitfinexAccountInfo()
+                {
+                    MakerFee = 0.1m,
+                    TakerFee = 0.2m,
+                    Fees = new[]
+                    {
+                        new BitfinexFee
+                        {
+                            TakerFee = 0.3m,
+                            MakerFee = 0.4m,
+                            Pairs = "BTC"
+                        }
+                    }
+                };
+            var client = PrepareClient(JsonConvert.SerializeObject(new[] { expected }));
+
+            // act
+            var result = client.GetAccountInfo();
+
+            // assert
+            Assert.AreEqual(true, result.Success);
+            Assert.IsTrue(ObjectComparer.PublicInstancePropertiesEqual(expected, result.Data, "Fees"));
+            Assert.IsTrue(ObjectComparer.PublicInstancePropertiesEqual(expected.Fees[0], result.Data.Fees[0]));
+        }
+
+        [TestCase]
+        public void GetWithdrawalFees_Should_ReturnFees()
+        {
+            // arrange
+            var expected =
+                new BitfinexWithdrawalFees()
+                {
+                    Withdraw = new Dictionary<string, decimal>
+                    {
+                        { "BTC", 0.1m },
+                        { "ETH", 0.2m },
+                    }
+                };
+            var client = PrepareClient(JsonConvert.SerializeObject(expected));
+
+            // act
+            var result = client.GetWithdrawalFees();
+
+            // assert
+            Assert.AreEqual(true, result.Success);
+            Assert.AreEqual(expected.Withdraw["BTC"], result.Data.Withdraw["BTC"]);
+            Assert.AreEqual(expected.Withdraw["ETH"], result.Data.Withdraw["ETH"]);
+        }
+        
 
         private BitfinexClient PrepareClient(string responseData, bool credentials = true)
         {

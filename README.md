@@ -14,6 +14,19 @@ Next to that it adds some convenience features like:
 
 **If you think something is broken, something is missing or have any questions, please open an [Issue](https://github.com/JKorf/Bitfinex.Net/issues)**
 
+---
+Also check out my other exchange API wrappers:
+<table>
+<tr>
+<td><img src="https://github.com/JKorf/Binance.Net/blob/master/Resources/binance-coin.png?raw=true">
+<br />
+<a href="https://github.com/JKorf/Binance.Net">Binance</a>
+</td>
+<td><img src="https://github.com/JKorf/Bittrex.Net/blob/master/Resources/icon.png?raw=true">
+<br />
+<a href="https://github.com/JKorf/Bittrex.Net">Bittrex</a></td>
+</table>
+
 ## Installation
 ![Nuget version](https://img.shields.io/nuget/v/bitfinex.net.svg) ![Nuget downloads](https://img.shields.io/nuget/dt/Bitfinex.Net.svg)
 

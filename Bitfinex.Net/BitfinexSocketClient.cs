@@ -10,11 +10,10 @@ using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SuperSocket.ClientEngine;
-using WebSocket4Net;
 
 namespace Bitfinex.Net
 {
@@ -24,7 +23,7 @@ namespace Bitfinex.Net
         private static BitfinexSocketClientOptions defaultOptions = new BitfinexSocketClientOptions();
 
         private string baseAddress;
-        private WebSocket socket;
+        private IWebsocket socket;
 
         private AutoResetEvent messageEvent;
         private AutoResetEvent sendEvent;
@@ -76,6 +75,10 @@ namespace Bitfinex.Net
                 }
             }
         }
+        #endregion
+
+        #region properties
+        public IWebsocketFactory SocketFactory { get; set; } = new WebsocketFactory();
         #endregion
 
         #region ctor
@@ -457,16 +460,16 @@ namespace Bitfinex.Net
         #region private
         private void Create()
         {
-            socket = new WebSocket(baseAddress);
-            socket.Closed += SocketClosed;
-            socket.Error += SocketError;
-            socket.Opened += SocketOpened;
-            socket.MessageReceived += SocketMessage;
+            socket = SocketFactory.CreateWebsocket(baseAddress);
+            socket.OnClose += SocketClosed;
+            socket.OnError += SocketError;
+            socket.OnOpen += SocketOpened;
+            socket.OnMessage += SocketMessage;
         }
 
         private async Task<bool> Open()
         {
-            bool connectResult = await socket.OpenAsync().ConfigureAwait(false); 
+            bool connectResult = await socket.Connect().ConfigureAwait(false); 
             if (!connectResult)
             {
                 log.Write(LogVerbosity.Warning, "Couldn't connect to socket");
@@ -520,26 +523,26 @@ namespace Bitfinex.Net
             return new CallResult<bool>(confirmed, confirmed ? null : new ServerError("No confirmation received"));
         }
 
-        private void SocketClosed(object sender, EventArgs args)
+        private void SocketClosed()
         {
             log.Write(LogVerbosity.Debug, "Socket closed");
         }
 
-        private void SocketError(object sender, ErrorEventArgs args)
+        private void SocketError(Exception ex)
         {
-            log.Write(LogVerbosity.Error, $"Socket error: {args.Exception?.GetType().Name} - {args.Exception?.Message}");
+            log.Write(LogVerbosity.Error, $"Socket error: {ex?.GetType().Name} - {ex?.Message}");
         }
 
-        private void SocketOpened(object sender, EventArgs args)
+        private void SocketOpened()
         {
             log.Write(LogVerbosity.Debug, "Socket opened");
             Authenticate();
         }
 
-        private void SocketMessage(object sender, MessageReceivedEventArgs args)
+        private void SocketMessage(string msg)
         {
-            log.Write(LogVerbosity.Debug, "Received message: " + args.Message);
-            receivedMessages.Enqueue(args.Message);
+            log.Write(LogVerbosity.Debug, "Received message: " + msg);
+            receivedMessages.Enqueue(msg);
             messageEvent.Set();
         }
 
@@ -742,7 +745,7 @@ namespace Bitfinex.Net
         private bool CheckConnection()
         {
             lock (connectionLock)
-                return socket != null && socket.State != WebSocketState.Closed;
+                return socket != null && !socket.IsClosed;
         }
 
         private void Init()
