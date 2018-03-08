@@ -13,6 +13,7 @@
     <PackageTags>Bitfinex Bitfinex.Net C# .Net CryptoCurrency Exchange API wrapper</PackageTags>
     <PackageProjectUrl>https://github.com/JKorf/Bitfinex.Net</PackageProjectUrl>
 	<PackageLicenseUrl>https://github.com/JKorf/Bitfinex.Net/blob/master/LICENSE</PackageLicenseUrl>
+	<PackageIconUrl>https://raw.githubusercontent.com/JKorf/Bitfinex.Net/master/Resources/icon.png</PackageIconUrl>
 	<NeutralLanguage>en</NeutralLanguage>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageReleaseNotes>0.0.1 - Initial version</PackageReleaseNotes>
