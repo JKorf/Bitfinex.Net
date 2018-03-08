@@ -118,6 +118,7 @@ namespace Bitfinex.Net
         public void SetApiCredentials(string apiKey, string apiSecret)
         {
             SetAuthenticationProvider(new BitfinexAuthenticationProvider(new ApiCredentials(apiKey, apiSecret)));
+            Authenticate();
         }
 
         /// <summary>
@@ -692,7 +693,7 @@ namespace Bitfinex.Net
 
         private void Authenticate()
         {
-            if (authProvider == null)
+            if (authProvider == null || !running)
                 return;
 
             var n = Nonce;
