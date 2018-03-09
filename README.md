@@ -93,5 +93,10 @@ TODO
 
 ## Release notes
 
-* Version 0.0.1 - 
+* Version 0.0.2 - 09 mar 2018 
+	* Auto reconnecting socket client
+	* Info messages send from server processing
+	* Socket client status events added
+
+* Version 0.0.1 - 08 mar 2018
 	* Initial release
