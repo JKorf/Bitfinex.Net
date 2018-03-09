@@ -153,4 +153,13 @@ namespace Bitfinex.Net.Objects
         PostOnly = 4096,
         OneCancelsOther = 16384
     }
+
+    public enum SocketState
+    {
+        Disconnected,
+        Connecting,
+        Connected,
+        Paused,
+        Disconnecting
+    }
 }

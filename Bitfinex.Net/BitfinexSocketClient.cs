@@ -10,6 +10,7 @@ using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Implementation;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
 using Newtonsoft.Json;
@@ -22,6 +23,7 @@ namespace Bitfinex.Net
         #region fields
         private static BitfinexSocketClientOptions defaultOptions = new BitfinexSocketClientOptions();
 
+        private TimeSpan socketReceiveTimeout;
         private string baseAddress;
         private IWebsocket socket;
 
@@ -35,18 +37,35 @@ namespace Bitfinex.Net
         private Dictionary<BitfinexNewOrder, WaitAction<BitfinexOrder>> pendingOrders;
         private Dictionary<long, WaitAction> pendingCancels;
 
+        private List<SubscriptionRequest> subscriptionRequests;
         private List<SubscriptionRequest> outstandingSubscriptionRequests;
         private List<SubscriptionRequest> confirmedRequests;
         private List<UnsubscriptionRequest> outstandingUnsubscriptionRequests;
         private List<SubscriptionRegistration> registrations;
 
+        private Task sendTask;
+        private Task receiveTask;
+
         private bool running;
+        private bool reconnect = true;
+        private bool lost;
+
+        private SocketState state = SocketState.Disconnected;
+        public SocketState State
+        {
+            get => state;
+            private set
+            {
+                log.Write(LogVerbosity.Debug, $"Socket state change {state} => {value}");
+                state = value;
+            }
+        }
+        
         private readonly object connectionLock = new object();
         private static readonly object streamIdLock = new object();
         private static readonly object nonceLock = new object();
         private static int lastStreamId;
         private static long lastNonce;
-        
         private bool authenticated;
 
         private static string Nonce
@@ -75,6 +94,25 @@ namespace Bitfinex.Net
                 }
             }
         }
+        #endregion
+
+        #region events
+        /// <summary>
+        /// Happens when the server signals the client to pause activity
+        /// </summary>
+        public event Action SocketPaused;
+        /// <summary>
+        /// Hapens when the server signals the client it can resume activity
+        /// </summary>
+        public event Action SocketResumed;
+        /// <summary>
+        /// Happens when the socket loses connection to the server
+        /// </summary>
+        public event Action ConnectionLost;
+        /// <summary>
+        /// Happens when connection to the server is restored after it was lost
+        /// </summary>
+        public event Action ConnectionRestored;
         #endregion
 
         #region properties
@@ -120,23 +158,33 @@ namespace Bitfinex.Net
             SetAuthenticationProvider(new BitfinexAuthenticationProvider(new ApiCredentials(apiKey, apiSecret)));
             Authenticate();
         }
-
+        
         /// <summary>
         /// Connect to the websocket and start processing data
         /// </summary>
         /// <returns></returns>
         public bool Start()
         {
+            lost = false;
+            reconnect = true;
+            return StartInternal();
+        }
+
+        private bool StartInternal()
+        {
             lock (connectionLock)
             {
                 if (CheckConnection())
                     return true;
 
-                log.Write(LogVerbosity.Info, "Starting the socket");
+                reconnect = true;
+                State = SocketState.Connecting;
                 if (socket == null)
                     Create();
 
-                return Open().Result;
+                var result = Open().Result;
+                State = result ? SocketState.Connected : SocketState.Disconnected;
+                return result;
             }
         }
 
@@ -145,15 +193,25 @@ namespace Bitfinex.Net
         /// </summary>
         public void Stop()
         {
+            lost = false;
+            reconnect = false;
+            StopInternal();
+        }
+
+        private void StopInternal()
+        {
             lock (connectionLock)
             {
-                log.Write(LogVerbosity.Info, "Stopping the socket");
-                socket.Close();
+                State = SocketState.Disconnecting;
+                socket.Close().Wait();
+                State = SocketState.Disconnected;
             }
 
             running = false;
             messageEvent.Set();
             sendEvent.Set();
+
+            sendTask.Wait();
 
             Init();
         }
@@ -182,6 +240,9 @@ namespace Bitfinex.Net
         {
             if (!CheckConnection())
                 return new CallResult<BitfinexOrder>(null, new WebError("Socket needs to be started before placing an order"));
+
+            if (State == SocketState.Paused)
+                return new CallResult<BitfinexOrder>(null, new WebError("Socket is currently paused on request of the server, pause should take max 120 seconds"));
 
             if (!authenticated)
                 return new CallResult<BitfinexOrder>(null, new NoApiCredentialsError());
@@ -239,6 +300,9 @@ namespace Bitfinex.Net
         {
             if (!CheckConnection())
                 return new CallResult<bool>(false, new WebError("Socket needs to be started before canceling an order"));
+
+            if (State == SocketState.Paused)
+                return new CallResult<bool>(false, new WebError("Socket is currently paused on request of the server, pause should take max 120 seconds"));
 
             if (!authenticated)
                 return new CallResult<bool>(false, new NoApiCredentialsError());
@@ -385,8 +449,16 @@ namespace Bitfinex.Net
         /// <returns>A stream id with which can be unsubscribed</returns>
         public async Task<CallResult<int>> SubscribeToTicker(string symbol, Action<BitfinexMarketOverview[]> handler)
         {
-            log.Write(LogVerbosity.Debug, "Subscribing to ticker updates for "+ symbol);
-            return await SubscribeAndWait(new TickerSubscriptionRequest(symbol, handler)).ConfigureAwait(false); 
+            var id = NextStreamId;
+            var sub = new TickerSubscriptionRequest(symbol, handler) {StreamId = id};
+            subscriptionRequests.Add(sub);
+
+            if (State != SocketState.Connected)
+                return new CallResult<int>(id, null);
+
+            log.Write(LogVerbosity.Debug, "Subscribing to ticker updates for " + symbol);
+            await SubscribeAndWait(sub).ConfigureAwait(false);
+            return new CallResult<int>(id, null);
         }
 
         /// <summary>
@@ -397,8 +469,16 @@ namespace Bitfinex.Net
         /// <returns>A stream id with which can be unsubscribed</returns>
         public async Task<CallResult<int>> SubscribeToTrades(string symbol, Action<BitfinexTradeSimple[]> handler)
         {
-            log.Write(LogVerbosity.Debug, "Subscribing to trade updates for "+ symbol);
-            return await SubscribeAndWait(new TradesSubscriptionRequest(symbol, handler)).ConfigureAwait(false);
+            var id = NextStreamId;
+            var sub = new TradesSubscriptionRequest(symbol, handler) { StreamId = id };
+            subscriptionRequests.Add(sub);
+
+            if (State != SocketState.Connected)
+                return new CallResult<int>(id, null);
+
+            log.Write(LogVerbosity.Debug, "Subscribing to trade updates for " + symbol);
+            await SubscribeAndWait(sub).ConfigureAwait(false);
+            return new CallResult<int>(id, null);
         }
 
         /// <summary>
@@ -412,8 +492,16 @@ namespace Bitfinex.Net
         /// <returns>A stream id with which can be unsubscribed</returns>
         public async Task<CallResult<int>> SubscribeToBook(string symbol, Precision precision, Frequency frequency, int length, Action<BitfinexOrderBookEntry[]> handler)
         {
-            log.Write(LogVerbosity.Debug, "Subscribing to book updates for "+ symbol);
-            return await SubscribeAndWait(new BookSubscriptionRequest(symbol, JsonConvert.SerializeObject(precision, new PrecisionConverter(false)), JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)), length, handler)).ConfigureAwait(false);
+            var id = NextStreamId;
+            var sub = new BookSubscriptionRequest(symbol, JsonConvert.SerializeObject(precision, new PrecisionConverter(false)), JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)), length, handler) { StreamId = id };
+            subscriptionRequests.Add(sub);
+
+            if (State != SocketState.Connected)
+                return new CallResult<int>(id, null);
+
+            log.Write(LogVerbosity.Debug, "Subscribing to book updates for " + symbol);
+            await SubscribeAndWait(sub).ConfigureAwait(false);
+            return new CallResult<int>(id, null);
         }
 
         /// <summary>
@@ -425,32 +513,48 @@ namespace Bitfinex.Net
         /// <returns>A stream id with which can be unsubscribed</returns>
         public async Task<CallResult<int>> SubscribeToCandles(string symbol, TimeFrame interval, Action<BitfinexCandle[]> handler)
         {
-            log.Write(LogVerbosity.Debug, "Subscribing to candle updates for "+ symbol);
-            return await SubscribeAndWait(new CandleSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false)), handler)).ConfigureAwait(false);
+            var id = NextStreamId;
+            var sub = new CandleSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false)), handler) { StreamId = id };
+            subscriptionRequests.Add(sub);
+
+            if (State != SocketState.Connected)
+                return new CallResult<int>(id, null);
+
+            log.Write(LogVerbosity.Debug, "Subscribing to candle updates for " + symbol);
+            await SubscribeAndWait(sub).ConfigureAwait(false);
+            return new CallResult<int>(id, null);
         }
 
         /// <summary>
         /// Unsubscribe from a specific channel using the id acquired when subscribing
         /// </summary>
-        /// <param name="channelId">The channel id to unsubscribe from</param>
+        /// <param name="streamId">The channel id to unsubscribe from</param>
         /// <returns></returns>
-        public async Task<CallResult<bool>> UnsubscribeFromChannel(int channelId)
+        public async Task<CallResult<bool>> UnsubscribeFromChannel(int streamId)
         {
-            log.Write(LogVerbosity.Debug, "Unsubscribing from channel " + channelId);
-            if (confirmedRequests.Any(r => r.ChannelId == channelId))
+            log.Write(LogVerbosity.Debug, "Unsubscribing from channel " + streamId);
+            var sub = confirmedRequests.Single(r => r.StreamId == streamId && r.ChannelId != null);
+            if (sub != null)
             {
-                var result = await UnsubscribeAndWait(new UnsubscriptionRequest(channelId)).ConfigureAwait(false);
-                if (!result.Success)
-                    return result;
+                if (State == SocketState.Connected)
+                {
+                    var result = await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value)).ConfigureAwait(false);
+                    if (!result.Success)
+                        return result;
+
+                     subscriptionRequests.RemoveAll(r => r.StreamId == streamId);
+                }
+                else
+                    subscriptionRequests.RemoveAll(r => r.StreamId == streamId);
             }
-            else if (registrations.Any(r => r.StreamId == channelId))
+            else if (registrations.Any(r => r.StreamId == streamId))
             {
-                registrations.Remove(registrations.Single(r => r.StreamId == channelId));
+                registrations.Remove(registrations.Single(r => r.StreamId == streamId));
             }
             else
             {
-                log.Write(LogVerbosity.Warning, "No subscription found for channel id " + channelId);
-                return new CallResult<bool>(false, new ArgumentError("No subscription found for channel id " + channelId));
+                log.Write(LogVerbosity.Warning, "No subscription found for channel id " + streamId);
+                return new CallResult<bool>(false, new ArgumentError("No subscription found for channel id " + streamId));
             }
             
             return new CallResult<bool>(true, null);
@@ -478,19 +582,15 @@ namespace Bitfinex.Net
             }
 
             running = true;
-#pragma warning disable 4014
-            Task.Run(() => ProcessData());
-            Task.Run(() => ProcessSending());
-#pragma warning restore 4014
+            receiveTask = Task.Run(() => ProcessData());
+            sendTask = Task.Run(() => ProcessSending());
+
             log.Write(LogVerbosity.Info, "Socket connection established");
             return true;
         }
 
-        private async Task<CallResult<int>> SubscribeAndWait(SubscriptionRequest request)
+        private async Task<CallResult<bool>> SubscribeAndWait(SubscriptionRequest request)
         {
-            if (!CheckConnection())
-                return new CallResult<int>(0, new WebError("Socket needs to be started before subscribing to this"));
-
             outstandingSubscriptionRequests.Add(request);
             Send(JsonConvert.SerializeObject(request));
             bool confirmed = false;
@@ -502,7 +602,7 @@ namespace Bitfinex.Net
                 log.Write(LogVerbosity.Debug, !confirmed ? "No confirmation received" : "Subscription confirmed");
             }).ConfigureAwait(false);
 
-            return new CallResult<int>(confirmed ? request.ChannelId : 0, confirmed ? null : new ServerError("No confirmation received"));
+            return new CallResult<bool>(confirmed, confirmed ? null : new ServerError("No confirmation received"));
         }
 
         private async Task<CallResult<bool>> UnsubscribeAndWait(UnsubscriptionRequest request)
@@ -518,7 +618,8 @@ namespace Bitfinex.Net
                 confirmed = request.ConfirmedEvent.WaitOne(2000);
                 outstandingUnsubscriptionRequests.Remove(request);
                 confirmedRequests.RemoveAll(r => r.ChannelId == request.ChannelId);
-                log.Write(LogVerbosity.Debug, !confirmed ? "No confirmation received" : "Subscription confirmed");
+                subscriptionRequests.Single(s => s.ChannelId == request.ChannelId).ResetSubscription();
+                log.Write(LogVerbosity.Debug, !confirmed ? "No confirmation received" : "Unsubscription confirmed");
             }).ConfigureAwait(false);
 
             return new CallResult<bool>(confirmed, confirmed ? null : new ServerError("No confirmation received"));
@@ -527,6 +628,20 @@ namespace Bitfinex.Net
         private void SocketClosed()
         {
             log.Write(LogVerbosity.Debug, "Socket closed");
+            if (!reconnect)
+                return;
+
+            Task.Run(() =>
+            {
+                if (!lost)
+                {
+                    lost = true;
+                    ConnectionLost?.Invoke();
+                }
+
+                Thread.Sleep(2000);
+                StartInternal();
+            });
         }
 
         private void SocketError(Exception ex)
@@ -537,7 +652,27 @@ namespace Bitfinex.Net
         private void SocketOpened()
         {
             log.Write(LogVerbosity.Debug, "Socket opened");
-            Authenticate();
+            Task.Run(async () =>
+            {
+                if (lost)
+                {
+                    ConnectionRestored?.Invoke();
+                    lost = false;
+                }
+
+                Authenticate();
+                await SubscribeUnsend();
+            });
+        }
+
+        private async Task SubscribeUnsend()
+        {
+            foreach (var sub in subscriptionRequests.Where(s => s.ChannelId == null))
+            {
+                var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
+                if (!subResult.Success)
+                    log.Write(LogVerbosity.Warning, $"Failed to sub {sub.GetType()}: {subResult.Error}");
+            }
         }
 
         private void SocketMessage(string msg)
@@ -573,7 +708,10 @@ namespace Bitfinex.Net
         {
             while (running)
             {
-                messageEvent.WaitOne();
+                bool messageReceived = messageEvent.WaitOne(socketReceiveTimeout);
+                if (!messageReceived)
+                    StopInternal();
+
                 if (!running)
                     break;
 
@@ -584,14 +722,17 @@ namespace Bitfinex.Net
                     try
                     {
                         var dataObject = JToken.Parse(dequeued);
+
                         if (dataObject is JObject)
                         {
                             var evnt = dataObject["event"].ToString();
                             if (evnt == "auth")
                             {
                                 ProcessAuthenticationResponse(dataObject.ToObject<BitfinexAuthenticationResponse>());
+                                continue;
                             }
-                            else if (evnt == "subscribed")
+
+                            if (evnt == "subscribed")
                             {
                                 var channel = dataObject["channel"].ToString();
                                 if (!subscriptionResponseTypes.ContainsKey(channel))
@@ -610,8 +751,10 @@ namespace Bitfinex.Net
 
                                 pending.ChannelId = subResponse.ChannelId;
                                 pending.ConfirmedEvent.Set();
+                                continue;
                             }
-                            else if (evnt == "unsubscribed")
+
+                            if (evnt == "unsubscribed")
                             {
                                 var pending = outstandingUnsubscriptionRequests.SingleOrDefault(r => r.ChannelId == (int)dataObject["chanId"]);
                                 if (pending == null)
@@ -620,6 +763,47 @@ namespace Bitfinex.Net
                                     continue;
                                 }
                                 pending.ConfirmedEvent.Set();
+                                continue;
+                            }
+
+                            if (evnt == "info")
+                            {
+                                if (dataObject["version"] != null)
+                                {
+                                    log.Write(LogVerbosity.Info, $"Websocket version: {dataObject["version"]}, platform status: {((int)dataObject["platform"]["status"] == 1? "operational": "maintance")}");
+                                    continue;
+                                }
+
+                                var code = (int)dataObject["code"];
+                                switch (code)
+                                {
+                                    case 20051:
+                                        // reconnect
+                                        log.Write(LogVerbosity.Info, "Received status code 20051, going to reconnect the websocket");
+                                        Task.Run(() => StopInternal());
+                                        continue;
+                                    case 20060:
+                                        // pause
+                                        log.Write(LogVerbosity.Info, "Received status code 20060, pausing websocket activity");
+                                        State = SocketState.Paused;
+                                        SocketPaused?.Invoke();
+                                        continue;
+                                    case 20061:
+                                        // resume
+                                        log.Write(LogVerbosity.Info, "Received status code 20061, resuming websocket activity");
+                                        Task.Run(async () =>
+                                        {
+                                            foreach (var sub in confirmedRequests.ToList())  
+                                                await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value));
+
+                                            await SubscribeUnsend();
+                                            SocketResumed?.Invoke();
+                                        });
+                                        State = SocketState.Connected;
+                                        continue;
+                                }
+
+                                log.Write(LogVerbosity.Warning, $"Received unknown status code: {code}, data: {dataObject}");
                             }
                         }
                         else
@@ -693,7 +877,7 @@ namespace Bitfinex.Net
 
         private void Authenticate()
         {
-            if (authProvider == null || !running)
+            if (authProvider == null || socket.IsClosed)
                 return;
 
             var n = Nonce;
@@ -740,13 +924,13 @@ namespace Bitfinex.Net
         {
             base.Configure(options);
 
+            socketReceiveTimeout = options.SocketReceiveTimeout;
             baseAddress = options.BaseAddress;
         }
 
         private bool CheckConnection()
         {
-            lock (connectionLock)
-                return socket != null && !socket.IsClosed;
+            return socket != null && !socket.IsClosed;
         }
 
         private void Init()
@@ -755,12 +939,21 @@ namespace Bitfinex.Net
             toSendMessages = new ConcurrentQueue<string>();
             messageEvent = new AutoResetEvent(true);
             sendEvent = new AutoResetEvent(true);
+            
             outstandingSubscriptionRequests = new List<SubscriptionRequest>();
             outstandingUnsubscriptionRequests = new List<UnsubscriptionRequest>();
             confirmedRequests = new List<SubscriptionRequest>();
             pendingOrders = new Dictionary<BitfinexNewOrder, WaitAction<BitfinexOrder>>();
             pendingCancels = new Dictionary<long, WaitAction>();
-            registrations = new List<SubscriptionRegistration>();
+
+            if (subscriptionRequests == null)
+                subscriptionRequests = new List<SubscriptionRequest>();
+
+            foreach (var sub in subscriptionRequests)
+                sub.ResetSubscription();
+
+            if (registrations == null)
+                registrations = new List<SubscriptionRegistration>();
 
             GetSubscriptionResponseTypes();
         }
@@ -768,7 +961,7 @@ namespace Bitfinex.Net
         public override void Dispose()
         {
             base.Dispose();
-            Stop();
+            StopInternal();
         }
 
         #endregion

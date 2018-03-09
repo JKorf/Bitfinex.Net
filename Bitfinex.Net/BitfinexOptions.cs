@@ -1,4 +1,5 @@
-﻿using CryptoExchange.Net;
+﻿using System;
+using CryptoExchange.Net;
 
 namespace Bitfinex.Net
 {
@@ -10,5 +11,6 @@ namespace Bitfinex.Net
     public class BitfinexSocketClientOptions: ExchangeOptions
     {
         public string BaseAddress { get; set; } = "wss://api.bitfinex.com/ws/2";
+        public TimeSpan SocketReceiveTimeout { get; set; } = TimeSpan.FromSeconds(15);
     }
 }
