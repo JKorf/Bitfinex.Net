@@ -194,8 +194,9 @@ namespace Bitfinex.Net
 
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("len", limit?.ToString());
+            var prec = JsonConvert.SerializeObject(precision, new PrecisionConverter(false));
 
-            return await ExecuteRequest<BitfinexOrderBookEntry[]>(GetUrl(FillPathParameter(OrderBookEndpoint, symbol, precision.ToString()), ApiVersion2), GetMethod, parameters);
+            return await ExecuteRequest<BitfinexOrderBookEntry[]>(GetUrl(FillPathParameter(OrderBookEndpoint, symbol, prec), ApiVersion2), GetMethod, parameters);
         }
 
         /// <summary>
