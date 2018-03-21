@@ -5,7 +5,6 @@ namespace Bitfinex.Net.Objects.SocketObjects
     public class WalletUpdateRegistration: SubscriptionRegistration
     {
         private Action<BitfinexWallet[]> handler;
-        public int StreamId { get; set; }
 
         public WalletUpdateRegistration(Action<BitfinexWallet[]> handler, int streamId) : base(typeof(BitfinexWallet), streamId, "ws", "wu")
         {

@@ -92,6 +92,15 @@ TODO
 
 
 ## Release notes
+* Version 0.0.5 - 21 mar 2018
+	* Can add multiple log writers
+	* Added some code docs
+
+* Version 0.0.4 - 20 mar 2018
+	* Fix for precision serialization
+
+* Version 0.0.3 - 12 mar 2018
+	* Fixes for freezes when calling from UI thread
 
 * Version 0.0.2 - 09 mar 2018 
 	* Auto reconnecting socket client
