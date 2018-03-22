@@ -92,6 +92,9 @@ TODO
 
 
 ## Release notes
+* Version 0.0.6 - 22 mar 2018
+	* Fix for order status parsing
+
 * Version 0.0.5 - 21 mar 2018
 	* Can add multiple log writers
 	* Added some code docs
