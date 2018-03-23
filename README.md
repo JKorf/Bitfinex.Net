@@ -71,7 +71,7 @@ public async Task AsyncMethod()
 ## Response handling
 All API requests will respond with an CallResult object. This object contains whether the call was successful, the data returned from the call and an error if the call wasn't successful. As such, one should always check the Success flag when processing a response.
 For example:
-```C#
+````C#
 using(var client = new BitfinexClient())
 {
 	var priceResult = client.GetTicker("tBTCETH");
@@ -80,18 +80,70 @@ using(var client = new BitfinexClient())
 	else
 		Console.WriteLine($"Error: {priceResult.Error}");
 }
-```
+````
 
 ## Options & Authentication
 The default behavior of the clients can be changed by providing options to the constructor, or using the `SetDefaultOptions` before creating a new client to set options for all new clients. Api credentials can be provided in the options.
 
 ## Websocket
 To use the websocket the various Subscribe methods can be used. The `Start` method should be used to actually connect the websocket. When connection to the websocket has been made the server will send various snapshots of data, so make sure your event handlers are set up before starting.
+The websocket will automatically handle reconnect/pause messages send from the server. To unsubscribe from a stream use the `UnsubscribeFromChannel` method with the stream id you received when subscribing. To stop the websocket completly the `Stop` method can be used.
+````C#
+var options = new BitfinexSocketClientOptions()
+{
+	ApiCredentials = new ApiCredentials("KEY", "SECRET")
+};
 
-TODO
+var client = new BitfinexSocketClient(options);
+var walletSub = client.SubscribeToWalletUpdates(data =>
+{
+	Console.WriteLine("Wallet update");
+});
+var tickerSub = await client.SubscribeToTicker("tBTCUSD", data =>
+{
+	Console.WriteLine("Ticker update");
+});
+
+var startOk = client.Start();
+Console.WriteLine(startOk ? "Connected": "Connection failed");
+
+Console.ReadLine();
+await client.UnsubscribeFromChannel(walletSub.Data);
+await client.UnsubscribeFromChannel(tickerSub.Data);
+client.Stop();
+````
+
+The websocket also supports the placing and canceling of orders:
+````C#
+var options = new BitfinexSocketClientOptions()
+{
+	ApiCredentials = new ApiCredentials("KEY", "SECRET")
+};
+
+var client = new BitfinexSocketClient(options);
+var startOk = client.Start();
+Console.WriteLine(startOk ? "Connected": "Connection failed");
+
+Console.ReadLine();
+
+var placeResult = client.PlaceOrder(OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1);
+Console.WriteLine(placeResult.Success ? "order placed": "failed placing order: " + placeResult.Error);
+
+if (placeResult.Success)
+{
+	var cancelResult = client.CancelOrder(placeResult.Data.Id);
+	Console.WriteLine(cancelResult.Success ? "order canceled" : "failed canceling order: " + cancelResult.Error);
+}
+
+Console.ReadLine();
+````
 
 
 ## Release notes
+* Version 0.0.7 - 23 mar 2018
+	* Added notification message handling resulting in faster error message when failing to place/cancel orders via websocket
+	* Fix for unsubsribing exception
+
 * Version 0.0.6 - 22 mar 2018
 	* Fix for order status parsing
 
