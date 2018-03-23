@@ -202,9 +202,12 @@ namespace Bitfinex.Net
         {
             lock (connectionLock)
             {
-                State = SocketState.Disconnecting;
-                socket.Close().Wait();
-                State = SocketState.Disconnected;
+                if (socket != null && socket.IsOpen)
+                {
+                    State = SocketState.Disconnecting;
+                    socket.Close().Wait();
+                    State = SocketState.Disconnected;
+                }
             }
 
             running = false;
@@ -629,7 +632,10 @@ namespace Bitfinex.Net
         {
             log.Write(LogVerbosity.Debug, "Socket closed");
             if (!reconnect)
+            {
+                Dispose();
                 return;
+            }
 
             Task.Run(() =>
             {
@@ -1010,7 +1016,7 @@ namespace Bitfinex.Net
         public override void Dispose()
         {
             base.Dispose();
-            StopInternal();
+            socket.Dispose();
         }
 
         #endregion

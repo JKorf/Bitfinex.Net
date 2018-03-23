@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Bitfinex.Net.Objects;
-using CryptoExchange.Net;
+using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
