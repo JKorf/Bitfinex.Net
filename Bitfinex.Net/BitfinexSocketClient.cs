@@ -35,7 +35,7 @@ namespace Bitfinex.Net
         private Dictionary<string, Type> subscriptionResponseTypes;
 
         private Dictionary<BitfinexNewOrder, WaitAction<BitfinexOrder>> pendingOrders;
-        private Dictionary<long, WaitAction> pendingCancels;
+        private Dictionary<long, WaitAction<bool>> pendingCancels;
 
         private List<SubscriptionRequest> subscriptionRequests;
         private List<SubscriptionRequest> outstandingSubscriptionRequests;
@@ -269,7 +269,7 @@ namespace Bitfinex.Net
                 Culture = CultureInfo.InvariantCulture
             });
 
-            BitfinexOrder orderConfirm = null;
+            CallResult<BitfinexOrder> orderConfirm = null;
             await Task.Run(() =>
             {
                 var waitAction = new WaitAction<BitfinexOrder>();
@@ -279,10 +279,10 @@ namespace Bitfinex.Net
                 pendingOrders.Remove(order);
             }).ConfigureAwait(false);
 
-            if (orderConfirm != null)
-                log.Write(LogVerbosity.Info, "Order canceled");
-            
-            return new CallResult<BitfinexOrder>(orderConfirm, orderConfirm != null ? null : new ServerError("No confirmation received for placed order"));
+            if (orderConfirm != null && orderConfirm.Success)
+                log.Write(LogVerbosity.Info, "Order placed");
+
+            return orderConfirm ?? new CallResult<BitfinexOrder>(null,  new ServerError("No confirmation received for placed order"));
         }
 
         /// <summary>
@@ -312,20 +312,20 @@ namespace Bitfinex.Net
             var wrapper = new JArray(0, "oc", null, obj);
             var data = JsonConvert.SerializeObject(wrapper);
 
-            bool done = false;
+            CallResult<bool> cancelConfirm = null;
             await Task.Run(() =>
             {
-                var waitAction = new WaitAction();
+                var waitAction = new WaitAction<bool>();
                 pendingCancels.Add(orderId, waitAction);
                 Send(data);
-                done = waitAction.Wait(20000);
+                cancelConfirm = waitAction.Wait(20000);
                 pendingCancels.Remove(orderId);
             }).ConfigureAwait(false);
 
-            if (done)
+            if (cancelConfirm != null && cancelConfirm.Success)
                 log.Write(LogVerbosity.Info, "Order canceled");
             
-            return new CallResult<bool>(done, done ? null : new ServerError("No confirmation received for canceling order"));
+            return cancelConfirm ?? new CallResult<bool>(false, new ServerError("No confirmation received for cancel order"));
         }
 
         #region subscribing
@@ -533,7 +533,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<bool>> UnsubscribeFromChannel(int streamId)
         {
             log.Write(LogVerbosity.Debug, "Unsubscribing from channel " + streamId);
-            var sub = confirmedRequests.Single(r => r.StreamId == streamId && r.ChannelId != null);
+            var sub = confirmedRequests.SingleOrDefault(r => r.StreamId == streamId && r.ChannelId != null);
             if (sub != null)
             {
                 if (State == SocketState.Connected)
@@ -821,6 +821,7 @@ namespace Bitfinex.Net
 
                             var messageType = dataObject[1].ToString();
                             HandleRequestResponse(messageType, (JArray)dataObject);
+
                             var accountReg = registrations.SingleOrDefault(r => r.UpdateKeys.Contains(messageType));
                             accountReg?.Handle((JArray)dataObject);
                         }
@@ -837,6 +838,7 @@ namespace Bitfinex.Net
         {
             if (messageType == "on")
             {
+                // new order
                 var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
                 if (!orderResult.Success)
                 {
@@ -849,13 +851,14 @@ namespace Bitfinex.Net
                     var o = pendingOrder.Key;
                     if (o.Symbol == orderResult.Data.Symbol && o.Amount == orderResult.Data.AmountOriginal)
                     {
-                        pendingOrder.Value.Set(orderResult.Data);
+                        pendingOrder.Value.Set(new CallResult<BitfinexOrder>(orderResult.Data, null));
                         break;
                     }
                 }
             }
             else if (messageType == "oc")
             {
+                // canceled order
                 var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
                 if (!orderResult.Success)
                 {
@@ -868,8 +871,54 @@ namespace Bitfinex.Net
                     var o = pendingCancel.Key;
                     if (o == orderResult.Data.Id)
                     {
-                        pendingCancel.Value.Set();
+                        pendingCancel.Value.Set(new CallResult<bool>(true, null));
                         break;
+                    }
+                }
+            }
+
+            else if (messageType == "n")
+            {
+                // notification
+                var dataArray = (JArray)dataObject[2];
+                var noticationType = dataArray[1].ToString();
+                if (noticationType == "on-req" || noticationType == "oc-req")
+                {
+
+                    var orderData = (JArray)dataArray[4];
+                    var error = dataArray[6].ToString().ToLower() == "error";
+                    var message = dataArray[7].ToString();
+                    if (!error)
+                        return;
+
+                    if (dataArray[1].ToString() == "on-req")
+                    {
+                        // new order request
+                        var orderAmount = decimal.Parse(orderData[6].ToString());
+                        var orderType = (OrderType)orderData[8].ToObject(typeof(OrderType), new JsonSerializer() { Converters = { new OrderTypeConverter() } });
+                        foreach (var pendingOrder in pendingOrders.ToList())
+                        {
+                            var o = pendingOrder.Key;
+                            if (o.Amount == orderAmount && o.OrderType == orderType)
+                            {
+                                pendingOrder.Value.Set(new CallResult<BitfinexOrder>(null, new ServerError(message)));
+                                break;
+                            }
+                        }
+                    }
+                    else if (dataArray[1].ToString() == "oc-req")
+                    {
+                        // cancel order request
+                        var orderId = (long)orderData[0];
+                        foreach (var pendingCancel in pendingCancels.ToList())
+                        {
+                            var o = pendingCancel.Key;
+                            if (o == orderId)
+                            {
+                                pendingCancel.Value.Set(new CallResult<bool>(false, new ServerError(message)));
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -944,7 +993,7 @@ namespace Bitfinex.Net
             outstandingUnsubscriptionRequests = new List<UnsubscriptionRequest>();
             confirmedRequests = new List<SubscriptionRequest>();
             pendingOrders = new Dictionary<BitfinexNewOrder, WaitAction<BitfinexOrder>>();
-            pendingCancels = new Dictionary<long, WaitAction>();
+            pendingCancels = new Dictionary<long, WaitAction<bool>>();
 
             if (subscriptionRequests == null)
                 subscriptionRequests = new List<SubscriptionRequest>();
