@@ -140,6 +140,10 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 0.0.8 - 23 mar 2018
+	* Updated socket dispose
+	* Updated base
+
 * Version 0.0.7 - 23 mar 2018
 	* Added notification message handling resulting in faster error message when failing to place/cancel orders via websocket
 	* Fix for unsubsribing exception
