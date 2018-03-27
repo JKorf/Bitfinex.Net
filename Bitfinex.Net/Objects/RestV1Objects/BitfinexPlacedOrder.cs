@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Bitfinex.Net.Converters;
+using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
@@ -18,7 +19,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         public OrderSide Side { get; set; }
         [JsonConverter(typeof(OrderTypeV1Converter))]
         public OrderTypeV1 Type { get; set; }
-        [JsonConverter(typeof(TimestampV1Converter))]
+        [JsonConverter(typeof(TimestampSecondsConverter))]
         public DateTime Timestamp { get; set; }
         [JsonProperty("is_live")]
         public bool Live { get; set; }

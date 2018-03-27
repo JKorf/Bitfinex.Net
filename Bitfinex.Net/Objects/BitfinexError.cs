@@ -1,14 +1,14 @@
-﻿using Bitfinex.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexError
     {
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public int ErrorCode { get; set; }
-        [BitfinexProperty(2)]
+        [ArrayProperty(2)]
         public string ErrorMessage { get; set; }
 
         public BitfinexError(int errorCode, string errorMessage)

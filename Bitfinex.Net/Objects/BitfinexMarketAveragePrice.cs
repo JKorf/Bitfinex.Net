@@ -1,15 +1,15 @@
-﻿using Bitfinex.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMarketAveragePrice
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public decimal AverageRate { get; set; }
 
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public decimal Amount { get; set; }
     }
 }

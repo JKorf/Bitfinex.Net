@@ -5,79 +5,79 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexOrder
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public long Id { get; set; }
 
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public int? GroupId { get; set; }
 
-        [BitfinexProperty(2)]
+        [ArrayProperty(2)]
         public long ClientOrderId { get; set; }
 
-        [BitfinexProperty(3)]
+        [ArrayProperty(3)]
         public string Symbol { get; set; }
 
-        [BitfinexProperty(4), JsonConverter(typeof(TimestampConverter))]
+        [ArrayProperty(4), JsonConverter(typeof(TimestampConverter))]
         public DateTime TimestampCreated { get; set; }
 
-        [BitfinexProperty(5), JsonConverter(typeof(TimestampConverter))]
+        [ArrayProperty(5), JsonConverter(typeof(TimestampConverter))]
         public DateTime TimestampUpdated { get; set; }
 
-        [BitfinexProperty(6)]
+        [ArrayProperty(6)]
         public decimal Amount { get; set; }
 
-        [BitfinexProperty(7)]
+        [ArrayProperty(7)]
         public decimal AmountOriginal { get; set; }
 
-        [BitfinexProperty(8), JsonConverter(typeof(OrderTypeConverter))]
+        [ArrayProperty(8), JsonConverter(typeof(OrderTypeConverter))]
         public OrderType Type { get; set; }
 
-        [BitfinexProperty(9), JsonConverter(typeof(OrderTypeConverter))]
+        [ArrayProperty(9), JsonConverter(typeof(OrderTypeConverter))]
         public OrderType? TypePrevious { get; set; }
 
-        [BitfinexProperty(10)]
+        [ArrayProperty(10)]
         internal string PlaceHolder1 { get; set; }
 
-        [BitfinexProperty(11)]
+        [ArrayProperty(11)]
         internal string PlaceHolder2 { get; set; }
 
-        [BitfinexProperty(12)]
+        [ArrayProperty(12)]
         public int? Flags { get; set; }
 
-        [BitfinexProperty(13), JsonConverter(typeof(OrderStatusConverter))]
+        [ArrayProperty(13), JsonConverter(typeof(OrderStatusConverter))]
         public OrderStatus Status { get; set; }
-        [BitfinexProperty(14)]
+        [ArrayProperty(14)]
         internal string PlaceHolder3 { get; set; }
 
-        [BitfinexProperty(15)]
+        [ArrayProperty(15)]
         internal string PlaceHolder4 { get; set; }
 
-        [BitfinexProperty(16)]
+        [ArrayProperty(16)]
         public decimal Price { get; set; }
 
-        [BitfinexProperty(17)]
+        [ArrayProperty(17)]
         public decimal? PriceAverage { get; set; }
 
-        [BitfinexProperty(18)]
+        [ArrayProperty(18)]
         public decimal PriceTrailing { get; set; }
 
-        [BitfinexProperty(19)]
+        [ArrayProperty(19)]
         public decimal PriceAuxilliaryLimit { get; set; }
-        [BitfinexProperty(20)]
+        [ArrayProperty(20)]
         internal string PlaceHolder5 { get; set; }
-        [BitfinexProperty(21)]
+        [ArrayProperty(21)]
         internal string PlaceHolder6 { get; set; }
-        [BitfinexProperty(22)]
+        [ArrayProperty(22)]
         internal string PlaceHolder7 { get; set; }
 
-        [BitfinexProperty(23)]
+        [ArrayProperty(23)]
         public bool Notify { get; set; }
-        [BitfinexProperty(24)]
+        [ArrayProperty(24)]
         public bool Hidden { get; set; }
-        [BitfinexProperty(25)]
+        [ArrayProperty(25)]
         public int? PlacedId { get; set; }
     }
 }

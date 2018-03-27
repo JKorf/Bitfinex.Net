@@ -1,12 +1,12 @@
-﻿using Bitfinex.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexSuccessResult
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public bool Success { get; set; }
     }
 }

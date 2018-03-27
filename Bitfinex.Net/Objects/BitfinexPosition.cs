@@ -1,39 +1,40 @@
 ﻿using Bitfinex.Net.Converters;
+using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexPosition
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public string Symbol { get; set; }
 
-        [BitfinexProperty(1), JsonConverter(typeof(PositionStatusConverter))]
+        [ArrayProperty(1), JsonConverter(typeof(PositionStatusConverter))]
         public PositionStatus Status { get; set; }
 
-        [BitfinexProperty(2)]
+        [ArrayProperty(2)]
         public decimal Amount { get; set; }
 
-        [BitfinexProperty(3)]
+        [ArrayProperty(3)]
         public decimal BasePrice { get; set; }
 
-        [BitfinexProperty(4)]
+        [ArrayProperty(4)]
         public decimal MarginFunding { get; set; }
 
-        [BitfinexProperty(5), JsonConverter(typeof(MarginFundingTypeConverter))]
+        [ArrayProperty(5), JsonConverter(typeof(MarginFundingTypeConverter))]
         public MarginFundingType MarginFundingType { get; set; }
 
-        [BitfinexProperty(6)]
+        [ArrayProperty(6)]
         public decimal ProfitLoss { get; set; }
 
-        [BitfinexProperty(7)]
+        [ArrayProperty(7)]
         public decimal ProfitLossPercentage { get; set; }
 
-        [BitfinexProperty(8)]
+        [ArrayProperty(8)]
         public decimal LiquidationPrice { get; set; }
 
-        [BitfinexProperty(9)]
+        [ArrayProperty(9)]
         public decimal Leverage { get; set; }
     }
 }

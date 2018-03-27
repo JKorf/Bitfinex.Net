@@ -1,24 +1,25 @@
 ﻿using Bitfinex.Net.Converters;
+using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexWallet
     {
-        [BitfinexProperty(0), JsonConverter(typeof(WalletTypeConverter))]
+        [ArrayProperty(0), JsonConverter(typeof(WalletTypeConverter))]
         public WalletType Type { get; set; }
 
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public string Currency { get; set; }
 
-        [BitfinexProperty(2)]
+        [ArrayProperty(2)]
         public decimal Balance { get; set; }
 
-        [BitfinexProperty(3)]
+        [ArrayProperty(3)]
         public decimal UnsettledInterest { get; set; }
 
-        [BitfinexProperty(4)]
+        [ArrayProperty(4)]
         public decimal? BalanceAvailable { get; set; }
     }
 }

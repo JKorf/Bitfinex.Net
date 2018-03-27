@@ -1,31 +1,31 @@
-﻿using Bitfinex.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexFundingInfo
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public string Type { get; set; }
 
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public string Symbol { get; set; }
 
-        [BitfinexProperty(2), JsonConverter(typeof(BitfinexResultConverter))]
+        [ArrayProperty(2), JsonConverter(typeof(ArrayConverter))]
         public BitfinexFundingInfoDetails Data { get; set; }
     }
 
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexFundingInfoDetails
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public decimal YieldLoan { get; set; }
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public decimal YieldLend { get; set; }
-        [BitfinexProperty(2)]
+        [ArrayProperty(2)]
         public decimal DurationLoan { get; set; }
-        [BitfinexProperty(3)]
+        [ArrayProperty(3)]
         public decimal DurationLend { get; set; }
     }
 }

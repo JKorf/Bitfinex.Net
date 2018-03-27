@@ -1,24 +1,23 @@
 ﻿using System;
-using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexCandle
     {
-        [BitfinexProperty(0), JsonConverter(typeof(TimestampConverter))]
+        [ArrayProperty(0), JsonConverter(typeof(TimestampConverter))]
         public DateTime Timestamp { get; set; }
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public decimal Open { get; set; }
-        [BitfinexProperty(2)]
+        [ArrayProperty(2)]
         public decimal Close { get; set; }
-        [BitfinexProperty(3)]
+        [ArrayProperty(3)]
         public decimal High { get; set; }
-        [BitfinexProperty(4)]
+        [ArrayProperty(4)]
         public decimal Low { get; set; }
-        [BitfinexProperty(5)]
+        [ArrayProperty(5)]
         public decimal Volume { get; set; }
     }
 }

@@ -1,16 +1,16 @@
-﻿using Bitfinex.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexOrderBookEntry
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public decimal Price { get; set; }
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public int Count { get; set; }
-        [BitfinexProperty(2)]
+        [ArrayProperty(2)]
         public decimal Amount { get; set; }
     }
 }

@@ -1,32 +1,32 @@
-﻿using Bitfinex.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMarketOverview
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public string Symbol { get; set; }
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public decimal Bid { get; set; }
-        [BitfinexProperty(2)]
+        [ArrayProperty(2)]
         public decimal BidSize { get; set; }
-        [BitfinexProperty(3)]
+        [ArrayProperty(3)]
         public decimal Ask { get; set; }
-        [BitfinexProperty(4)]
+        [ArrayProperty(4)]
         public decimal AskSize { get; set; }
-        [BitfinexProperty(5)]
+        [ArrayProperty(5)]
         public decimal DailyChange { get; set; }
-        [BitfinexProperty(6)]
+        [ArrayProperty(6)]
         public decimal DailtyChangePercentage { get; set; }
-        [BitfinexProperty(7)]
+        [ArrayProperty(7)]
         public decimal LastPrice { get; set; }
-        [BitfinexProperty(8)]
+        [ArrayProperty(8)]
         public decimal Volume { get; set; }
-        [BitfinexProperty(9)]
+        [ArrayProperty(9)]
         public decimal High { get; set; }
-        [BitfinexProperty(10)]
+        [ArrayProperty(10)]
         public decimal Low { get; set; }
 
     }

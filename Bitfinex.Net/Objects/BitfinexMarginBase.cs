@@ -1,31 +1,31 @@
-﻿using Bitfinex.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMarginBase
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public string Type { get; set; }
 
-        [BitfinexProperty(1), JsonConverter(typeof(BitfinexResultConverter))]
+        [ArrayProperty(1), JsonConverter(typeof(ArrayConverter))]
         public BitfinexMarginBaseInfo Data { get; set; }
     }
     
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMarginBaseInfo
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public decimal UserProfitLoss { get; set; }
 
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public decimal UserSwapsAmount { get; set; }
 
-        [BitfinexProperty(2)]
+        [ArrayProperty(2)]
         public decimal MarginBalance { get; set; }
 
-        [BitfinexProperty(3)]
+        [ArrayProperty(3)]
         public decimal MarginNet { get; set; }
     }
 }

@@ -1,24 +1,24 @@
-﻿using Bitfinex.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
-    [JsonConverter(typeof(BitfinexResultConverter))]
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexAlert
     {
-        [BitfinexProperty(0)]
+        [ArrayProperty(0)]
         public string AlertKey { get; set; }
 
-        [BitfinexProperty(1)]
+        [ArrayProperty(1)]
         public string AlertType { get; set; }
 
-        [BitfinexProperty(2)]
+        [ArrayProperty(2)]
         public string Symbol { get; set; }
 
-        [BitfinexProperty(3)]
+        [ArrayProperty(3)]
         public decimal Price { get; set; }
 
-        [BitfinexProperty(4)]
+        [ArrayProperty(4)]
         // TODO what is this value?
         public decimal T { get; set; }
     }
