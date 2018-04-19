@@ -140,6 +140,12 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.0 - 19 apr 2018
+	* Added raw orderbook subscription
+	* Fix for GetCandles limit parameter
+	* Fix for V1 Api error parsing
+	* Fix for nonce for authenticated requests
+
 * Version 0.0.8 - 23 mar 2018
 	* Updated socket dispose
 	* Updated base
