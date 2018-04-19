@@ -71,7 +71,7 @@ namespace Bitfinex.Net
         private const string OrderStatusEndpoint = "order/status";
 
 
-        private string nonce => Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 10).ToString(CultureInfo.InvariantCulture);
+        private string nonce => ((long)((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000)).ToString();
         #endregion
 
         #region constructor/destructor
@@ -880,8 +880,16 @@ namespace Bitfinex.Net
 
         protected override Error ParseErrorResponse(string data)
         {
-            var error = JArray.Parse(data).ToObject<BitfinexError>();
-            return new ServerError(error.ErrorCode, error.ErrorMessage);
+            var token = JToken.Parse(data);
+            if (token is JArray)
+            {
+                var error = JArray.Parse(data).ToObject<BitfinexError>();
+                return new ServerError(error.ErrorCode, error.ErrorMessage);
+            }
+            else
+            {
+                return new ServerError(-1, token["message"].ToString());
+            }
         }
 
         private Uri GetUrl(string endpoint, string version)
