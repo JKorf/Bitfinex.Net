@@ -12,7 +12,7 @@ namespace Bitfinex.Net.Objects
         public long Id { get; set; }
 
         [ArrayProperty(1)]
-        public int? GroupId { get; set; }
+        public long? GroupId { get; set; }
 
         [ArrayProperty(2)]
         public long ClientOrderId { get; set; }
@@ -78,6 +78,6 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(24)]
         public bool Hidden { get; set; }
         [ArrayProperty(25)]
-        public int? PlacedId { get; set; }
+        public long? PlacedId { get; set; }
     }
 }
