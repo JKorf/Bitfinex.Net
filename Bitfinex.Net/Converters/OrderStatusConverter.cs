@@ -8,12 +8,13 @@ namespace Bitfinex.Net.Converters
 {
     public class OrderStatusConverter: JsonConverter
     {
-        private readonly Dictionary<OrderStatus, string> mapping = new Dictionary<OrderStatus, string>()
+        private readonly Dictionary<string, OrderStatus> mapping = new Dictionary<string, OrderStatus>()
         {
-            { OrderStatus.Active, "ACTIVE" },
-            { OrderStatus.Executed, "EXECUTED" },
-            { OrderStatus.PartiallyFilled, "PARTIALLY FILLED" },
-            { OrderStatus.Canceled, "CANCELED" },
+            {  "ACTIVE", OrderStatus.Active },
+            {  "EXECUTED", OrderStatus.Executed},
+            {  "PARTIALLY FILLED",OrderStatus.PartiallyFilled},
+            {  "CANCELED", OrderStatus.Canceled},
+            {  "INSUFFICIENT BALANCE (G1) was: PARTIALLY FILLED", OrderStatus.PartiallyFilled }
         };
         
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -25,7 +26,7 @@ namespace Bitfinex.Net.Converters
         {
             var statusString = reader.Value.ToString();
             var split = statusString.Split(new[] {" @ "}, StringSplitOptions.RemoveEmptyEntries);
-            return mapping.Single(m => m.Value == split[0]).Key;
+            return mapping.Single(m => m.Key == split[0]).Value;
         }
 
         public override bool CanConvert(Type objectType)
