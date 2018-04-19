@@ -450,7 +450,7 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public async Task<CallResult<int>> SubscribeToTicker(string symbol, Action<BitfinexMarketOverview[]> handler)
+        public async Task<CallResult<int>> SubscribeToTickerUpdates(string symbol, Action<BitfinexMarketOverview[]> handler)
         {
             var id = NextStreamId;
             var sub = new TickerSubscriptionRequest(symbol, handler) {StreamId = id};
@@ -470,7 +470,7 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public async Task<CallResult<int>> SubscribeToTrades(string symbol, Action<BitfinexTradeSimple[]> handler)
+        public async Task<CallResult<int>> SubscribeToTradeUpdates(string symbol, Action<BitfinexTradeSimple[]> handler)
         {
             var id = NextStreamId;
             var sub = new TradesSubscriptionRequest(symbol, handler) { StreamId = id };
@@ -490,13 +490,13 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="precision">The pricision of the udpates</param>
         /// <param name="frequency">The frequency of updates</param>
-        /// <param name="length">The amount of data to recive in updates</param>
+        /// <param name="length">The amount of data to receive in the initial snapshot</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public async Task<CallResult<int>> SubscribeToBook(string symbol, Precision precision, Frequency frequency, int length, Action<BitfinexOrderBookEntry[]> handler)
+        public async Task<CallResult<int>> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<BitfinexOrderBookEntry[]> handler)
         {
             var id = NextStreamId;
-            var sub = new BookSubscriptionRequest(symbol, JsonConvert.SerializeObject(precision, new PrecisionConverter(false)), JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)), length, handler) { StreamId = id };
+            var sub = new BookSubscriptionRequest(symbol, JsonConvert.SerializeObject(precision, new PrecisionConverter(false)), JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)), length, (data) => handler((BitfinexOrderBookEntry[])data)) { StreamId = id };
             subscriptionRequests.Add(sub);
 
             if (State != SocketState.Connected)
@@ -508,13 +508,34 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
+        /// Subscribes to raw orderbook update for a symbol. Requires socket to be connected
+        /// </summary>
+        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="length">The amount of data to recive in the initial snapshot</param>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns>A stream id with which can be unsubscribed</returns>
+        public async Task<CallResult<int>> SubscribeToRawBookUpdates(string symbol, int length, Action<BitfinexRawOrderBookEntry[]> handler)
+        {
+            var id = NextStreamId;
+            var sub = new RawBookSubscriptionRequest(symbol, "R0", length, (data) => handler((BitfinexRawOrderBookEntry[])data)) { StreamId = id };
+            subscriptionRequests.Add(sub);
+
+            if (State != SocketState.Connected)
+                return new CallResult<int>(id, null);
+
+            log.Write(LogVerbosity.Debug, "Subscribing to raw book updates for " + symbol);
+            await SubscribeAndWait(sub).ConfigureAwait(false);
+            return new CallResult<int>(id, null);
+        }
+
+        /// <summary>
         /// Subscribes to candle updates for a symbol. Requires socket to be connected
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="interval">The interval of the candles</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public async Task<CallResult<int>> SubscribeToCandles(string symbol, TimeFrame interval, Action<BitfinexCandle[]> handler)
+        public async Task<CallResult<int>> SubscribeToCandleUpdates(string symbol, TimeFrame interval, Action<BitfinexCandle[]> handler)
         {
             var id = NextStreamId;
             var sub = new CandleSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false)), handler) { StreamId = id };
@@ -599,7 +620,7 @@ namespace Bitfinex.Net
             bool confirmed = false;
             await Task.Run(() =>
             {
-                confirmed = request.ConfirmedEvent.WaitOne(2000);
+                confirmed = request.ConfirmedEvent.WaitOne(5000);
                 outstandingSubscriptionRequests.Remove(request);
                 confirmedRequests.Add(request);
                 log.Write(LogVerbosity.Debug, !confirmed ? "No confirmation received" : "Subscription confirmed");
@@ -618,7 +639,7 @@ namespace Bitfinex.Net
             bool confirmed = false;
             await Task.Run(() =>
             {
-                confirmed = request.ConfirmedEvent.WaitOne(2000);
+                confirmed = request.ConfirmedEvent.WaitOne(5000);
                 outstandingUnsubscriptionRequests.Remove(request);
                 confirmedRequests.RemoveAll(r => r.ChannelId == request.ChannelId);
                 subscriptionRequests.Single(s => s.ChannelId == request.ChannelId).ResetSubscription();

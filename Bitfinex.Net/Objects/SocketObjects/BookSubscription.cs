@@ -15,9 +15,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("len")]
         public int Length { get; set; }
 
-        private Action<BitfinexOrderBookEntry[]> handler;
+        private Action<BitfinexOrderBookBase[]> handler;
 
-        public BookSubscriptionRequest(string symbol, string precision, string frequency, int length, Action<BitfinexOrderBookEntry[]> handler)
+        public BookSubscriptionRequest(string symbol, string precision, string frequency, int length, Action<BitfinexOrderBookBase[]> handler)
         {
             Symbol = symbol;
             Precision = precision;
@@ -36,6 +36,38 @@ namespace Bitfinex.Net.Objects.SocketObjects
             handler((BitfinexOrderBookEntry[])obj);
         }
     }
+
+    [SubscriptionChannel("book", typeof(BitfinexRawOrderBookEntry), false)]
+    public class RawBookSubscriptionRequest : SubscriptionRequest
+    {
+        [JsonProperty("symbol")]
+        public string Symbol { get; set; }
+        [JsonProperty("prec")]
+        public string Precision { get; set; }
+        [JsonProperty("len")]
+        public int Length { get; set; }
+
+        private Action<BitfinexOrderBookBase[]> handler;
+
+        public RawBookSubscriptionRequest(string symbol, string precision, int length, Action<BitfinexOrderBookBase[]> handler)
+        {
+            Symbol = symbol;
+            Precision = precision;
+            Length = length;
+            this.handler = handler;
+        }
+
+        protected override string GetSubscriptionSubKey()
+        {
+            return Symbol + Precision + "F0" + Length;
+        }
+
+        protected override void Handle(object obj)
+        {
+            handler((BitfinexRawOrderBookEntry[])obj);
+        }
+    }
+
 
     [SubscriptionChannel("book")]
     public class BookSubscriptionResponse : SubscriptionResponse
