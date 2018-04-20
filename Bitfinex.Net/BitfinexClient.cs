@@ -132,21 +132,21 @@ namespace Bitfinex.Net
         /// Synchronized version of the <see cref="GetTickerAsync"/> method
         /// </summary>
         /// <returns></returns>
-        public CallResult<BitfinexMarketOverview[]> GetTicker(params string[] symbols) => GetTickerAsync(symbols).Result;
+        public CallResult<BitfinexMarketOverviewRest[]> GetTicker(params string[] symbols) => GetTickerAsync(symbols).Result;
 
         /// <summary>
         /// Returns basic market data for the provided smbols
         /// </summary>
         /// <param name="symbols">The symbols to get data for</param>
         /// <returns>Market data</returns>
-        public async Task<CallResult<BitfinexMarketOverview[]>> GetTickerAsync(params string[] symbols)
+        public async Task<CallResult<BitfinexMarketOverviewRest[]>> GetTickerAsync(params string[] symbols)
         {
             var parameters = new Dictionary<string, object>()
             {
                 {"symbols", string.Join(",", symbols)}
             };
 
-            return await ExecuteRequest<BitfinexMarketOverview[]>(GetUrl(TickersEndpoint, ApiVersion2), GetMethod, parameters);
+            return await ExecuteRequest<BitfinexMarketOverviewRest[]>(GetUrl(TickersEndpoint, ApiVersion2), GetMethod, parameters);
         }
 
         /// <summary>
