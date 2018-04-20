@@ -46,7 +46,7 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var expected = new []
             {
-                new BitfinexMarketOverview()
+                new BitfinexMarketOverviewRest()
                 {
                     Ask = 0.1m,
                     AskSize = 0.2m,
