@@ -140,6 +140,11 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.1 - 20 apr 2018
+	* Fix for OrderStatus parsing
+	* Fix for int's being used when should be long
+	* Fix swapped parameters in socket order
+	
 * Version 1.0.0 - 19 apr 2018
 	* Added raw orderbook subscription
 	* Fix for GetCandles limit parameter
