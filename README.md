@@ -140,6 +140,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.2 - 20 apr 2018
+	* Fix for ticker stream data deserialization
+
 * Version 1.0.1 - 20 apr 2018
 	* Fix for OrderStatus parsing
 	* Fix for int's being used when should be long
