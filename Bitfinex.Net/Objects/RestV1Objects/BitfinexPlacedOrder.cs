@@ -36,7 +36,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         [JsonProperty("executed_amount")]
         public decimal ExecutedAmount { get; set; }
         [JsonProperty("gid")]
-        public int? GroupId { get; set; }
+        public long? GroupId { get; set; }
         [JsonProperty("cid")]
         public long ClientOrderId { get; set; }
         [JsonProperty("cid_date")]

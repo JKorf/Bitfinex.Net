@@ -21,9 +21,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public decimal? PriceOCOStop { get; set; }
         [JsonProperty("flags")]
         public OrderFlags? Flags { get; set; }
-        [JsonProperty("cid")]
-        public int? GroupId { get; set; }
         [JsonProperty("gid")]
-        public int? ClientOrderId { get; set; }
+        public long? GroupId { get; set; }
+        [JsonProperty("cid")]
+        public string ClientOrderId { get; set; }
     }
 }

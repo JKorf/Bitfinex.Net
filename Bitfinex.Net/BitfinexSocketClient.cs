@@ -223,7 +223,7 @@ namespace Bitfinex.Net
         /// Synchronized version of the <see cref="PlaceOrderAsync"/> method
         /// </summary>
         /// <returns></returns>
-        public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, int? groupId = null, int? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null) => PlaceOrderAsync(type, symbol, amount, groupId, clientOrderId, price, priceTrailing, priceAuxiliaryLimit, priceOcoStop, flags).Result;
+        public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, long? groupId = null, string clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null) => PlaceOrderAsync(type, symbol, amount, groupId, clientOrderId, price, priceTrailing, priceAuxiliaryLimit, priceOcoStop, flags).Result;
 
         /// <summary>
         /// Places a new order
@@ -239,7 +239,7 @@ namespace Bitfinex.Net
         /// <param name="priceOcoStop">Oco stop price of ther order</param>
         /// <param name="flags">Additional flags</param>
         /// <returns></returns>
-        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, int? groupId = null, int? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null)
+        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, long? groupId = null, string clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null)
         {
             if (!CheckConnection())
                 return new CallResult<BitfinexOrder>(null, new WebError("Socket needs to be started before placing an order"));
