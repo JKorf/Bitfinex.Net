@@ -9,9 +9,11 @@ namespace Bitfinex.Net
     public class BitfinexAuthenticationProvider: AuthenticationProvider
     {
         private readonly HMACSHA384 encryptor;
+        private readonly object locker;
 
         public BitfinexAuthenticationProvider(ApiCredentials credentials) : base(credentials)
         {
+            locker = new object();
             encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(credentials.Secret));
         }
 
@@ -27,7 +29,8 @@ namespace Bitfinex.Net
 
         public override string Sign(string toSign)
         {
-            return ByteToString(encryptor.ComputeHash(Encoding.UTF8.GetBytes(toSign)));
+            lock(locker)
+                return ByteToString(encryptor.ComputeHash(Encoding.UTF8.GetBytes(toSign)));
         }
     }
 }
