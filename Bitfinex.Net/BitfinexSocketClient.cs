@@ -589,7 +589,7 @@ namespace Bitfinex.Net
         #region private
         private void Create()
         {
-            socket = SocketFactory.CreateWebsocket(baseAddress);
+            socket = SocketFactory.CreateWebsocket(log, baseAddress);
             socket.OnClose += SocketClosed;
             socket.OnError += SocketError;
             socket.OnOpen += SocketOpened;

@@ -140,6 +140,10 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.3 - 04 may 2018
+	* Fix for freezing from UI-thread with authenticated requests
+	* Fix for position deserialization
+
 * Version 1.0.2 - 20 apr 2018
 	* Fix for ticker stream data deserialization
 
