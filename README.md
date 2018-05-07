@@ -140,6 +140,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.5 - 07 may 2018
+	* Fix for logging issue
+
 * Version 1.0.4 - 07 may 2018
 	* Added optional parameters to place order
 
