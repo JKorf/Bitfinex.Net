@@ -140,6 +140,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.4 - 07 may 2018
+	* Added optional parameters to place order
+
 * Version 1.0.3 - 04 may 2018
 	* Fix for freezing from UI-thread with authenticated requests
 	* Fix for position deserialization
