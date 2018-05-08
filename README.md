@@ -140,6 +140,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.6 - 08 may 2018
+	* Fixed bug with orderstatus parsing
+
 * Version 1.0.5 - 07 may 2018
 	* Fix for logging issue
 
