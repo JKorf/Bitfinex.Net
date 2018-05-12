@@ -140,6 +140,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.8 - 12 may 2018
+	* Fix for new order parameter in socket client
+
 * Version 1.0.7 - 12 may 2018
 	* Added StopLimitOrder ordertype
 
