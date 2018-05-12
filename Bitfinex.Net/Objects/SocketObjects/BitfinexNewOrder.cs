@@ -15,7 +15,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public decimal? Price { get; set; }
         [JsonProperty("price_trailing")]
         public decimal? PriceTrailing { get; set; }
-        [JsonProperty("price_aux_limit")]
+        [JsonProperty("price_aux_limit"), JsonConverter(typeof(DecimalAsStringConverter))]
         public decimal? PriceAuxiliaryLimit { get; set; }
         [JsonProperty("price_oco_stop"), JsonConverter(typeof(DecimalAsStringConverter))]
         public decimal? PriceOCOStop { get; set; }
