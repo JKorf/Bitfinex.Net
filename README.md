@@ -140,6 +140,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.7 - 12 may 2018
+	* Added StopLimitOrder ordertype
+
 * Version 1.0.6 - 08 may 2018
 	* Fixed bug with orderstatus parsing
 
