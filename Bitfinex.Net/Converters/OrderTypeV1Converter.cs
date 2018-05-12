@@ -18,6 +18,7 @@ namespace Bitfinex.Net.Converters
             { OrderType.ExchangeMarket, "EXCHANGE MARKET" },
             { OrderType.ExchangeLimit, "EXCHANGE LIMIT" },
             { OrderType.ExchangeStop, "EXCHANGE STOP" },
+            { OrderType.ExchangeStopLimit, "EXCHANGE STOP LIMIT" },
             { OrderType.ExchangeTrailingStop, "EXCHANGE TRAILING STOP" },
             { OrderType.FillOrKill, "FOK" },
             { OrderType.ExchangeFillOrKill, "EXCHANGE FOK" },

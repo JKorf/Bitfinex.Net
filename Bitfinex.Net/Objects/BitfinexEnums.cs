@@ -81,6 +81,7 @@ namespace Bitfinex.Net.Objects
         ExchangeMarket,
         ExchangeLimit,
         ExchangeStop,
+        ExchangeStopLimit,
         ExchangeTrailingStop,
         FillOrKill,
         ExchangeFillOrKill
@@ -96,6 +97,7 @@ namespace Bitfinex.Net.Objects
         ExchangeMarket,
         ExchangeLimit,
         ExchangeStop,
+        ExchangeStopLimit,
         ExchangeTrailingStop,
         ExchangeFillOrKill
     }
