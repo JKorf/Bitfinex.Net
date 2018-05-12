@@ -107,7 +107,8 @@ namespace Bitfinex.Net.Objects
         Active,
         Executed,
         PartiallyFilled,
-        Canceled
+        Canceled,
+        Unknown
     }
 
     public enum PositionStatus

@@ -730,7 +730,18 @@ namespace Bitfinex.Net
         /// Synchronized version of the <see cref="PlaceOrderAsync"/> method
         /// </summary>
         /// <returns></returns>
-        public CallResult<BitfinexPlacedOrder> PlaceOrder(string symbol, OrderSide side, OrderTypeV1 type, decimal amount, decimal price) => PlaceOrderAsync(symbol, side, type, amount, price).Result;
+        public CallResult<BitfinexPlacedOrder> PlaceOrder(
+            string symbol,
+            OrderSide side,
+            OrderTypeV1 type,
+            decimal amount, 
+            decimal price, 
+            bool? hidden = null, 
+            bool? postOnly = null, 
+            bool? useAllAvailable = null,
+            bool? ocoOrder = null, 
+            decimal? ocoBuyPrice = null, 
+            decimal? ocoSellPrice = null) => PlaceOrderAsync(symbol, side, type, amount, price, hidden, postOnly, useAllAvailable, ocoOrder, ocoBuyPrice, ocoSellPrice).Result;
 
         /// <summary>
         /// Place a new order
@@ -741,7 +752,18 @@ namespace Bitfinex.Net
         /// <param name="amount">The amount of the order</param>
         /// <param name="price">The price for the order</param>
         /// <returns></returns>
-        public async Task<CallResult<BitfinexPlacedOrder>> PlaceOrderAsync(string symbol, OrderSide side, OrderTypeV1 type, decimal amount, decimal price)
+        public async Task<CallResult<BitfinexPlacedOrder>> PlaceOrderAsync(
+            string symbol, 
+            OrderSide side, 
+            OrderTypeV1 type, 
+            decimal amount, 
+            decimal price, 
+            bool? hidden = null,
+            bool? postOnly = null, 
+            bool? useAllAvailable = null,
+            bool? ocoOrder = null, 
+            decimal? ocoBuyPrice = null,
+            decimal? ocoSellPrice = null)
         {
             var parameters = new Dictionary<string, object>()
             {
@@ -752,7 +774,13 @@ namespace Bitfinex.Net
                 { "side", JsonConvert.SerializeObject(side, new OrderSideConverter(false)) },
                 { "type", JsonConvert.SerializeObject(type, new OrderTypeV1Converter(false)) },
             };
-            
+            parameters.AddOptionalParameter("is_hidden", hidden);
+            parameters.AddOptionalParameter("is_postonly", postOnly);
+            parameters.AddOptionalParameter("use_all_available", useAllAvailable == true ? "1": null);
+            parameters.AddOptionalParameter("ocoorder", ocoOrder);
+            parameters.AddOptionalParameter("buy_price_oco", ocoBuyPrice);
+            parameters.AddOptionalParameter("sell_price_oco", ocoSellPrice);
+
             return await ExecuteRequest<BitfinexPlacedOrder>(GetUrl(PlaceOrderEndpoint, ApiVersion1), PostMethod, parameters, true);
         }
 
