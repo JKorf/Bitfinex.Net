@@ -41,6 +41,7 @@ namespace Bitfinex.Net
         private const string MarketAverageEndpoint = "calc/trade/avg";
 
         private const string WalletsEndpoint = "auth/r/wallets";
+        private const string CalcAvailableBalanceEndpoint = "auth/calc/order/avail";
         private const string OpenOrdersEndpoint = "auth/r/orders";
         private const string OrderHistoryEndpoint = "auth/r/orders/{}/hist";
         private const string OrderTradesEndpoint = "auth/r/order/{}:{}/trades";
@@ -127,7 +128,7 @@ namespace Bitfinex.Net
         /// <returns>Whether Bitfinex platform is running normally or not</returns>
         public async Task<CallResult<BitfinexPlatformStatus>> GetPlatformStatusAsync()
         {
-            return await ExecuteRequest<BitfinexPlatformStatus>(GetUrl(StatusEndpoint, ApiVersion2));
+            return await ExecuteRequest<BitfinexPlatformStatus>(GetUrl(StatusEndpoint, ApiVersion2)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -142,7 +143,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<string[]>> GetSymbolsAsync()
         {
-            return await ExecuteRequest<string[]>(GetUrl(SymbolsEndpoint, ApiVersion1), GetMethod, null);
+            return await ExecuteRequest<string[]>(GetUrl(SymbolsEndpoint, ApiVersion1), GetMethod, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -157,7 +158,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexSymbolDetails[]>> GetSymbolDetailsAsync()
         {
-            return await ExecuteRequest<BitfinexSymbolDetails[]>(GetUrl(SymbolDetailsEndpoint, ApiVersion1), GetMethod, null);
+            return await ExecuteRequest<BitfinexSymbolDetails[]>(GetUrl(SymbolDetailsEndpoint, ApiVersion1), GetMethod, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -178,7 +179,7 @@ namespace Bitfinex.Net
                 {"symbols", string.Join(",", symbols)}
             };
 
-            return await ExecuteRequest<BitfinexMarketOverviewRest[]>(GetUrl(TickersEndpoint, ApiVersion2), GetMethod, parameters);
+            return await ExecuteRequest<BitfinexMarketOverviewRest[]>(GetUrl(TickersEndpoint, ApiVersion2), GetMethod, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -204,7 +205,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
 
-            return await ExecuteRequest<BitfinexTradeSimple[]>(GetUrl(FillPathParameter(TradesEndpoint, symbol), ApiVersion2), GetMethod, parameters);
+            return await ExecuteRequest<BitfinexTradeSimple[]>(GetUrl(FillPathParameter(TradesEndpoint, symbol), ApiVersion2), GetMethod, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -229,7 +230,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("len", limit?.ToString());
             var prec = JsonConvert.SerializeObject(precision, new PrecisionConverter(false));
 
-            return await ExecuteRequest<BitfinexOrderBookEntry[]>(GetUrl(FillPathParameter(OrderBookEndpoint, symbol, prec), ApiVersion2), GetMethod, parameters);
+            return await ExecuteRequest<BitfinexOrderBookEntry[]>(GetUrl(FillPathParameter(OrderBookEndpoint, symbol, prec), ApiVersion2), GetMethod, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -258,7 +259,7 @@ namespace Bitfinex.Net
                 JsonConvert.SerializeObject(side, new StatSideConverter(false)),
                 JsonConvert.SerializeObject(section, new StatSectionConverter(false)));
 
-            return await ExecuteRequest<BitfinexStats>(GetUrl(endpoint, ApiVersion2), GetMethod, parameters);
+            return await ExecuteRequest<BitfinexStats>(GetUrl(endpoint, ApiVersion2), GetMethod, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -278,7 +279,7 @@ namespace Bitfinex.Net
         {
             var endpoint = FillPathParameter(LastCandleEndpoint, JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)), symbol);
 
-            return await ExecuteRequest<BitfinexCandle>(GetUrl(endpoint, ApiVersion2));
+            return await ExecuteRequest<BitfinexCandle>(GetUrl(endpoint, ApiVersion2)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -310,7 +311,7 @@ namespace Bitfinex.Net
                 JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)),
                 symbol);
 
-            return await ExecuteRequest<BitfinexCandle[]>(GetUrl(endpoint, ApiVersion2), GetMethod, parameters);
+            return await ExecuteRequest<BitfinexCandle[]>(GetUrl(endpoint, ApiVersion2), GetMethod, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -337,7 +338,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("period", period?.ToString());
             parameters.AddOptionalParameter("rate_limit", rateLimit?.ToString(CultureInfo.InvariantCulture));
 
-            return await ExecuteRequest<BitfinexMarketAveragePrice>(GetUrl(MarketAverageEndpoint, ApiVersion2), PostMethod, parameters);
+            return await ExecuteRequest<BitfinexMarketAveragePrice>(GetUrl(MarketAverageEndpoint, ApiVersion2), PostMethod, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -352,7 +353,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexWallet[]>> GetWalletsAsync()
         {
-            return await ExecuteRequest<BitfinexWallet[]>(GetUrl(WalletsEndpoint, ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexWallet[]>(GetUrl(WalletsEndpoint, ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -367,7 +368,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexOrder[]>> GetActiveOrdersAsync()
         {
-            return await ExecuteRequest<BitfinexOrder[]>(GetUrl(OpenOrdersEndpoint, ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexOrder[]>(GetUrl(OpenOrdersEndpoint, ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -391,7 +392,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
-            return await ExecuteRequest<BitfinexOrder[]>(GetUrl(FillPathParameter(OrderHistoryEndpoint, symbol), ApiVersion2), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexOrder[]>(GetUrl(FillPathParameter(OrderHistoryEndpoint, symbol), ApiVersion2), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -408,7 +409,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexTradeDetails[]>> GetTradesForOrderAsync(string symbol, long orderId)
         {
-            return await ExecuteRequest<BitfinexTradeDetails[]>(GetUrl(FillPathParameter(OrderTradesEndpoint, symbol, orderId.ToString()), ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexTradeDetails[]>(GetUrl(FillPathParameter(OrderTradesEndpoint, symbol, orderId.ToString()), ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -432,7 +433,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
-            return await ExecuteRequest<BitfinexTradeDetails[]>(GetUrl(FillPathParameter(MyTradesEndpoint, symbol), ApiVersion2), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexTradeDetails[]>(GetUrl(FillPathParameter(MyTradesEndpoint, symbol), ApiVersion2), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -447,7 +448,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexPosition[]>> GetActivePositionsAsync()
         {
-            return await ExecuteRequest<BitfinexPosition[]>(GetUrl(ActivePositionsEndpoint, ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexPosition[]>(GetUrl(ActivePositionsEndpoint, ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -463,7 +464,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexFundingOffer[]>> GetActiveFundingOffersAsync(string symbol)
         {
-            return await ExecuteRequest<BitfinexFundingOffer[]>(GetUrl(FillPathParameter(ActiveFundingOffersEndpoint, symbol), ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexFundingOffer[]>(GetUrl(FillPathParameter(ActiveFundingOffersEndpoint, symbol), ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -487,7 +488,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
-            return await ExecuteRequest<BitfinexFundingOffer[]>(GetUrl(FillPathParameter(FundingOfferHistoryEndpoint, symbol), ApiVersion2), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexFundingOffer[]>(GetUrl(FillPathParameter(FundingOfferHistoryEndpoint, symbol), ApiVersion2), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -503,7 +504,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexFundingLoan[]>> GetFundingLoansAsync(string symbol)
         {
-            return await ExecuteRequest<BitfinexFundingLoan[]>(GetUrl(FillPathParameter(FundingLoansEndpoint, symbol), ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexFundingLoan[]>(GetUrl(FillPathParameter(FundingLoansEndpoint, symbol), ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -527,7 +528,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
-            return await ExecuteRequest<BitfinexFundingLoan[]>(GetUrl(FillPathParameter(FundingLoansHistoryEndpoint, symbol), ApiVersion2), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexFundingLoan[]>(GetUrl(FillPathParameter(FundingLoansHistoryEndpoint, symbol), ApiVersion2), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -543,7 +544,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexFundingCredit[]>> GetFundingCreditsAsync(string symbol)
         {
-            return await ExecuteRequest<BitfinexFundingCredit[]>(GetUrl(FillPathParameter(FundingCreditsEndpoint, symbol), ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexFundingCredit[]>(GetUrl(FillPathParameter(FundingCreditsEndpoint, symbol), ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -567,7 +568,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
-            return await ExecuteRequest<BitfinexFundingCredit[]>(GetUrl(FillPathParameter(FundingCreditsHistoryEndpoint, symbol), ApiVersion2), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexFundingCredit[]>(GetUrl(FillPathParameter(FundingCreditsHistoryEndpoint, symbol), ApiVersion2), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -591,7 +592,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
-            return await ExecuteRequest<BitfinexFundingTrade[]>(GetUrl(FillPathParameter(FundingTradesEndpoint, symbol), ApiVersion2), PostMethod);
+            return await ExecuteRequest<BitfinexFundingTrade[]>(GetUrl(FillPathParameter(FundingTradesEndpoint, symbol), ApiVersion2), PostMethod).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -606,7 +607,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexMarginBase>> GetBaseMarginInfoAsync()
         {
-            return await ExecuteRequest<BitfinexMarginBase>(GetUrl(MaginInfoBaseEndpoint, ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexMarginBase>(GetUrl(MaginInfoBaseEndpoint, ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -622,7 +623,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexMarginSymbol>> GetSymbolMarginInfoAsync(string symbol)
         {
-            return await ExecuteRequest<BitfinexMarginSymbol>(GetUrl(FillPathParameter(MaginInfoSymbolEndpoint, symbol), ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexMarginSymbol>(GetUrl(FillPathParameter(MaginInfoSymbolEndpoint, symbol), ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -638,7 +639,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexFundingInfo>> GetFundingInfoAsync(string symbol)
         {
-            return await ExecuteRequest<BitfinexFundingInfo>(GetUrl(FillPathParameter(FundingInfoEndpoint, symbol), ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexFundingInfo>(GetUrl(FillPathParameter(FundingInfoEndpoint, symbol), ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -654,14 +655,14 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexMovement[]>> GetMovementsAsync(string symbol)
         {
-            return await ExecuteRequest<BitfinexMovement[]>(GetUrl(FillPathParameter(MovementsEndpoint, symbol), ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexMovement[]>(GetUrl(FillPathParameter(MovementsEndpoint, symbol), ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
         
         public CallResult<BitfinexPerformance> GetDailyPerformance() => GetDailyPerformanceAsync().Result;
         public async Task<CallResult<BitfinexPerformance>> GetDailyPerformanceAsync()
         {
             // TODO doesn't work?
-            return await ExecuteRequest<BitfinexPerformance>(GetUrl(DailyPerformanceEndpoint, ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexPerformance>(GetUrl(DailyPerformanceEndpoint, ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -681,7 +682,7 @@ namespace Bitfinex.Net
                 { "type", "price" } 
             };
 
-            return await ExecuteRequest<BitfinexAlert[]>(GetUrl(AlertListEndpoint, ApiVersion2), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexAlert[]>(GetUrl(AlertListEndpoint, ApiVersion2), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -705,7 +706,7 @@ namespace Bitfinex.Net
                 { "price", price.ToString(CultureInfo.InvariantCulture) }
             };
 
-            return await ExecuteRequest<BitfinexAlert>(GetUrl(SetAlertEndpoint, ApiVersion2), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexAlert>(GetUrl(SetAlertEndpoint, ApiVersion2), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -722,7 +723,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexSuccessResult>> DeleteAlertAsync(string symbol, decimal price)
         {
-            return await ExecuteRequest<BitfinexSuccessResult>(GetUrl(FillPathParameter(DeleteAlertEndpoint, symbol, price.ToString(CultureInfo.InvariantCulture)), ApiVersion2), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexSuccessResult>(GetUrl(FillPathParameter(DeleteAlertEndpoint, symbol, price.ToString(CultureInfo.InvariantCulture)), ApiVersion2), PostMethod, null, true).ConfigureAwait(false);
         }
         #endregion
 
@@ -739,7 +740,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexAccountInfo>> GetAccountInfoAsync()
         {
-            var result = await ExecuteRequest<BitfinexAccountInfo[]>(GetUrl(AccountInfoEndpoint, ApiVersion1), PostMethod, null, true);
+            var result = await ExecuteRequest<BitfinexAccountInfo[]>(GetUrl(AccountInfoEndpoint, ApiVersion1), PostMethod, null, true).ConfigureAwait(false);
             return result.Success ? new CallResult<BitfinexAccountInfo>(result.Data[0], null) : new CallResult<BitfinexAccountInfo>(null, result.Error);
         }
 
@@ -755,7 +756,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexWithdrawalFees>> GetWithdrawalFeesAsync()
         {
-            return await ExecuteRequest<BitfinexWithdrawalFees>(GetUrl(WithdrawalFeeEndpoint, ApiVersion1), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexWithdrawalFees>(GetUrl(WithdrawalFeeEndpoint, ApiVersion1), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -813,7 +814,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("buy_price_oco", ocoBuyPrice);
             parameters.AddOptionalParameter("sell_price_oco", ocoSellPrice);
 
-            return await ExecuteRequest<BitfinexPlacedOrder>(GetUrl(PlaceOrderEndpoint, ApiVersion1), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexPlacedOrder>(GetUrl(PlaceOrderEndpoint, ApiVersion1), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -834,7 +835,7 @@ namespace Bitfinex.Net
                 { "order_id", orderId }
             };
 
-            return await ExecuteRequest<BitfinexPlacedOrder>(GetUrl(CancelOrderEndpoint, ApiVersion1), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexPlacedOrder>(GetUrl(CancelOrderEndpoint, ApiVersion1), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -849,7 +850,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexResult>> CancelAllOrdersAsync()
         {
-            return await ExecuteRequest<BitfinexResult>(GetUrl(CancelAllOrderEndpoint, ApiVersion1), PostMethod, null, true);
+            return await ExecuteRequest<BitfinexResult>(GetUrl(CancelAllOrderEndpoint, ApiVersion1), PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -870,7 +871,7 @@ namespace Bitfinex.Net
                 { "order_id", orderId }
             };
 
-            return await ExecuteRequest<BitfinexPlacedOrder>(GetUrl(OrderStatusEndpoint, ApiVersion1), PostMethod, parameters, true);
+            return await ExecuteRequest<BitfinexPlacedOrder>(GetUrl(OrderStatusEndpoint, ApiVersion1), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         #endregion
