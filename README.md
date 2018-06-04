@@ -140,6 +140,13 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.9 - 04 jun 2018
+	* Added GetSymbols and GetSymbolDetails calls
+	* Added GetAvailableBalance call
+	* Added UpdateOrder call
+	* Added ConfigureAwaits to prevent freezes from UI thread
+	* Added waiting for authentication in socket client
+	
 * Version 1.0.8 - 12 may 2018
 	* Fix for new order parameter in socket client
 
