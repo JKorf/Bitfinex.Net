@@ -30,6 +30,8 @@ namespace Bitfinex.Net
         private const string ApiVersion2 = "2";
 
         private const string StatusEndpoint = "platform/status";
+        private const string SymbolsEndpoint = "symbols";
+        private const string SymbolDetailsEndpoint = "symbols_details";
         private const string TickersEndpoint = "tickers";
         private const string TradesEndpoint = "trades/{}/hist";
         private const string OrderBookEndpoint = "book/{}/{}";
@@ -126,6 +128,36 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexPlatformStatus>> GetPlatformStatusAsync()
         {
             return await ExecuteRequest<BitfinexPlatformStatus>(GetUrl(StatusEndpoint, ApiVersion2));
+        }
+
+        /// <summary>
+        /// Synchronized version of the <see cref="GetSymbolsAsync"/> method
+        /// </summary>
+        /// <returns></returns>
+        public CallResult<string[]> GetSymbols() => GetSymbolsAsync().Result;
+
+        /// <summary>
+        /// Gets a list of all symbols
+        /// </summary>
+        /// <returns></returns>
+        public async Task<CallResult<string[]>> GetSymbolsAsync()
+        {
+            return await ExecuteRequest<string[]>(GetUrl(SymbolsEndpoint, ApiVersion1), GetMethod, null);
+        }
+
+        /// <summary>
+        /// Synchronized version of the <see cref="GetSymbolDetailsAsync"/> method
+        /// </summary>
+        /// <returns></returns>
+        public CallResult<BitfinexSymbolDetails[]> GetSymbolDetails() => GetSymbolDetailsAsync().Result;
+
+        /// <summary>
+        /// Gets details of all symbols
+        /// </summary>
+        /// <returns></returns>
+        public async Task<CallResult<BitfinexSymbolDetails[]>> GetSymbolDetailsAsync()
+        {
+            return await ExecuteRequest<BitfinexSymbolDetails[]>(GetUrl(SymbolDetailsEndpoint, ApiVersion1), GetMethod, null);
         }
 
         /// <summary>
