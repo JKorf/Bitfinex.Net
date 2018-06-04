@@ -67,6 +67,7 @@ namespace Bitfinex.Net
         private static readonly object nonceLock = new object();
         private static int lastStreamId;
         private static long lastNonce;
+        private bool authenticating;
         private bool authenticated;
 
         private static string Nonce
@@ -248,7 +249,7 @@ namespace Bitfinex.Net
             if (State == SocketState.Paused)
                 return new CallResult<BitfinexOrder>(null, new WebError("Socket is currently paused on request of the server, pause should take max 120 seconds"));
 
-            if (!authenticated)
+            if (!CheckAuthentication())
                 return new CallResult<BitfinexOrder>(null, new NoApiCredentialsError());
             
             log.Write(LogVerbosity.Info, "Going to place order");
@@ -308,7 +309,7 @@ namespace Bitfinex.Net
             if (State == SocketState.Paused)
                 return new CallResult<bool>(false, new WebError("Socket is currently paused on request of the server, pause should take max 120 seconds"));
 
-            if (!authenticated)
+            if (!CheckAuthentication())
                 return new CallResult<bool>(false, new NoApiCredentialsError());
 
             log.Write(LogVerbosity.Info, "Going to cancel order " + orderId);
@@ -342,7 +343,7 @@ namespace Bitfinex.Net
             if (State == SocketState.Paused)
                 return new CallResult<bool>(false, new WebError("Socket is currently paused on request of the server, pause should take max 120 seconds"));
 
-            if (!authenticated)
+            if (!CheckAuthentication())
                 return new CallResult<bool>(false, new NoApiCredentialsError());
 
             log.Write(LogVerbosity.Info, "Going to update order " + orderId);
@@ -1025,6 +1026,7 @@ namespace Bitfinex.Net
             if (authProvider == null || socket.IsClosed)
                 return;
 
+            authenticating = true;
             var n = Nonce;
             var authentication = new BitfinexAuthentication()
             {
@@ -1036,6 +1038,20 @@ namespace Bitfinex.Net
             authentication.Signature = authProvider.Sign(authentication.Payload).ToLower();
 
             Send(JsonConvert.SerializeObject(authentication));
+        }
+
+        private bool CheckAuthentication()
+        {
+            if (authenticated)
+                return true;
+
+            if (!authenticating)
+                return false;
+
+            while(authenticating)
+                Thread.Sleep(10);
+
+            return authenticated;
         }
 
         private void ProcessAuthenticationResponse(BitfinexAuthenticationResponse response)
@@ -1050,6 +1066,7 @@ namespace Bitfinex.Net
                 authenticated = false;
                 log.Write(LogVerbosity.Warning, "Authentication failed: " + response.ErrorMessage);
             }
+            authenticating = false;
         }
 
         private void GetSubscriptionResponseTypes()
@@ -1091,6 +1108,8 @@ namespace Bitfinex.Net
             pendingOrders = new Dictionary<BitfinexNewOrder, WaitAction<BitfinexOrder>>();
             pendingCancels = new Dictionary<long, WaitAction<bool>>();
             pendingUpdates = new Dictionary<long, WaitAction<bool>>();
+            authenticating = false;
+            authenticated = false;
 
             if (subscriptionRequests == null)
                 subscriptionRequests = new List<SubscriptionRequest>();
