@@ -874,6 +874,22 @@ namespace Bitfinex.Net
             return await ExecuteRequest<BitfinexPlacedOrder>(GetUrl(OrderStatusEndpoint, ApiVersion1), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
+        public CallResult<BitfinexAvailableBalance> GetAvailableBalance(string symbol, OrderSide side, decimal rate, WalletType type) => GetAvailableBalanceAsync(symbol, side, rate, type).Result;
+
+
+        public async Task<CallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal rate, WalletType type)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "symbol", symbol },
+                { "dir", side == OrderSide.Buy ? 1: -1 },
+                { "rate", rate },
+                { "type", JsonConvert.SerializeObject(type, new WalletTypeConverter(false)) }
+            };
+
+            return await ExecuteRequest<BitfinexAvailableBalance>(GetUrl(CalcAvailableBalanceEndpoint, ApiVersion2), PostMethod, parameters, true).ConfigureAwait(false);
+        }
+
         #endregion
 
         #region private methods
