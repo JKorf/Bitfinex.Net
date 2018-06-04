@@ -27,13 +27,13 @@ namespace Bitfinex.Net.Objects
         public decimal ExecutedPrice { get; set; }
 
         [ArrayProperty(6), JsonConverter(typeof(OrderTypeConverter))]
-        public OrderType OrderType { get; set; }
+        public OrderType? OrderType { get; set; }
 
         [ArrayProperty(7)]
-        public decimal OrderPrice { get; set; }
+        public decimal? OrderPrice { get; set; }
 
         [ArrayProperty(8), JsonConverter(typeof(BoolToIntConverter))]
-        public bool Maker { get; set; }
+        public bool? Maker { get; set; }
 
         [ArrayProperty(9)]
         public decimal Fee { get; set; }
