@@ -36,6 +36,7 @@ namespace Bitfinex.Net
 
         private Dictionary<BitfinexNewOrder, WaitAction<BitfinexOrder>> pendingOrders;
         private Dictionary<long, WaitAction<bool>> pendingCancels;
+        private Dictionary<long, WaitAction<bool>> pendingUpdates;
 
         private List<SubscriptionRequest> subscriptionRequests;
         private List<SubscriptionRequest> outstandingSubscriptionRequests;
@@ -223,7 +224,7 @@ namespace Bitfinex.Net
         /// Synchronized version of the <see cref="PlaceOrderAsync"/> method
         /// </summary>
         /// <returns></returns>
-        public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, long? groupId = null, int? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null) => PlaceOrderAsync(type, symbol, amount, groupId, clientOrderId, price, priceTrailing, priceAuxiliaryLimit, priceOcoStop, flags).Result;
+        public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null) => PlaceOrderAsync(type, symbol, amount, groupId, clientOrderId, price, priceTrailing, priceAuxiliaryLimit, priceOcoStop, flags).Result;
 
         /// <summary>
         /// Places a new order
@@ -239,7 +240,7 @@ namespace Bitfinex.Net
         /// <param name="priceOcoStop">Oco stop price of ther order</param>
         /// <param name="flags">Additional flags</param>
         /// <returns></returns>
-        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, long? groupId = null, int? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null)
+        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null)
         {
             if (!CheckConnection())
                 return new CallResult<BitfinexOrder>(null, new WebError("Socket needs to be started before placing an order"));
@@ -329,6 +330,53 @@ namespace Bitfinex.Net
                 log.Write(LogVerbosity.Info, "Order canceled");
             
             return cancelConfirm ?? new CallResult<bool>(false, new ServerError("No confirmation received for cancel order"));
+        }
+
+        public CallResult<bool> UpdateOrder(long orderId, decimal? price = null, decimal? amount = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null) => UpdateOrderAsync(orderId, price, amount, delta, priceAuxiliaryLimit, priceTrailing, flags).Result;
+
+        public async Task<CallResult<bool>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? amount = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null)
+        {
+            if (!CheckConnection())
+                return new CallResult<bool>(false, new WebError("Socket needs to be started before canceling an order"));
+
+            if (State == SocketState.Paused)
+                return new CallResult<bool>(false, new WebError("Socket is currently paused on request of the server, pause should take max 120 seconds"));
+
+            if (!authenticated)
+                return new CallResult<bool>(false, new NoApiCredentialsError());
+
+            log.Write(LogVerbosity.Info, "Going to update order " + orderId);
+            var order = new BitfinexUpdateOrder()
+            {
+                OrderId = orderId,
+                Amount = amount,
+                Price = price,
+                Flags = flags,
+                PriceAuxiliaryLimit = priceAuxiliaryLimit,
+                PriceTrailing = priceTrailing
+            };
+
+            var wrapper = new object[] { 0, "ou", null, order };
+            var data = JsonConvert.SerializeObject(wrapper, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Culture = CultureInfo.InvariantCulture
+            });
+
+            CallResult<bool> updateConfirm = null;
+            await Task.Run(() =>
+            {
+                var waitAction = new WaitAction<bool>();
+                pendingUpdates.Add(orderId, waitAction);
+                Send(data);
+                updateConfirm = waitAction.Wait(20000);
+                pendingUpdates.Remove(orderId);
+            }).ConfigureAwait(false);
+
+            if (updateConfirm != null && updateConfirm.Success)
+                log.Write(LogVerbosity.Info, "Order updated");
+
+            return updateConfirm ?? new CallResult<bool>(false, new ServerError("No confirmation received for order update"));
         }
 
         #region subscribing
@@ -889,7 +937,7 @@ namespace Bitfinex.Net
                 var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
                 if (!orderResult.Success)
                 {
-                    log.Write(LogVerbosity.Warning, "Failed to deserialize new order from stream: " + orderResult.Error);
+                    log.Write(LogVerbosity.Warning, "Failed to deserialize canceled order from stream: " + orderResult.Error);
                     return;
                 }
 
@@ -899,6 +947,27 @@ namespace Bitfinex.Net
                     if (o == orderResult.Data.Id)
                     {
                         pendingCancel.Value.Set(new CallResult<bool>(true, null));
+                        break;
+                    }
+                }
+            }
+
+            else if (messageType == "ou")
+            {
+                // canceled order
+                var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
+                if (!orderResult.Success)
+                {
+                    log.Write(LogVerbosity.Warning, "Failed to deserialize updated order from stream: " + orderResult.Error);
+                    return;
+                }
+
+                foreach (var pendingUpdate in pendingUpdates.ToList())
+                {
+                    var o = pendingUpdate.Key;
+                    if (o == orderResult.Data.Id)
+                    {
+                        pendingUpdate.Value.Set(new CallResult<bool>(true, null));
                         break;
                     }
                 }
@@ -1021,6 +1090,7 @@ namespace Bitfinex.Net
             confirmedRequests = new List<SubscriptionRequest>();
             pendingOrders = new Dictionary<BitfinexNewOrder, WaitAction<BitfinexOrder>>();
             pendingCancels = new Dictionary<long, WaitAction<bool>>();
+            pendingUpdates = new Dictionary<long, WaitAction<bool>>();
 
             if (subscriptionRequests == null)
                 subscriptionRequests = new List<SubscriptionRequest>();

@@ -15,7 +15,7 @@ namespace Bitfinex.Net.Objects
         public long? GroupId { get; set; }
 
         [ArrayProperty(2)]
-        public int? ClientOrderId { get; set; }
+        public long? ClientOrderId { get; set; }
 
         [ArrayProperty(3)]
         public string Symbol { get; set; }
