@@ -24,6 +24,6 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("gid")]
         public long? GroupId { get; set; }
         [JsonProperty("cid")]
-        public string ClientOrderId { get; set; }
+        public int? ClientOrderId { get; set; }
     }
 }
