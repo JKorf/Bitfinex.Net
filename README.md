@@ -140,6 +140,10 @@ Console.ReadLine();
 
 
 ## Release notes
+
+* Version 1.0.10 - 05 jun 2018
+	* Fix for TradeDetails mapping
+
 * Version 1.0.9 - 04 jun 2018
 	* Added GetSymbols and GetSymbolDetails calls
 	* Added GetAvailableBalance call
