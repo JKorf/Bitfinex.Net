@@ -26,11 +26,11 @@ namespace Bitfinex.Net
         /// <summary>
         /// The time to wait for a subscribe response
         /// </summary>
-        public TimeSpan SubscribeResponseTimeout { get; set; } = TimeSpan.FromSeconds(10);
+        public TimeSpan SubscribeResponseTimeout { get; set; } = TimeSpan.FromSeconds(15);
 
         /// <summary>
         /// The time to wait for an order confirmation
         /// </summary>
-        public TimeSpan OrderActionConfirmationTimeout { get; set; } = TimeSpan.FromSeconds(20);
+        public TimeSpan OrderActionConfirmationTimeout { get; set; } = TimeSpan.FromSeconds(30);
     }
 }
