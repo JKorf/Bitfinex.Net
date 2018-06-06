@@ -54,7 +54,6 @@ namespace Bitfinex.Net
         private object registrationsLock = new object();
 
         private Task sendTask;
-        private Task receiveTask;
 
         private bool running;
         private bool reconnect = true;
@@ -717,7 +716,7 @@ namespace Bitfinex.Net
             }
 
             running = true;
-            receiveTask = Task.Run(() => ProcessData());
+            Task.Run(() => ProcessData());
             sendTask = Task.Run(() => ProcessSending());
 
             log.Write(LogVerbosity.Info, "Socket connection established");

@@ -74,7 +74,7 @@ namespace Bitfinex.Net
         private const string OrderStatusEndpoint = "order/status";
 
 
-        private string nonce => BitfinexSocketClient.Nonce;
+        private static string nonce => BitfinexSocketClient.Nonce;
         #endregion
 
         #region constructor/destructor
@@ -920,47 +920,47 @@ namespace Bitfinex.Net
             request.ContentType = "application/json";
             request.Accept = "application/json";
 
-            if (signed)
+            if (!signed)
+                return request;
+
+            if (uri.ToString().Contains("v2"))
             {
-                if (uri.ToString().Contains("v2"))
+                if (parameters == null)
+                    parameters = new Dictionary<string, object>();
+
+                var json = JsonConvert.SerializeObject(parameters);
+                var data = Encoding.UTF8.GetBytes(json);
+
+                var n = nonce;
+                var signature = $"/api{uri.PathAndQuery}{n}{json}";
+                var signedData = authProvider.Sign(signature);
+                request.Headers.Add($"bfx-nonce: {n}");
+                request.Headers.Add($"bfx-apikey: {authProvider.Credentials.Key}");
+                request.Headers.Add($"bfx-signature: {signedData.ToLower()}");
+
+                using (var stream = request.GetRequestStream().Result)
+                    stream.Write(data, 0, data.Length);
+            }
+            else
+            {
+                var path = uri.PathAndQuery;
+                var n = nonce;
+
+                var signature = new JObject
                 {
-                    if (parameters == null)
-                        parameters = new Dictionary<string, object>();
-
-                    var json = JsonConvert.SerializeObject(parameters);
-                    var data = Encoding.UTF8.GetBytes(json);
-
-                    var n = nonce;
-                    var signature = $"/api{uri.PathAndQuery}{n}{json}";
-                    var signedData = authProvider.Sign(signature);
-                    request.Headers.Add($"bfx-nonce: {n}");
-                    request.Headers.Add($"bfx-apikey: {authProvider.Credentials.Key}");
-                    request.Headers.Add($"bfx-signature: {signedData.ToLower()}");
-
-                    using (var stream = request.GetRequestStream().Result)
-                        stream.Write(data, 0, data.Length);
-                }
-                else
-                {
-                    var path = uri.PathAndQuery;
-                    var n = nonce;
-
-                    var signature = new JObject
-                    {
-                        ["request"] = path,
-                        ["nonce"] = n
-                    };
-                    if (parameters != null)
-                        foreach (var keyvalue in parameters)
-                            signature.Add(keyvalue.Key, JToken.FromObject(keyvalue.Value));
+                    ["request"] = path,
+                    ["nonce"] = n
+                };
+                if (parameters != null)
+                    foreach (var keyvalue in parameters)
+                        signature.Add(keyvalue.Key, JToken.FromObject(keyvalue.Value));
                     
-                    var payload = Convert.ToBase64String(Encoding.ASCII.GetBytes(signature.ToString()));
-                    var signedData = authProvider.Sign(payload);
+                var payload = Convert.ToBase64String(Encoding.ASCII.GetBytes(signature.ToString()));
+                var signedData = authProvider.Sign(payload);
                     
-                    request.Headers.Add($"X-BFX-APIKEY: {authProvider.Credentials.Key}");
-                    request.Headers.Add($"X-BFX-PAYLOAD: {payload}");
-                    request.Headers.Add($"X-BFX-SIGNATURE: {signedData.ToLower()}");
-                }
+                request.Headers.Add($"X-BFX-APIKEY: {authProvider.Credentials.Key}");
+                request.Headers.Add($"X-BFX-PAYLOAD: {payload}");
+                request.Headers.Add($"X-BFX-SIGNATURE: {signedData.ToLower()}");
             }
 
             return request;
@@ -986,7 +986,7 @@ namespace Bitfinex.Net
             return new Uri(result);
         }
 
-        private string FillPathParameter(string endpoint, params string[] values)
+        private static string FillPathParameter(string endpoint, params string[] values)
         {
             foreach (var value in values)
             {

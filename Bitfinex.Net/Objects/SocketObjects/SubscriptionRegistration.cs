@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public Type EventType { get; set; }
         public int StreamId { get; set; }
 
-        public SubscriptionRegistration(Type eventType, int streamId, params string[] updateKeys)
+        protected SubscriptionRegistration(Type eventType, int streamId, params string[] updateKeys)
         {
             EventType = eventType;
             UpdateKeys = updateKeys;
