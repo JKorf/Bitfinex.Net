@@ -79,12 +79,16 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("chanId")]
         public int ChannelId { get; set; }
 
-        public string GetSubscriptionKey()
+        public string[] GetSubscriptionKeys()
         {
-            return Channel + GetSubsciptionSubKey();
+            var keys = GetSubscriptionSubKeys();
+            var subKeys = new string[keys.Length];
+            for (int i = 0; i < subKeys.Length; i++)
+                subKeys[i] = Channel + keys[i];
+            return subKeys;
         }
 
-        protected abstract string GetSubsciptionSubKey();
+        protected abstract string[] GetSubscriptionSubKeys();
     }
 
     public class SubscriptionChannelAttribute : Attribute

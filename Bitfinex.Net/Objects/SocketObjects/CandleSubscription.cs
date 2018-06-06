@@ -35,9 +35,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public string Symbol { get; set; }
         public string Key { get; set; }
 
-        protected override string GetSubsciptionSubKey()
+        protected override string[] GetSubscriptionSubKeys()
         {
-            return Key;
+            return new[] { Key };
         }
     }
 }

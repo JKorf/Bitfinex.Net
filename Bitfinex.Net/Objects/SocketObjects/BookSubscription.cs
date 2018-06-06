@@ -73,6 +73,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
     public class BookSubscriptionResponse : SubscriptionResponse
     {
         public string Symbol { get; set; }
+        public string Pair { get; set; }
         [JsonProperty("prec")]
         public string Precision { get; set; }
         [JsonProperty("freq")]
@@ -80,9 +81,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("len")]
         public int Length { get; set; }
 
-        protected override string GetSubsciptionSubKey()
+        protected override string[] GetSubscriptionSubKeys()
         {
-            return Symbol + Precision + Frequency + Length;
+            return new[] { Symbol + Precision + Frequency + Length, Pair + Precision + Frequency + Length };
         }
     }
 }

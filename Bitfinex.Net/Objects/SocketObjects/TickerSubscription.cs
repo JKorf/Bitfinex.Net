@@ -31,11 +31,12 @@ namespace Bitfinex.Net.Objects.SocketObjects
     [SubscriptionChannel("ticker")]
     public class TickerSubscriptionResponse : SubscriptionResponse
     {
+        public string Pair { get; set; }
         public string Symbol { get; set; }
 
-        protected override string GetSubsciptionSubKey()
+        protected override string[] GetSubscriptionSubKeys()
         {
-            return Symbol;
+            return new[] { Pair, Symbol };
         }
     }
 }
