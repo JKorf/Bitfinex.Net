@@ -79,14 +79,14 @@ namespace Bitfinex.Net
         private bool authenticating;
         private bool authenticated;
 
-        private static string Nonce
+        internal static string Nonce
         {
             get
             {
                 lock (nonceLock)
                 {
                     if (lastNonce == 0)
-                        lastNonce = (long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 10);
+                        lastNonce = (long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000);
 
                     lastNonce += 1;
                     return lastNonce.ToString(CultureInfo.InvariantCulture);

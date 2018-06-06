@@ -74,7 +74,7 @@ namespace Bitfinex.Net
         private const string OrderStatusEndpoint = "order/status";
 
 
-        private string nonce => ((long)((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000)).ToString();
+        private string nonce => BitfinexSocketClient.Nonce;
         #endregion
 
         #region constructor/destructor
