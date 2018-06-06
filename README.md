@@ -140,6 +140,10 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.11 - 06 jun 2018
+	* Added timeout options
+	* Added locking for threadsafety
+	* Improved subscribe symbol interpretation
 
 * Version 1.0.10 - 05 jun 2018
 	* Fix for TradeDetails mapping
