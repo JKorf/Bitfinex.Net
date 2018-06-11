@@ -820,9 +820,22 @@ namespace Bitfinex.Net
         {
             foreach (var sub in subscriptionRequests.ToList().Where(s => s.ChannelId == null))
             {
-                var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
-                if (!subResult.Success)
-                    log.Write(LogVerbosity.Warning, $"Failed to sub {sub.GetType()}: {subResult.Error}");
+                int currentTry = 0;
+                while (true)
+                {
+                    currentTry++;
+                    var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
+                    if (subResult.Success)
+                        break;
+
+                    if (currentTry < 3)
+                        log.Write(LogVerbosity.Warning, $"Failed to (re)sub {sub.GetType()}: {subResult.Error}, trying again");
+                    else
+                    {
+                        log.Write(LogVerbosity.Error, $"Failed to (re)sub {sub.GetType()}: {subResult.Error}, tried {currentTry} times");
+                        break;
+                    }
+                }
             }
         }
 
