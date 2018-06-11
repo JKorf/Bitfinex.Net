@@ -140,6 +140,11 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.12 - 11 jun 2018
+	* Fix for subscribing to trades updates
+	* Fix for PlaceOrder not returning the placed order in socket client
+	* Added retry to (re)subscribing
+
 * Version 1.0.11 - 06 jun 2018
 	* Added timeout options
 	* Added locking for threadsafety
