@@ -252,7 +252,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null)
         {
             if (!CheckConnection())
-                return new CallResult<BitfinexOrder>(null, new WebError("Socket needs to be started before placing an order"));
+                return new CallResult<BitfinexOrder>(null, new WebError("Socket needs to be started before placing an order, call the Start() method prior prior to this"));
 
             if (State == SocketState.Paused)
                 return new CallResult<BitfinexOrder>(null, new WebError("Socket is currently paused on request of the server, pause should take max 120 seconds"));
@@ -312,7 +312,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<bool>> CancelOrderAsync(long orderId)
         {
             if (!CheckConnection())
-                return new CallResult<bool>(false, new WebError("Socket needs to be started before canceling an order"));
+                return new CallResult<bool>(false, new WebError("Socket needs to be started before canceling an order, call the Start() method prior prior to this"));
 
             if (State == SocketState.Paused)
                 return new CallResult<bool>(false, new WebError("Socket is currently paused on request of the server, pause should take max 120 seconds"));
@@ -346,7 +346,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<bool>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? amount = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null)
         {
             if (!CheckConnection())
-                return new CallResult<bool>(false, new WebError("Socket needs to be started before canceling an order"));
+                return new CallResult<bool>(false, new WebError("Socket needs to be started before canceling an order, call the Start() method prior prior to this"));
 
             if (State == SocketState.Paused)
                 return new CallResult<bool>(false, new WebError("Socket is currently paused on request of the server, pause should take max 120 seconds"));
@@ -1021,10 +1021,14 @@ namespace Bitfinex.Net
                 foreach (var pendingOrder in pendingOrders.ToList())
                 {
                     var o = pendingOrder.Key;
-                    if (o.Symbol == orderResult.Data.Symbol && o.Amount == orderResult.Data.AmountOriginal)
+                    if (o.Symbol == orderResult.Data.Symbol)
                     {
-                        pendingOrder.Value.Set(new CallResult<BitfinexOrder>(orderResult.Data, null));
-                        break;
+                        if ((o.Amount != null && (Math.Round(o.Amount.Value, 8) == Math.Round(orderResult.Data.AmountOriginal, 8)))
+                            || (o.Price != null && Math.Round(o.Price.Value, 8) == Math.Round(orderResult.Data.Price, 8)))
+                        {
+                            pendingOrder.Value.Set(new CallResult<BitfinexOrder>(orderResult.Data, null));
+                            break;
+                        }
                     }
                 }
             }
