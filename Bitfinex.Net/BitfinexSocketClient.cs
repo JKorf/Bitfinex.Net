@@ -823,6 +823,9 @@ namespace Bitfinex.Net
                 int currentTry = 0;
                 while (true)
                 {
+                    if (State != SocketState.Connected)
+                        return;
+
                     currentTry++;
                     var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
                     if (subResult.Success)

@@ -32,10 +32,11 @@ namespace Bitfinex.Net.Objects.SocketObjects
     public class TradesSubscriptionResponse : SubscriptionResponse
     {
         public string Symbol { get; set; }
+        public string Pair { get; set; }
 
         protected override string[] GetSubscriptionSubKeys()
         {
-            return new[] { Symbol };
+            return new[] { Symbol, Pair };
         }
     }
 }
