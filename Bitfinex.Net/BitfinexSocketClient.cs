@@ -976,9 +976,9 @@ namespace Bitfinex.Net
                                         Task.Run(async () =>
                                         {
                                             foreach (var sub in confirmedRequests.ToList())  
-                                                await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value));
+                                                await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value)).ConfigureAwait(false);
 
-                                            await SubscribeUnsend();
+                                            await SubscribeUnsend().ConfigureAwait(false);
                                             SocketResumed?.Invoke();
                                         });
                                         State = SocketState.Connected;
