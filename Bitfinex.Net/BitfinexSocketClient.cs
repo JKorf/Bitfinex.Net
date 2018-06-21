@@ -812,8 +812,8 @@ namespace Bitfinex.Net
                 }
 
                 Authenticate();
-                await SubscribeUnsend();
-            });
+                await SubscribeUnsend().ConfigureAwait(false);
+            }).ConfigureAwait(false);
         }
 
         private async Task SubscribeUnsend()
