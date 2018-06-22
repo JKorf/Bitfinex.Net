@@ -140,6 +140,11 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.13 - 22 jun 2018
+	* Added symbol mapping for GetTrades call
+	* Refactored socketclient to be more robust
+	* Added additional logging
+
 * Version 1.0.12 - 11 jun 2018
 	* Fix for subscribing to trades updates
 	* Fix for PlaceOrder not returning the placed order in socket client
