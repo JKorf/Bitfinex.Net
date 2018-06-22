@@ -20,7 +20,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonIgnore]
         public int StreamId { get; set; }
         [JsonIgnore]
-        public ManualResetEvent ConfirmedEvent { get; }
+        public WaitAction<bool> ConfirmedEvent { get; private set; }
 
         protected SubscriptionRequest()
         {
@@ -29,12 +29,11 @@ namespace Bitfinex.Net.Objects.SocketObjects
             Channel = attr.ChannelName;
             EventType = attr.EventType;
             EventTypeAnnounced = attr.EventTypeAnnounced;
-            ConfirmedEvent = new ManualResetEvent(false);
+            ConfirmedEvent = new WaitAction<bool>();
         }
 
         public void ResetSubscription()
         {
-            ConfirmedEvent.Reset();
             ChannelId = null;
         }
 

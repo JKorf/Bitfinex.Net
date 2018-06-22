@@ -30,10 +30,9 @@ namespace Bitfinex.Net
         private string baseAddress;
         private IWebsocket socket;
 
-        private AutoResetEvent messageEvent;
-        private AutoResetEvent sendEvent;
-        private ConcurrentQueue<string> receivedMessages;
-        private ConcurrentQueue<string> toSendMessages;
+        private DateTime lastReceivedMessage;
+        private BlockingCollection<string> receivedMessages;
+        private BlockingCollection<string> toSendMessages;
 
         private Dictionary<string, Type> subscriptionResponseTypes;
 
@@ -221,9 +220,6 @@ namespace Bitfinex.Net
             }
 
             running = false;
-            messageEvent.Set();
-            sendEvent.Set();
-
             sendTask.Wait();
 
             Init();
@@ -399,7 +395,7 @@ namespace Bitfinex.Net
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
-            log.Write(LogVerbosity.Debug, "Subscribing to wallet updates");
+            log.Write(LogVerbosity.Info, "Subscribing to wallet updates");
             var id = NextStreamId;
 
             lock(registrationsLock)
@@ -418,7 +414,7 @@ namespace Bitfinex.Net
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
-            log.Write(LogVerbosity.Debug, "Subscribing to order updates");
+            log.Write(LogVerbosity.Info, "Subscribing to order updates");
             var id = NextStreamId;
 
             lock(registrationsLock)
@@ -437,7 +433,7 @@ namespace Bitfinex.Net
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
-            log.Write(LogVerbosity.Debug, "Subscribing to position updates");
+            log.Write(LogVerbosity.Info, "Subscribing to position updates");
             var id = NextStreamId;
 
             lock (registrationsLock)
@@ -456,7 +452,7 @@ namespace Bitfinex.Net
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
-            log.Write(LogVerbosity.Debug, "Subscribing to trade updates");
+            log.Write(LogVerbosity.Info, "Subscribing to trade updates");
             var id = NextStreamId;
 
             lock (registrationsLock)
@@ -475,7 +471,7 @@ namespace Bitfinex.Net
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
-            log.Write(LogVerbosity.Debug, "Subscribing to funding offer updates");
+            log.Write(LogVerbosity.Info, "Subscribing to funding offer updates");
             var id = NextStreamId;
 
             lock (registrationsLock)
@@ -494,7 +490,7 @@ namespace Bitfinex.Net
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
-            log.Write(LogVerbosity.Debug, "Subscribing to funding credit updates");
+            log.Write(LogVerbosity.Info, "Subscribing to funding credit updates");
             var id = NextStreamId;
 
             lock (registrationsLock)
@@ -513,7 +509,7 @@ namespace Bitfinex.Net
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
-            log.Write(LogVerbosity.Debug, "Subscribing to funding loan updates");
+            log.Write(LogVerbosity.Info, "Subscribing to funding loan updates");
             var id = NextStreamId;
 
             lock (registrationsLock)
@@ -539,7 +535,7 @@ namespace Bitfinex.Net
             if (State != SocketState.Connected)
                 return new CallResult<int>(id, null);
 
-            log.Write(LogVerbosity.Debug, "Subscribing to ticker updates for " + symbol);
+            log.Write(LogVerbosity.Info, "Subscribing to ticker updates for " + symbol);
             await SubscribeAndWait(sub).ConfigureAwait(false);
             return new CallResult<int>(id, null);
         }
@@ -561,7 +557,7 @@ namespace Bitfinex.Net
             if (State != SocketState.Connected)
                 return new CallResult<int>(id, null);
 
-            log.Write(LogVerbosity.Debug, "Subscribing to trade updates for " + symbol);
+            log.Write(LogVerbosity.Info, "Subscribing to trade updates for " + symbol);
             await SubscribeAndWait(sub).ConfigureAwait(false);
             return new CallResult<int>(id, null);
         }
@@ -586,7 +582,7 @@ namespace Bitfinex.Net
             if (State != SocketState.Connected)
                 return new CallResult<int>(id, null);
 
-            log.Write(LogVerbosity.Debug, "Subscribing to book updates for " + symbol);
+            log.Write(LogVerbosity.Info, $"Subscribing to book updates for {symbol}, {precision}, {frequency}, {length}");
             await SubscribeAndWait(sub).ConfigureAwait(false);
             return new CallResult<int>(id, null);
         }
@@ -609,7 +605,7 @@ namespace Bitfinex.Net
             if (State != SocketState.Connected)
                 return new CallResult<int>(id, null);
 
-            log.Write(LogVerbosity.Debug, "Subscribing to raw book updates for " + symbol);
+            log.Write(LogVerbosity.Info, $"Subscribing to raw book updates for {symbol}, {length}");
             await SubscribeAndWait(sub).ConfigureAwait(false);
             return new CallResult<int>(id, null);
         }
@@ -638,7 +634,7 @@ namespace Bitfinex.Net
             if (State != SocketState.Connected)
                 return new CallResult<int>(id, null);
 
-            log.Write(LogVerbosity.Debug, "Subscribing to candle updates for " + symbol);
+            log.Write(LogVerbosity.Info, $"Subscribing to candle updates for {symbol}, {interval}");
             await SubscribeAndWait(sub).ConfigureAwait(false);
             return new CallResult<int>(id, null);
         }
@@ -729,20 +725,22 @@ namespace Bitfinex.Net
                 outstandingSubscriptionRequests.Add(request);
 
             Send(JsonConvert.SerializeObject(request));
-            bool confirmed = false;
+            CallResult<bool> confirmed = new CallResult<bool>(false, new ServerError("No confirmation received"));
             await Task.Run(() =>
             {
-                confirmed = request.ConfirmedEvent.WaitOne(subscribeResponseTimeout);
+                confirmed = request.ConfirmedEvent.Wait(Convert.ToInt32(subscribeResponseTimeout.TotalMilliseconds));
 
                 lock (outstandingSubscriptionRequestsLock)
                     outstandingSubscriptionRequests.Remove(request);
 
-                lock (confirmedRequestLock)
-                    confirmedRequests.Add(request);
-                log.Write(LogVerbosity.Debug, !confirmed ? "No confirmation received" : "Subscription confirmed");
+                if(confirmed.Data)
+                    lock (confirmedRequestLock)
+                        confirmedRequests.Add(request);
+
+                log.Write(LogVerbosity.Debug, !confirmed.Data ? "No confirmation received" : "Subscription confirmed");
             }).ConfigureAwait(false);
 
-            return new CallResult<bool>(confirmed, confirmed ? null : new ServerError("No confirmation received"));
+            return new CallResult<bool>(confirmed.Data, confirmed.Error);
         }
 
         private async Task<CallResult<bool>> UnsubscribeAndWait(UnsubscriptionRequest request)
@@ -754,23 +752,24 @@ namespace Bitfinex.Net
                 outstandingUnsubscriptionRequests.Add(request);
 
             Send(JsonConvert.SerializeObject(request));
-            bool confirmed = false;
+            CallResult<bool> confirmed = new CallResult<bool>(false, new ServerError("No confirmation received"));
             await Task.Run(() =>
             {
-                confirmed = request.ConfirmedEvent.WaitOne(subscribeResponseTimeout);
+                confirmed = request.ConfirmedEvent.Wait(Convert.ToInt32(subscribeResponseTimeout.TotalMilliseconds));
 
                 lock (outstandingUnsubscriptionRequestsLock)
                     outstandingUnsubscriptionRequests.Remove(request);
 
-                lock (confirmedRequestLock)
-                    confirmedRequests.RemoveAll(r => r.ChannelId == request.ChannelId);
+                if(confirmed.Data)
+                    lock (confirmedRequestLock)
+                        confirmedRequests.RemoveAll(r => r.ChannelId == request.ChannelId);
 
                 lock (subscriptionRequestsLock)
                     subscriptionRequests.Single(s => s.ChannelId == request.ChannelId).ResetSubscription();
-                log.Write(LogVerbosity.Debug, !confirmed ? "No confirmation received" : "Unsubscription confirmed");
+                log.Write(LogVerbosity.Debug, !confirmed.Data ? "No confirmation received" : "Unsubscription confirmed");
             }).ConfigureAwait(false);
 
-            return new CallResult<bool>(confirmed, confirmed ? null : new ServerError("No confirmation received"));
+            return new CallResult<bool>(confirmed.Data, confirmed.Error);
         }
 
         private void SocketClosed()
@@ -781,6 +780,21 @@ namespace Bitfinex.Net
                 Dispose();
                 return;
             }
+
+            foreach (var pending in pendingUpdates)
+                pending.Value.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
+            foreach (var pending in pendingCancels)
+                pending.Value.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
+            foreach (var pending in pendingOrders)
+                pending.Value.Set(new CallResult<BitfinexOrder>(null, new WebError("Server disconnected")));
+
+            lock(outstandingSubscriptionRequestsLock)
+                foreach (var request in outstandingSubscriptionRequests)
+                    request.ConfirmedEvent.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
+            lock (outstandingUnsubscriptionRequestsLock)
+                foreach (var request in outstandingUnsubscriptionRequests)
+                    request.ConfirmedEvent.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
+
 
             Task.Run(() =>
             {
@@ -803,6 +817,7 @@ namespace Bitfinex.Net
         private void SocketOpened()
         {
             log.Write(LogVerbosity.Debug, "Socket opened");
+            State = SocketState.Connected;
             Task.Run(async () =>
             {
                 if (lost)
@@ -818,18 +833,32 @@ namespace Bitfinex.Net
 
         private async Task SubscribeUnsend()
         {
-            foreach (var sub in subscriptionRequests.ToList().Where(s => s.ChannelId == null))
+            IEnumerable<SubscriptionRequest> toResub;
+            lock (subscriptionRequestsLock)
+                toResub = subscriptionRequests.Where(s => s.ChannelId == null && s.ConfirmedEvent.Completed).ToList();
+
+            log.Write(LogVerbosity.Info, $"{toResub.Count()} subscriptions to resend" );
+            foreach (var sub in toResub)
             {
                 int currentTry = 0;
                 while (true)
                 {
                     if (State != SocketState.Connected)
+                    {
+                        // If we dc'd while reconnecting, just reset everything
+                        log.Write(LogVerbosity.Info, "DC'd while resending subscriptions, resetting all");
+                        lock(subscriptionRequestsLock)
+                            subscriptionRequests.ForEach(s => s.ChannelId = null);
                         return;
+                    }
 
                     currentTry++;
                     var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
                     if (subResult.Success)
+                    {
+                        log.Write(LogVerbosity.Info, $"Successfuly (re)subscribed {sub.GetType()}");
                         break;
+                    }
 
                     if (currentTry < 3)
                         log.Write(LogVerbosity.Warning, $"Failed to (re)sub {sub.GetType()}: {subResult.Error}, trying again");
@@ -845,25 +874,19 @@ namespace Bitfinex.Net
         private void SocketMessage(string msg)
         {
             log.Write(LogVerbosity.Debug, "Received message: " + msg);
-            receivedMessages.Enqueue(msg);
-            messageEvent.Set();
+            receivedMessages.TryAdd(msg);
         }
 
         private void Send(string data)
         {
-            toSendMessages.Enqueue(data);
-            sendEvent.Set();
+            toSendMessages.Add(data);
         }
 
         private void ProcessSending()
         {
             while (running)
             {
-                sendEvent.WaitOne();
-                if (!running)
-                    break;
-
-                while (toSendMessages.TryDequeue(out string data))
+                while (toSendMessages.TryTake(out string data, TimeSpan.FromMilliseconds(100)))
                 {
                     log.Write(LogVerbosity.Debug, "Sending " + data);
                     socket.Send(data);
@@ -875,149 +898,172 @@ namespace Bitfinex.Net
         {
             while (running)
             {
-                bool messageReceived = messageEvent.WaitOne(socketReceiveTimeout);
-                if (!messageReceived)
-                    StopInternal();
-
-                if (!running)
-                    break;
-
-                while (receivedMessages.TryDequeue(out string dequeued))
+                var received = receivedMessages.TryTake(out string dequeued, TimeSpan.FromMilliseconds(100));
+                if (!received)
                 {
-                    log.Write(LogVerbosity.Debug, "Processing " + dequeued);
-
-                    try
+                    if ((DateTime.UtcNow - lastReceivedMessage) > socketReceiveTimeout)
                     {
-                        var dataObject = JToken.Parse(dequeued);
+                        log.Write(LogVerbosity.Warning, $"No data received for {socketReceiveTimeout.TotalSeconds} seconds, restarting connection");
+                        StopInternal();
+                    }
+                    continue;
+                }
 
-                        if (dataObject is JObject)
+                lastReceivedMessage = DateTime.UtcNow;
+                log.Write(LogVerbosity.Debug, "Processing " + dequeued);
+
+                try
+                {
+                    var dataObject = JToken.Parse(dequeued);
+
+                    if (dataObject is JObject)
+                    {
+                        var evnt = dataObject["event"].ToString();
+                        if (evnt == "auth")
                         {
-                            var evnt = dataObject["event"].ToString();
-                            if (evnt == "auth")
-                            {
-                                ProcessAuthenticationResponse(dataObject.ToObject<BitfinexAuthenticationResponse>());
+                            if (state != SocketState.Connected)
+                                // Don't process if are no longer connected to prevent threading issues
                                 continue;
-                            }
 
-                            if (evnt == "subscribed")
-                            {
-                                var channel = dataObject["channel"].ToString();
-                                if (!subscriptionResponseTypes.ContainsKey(channel))
-                                {
-                                    log.Write(LogVerbosity.Warning, "Unknown response channel name: " + channel);
-                                    continue;
-                                }
-
-                                SubscriptionResponse subResponse = (SubscriptionResponse)dataObject.ToObject(subscriptionResponseTypes[channel]);
-                                var responseSubKeys = subResponse.GetSubscriptionKeys();
-                                SubscriptionRequest pending = null;
-
-                                foreach (var key in responseSubKeys)
-                                {
-                                    lock (outstandingSubscriptionRequestsLock)
-                                        pending = outstandingSubscriptionRequests.SingleOrDefault(r => r.GetSubscriptionKey().ToLower() == key.ToLower());
-
-                                    // If any of the keys match its a match
-                                    if (pending != null)
-                                        break;
-                                }
-
-                                if (pending == null)
-                                {
-                                    log.Write(LogVerbosity.Debug, "Couldn't find sub request for response");
-                                    continue;
-                                }
-
-                                pending.ChannelId = subResponse.ChannelId;
-                                pending.ConfirmedEvent.Set();
-                                continue;
-                            }
-
-                            if (evnt == "unsubscribed")
-                            {
-                                UnsubscriptionRequest pending;
-                                lock (outstandingUnsubscriptionRequestsLock)
-                                    pending = outstandingUnsubscriptionRequests.SingleOrDefault(r => r.ChannelId == (int)dataObject["chanId"]);
-
-                                if (pending == null)
-                                {
-                                    log.Write(LogVerbosity.Debug, "Received unsub confirmation, but no pending unsubscriptions");
-                                    continue;
-                                }
-                                pending.ConfirmedEvent.Set();
-                                continue;
-                            }
-
-                            if (evnt == "info")
-                            {
-                                if (dataObject["version"] != null)
-                                {
-                                    log.Write(LogVerbosity.Info, $"Websocket version: {dataObject["version"]}, platform status: {((int)dataObject["platform"]["status"] == 1? "operational": "maintance")}");
-                                    continue;
-                                }
-
-                                var code = (int)dataObject["code"];
-                                switch (code)
-                                {
-                                    case 20051:
-                                        // reconnect
-                                        log.Write(LogVerbosity.Info, "Received status code 20051, going to reconnect the websocket");
-                                        Task.Run(() => StopInternal());
-                                        continue;
-                                    case 20060:
-                                        // pause
-                                        log.Write(LogVerbosity.Info, "Received status code 20060, pausing websocket activity");
-                                        State = SocketState.Paused;
-                                        SocketPaused?.Invoke();
-                                        continue;
-                                    case 20061:
-                                        // resume
-                                        log.Write(LogVerbosity.Info, "Received status code 20061, resuming websocket activity");
-                                        Task.Run(async () =>
-                                        {
-                                            foreach (var sub in confirmedRequests.ToList())  
-                                                await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value)).ConfigureAwait(false);
-
-                                            await SubscribeUnsend().ConfigureAwait(false);
-                                            SocketResumed?.Invoke();
-                                        });
-                                        State = SocketState.Connected;
-                                        continue;
-                                }
-
-                                log.Write(LogVerbosity.Warning, $"Received unknown status code: {code}, data: {dataObject}");
-                            }
+                            ProcessAuthenticationResponse(dataObject.ToObject<BitfinexAuthenticationResponse>());
+                            continue;
                         }
-                        else
+
+                        if (evnt == "subscribed")
                         {
-                            var channelId = (int)dataObject[0];
-                            if (dataObject[1].ToString() == "hb")
+                            if (state != SocketState.Connected)
+                                // Don't process if are no longer connected to prevent threading issues
                                 continue;
 
-                            SubscriptionRequest channelReg;
-                            lock (confirmedRequestLock)
-                                channelReg = confirmedRequests.SingleOrDefault(c => c.ChannelId == channelId);
-
-                            if (channelReg != null)
+                            var channel = dataObject["channel"].ToString();
+                            if (!subscriptionResponseTypes.ContainsKey(channel))
                             {
-                                channelReg.Handle((JArray)dataObject);
+                                log.Write(LogVerbosity.Warning, "Unknown response channel name: " + channel);
                                 continue;
                             }
 
-                            var messageType = dataObject[1].ToString();
-                            HandleRequestResponse(messageType, (JArray)dataObject);
+                            SubscriptionResponse subResponse = (SubscriptionResponse) dataObject.ToObject(subscriptionResponseTypes[channel]);
+                            var responseSubKeys = subResponse.GetSubscriptionKeys();
+                            SubscriptionRequest pending = null;
 
-                            SubscriptionRegistration accountReg;
-                            lock(registrationsLock)
-                                accountReg = registrations.SingleOrDefault(r => r.UpdateKeys.Contains(messageType));
+                            foreach (var key in responseSubKeys)
+                            {
+                                IEnumerable<SubscriptionRequest> results;
+                                lock (outstandingSubscriptionRequestsLock)
+                                    results = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == key.ToLower());
 
-                            accountReg?.Handle((JArray)dataObject);
+                                if (results.Count() > 1)
+                                {
+                                    // TODO Debug logging, this shouldn't happen
+                                    log.Write(LogVerbosity.Warning, "Found multiple matching subscription requests for a response. " +
+                                                                    "Request keys: " + string.Join(",", results.Select(r => r.GetSubscriptionKey())) + ". " +
+                                                                    "Subscription response: " + dequeued + ", current response sub key: " + key);
+                                }
+
+                                if (results.Any())
+                                    // For now assume first
+                                    pending = results.First();
+
+                                // If any of the keys match its a match
+                                if (pending != null)
+                                    break;
+                            }
+
+                            if (pending == null)
+                            {
+                                log.Write(LogVerbosity.Debug, "Couldn't find sub request for response");
+                                continue;
+                            }
+
+                            pending.ChannelId = subResponse.ChannelId;
+                            pending.ConfirmedEvent.Set(new CallResult<bool>(true, null));
+                            continue;
+                        }
+
+                        if (evnt == "unsubscribed")
+                        {
+                            UnsubscriptionRequest pending;
+                            lock (outstandingUnsubscriptionRequestsLock)
+                                pending = outstandingUnsubscriptionRequests.SingleOrDefault(r => r.ChannelId == (int) dataObject["chanId"]);
+
+                            if (pending == null)
+                            {
+                                log.Write(LogVerbosity.Debug, "Received unsub confirmation, but no pending unsubscriptions");
+                                continue;
+                            }
+                            pending.ConfirmedEvent.Set(new CallResult<bool>(true, null));
+                            continue;
+                        }
+
+                        if (evnt == "info")
+                        {
+                            if (dataObject["version"] != null)
+                            {
+                                log.Write(LogVerbosity.Info, $"Websocket version: {dataObject["version"]}, platform status: {((int) dataObject["platform"]["status"] == 1 ? "operational" : "maintance")}");
+                                continue;
+                            }
+
+                            var code = (int) dataObject["code"];
+                            switch (code)
+                            {
+                                case 20051:
+                                    // reconnect
+                                    log.Write(LogVerbosity.Info, "Received status code 20051, going to reconnect the websocket");
+                                    Task.Run(() => StopInternal());
+                                    continue;
+                                case 20060:
+                                    // pause
+                                    log.Write(LogVerbosity.Info, "Received status code 20060, pausing websocket activity");
+                                    State = SocketState.Paused;
+                                    SocketPaused?.Invoke();
+                                    continue;
+                                case 20061:
+                                    // resume
+                                    log.Write(LogVerbosity.Info, "Received status code 20061, resuming websocket activity");
+                                    Task.Run(async () =>
+                                    {
+                                        foreach (var sub in confirmedRequests.ToList())
+                                            await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value)).ConfigureAwait(false);
+
+                                        await SubscribeUnsend().ConfigureAwait(false);
+                                        SocketResumed?.Invoke();
+                                    });
+                                    State = SocketState.Connected;
+                                    continue;
+                            }
+
+                            log.Write(LogVerbosity.Warning, $"Received unknown status code: {code}, data: {dataObject}");
                         }
                     }
-                    catch (Exception e)
+                    else
                     {
-                        log.Write(LogVerbosity.Error, $"Error in processing loop. {e.GetType()}, {e.Message}, {e.StackTrace}, message: {dequeued}");
+                        var channelId = (int) dataObject[0];
+                        if (dataObject[1].ToString() == "hb")
+                            continue;
+
+                        SubscriptionRequest channelReg;
+                        lock (confirmedRequestLock)
+                            channelReg = confirmedRequests.SingleOrDefault(c => c.ChannelId == channelId);
+
+                        if (channelReg != null)
+                        {
+                            channelReg.Handle((JArray) dataObject);
+                            continue;
+                        }
+
+                        var messageType = dataObject[1].ToString();
+                        HandleRequestResponse(messageType, (JArray) dataObject);
+
+                        SubscriptionRegistration accountReg;
+                        lock (registrationsLock)
+                            accountReg = registrations.SingleOrDefault(r => r.UpdateKeys.Contains(messageType));
+
+                        accountReg?.Handle((JArray) dataObject);
                     }
+                }
+                catch (Exception e)
+                {
+                    log.Write(LogVerbosity.Error, $"Error in processing loop. {e.GetType()}, {e.Message}, {e.StackTrace}, message: {dequeued}");
                 }
             }
         }
@@ -1215,28 +1261,42 @@ namespace Bitfinex.Net
 
         private void Init()
         {
-            receivedMessages = new ConcurrentQueue<string>();
-            toSendMessages = new ConcurrentQueue<string>();
-            messageEvent = new AutoResetEvent(true);
-            sendEvent = new AutoResetEvent(true);
+            receivedMessages = new BlockingCollection<string>();
+            toSendMessages = new BlockingCollection<string>();
             
-            outstandingSubscriptionRequests = new List<SubscriptionRequest>();
-            outstandingUnsubscriptionRequests = new List<UnsubscriptionRequest>();
-            confirmedRequests = new List<SubscriptionRequest>();
+            lock(outstandingSubscriptionRequestsLock)
+                outstandingSubscriptionRequests = new List<SubscriptionRequest>();
+
+            lock(outstandingUnsubscriptionRequestsLock)
+                outstandingUnsubscriptionRequests = new List<UnsubscriptionRequest>();
+
+            lock(confirmedRequestLock)
+                confirmedRequests = new List<SubscriptionRequest>();
+
             pendingOrders = new ConcurrentDictionary<BitfinexNewOrder, WaitAction<BitfinexOrder>>();
             pendingCancels = new ConcurrentDictionary<long, WaitAction<bool>>();
             pendingUpdates = new ConcurrentDictionary<long, WaitAction<bool>>();
+
             authenticating = false;
             authenticated = false;
 
-            if (subscriptionRequests == null)
-                subscriptionRequests = new List<SubscriptionRequest>();
+            lock (subscriptionRequestsLock)
+            {
+                if (subscriptionRequests == null)
+                    subscriptionRequests = new List<SubscriptionRequest>();
 
-            foreach (var sub in subscriptionRequests)
-                sub.ResetSubscription();
+                if(subscriptionRequests.Any())
+                    log.Write(LogVerbosity.Info, "Resetting subscription requests");
 
-            if (registrations == null)
-                registrations = new List<SubscriptionRegistration>();
+                foreach (var sub in subscriptionRequests)
+                    sub.ResetSubscription();
+            }
+
+            lock (registrationsLock)
+            {
+                if (registrations == null)
+                    registrations = new List<SubscriptionRegistration>();
+            }
 
             GetSubscriptionResponseTypes();
         }

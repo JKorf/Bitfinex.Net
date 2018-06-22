@@ -5,17 +5,20 @@ namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class WaitAction<T>
     {
-        private ManualResetEvent evnt;
+        private AutoResetEvent evnt;
         private CallResult<T> data;
+
+        public bool Completed { get; private set; }
 
         public WaitAction()
         {
-            evnt = new ManualResetEvent(false);
+            evnt = new AutoResetEvent(false);
         }
 
         public CallResult<T> Wait(int timeout)
         {
             evnt.WaitOne(timeout);
+            Completed = true;
             return data;
         }
 

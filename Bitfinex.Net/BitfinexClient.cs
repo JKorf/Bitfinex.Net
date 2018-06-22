@@ -199,6 +199,10 @@ namespace Bitfinex.Net
         /// <returns>Trades for the symbol</returns>
         public async Task<CallResult<BitfinexTradeSimple[]>> GetTradesAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null)
         {
+            // Only accepts tBTCUSD format
+            if (symbol.Length == 6)
+                symbol = "t" + symbol.ToUpper();
+
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);

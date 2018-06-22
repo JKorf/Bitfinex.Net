@@ -10,13 +10,13 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("chanId")]
         public int ChannelId { get; set; }
         [JsonIgnore]
-        public ManualResetEvent ConfirmedEvent { get; }
+        public WaitAction<bool> ConfirmedEvent { get; }
 
         public UnsubscriptionRequest(int channelId)
         {
             Event = "unsubscribe";
             ChannelId = channelId;
-            ConfirmedEvent = new ManualResetEvent(false);
+            ConfirmedEvent = new WaitAction<bool>();
         }
     }
 }
