@@ -8,8 +8,6 @@ namespace Bitfinex.Net.Objects.SocketObjects
         private AutoResetEvent evnt;
         private CallResult<T> data;
 
-        public bool Completed { get; private set; }
-
         public WaitAction()
         {
             evnt = new AutoResetEvent(false);
@@ -18,7 +16,6 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public CallResult<T> Wait(int timeout)
         {
             evnt.WaitOne(timeout);
-            Completed = true;
             return data;
         }
 

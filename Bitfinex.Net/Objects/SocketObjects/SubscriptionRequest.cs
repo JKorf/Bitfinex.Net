@@ -22,6 +22,11 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonIgnore]
         public WaitAction<bool> ConfirmedEvent { get; private set; }
 
+        [JsonIgnore]
+        public bool Requested { get; set; }
+        [JsonIgnore]
+        public bool Responded { get; set; }
+
         protected SubscriptionRequest()
         {
             Event = "subscribe";
@@ -34,6 +39,8 @@ namespace Bitfinex.Net.Objects.SocketObjects
 
         public void ResetSubscription()
         {
+            Requested = false;
+            Responded = false;
             ChannelId = null;
         }
 

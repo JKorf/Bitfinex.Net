@@ -724,20 +724,24 @@ namespace Bitfinex.Net
             lock (outstandingSubscriptionRequestsLock)
                 outstandingSubscriptionRequests.Add(request);
 
+            request.Requested = true;
             Send(JsonConvert.SerializeObject(request));
             CallResult<bool> confirmed = new CallResult<bool>(false, new ServerError("No confirmation received"));
+            bool success = false;
             await Task.Run(() =>
             {
                 confirmed = request.ConfirmedEvent.Wait(Convert.ToInt32(subscribeResponseTimeout.TotalMilliseconds));
+                success = confirmed != null && confirmed.Data;
 
                 lock (outstandingSubscriptionRequestsLock)
                     outstandingSubscriptionRequests.Remove(request);
 
-                if(confirmed.Data)
+
+                if(success)
                     lock (confirmedRequestLock)
                         confirmedRequests.Add(request);
 
-                log.Write(LogVerbosity.Debug, !confirmed.Data ? "No confirmation received" : "Subscription confirmed");
+                log.Write(LogVerbosity.Debug, !success ? "No confirmation received" : "Subscription confirmed");
             }).ConfigureAwait(false);
 
             return new CallResult<bool>(confirmed.Data, confirmed.Error);
@@ -753,20 +757,22 @@ namespace Bitfinex.Net
 
             Send(JsonConvert.SerializeObject(request));
             CallResult<bool> confirmed = new CallResult<bool>(false, new ServerError("No confirmation received"));
+            bool success = false;
             await Task.Run(() =>
             {
                 confirmed = request.ConfirmedEvent.Wait(Convert.ToInt32(subscribeResponseTimeout.TotalMilliseconds));
+                success = confirmed != null && confirmed.Data;
 
                 lock (outstandingUnsubscriptionRequestsLock)
                     outstandingUnsubscriptionRequests.Remove(request);
 
-                if(confirmed.Data)
+                if(success)
                     lock (confirmedRequestLock)
                         confirmedRequests.RemoveAll(r => r.ChannelId == request.ChannelId);
 
                 lock (subscriptionRequestsLock)
                     subscriptionRequests.Single(s => s.ChannelId == request.ChannelId).ResetSubscription();
-                log.Write(LogVerbosity.Debug, !confirmed.Data ? "No confirmation received" : "Unsubscription confirmed");
+                log.Write(LogVerbosity.Debug, !success ? "No confirmation received" : "Unsubscription confirmed");
             }).ConfigureAwait(false);
 
             return new CallResult<bool>(confirmed.Data, confirmed.Error);
@@ -835,7 +841,7 @@ namespace Bitfinex.Net
         {
             IEnumerable<SubscriptionRequest> toResub;
             lock (subscriptionRequestsLock)
-                toResub = subscriptionRequests.Where(s => s.ChannelId == null && s.ConfirmedEvent.Completed).ToList();
+                toResub = subscriptionRequests.Where(s => s.ChannelId == null && !s.Requested).ToList();
 
             log.Write(LogVerbosity.Info, $"{toResub.Count()} subscriptions to resend" );
             foreach (var sub in toResub)
@@ -976,6 +982,7 @@ namespace Bitfinex.Net
                             }
 
                             pending.ChannelId = subResponse.ChannelId;
+                            pending.Responded = true;
                             pending.ConfirmedEvent.Set(new CallResult<bool>(true, null));
                             continue;
                         }
