@@ -16,11 +16,11 @@
 	<PackageIconUrl>https://raw.githubusercontent.com/JKorf/Bitfinex.Net/master/Resources/icon.png</PackageIconUrl>
 	<NeutralLanguage>en</NeutralLanguage>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<PackageReleaseNotes>1.0.13 - Added symbol mapping for GetTrades call, reworked socketclient to be more robust, added additional logging</PackageReleaseNotes>
+	<PackageReleaseNotes>1.0.14 - Fix for error parsing nullable ordertype, fix for subscriptions not getting executed if called before Start in socket client</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CryptoExchange.Net" Version="[0.0.27]" />
+    <PackageReference Include="CryptoExchange.Net" Version="[0.0.28]" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
   </ItemGroup>
   

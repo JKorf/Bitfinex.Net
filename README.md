@@ -140,6 +140,10 @@ Console.ReadLine();
 
 
 ## Release notes
+* Versopm 1.0.14 - 25 jun 2018
+	* Fix for error parsing nullable ordertype
+	* Fix for subscriptions not getting executed if called before Start in socket client
+
 * Version 1.0.13 - 22 jun 2018
 	* Added symbol mapping for GetTrades call
 	* Refactored socketclient to be more robust
