@@ -140,7 +140,11 @@ Console.ReadLine();
 
 
 ## Release notes
-* Versopm 1.0.14 - 25 jun 2018
+* Version 1.0.15 - 26 jun 2018
+	* Improvided OrderStatus mapping
+	* Added OrderStatusString for original order status string returned by server
+
+* Version 1.0.14 - 25 jun 2018
 	* Fix for error parsing nullable ordertype
 	* Fix for subscriptions not getting executed if called before Start in socket client
 
