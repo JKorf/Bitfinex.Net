@@ -49,6 +49,8 @@ namespace Bitfinex.Net.Objects
 
         [ArrayProperty(13), JsonConverter(typeof(OrderStatusConverter))]
         public OrderStatus Status { get; set; }
+        [ArrayProperty(13)]
+        public string StatusString { get; set; }
         [ArrayProperty(14)]
         internal string PlaceHolder3 { get; set; }
 

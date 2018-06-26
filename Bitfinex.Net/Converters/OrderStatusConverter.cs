@@ -11,13 +11,10 @@ namespace Bitfinex.Net.Converters
     {
         private readonly Dictionary<string, OrderStatus> mapping = new Dictionary<string, OrderStatus>()
         {
-            { "ACTIVE", OrderStatus.Active },
-            { "EXECUTED", OrderStatus.Executed },
             { "PARTIALLY FILLED",OrderStatus.PartiallyFilled },
-            { "INSUFFICIENT BALANCE (G1) was: PARTIALLY FILLED", OrderStatus.PartiallyFilled },
+            { "EXECUTED", OrderStatus.Executed },
             { "CANCELED", OrderStatus.Canceled },
-            { "POSTONLY CANCELED", OrderStatus.Canceled },
-            { "FILLORKILL CANCELED", OrderStatus.Canceled }
+            { "ACTIVE", OrderStatus.Active },
         };
         
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -35,8 +32,12 @@ namespace Bitfinex.Net.Converters
             var result = mapping.SingleOrDefault(m => m.Key == split[0]);
             if (result.Equals(default(KeyValuePair<string, OrderStatus>)))
             {
-                Debug.WriteLine($"Couldn't deserialize order status: {reader.Value}");
-                return OrderStatus.Unknown;
+                result = mapping.SingleOrDefault(m => split[0].Contains(m.Key));
+                if (result.Equals(default(KeyValuePair<string, OrderStatus>)))
+                {
+                    Debug.WriteLine($"Couldn't deserialize order status: {reader.Value}");
+                    return OrderStatus.Unknown;
+                }
             }
 
             return result.Value;
