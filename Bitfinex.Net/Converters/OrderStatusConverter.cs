@@ -32,7 +32,7 @@ namespace Bitfinex.Net.Converters
             var result = mapping.SingleOrDefault(m => m.Key == split[0]);
             if (result.Equals(default(KeyValuePair<string, OrderStatus>)))
             {
-                result = mapping.SingleOrDefault(m => split[0].Contains(m.Key));
+                result = mapping.FirstOrDefault(m => split[0].Contains(m.Key));
                 if (result.Equals(default(KeyValuePair<string, OrderStatus>)))
                 {
                     Debug.WriteLine($"Couldn't deserialize order status: {reader.Value}");
