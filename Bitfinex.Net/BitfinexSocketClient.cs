@@ -1087,19 +1087,7 @@ namespace Bitfinex.Net
                     return;
                 }
 
-                foreach (var pendingOrder in pendingOrders.ToList())
-                {
-                    var o = pendingOrder.Key;
-                    if (o.Symbol == orderResult.Data.Symbol)
-                    {
-                        if ((o.Amount != null && (Math.Round(o.Amount.Value, 8) == Math.Round(orderResult.Data.AmountOriginal, 8)))
-                            || (o.Price != null && Math.Round(o.Price.Value, 8) == Math.Round(orderResult.Data.Price, 8)))
-                        {
-                            pendingOrder.Value.Set(new CallResult<BitfinexOrder>(orderResult.Data, null));
-                            break;
-                        }
-                    }
-                }
+                CheckOrderPlacementConfirmation(orderResult.Data);
             }
             else if (messageType == "oc")
             {
@@ -1111,20 +1099,25 @@ namespace Bitfinex.Net
                     return;
                 }
 
-                foreach (var pendingCancel in pendingCancels.ToList())
+                if (orderResult.Data.Status == OrderStatus.Executed)
                 {
-                    var o = pendingCancel.Key;
-                    if (o == orderResult.Data.Id)
-                    {
-                        pendingCancel.Value.Set(new CallResult<bool>(true, null));
-                        break;
-                    }
+                    // Bitfinex market order handling is weird
+                    // 1. The order gets accepted by n - on-req
+                    // 2. A pu (position update) is send
+                    // 3. An oc (order canceled) is send in which the status is actually 'Executed @ xxx'
+                    // So even though oc should be an order canceled confirmation, also check if it isn't a market order execution
+                    CheckOrderPlacementConfirmation(orderResult.Data);
                 }
+                else
+                {
+                    CheckOrderCancelConfirmation(orderResult.Data);
+                }
+                
             }
 
             else if (messageType == "ou")
             {
-                // canceled order
+                // updated order
                 var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
                 if (!orderResult.Success)
                 {
@@ -1132,15 +1125,7 @@ namespace Bitfinex.Net
                     return;
                 }
 
-                foreach (var pendingUpdate in pendingUpdates.ToList())
-                {
-                    var o = pendingUpdate.Key;
-                    if (o == orderResult.Data.Id)
-                    {
-                        pendingUpdate.Value.Set(new CallResult<bool>(true, null));
-                        break;
-                    }
-                }
+                CheckOrderUpdateConfirmation(orderResult.Data);
             }
 
             else if (messageType == "n")
@@ -1185,6 +1170,47 @@ namespace Bitfinex.Net
                                 break;
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        private void CheckOrderUpdateConfirmation(BitfinexOrder order)
+        {
+            foreach (var pendingUpdate in pendingUpdates.ToList())
+            {
+                if (pendingUpdate.Key == order.Id)
+                {
+                    pendingUpdate.Value.Set(new CallResult<bool>(true, null));
+                    break;
+                }
+            }
+        }
+
+        private void CheckOrderCancelConfirmation(BitfinexOrder order)
+        {
+            foreach (var pendingCancel in pendingCancels.ToList())
+            {
+                if (pendingCancel.Key == order.Id)
+                {
+                    pendingCancel.Value.Set(new CallResult<bool>(true, null));
+                    break;
+                }
+            }
+        }
+
+        private void CheckOrderPlacementConfirmation(BitfinexOrder order)
+        {
+            foreach (var pendingOrder in pendingOrders.ToList())
+            {
+                var o = pendingOrder.Key;
+                if (o.Symbol == order.Symbol && o.OrderType == order.Type)
+                {
+                    if ((o.Amount != null && (Math.Round(o.Amount.Value, 8) == Math.Round(order.AmountOriginal, 8)))
+                        || (o.Price != null && Math.Round(o.Price.Value, 8) == Math.Round(order.Price, 8)))
+                    {
+                        pendingOrder.Value.Set(new CallResult<BitfinexOrder>(order, null));
+                        break;
                     }
                 }
             }
