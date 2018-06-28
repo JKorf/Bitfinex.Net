@@ -140,6 +140,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.17 - 28 jun 2018
+	* Fixed margin order confirmation
+
 * Version 1.0.16 - 26 jun 2018
 	* Fix for OrderStatus mapping
 
