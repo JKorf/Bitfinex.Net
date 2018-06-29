@@ -278,20 +278,21 @@ namespace Bitfinex.Net
                 Culture = CultureInfo.InvariantCulture
             });
 
-            CallResult<BitfinexOrder> orderConfirm = null;
+            CallResult<BitfinexOrder> result = null;
             await Task.Run(() =>
             {
                 var waitAction = new WaitAction<BitfinexOrder>();
                 pendingOrders.TryAdd(order, waitAction);
                 Send(data);
-                orderConfirm = waitAction.Wait((int)Math.Round(orderActionConfirmationTimeout.TotalMilliseconds, 0));
+
+                if (!waitAction.Wait(out result, (int)Math.Round(orderActionConfirmationTimeout.TotalMilliseconds, 0)))
+                    result = new CallResult<BitfinexOrder>(null, new ServerError("No update order confirmation received"));
+
                 pendingOrders.TryRemove(order, out waitAction);
             }).ConfigureAwait(false);
 
-            if (orderConfirm != null && orderConfirm.Success)
-                log.Write(LogVerbosity.Info, "Order placed");
-
-            return orderConfirm ?? new CallResult<BitfinexOrder>(null,  new ServerError("No confirmation received for placed order"));
+            log.Write(LogVerbosity.Info, result.Success ? "Order placed": "Failed to place order");
+            return result;
         }
 
         /// <summary>
@@ -321,20 +322,21 @@ namespace Bitfinex.Net
             var wrapper = new JArray(0, "oc", null, obj);
             var data = JsonConvert.SerializeObject(wrapper);
 
-            CallResult<bool> cancelConfirm = null;
+            CallResult<bool> result = null;
             await Task.Run(() =>
             {
                 var waitAction = new WaitAction<bool>();
                 pendingCancels.TryAdd(orderId, waitAction);
                 Send(data);
-                cancelConfirm = waitAction.Wait((int)Math.Round(orderActionConfirmationTimeout.TotalMilliseconds, 0));
+
+                if (!waitAction.Wait(out result, (int)Math.Round(orderActionConfirmationTimeout.TotalMilliseconds, 0)))
+                    result = new CallResult<bool>(false, new ServerError("No update order confirmation received"));
+
                 pendingCancels.TryRemove(orderId, out waitAction);
             }).ConfigureAwait(false);
 
-            if (cancelConfirm != null && cancelConfirm.Success)
-                log.Write(LogVerbosity.Info, "Order canceled");
-            
-            return cancelConfirm ?? new CallResult<bool>(false, new ServerError("No confirmation received for cancel order"));
+            log.Write(LogVerbosity.Info, result.Data ? "Order canceled": "Failed to cancel order");
+            return result;
         }
 
         public CallResult<bool> UpdateOrder(long orderId, decimal? price = null, decimal? amount = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null) => UpdateOrderAsync(orderId, price, amount, delta, priceAuxiliaryLimit, priceTrailing, flags).Result;
@@ -374,14 +376,15 @@ namespace Bitfinex.Net
                 var waitAction = new WaitAction<bool>();
                 pendingUpdates.TryAdd(orderId, waitAction);
                 Send(data);
-                updateConfirm = waitAction.Wait((int)Math.Round(orderActionConfirmationTimeout.TotalMilliseconds, 0));
+
+                if(!waitAction.Wait(out updateConfirm, (int)Math.Round(orderActionConfirmationTimeout.TotalMilliseconds, 0)))
+                    updateConfirm = new CallResult<bool>(false, new ServerError("No update order confirmation received"));
+
                 pendingUpdates.TryRemove(orderId, out waitAction);
             }).ConfigureAwait(false);
 
-            if (updateConfirm != null && updateConfirm.Success)
-                log.Write(LogVerbosity.Info, "Order updated");
-
-            return updateConfirm ?? new CallResult<bool>(false, new ServerError("No confirmation received for order update"));
+            log.Write(LogVerbosity.Info, updateConfirm.Data? "Order updated": "Failed to update order");
+            return updateConfirm;
         }
 
         #region subscribing
@@ -726,25 +729,28 @@ namespace Bitfinex.Net
 
             request.Requested = true;
             Send(JsonConvert.SerializeObject(request));
-            CallResult<bool> confirmed = new CallResult<bool>(false, new ServerError("No confirmation received"));
-            bool success = false;
+            CallResult<bool> result = null;
             await Task.Run(() =>
             {
-                confirmed = request.ConfirmedEvent.Wait(Convert.ToInt32(subscribeResponseTimeout.TotalMilliseconds));
-                success = confirmed != null && confirmed.Data;
+                bool triggered = request.ConfirmedEvent.Wait(out result, Convert.ToInt32(subscribeResponseTimeout.TotalMilliseconds));
 
                 lock (outstandingSubscriptionRequestsLock)
                     outstandingSubscriptionRequests.Remove(request);
 
+                if (!triggered)
+                {
+                    result = new CallResult<bool>(false, new ServerError("No subscription confirmation received"));
+                    return;
+                }
 
-                if(success)
+                if (result.Data)
                     lock (confirmedRequestLock)
                         confirmedRequests.Add(request);
 
-                log.Write(LogVerbosity.Debug, !success ? "No confirmation received" : "Subscription confirmed");
+                log.Write(LogVerbosity.Debug, !result.Data ? "No confirmation received" : "Subscription confirmed");
             }).ConfigureAwait(false);
 
-            return new CallResult<bool>(confirmed.Data, confirmed.Error);
+            return result;
         }
 
         private async Task<CallResult<bool>> UnsubscribeAndWait(UnsubscriptionRequest request)
@@ -756,26 +762,32 @@ namespace Bitfinex.Net
                 outstandingUnsubscriptionRequests.Add(request);
 
             Send(JsonConvert.SerializeObject(request));
-            CallResult<bool> confirmed = new CallResult<bool>(false, new ServerError("No confirmation received"));
+            CallResult<bool> result = null;
             bool success = false;
             await Task.Run(() =>
             {
-                confirmed = request.ConfirmedEvent.Wait(Convert.ToInt32(subscribeResponseTimeout.TotalMilliseconds));
-                success = confirmed != null && confirmed.Data;
+                var triggered = request.ConfirmedEvent.Wait(out result, Convert.ToInt32(subscribeResponseTimeout.TotalMilliseconds));
 
                 lock (outstandingUnsubscriptionRequestsLock)
                     outstandingUnsubscriptionRequests.Remove(request);
 
-                if(success)
+                if (!triggered)
+                {
+                    result = new CallResult<bool>(false, new ServerError("No unsubscription confirmation received"));
+                    return;
+                }
+
+                if (result.Data)
                     lock (confirmedRequestLock)
                         confirmedRequests.RemoveAll(r => r.ChannelId == request.ChannelId);
 
                 lock (subscriptionRequestsLock)
-                    subscriptionRequests.Single(s => s.ChannelId == request.ChannelId).ResetSubscription();
-                log.Write(LogVerbosity.Debug, !success ? "No confirmation received" : "Unsubscription confirmed");
+                    subscriptionRequests.Single(s => s.ChannelId == request.ChannelId).ResetSubscription(); // ??
+
+                log.Write(LogVerbosity.Debug, !result.Data ? "No confirmation received" : "Unsubscription confirmed");
             }).ConfigureAwait(false);
 
-            return new CallResult<bool>(confirmed.Data, confirmed.Error);
+            return result;
         }
 
         private void SocketClosed()
