@@ -147,6 +147,10 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.18 - 03 jul 2018
+	* Added StopLimit margin ordertype
+	* Fixed bug restarting socketclient after stopping
+
 * Version 1.0.17 - 28 jun 2018
 	* Fixed margin order confirmation
 

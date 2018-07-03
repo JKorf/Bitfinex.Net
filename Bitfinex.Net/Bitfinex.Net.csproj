@@ -7,7 +7,7 @@
   <PropertyGroup>
     <PackageId>Bitfinex.Net</PackageId>
 	<Authors>JKorf</Authors>
-    <PackageVersion>1.0.17</PackageVersion>
+    <PackageVersion>1.0.18</PackageVersion>
 	<Description>Bitfinex.Net is a .Net wrapper for the Bitfinex API. It includes all features the API provides, REST API and Websocket, using clear and readable objects including but not limited to Reading market info, Placing and managing orders and Reading balances and funds</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Bitfinex Bitfinex.Net C# .Net CryptoCurrency Exchange API wrapper</PackageTags>
@@ -16,11 +16,11 @@
 	<PackageIconUrl>https://raw.githubusercontent.com/JKorf/Bitfinex.Net/master/Resources/icon.png</PackageIconUrl>
 	<NeutralLanguage>en</NeutralLanguage>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<PackageReleaseNotes>1.0.17 - Fixed margin market order confirmation</PackageReleaseNotes>
+	<PackageReleaseNotes>1.0.18 - Fixed bug in restarting after stopping websocket, added stop limit margin order type</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CryptoExchange.Net" Version="[0.0.28]" />
+    <PackageReference Include="CryptoExchange.Net" Version="[0.0.31]" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
   </ItemGroup>
   

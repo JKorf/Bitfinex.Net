@@ -28,9 +28,9 @@ namespace Bitfinex.Net
         private TimeSpan orderActionConfirmationTimeout;
 
         private string baseAddress;
-        private IWebsocket socket;
+        internal IWebsocket socket;
 
-        private DateTime lastReceivedMessage;
+        private DateTime lastReceivedMessage = DateTime.UtcNow;
         private BlockingCollection<string> receivedMessages;
         private BlockingCollection<string> toSendMessages;
 
@@ -223,6 +223,9 @@ namespace Bitfinex.Net
             sendTask.Wait();
 
             Init();
+
+            if (!reconnect)
+                socket = null;
         }
 
         /// <summary>
@@ -696,7 +699,7 @@ namespace Bitfinex.Net
         #endregion
 
         #region private
-        private void Create()
+        internal void Create()
         {
             socket = SocketFactory.CreateWebsocket(log, baseAddress);
             socket.OnClose += SocketClosed;
