@@ -1114,6 +1114,17 @@ namespace Bitfinex.Net
                     return;
                 }
 
+                if (orderResult.Data.Type == OrderType.ExchangeFillOrKill
+                 || orderResult.Data.Type == OrderType.FillOrKill)
+                {
+                    if (orderResult.Data.Status == OrderStatus.Canceled)
+                    {
+                        // OC also gets send if a FillOrKill order doesn't get executed, so search for it in placements waiting for confirmation
+                        if (CheckOrderPlacementConfirmation(orderResult.Data))
+                            return;
+                    }
+                }
+
                 if (orderResult.Data.Status == OrderStatus.Executed)
                 {
                     // Bitfinex market order handling is weird
@@ -1214,7 +1225,7 @@ namespace Bitfinex.Net
             }
         }
 
-        private void CheckOrderPlacementConfirmation(BitfinexOrder order)
+        private bool CheckOrderPlacementConfirmation(BitfinexOrder order)
         {
             foreach (var pendingOrder in pendingOrders.ToList())
             {
@@ -1225,10 +1236,11 @@ namespace Bitfinex.Net
                         || (o.Price != null && Math.Round(o.Price.Value, 8) == Math.Round(order.Price, 8)))
                     {
                         pendingOrder.Value.Set(new CallResult<BitfinexOrder>(order, null));
-                        break;
+                        return true;
                     }
                 }
             }
+            return false;
         }
 
         private void Authenticate()

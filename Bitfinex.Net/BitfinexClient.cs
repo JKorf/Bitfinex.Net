@@ -392,7 +392,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexOrder[]>> GetOrderHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("len", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -433,7 +433,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexTradeDetails[]>> GetTradeHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("len", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -488,7 +488,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexFundingOffer[]>> GetFundingOfferHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("len", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -528,7 +528,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexFundingLoan[]>> GetFundingLoansHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("len", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -568,7 +568,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexFundingCredit[]>> GetFundingCreditsHistoryAsyncTask(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("len", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -592,7 +592,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexFundingTrade[]>> GetFundingTradesHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("len", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
