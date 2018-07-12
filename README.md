@@ -147,6 +147,10 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.0.19 - 12 jul 2018
+	* Fixed limit parameters in various rest calls
+	* Fixed response handling of canceled FillOrKill orders
+
 * Version 1.0.18 - 03 jul 2018
 	* Added StopLimit margin ordertype
 	* Fixed bug restarting socketclient after stopping
