@@ -1120,8 +1120,8 @@ namespace Bitfinex.Net
                     if (orderResult.Data.Status == OrderStatus.Canceled)
                     {
                         // OC also gets send if a FillOrKill order doesn't get executed, so search for it in placements waiting for confirmation
-                        if (CheckOrderPlacementConfirmation(orderResult.Data))
-                            return;
+                        if (!CheckOrderPlacementConfirmation(orderResult.Data))
+                            log.Write(LogVerbosity.Warning, $"Did not find a placed order for {orderResult.Data.Type}");
                     }
                 }
 
@@ -1132,7 +1132,9 @@ namespace Bitfinex.Net
                     // 2. A pu (position update) is send
                     // 3. An oc (order canceled) is send in which the status is actually 'Executed @ xxx'
                     // So even though oc should be an order canceled confirmation, also check if it isn't a market order execution
-                    CheckOrderPlacementConfirmation(orderResult.Data);
+                    if (!CheckOrderPlacementConfirmation(orderResult.Data))
+                        log.Write(LogVerbosity.Warning, $"Did not find a placed order for {orderResult.Data.Type}");
+
                 }
                 else
                 {
