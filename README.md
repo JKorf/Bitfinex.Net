@@ -147,6 +147,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.1.0 - 16 jul 2018
+	* Refactored multiple subscriptions to expose the EventType that caused the update
+
 * Version 1.0.19 - 12 jul 2018
 	* Fixed limit parameters in various rest calls
 	* Fixed response handling of canceled FillOrKill orders
