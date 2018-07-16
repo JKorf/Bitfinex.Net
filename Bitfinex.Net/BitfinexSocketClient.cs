@@ -53,6 +53,7 @@ namespace Bitfinex.Net
         private object registrationsLock = new object();
 
         private Task sendTask;
+        private Task receiveTask;
 
         private bool running;
         private bool reconnect = true;
@@ -221,6 +222,7 @@ namespace Bitfinex.Net
 
             running = false;
             sendTask.Wait();
+            receiveTask.Wait();
 
             Init();
 
@@ -396,7 +398,7 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public CallResult<int> SubscribeToWalletUpdates(Action<BitfinexWallet[]> handler)
+        public CallResult<int> SubscribeToWalletUpdates(Action<BitfinexSocketEvent<BitfinexWallet[]>> handler)
         {
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
@@ -415,7 +417,7 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public CallResult<int> SubscribeToOrderUpdates(Action<BitfinexOrder[]> handler)
+        public CallResult<int> SubscribeToOrderUpdates(Action<BitfinexSocketEvent<BitfinexOrder[]>> handler)
         {
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
@@ -434,7 +436,7 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public CallResult<int> SubscribeToPositionUpdates(Action<BitfinexPosition[]> handler)
+        public CallResult<int> SubscribeToPositionUpdates(Action<BitfinexSocketEvent<BitfinexPosition[]>> handler)
         {
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
@@ -453,7 +455,7 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public CallResult<int> SubscribeToTradeUpdates(Action<BitfinexTradeDetails[]> handler)
+        public CallResult<int> SubscribeToTradeUpdates(Action<BitfinexSocketEvent<BitfinexTradeDetails[]>> handler)
         {
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
@@ -472,7 +474,7 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public CallResult<int> SubscribeToFundingOfferUpdates(Action<BitfinexFundingOffer[]> handler)
+        public CallResult<int> SubscribeToFundingOfferUpdates(Action<BitfinexSocketEvent<BitfinexFundingOffer[]>> handler)
         {
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
@@ -491,7 +493,7 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public CallResult<int> SubscribeToFundingCreditsUpdates(Action<BitfinexFundingCredit[]> handler)
+        public CallResult<int> SubscribeToFundingCreditsUpdates(Action<BitfinexSocketEvent<BitfinexFundingCredit[]>> handler)
         {
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
@@ -510,7 +512,7 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public CallResult<int> SubscribeToFundingLoansUpdates(Action<BitfinexFundingLoan[]> handler)
+        public CallResult<int> SubscribeToFundingLoansUpdates(Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> handler)
         {
             if (authProvider == null)
                 return new CallResult<int>(0, new NoApiCredentialsError());
@@ -718,7 +720,7 @@ namespace Bitfinex.Net
             }
 
             running = true;
-            Task.Run(() => ProcessData());
+            receiveTask = Task.Run(() => ProcessData());
             sendTask = Task.Run(() => ProcessSending());
 
             log.Write(LogVerbosity.Info, "Socket connection established");
@@ -766,7 +768,6 @@ namespace Bitfinex.Net
 
             Send(JsonConvert.SerializeObject(request));
             CallResult<bool> result = null;
-            bool success = false;
             await Task.Run(() =>
             {
                 var triggered = request.ConfirmedEvent.Wait(out result, Convert.ToInt32(subscribeResponseTimeout.TotalMilliseconds));
@@ -1060,7 +1061,15 @@ namespace Bitfinex.Net
                     else
                     {
                         var channelId = (int) dataObject[0];
-                        if (dataObject[1].ToString() == "hb")
+                        var eventTypeString = dataObject[1].ToString();
+                        if (!BitfinexEvents.EventMapping.ContainsKey(eventTypeString))
+                        {
+                            log.Write(LogVerbosity.Warning, $"Received unknown event type: {eventTypeString}");
+                            continue;
+                        }
+
+                        BitfinexEventType evnt = BitfinexEvents.EventMapping[eventTypeString];
+                        if (evnt == BitfinexEventType.HeartBeat)
                             continue;
 
                         SubscriptionRequest channelReg;
@@ -1073,14 +1082,13 @@ namespace Bitfinex.Net
                             continue;
                         }
 
-                        var messageType = dataObject[1].ToString();
-                        HandleRequestResponse(messageType, (JArray) dataObject);
+                        HandleRequestResponse(evnt, (JArray) dataObject);
 
                         SubscriptionRegistration accountReg;
                         lock (registrationsLock)
-                            accountReg = registrations.SingleOrDefault(r => r.UpdateKeys.Contains(messageType));
+                            accountReg = registrations.SingleOrDefault(r => r.UpdateKeys.Contains(evnt));
 
-                        accountReg?.Handle((JArray) dataObject);
+                        accountReg?.Handle(evnt, (JArray) dataObject);
                     }
                 }
                 catch (Exception e)
@@ -1090,9 +1098,9 @@ namespace Bitfinex.Net
             }
         }
 
-        private void HandleRequestResponse(string messageType, JArray dataObject)
+        private void HandleRequestResponse(BitfinexEventType eventType, JArray dataObject)
         {
-            if (messageType == "on")
+            if (eventType == BitfinexEventType.OrderNew)
             {
                 // new order
                 var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
@@ -1104,7 +1112,7 @@ namespace Bitfinex.Net
 
                 CheckOrderPlacementConfirmation(orderResult.Data);
             }
-            else if (messageType == "oc")
+            else if (eventType == BitfinexEventType.OrderCancel)
             {
                 // canceled order
                 var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
@@ -1143,7 +1151,7 @@ namespace Bitfinex.Net
                 
             }
 
-            else if (messageType == "ou")
+            else if (eventType == BitfinexEventType.OrderUpdate)
             {
                 // updated order
                 var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
@@ -1156,21 +1164,27 @@ namespace Bitfinex.Net
                 CheckOrderUpdateConfirmation(orderResult.Data);
             }
 
-            else if (messageType == "n")
+            else if (eventType == BitfinexEventType.Notification)
             {
                 // notification
                 var dataArray = (JArray)dataObject[2];
-                var noticationType = dataArray[1].ToString();
-                if (noticationType == "on-req" || noticationType == "oc-req")
+                var notificationTypeString = dataArray[1].ToString();
+                if (!BitfinexEvents.EventMapping.ContainsKey(notificationTypeString))
                 {
+                    log.Write(LogVerbosity.Warning, $"No mapping found for notification {notificationTypeString}");
+                    return;
+                }
 
+                var notificationType = BitfinexEvents.EventMapping[notificationTypeString];
+                if (notificationType == BitfinexEventType.OrderNewRequest || notificationType == BitfinexEventType.OrderCancelRequest)
+                {
                     var orderData = (JArray)dataArray[4];
                     var error = dataArray[6].ToString().ToLower() == "error";
                     var message = dataArray[7].ToString();
                     if (!error)
                         return;
 
-                    if (dataArray[1].ToString() == "on-req")
+                    if (notificationType == BitfinexEventType.OrderNewRequest)
                     {
                         // new order request
                         var orderAmount = decimal.Parse(orderData[6].ToString());
@@ -1185,7 +1199,7 @@ namespace Bitfinex.Net
                             }
                         }
                     }
-                    else if (dataArray[1].ToString() == "oc-req")
+                    else if (notificationType == BitfinexEventType.OrderCancelRequest)
                     {
                         // cancel order request
                         var orderId = (long)orderData[0];

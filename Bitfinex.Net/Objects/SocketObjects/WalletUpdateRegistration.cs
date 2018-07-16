@@ -4,16 +4,18 @@ namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class WalletUpdateRegistration: SubscriptionRegistration
     {
-        private Action<BitfinexWallet[]> handler;
+        private Action<BitfinexSocketEvent<BitfinexWallet[]>> handler;
 
-        public WalletUpdateRegistration(Action<BitfinexWallet[]> handler, int streamId) : base(typeof(BitfinexWallet), streamId, "ws", "wu")
+        public WalletUpdateRegistration(Action<BitfinexSocketEvent<BitfinexWallet[]>> handler, int streamId) 
+            : base(typeof(BitfinexWallet), streamId, BitfinexEventType.WalletSnapshot, 
+                                                     BitfinexEventType.WalletUpdate)
         {
             this.handler = handler;
         }
 
-        protected override void Handle(object obj)
+        protected override void Handle(BitfinexEventType type, object obj)
         {
-            handler((BitfinexWallet[]) obj);
+            handler(new BitfinexSocketEvent<BitfinexWallet[]>(type, (BitfinexWallet[]) obj));
         }
     }
 }

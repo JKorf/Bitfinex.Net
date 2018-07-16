@@ -4,16 +4,20 @@ namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class FundingLoansUpdateRegistration : SubscriptionRegistration
     {
-        private Action<BitfinexFundingLoan[]> handler;
+        private Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> handler;
 
-        public FundingLoansUpdateRegistration(Action<BitfinexFundingLoan[]> handler, int streamId) : base(typeof(BitfinexFundingLoan), streamId, "fls", "fln", "flu", "flc")
+        public FundingLoansUpdateRegistration(Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> handler, int streamId)
+            : base(typeof(BitfinexFundingLoan), streamId, BitfinexEventType.FundingLoanSnapshot,
+                                                          BitfinexEventType.FundingLoanNew,
+                                                          BitfinexEventType.FundingLoanUpdate,
+                                                          BitfinexEventType.FundingLoanClose)
         {
             this.handler = handler;
         }
 
-        protected override void Handle(object obj)
+        protected override void Handle(BitfinexEventType type, object obj)
         {
-            handler((BitfinexFundingLoan[])obj);
+            handler(new BitfinexSocketEvent<BitfinexFundingLoan[]>(type, (BitfinexFundingLoan[])obj));
         }
     }
 }

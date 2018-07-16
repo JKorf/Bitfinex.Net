@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects
 {
@@ -166,5 +167,66 @@ namespace Bitfinex.Net.Objects
         Connected,
         Paused,
         Disconnecting
+    }
+
+    public enum BitfinexEventType
+    {
+        HeartBeat,
+
+        BalanceUpdate,
+
+        PositionSnapshot,
+        PositionNew,
+        PositionUpdate,
+        PositionClose,
+
+        WalletSnapshot,
+        WalletUpdate,
+
+        OrderSnapshot,
+        OrderNew,
+        OrderNewRequest,
+        OrderUpdate,
+        OrderCancel,
+        OrderCancelRequest,
+        OrderCancelMultiRequest,
+
+        TradeExecuted,
+        TradeExecutionUpdate,
+
+        FundingTradeExecution,
+        FundingTradeUpdate,
+        
+        HistoricalOrderSnapshot,
+
+        MarginInfoSnapshot,
+        MarginInfoUpdate,
+
+        Notification,
+
+        FundingOfferSnapshot,
+        FundingOfferNew,
+        FundingOfferUpdate,
+        FundingOfferCancel,
+
+        HistoricalFundingOfferSnapshot,
+        
+        FundingCreditsSnapshot,
+        FundingCreditsNew,
+        FundingCreditsUpdate,
+        FundingCreditsClose,
+
+        HistoricalFundingCreditsSnapshot,
+
+        FundingLoanSnapshot,
+        FundingLoanNew,
+        FundingLoanUpdate,
+        FundingLoanClose,
+
+        HistoricalFundingLoanSnapshot,
+        
+        HistoricalFundingTradeSnapshot,
+
+        UserCustomPriceAlert
     }
 }

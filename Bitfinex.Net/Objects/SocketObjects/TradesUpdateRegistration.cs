@@ -4,16 +4,18 @@ namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class TradesUpdateRegistration : SubscriptionRegistration
     {
-        private Action<BitfinexTradeDetails[]> handler;
+        private Action<BitfinexSocketEvent<BitfinexTradeDetails[]>> handler;
 
-        public TradesUpdateRegistration(Action<BitfinexTradeDetails[]> handler, int streamId) : base(typeof(BitfinexTradeDetails), streamId, "te", "tu")
+        public TradesUpdateRegistration(Action<BitfinexSocketEvent<BitfinexTradeDetails[]>> handler, int streamId) 
+            : base(typeof(BitfinexTradeDetails), streamId, BitfinexEventType.TradeExecuted, 
+                                                           BitfinexEventType.TradeExecutionUpdate)
         {
             this.handler = handler;
         }
 
-        protected override void Handle(object obj)
+        protected override void Handle(BitfinexEventType type, object obj)
         {
-            handler((BitfinexTradeDetails[])obj);
+            handler(new BitfinexSocketEvent<BitfinexTradeDetails[]>(type, (BitfinexTradeDetails[])obj));
         }
     }
 }
