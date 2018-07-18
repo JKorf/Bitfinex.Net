@@ -1064,6 +1064,16 @@ namespace Bitfinex.Net
                         var eventTypeString = dataObject[1].ToString();
                         if (!BitfinexEvents.EventMapping.ContainsKey(eventTypeString))
                         {
+                            SubscriptionRequest channelReg;
+                            lock (confirmedRequestLock)
+                                channelReg = confirmedRequests.SingleOrDefault(c => c.ChannelId == channelId);
+
+                            if (channelReg != null)
+                            {
+                                channelReg.Handle((JArray)dataObject);
+                                continue;
+                            }
+
                             log.Write(LogVerbosity.Warning, $"Received unknown event type: {eventTypeString}");
                             continue;
                         }
@@ -1071,16 +1081,6 @@ namespace Bitfinex.Net
                         BitfinexEventType evnt = BitfinexEvents.EventMapping[eventTypeString];
                         if (evnt == BitfinexEventType.HeartBeat)
                             continue;
-
-                        SubscriptionRequest channelReg;
-                        lock (confirmedRequestLock)
-                            channelReg = confirmedRequests.SingleOrDefault(c => c.ChannelId == channelId);
-
-                        if (channelReg != null)
-                        {
-                            channelReg.Handle((JArray) dataObject);
-                            continue;
-                        }
 
                         HandleRequestResponse(evnt, (JArray) dataObject);
 

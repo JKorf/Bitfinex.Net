@@ -147,6 +147,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.1.1 - 18 jul 2018
+	* Fix for subscription data handling
+
 * Version 1.1.0 - 16 jul 2018
 	* Refactored multiple subscriptions to expose the EventType that caused the update
 
