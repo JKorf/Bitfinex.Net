@@ -147,6 +147,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.1.2 - 20 jul 2018
+	* Fix for resubscribing after lost connection
+
 * Version 1.1.1 - 18 jul 2018
 	* Fix for subscription data handling
 
