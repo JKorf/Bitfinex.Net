@@ -54,6 +54,7 @@ namespace Bitfinex.Net
 
         private Task sendTask;
         private Task receiveTask;
+        private Task stoppingTask;
 
         private bool running;
         private bool reconnect = true;
@@ -220,14 +221,16 @@ namespace Bitfinex.Net
                 }
             }
 
-            running = false;
-            sendTask.Wait();
-            receiveTask.Wait();
+            stoppingTask = Task.Run(() => {
+                running = false;
+                sendTask.Wait();
+                receiveTask.Wait();
 
-            Init();
+                Init();
 
-            if (!reconnect)
-                socket = null;
+                if (!reconnect)
+                    socket = null;
+            });
         }
 
         /// <summary>
@@ -827,6 +830,8 @@ namespace Bitfinex.Net
                 }
 
                 Thread.Sleep(2000);
+                while(!stoppingTask.IsCompleted)
+                    Thread.Sleep(2000); // Wait for stopping to complete before starting again
                 StartInternal();
             });
         }
@@ -927,6 +932,7 @@ namespace Bitfinex.Net
                     {
                         log.Write(LogVerbosity.Warning, $"No data received for {socketReceiveTimeout.TotalSeconds} seconds, restarting connection");
                         StopInternal();
+                        break;
                     }
                     continue;
                 }
