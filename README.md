@@ -147,6 +147,10 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.1.3 - 24 jul 2018
+	* Fix for mixup in TradeUpdate for user trades and for symbol trades
+	* Fix for small decimal parsing
+
 * Version 1.1.2 - 20 jul 2018
 	* Fix for resubscribing after lost connection
 
