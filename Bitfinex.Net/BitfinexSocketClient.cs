@@ -1068,18 +1068,21 @@ namespace Bitfinex.Net
                     {
                         var channelId = (int) dataObject[0];
                         var eventTypeString = dataObject[1].ToString();
+                        if (eventTypeString == "hb")
+                            continue;
+
+                        SubscriptionRequest channelReg;
+                        lock (confirmedRequestLock)
+                            channelReg = confirmedRequests.SingleOrDefault(c => c.ChannelId == channelId);
+
+                        if (channelReg != null)
+                        {
+                            channelReg.Handle((JArray)dataObject);
+                            continue;
+                        }
+
                         if (!BitfinexEvents.EventMapping.ContainsKey(eventTypeString))
                         {
-                            SubscriptionRequest channelReg;
-                            lock (confirmedRequestLock)
-                                channelReg = confirmedRequests.SingleOrDefault(c => c.ChannelId == channelId);
-
-                            if (channelReg != null)
-                            {
-                                channelReg.Handle((JArray)dataObject);
-                                continue;
-                            }
-
                             log.Write(LogVerbosity.Warning, $"Received unknown event type: {eventTypeString}");
                             continue;
                         }
@@ -1193,7 +1196,7 @@ namespace Bitfinex.Net
                     if (notificationType == BitfinexEventType.OrderNewRequest)
                     {
                         // new order request
-                        var orderAmount = decimal.Parse(orderData[6].ToString());
+                        var orderAmount = (decimal)orderData[6];
                         var orderType = (OrderType)orderData[8].ToObject(typeof(OrderType), new JsonSerializer() { Converters = { new OrderTypeConverter() } });
                         foreach (var pendingOrder in pendingOrders.ToList())
                         {
