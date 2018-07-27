@@ -1088,9 +1088,6 @@ namespace Bitfinex.Net
                         }
 
                         BitfinexEventType evnt = BitfinexEvents.EventMapping[eventTypeString];
-                        if (evnt == BitfinexEventType.HeartBeat)
-                            continue;
-
                         HandleRequestResponse(evnt, (JArray) dataObject);
 
                         SubscriptionRegistration accountReg;
@@ -1138,7 +1135,7 @@ namespace Bitfinex.Net
                     {
                         // OC also gets send if a FillOrKill order doesn't get executed, so search for it in placements waiting for confirmation
                         if (!CheckOrderPlacementConfirmation(orderResult.Data))
-                            log.Write(LogVerbosity.Warning, $"Did not find a placed order for {orderResult.Data.Type}");
+                            log.Write(LogVerbosity.Debug, $"Did not find a placed order for {orderResult.Data.Type}, assuming it's already been processed");
                     }
                 }
 
@@ -1150,7 +1147,7 @@ namespace Bitfinex.Net
                     // 3. An oc (order canceled) is send in which the status is actually 'Executed @ xxx'
                     // So even though oc should be an order canceled confirmation, also check if it isn't a market order execution
                     if (!CheckOrderPlacementConfirmation(orderResult.Data))
-                        log.Write(LogVerbosity.Warning, $"Did not find a placed order for {orderResult.Data.Type}");
+                        log.Write(LogVerbosity.Debug, $"Did not find a placed order for {orderResult.Data.Type}, assuming it's already been processed");
 
                 }
                 else
