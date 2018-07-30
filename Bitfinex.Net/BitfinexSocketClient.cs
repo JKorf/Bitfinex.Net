@@ -78,6 +78,7 @@ namespace Bitfinex.Net
         private static long lastNonce;
         private bool authenticating;
         private bool authenticated;
+        private Random random = new Random();
 
         internal static string Nonce
         {
@@ -263,6 +264,9 @@ namespace Bitfinex.Net
 
             if (!CheckAuthentication())
                 return new CallResult<BitfinexOrder>(null, new NoApiCredentialsError());
+
+            if (clientOrderId == null)
+                clientOrderId = GenerateClientOrderId(); 
             
             log.Write(LogVerbosity.Info, "Going to place order");
             var order = new BitfinexNewOrder()
@@ -1188,17 +1192,17 @@ namespace Bitfinex.Net
                     var error = dataArray[6].ToString().ToLower() == "error";
                     var message = dataArray[7].ToString();
                     if (!error)
+                        // Only check when 'error', otherwise wait for order confirmed message
                         return;
 
                     if (notificationType == BitfinexEventType.OrderNewRequest)
                     {
                         // new order request
-                        var orderAmount = (decimal)orderData[6];
-                        var orderType = (OrderType)orderData[8].ToObject(typeof(OrderType), new JsonSerializer() { Converters = { new OrderTypeConverter() } });
+                        var clientId = (long)orderData[2];
                         foreach (var pendingOrder in pendingOrders.ToList())
                         {
                             var o = pendingOrder.Key;
-                            if (o.Amount == orderAmount && o.OrderType == orderType)
+                            if (o.ClientOrderId == clientId)
                             {
                                 pendingOrder.Value.Set(new CallResult<BitfinexOrder>(null, new ServerError(message)));
                                 break;
@@ -1252,14 +1256,10 @@ namespace Bitfinex.Net
             foreach (var pendingOrder in pendingOrders.ToList())
             {
                 var o = pendingOrder.Key;
-                if (o.Symbol == order.Symbol && o.OrderType == order.Type)
+                if (o.ClientOrderId == order.ClientOrderId)
                 {
-                    if ((o.Amount != null && (Math.Round(o.Amount.Value, 8) == Math.Round(order.AmountOriginal, 8)))
-                        || (o.Price != null && Math.Round(o.Price.Value, 8) == Math.Round(order.Price, 8)))
-                    {
-                        pendingOrder.Value.Set(new CallResult<BitfinexOrder>(order, null));
-                        return true;
-                    }
+                    pendingOrder.Value.Set(new CallResult<BitfinexOrder>(order, null));
+                    return true;                    
                 }
             }
             return false;
@@ -1381,6 +1381,13 @@ namespace Bitfinex.Net
             }
 
             GetSubscriptionResponseTypes();
+        }
+
+        private long GenerateClientOrderId()
+        {
+            byte[] buffer = new byte[8];
+            random.NextBytes(buffer);
+            return (long)Math.Round(Math.Abs(BitConverter.ToInt64(buffer, 0)) / 1000m);
         }
 
         public override void Dispose()
