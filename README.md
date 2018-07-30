@@ -147,6 +147,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.1.4 - 30 jul 2018
+	* Changed order confirmation matching to use ClientOrderId instead of trying to match based on amount/price/symbol and type
+
 * Version 1.1.3 - 24 jul 2018
 	* Fix for mixup in TradeUpdate for user trades and for symbol trades
 	* Fix for small decimal parsing
