@@ -147,6 +147,10 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.1.5 - 13 aug 2018
+	* Added CancelOrders methods to socket client
+	* Updated CryptoExchange.Net
+
 * Version 1.1.4 - 30 jul 2018
 	* Changed order confirmation matching to use ClientOrderId instead of trying to match based on amount/price/symbol and type
 
