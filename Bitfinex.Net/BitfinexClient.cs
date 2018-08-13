@@ -1050,7 +1050,7 @@ namespace Bitfinex.Net
                 var signature = $"/api{uri.PathAndQuery}{n}{json}";
                 var signedData = authProvider.Sign(signature);
                 request.Headers.Add($"bfx-nonce: {n}");
-                request.Headers.Add($"bfx-apikey: {authProvider.Credentials.Key}");
+                request.Headers.Add($"bfx-apikey: {authProvider.Credentials.Key.GetString()}");
                 request.Headers.Add($"bfx-signature: {signedData.ToLower()}");
 
                 using (var stream = request.GetRequestStream().Result)
