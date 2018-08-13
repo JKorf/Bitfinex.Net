@@ -229,4 +229,57 @@ namespace Bitfinex.Net.Objects
 
         UserCustomPriceAlert
     }
+
+    public enum WithdrawalType
+    {
+        Bitcoin,
+        Litecoin,
+        Ethereum,
+        EthereumClassic,
+        TetherUSO,
+        TetherUSE,
+        TetherEUE,
+        ZCash,
+        Monero,
+        IOTA,
+        Ripple,
+        Dash,
+        Adjustment,
+        Wire,
+        EOS,
+        Santiment,
+        OmiseGo,
+        BitcoinCash,
+        Neo,
+        MetaVerse,
+        QTUM,
+        Aventus,
+        Eidoo,
+        Datacoin,
+        BitcoinGold,
+        Qash,
+        Yoyow,
+        Golem,
+        Status,
+        Bat,
+        MNA,
+        Fun,
+        ZRX,
+        TNB,
+        SPK,
+        TRX,
+        RCN,
+        RLC,
+        AID,
+        SNG,
+        REP,
+        ELF
+    }
+
+    public enum WithdrawWallet
+    {
+        Trading,
+        Exchange,
+        Deposit
+    }
 }

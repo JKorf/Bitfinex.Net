@@ -27,7 +27,6 @@ namespace Bitfinex.Net
         private TimeSpan subscribeResponseTimeout;
         private TimeSpan orderActionConfirmationTimeout;
 
-        private string baseAddress;
         internal IWebsocket socket;
 
         private DateTime lastReceivedMessage = DateTime.UtcNow;
@@ -1275,7 +1274,7 @@ namespace Bitfinex.Net
             var authentication = new BitfinexAuthentication()
             {
                 Event = "auth",
-                ApiKey = authProvider.Credentials.Key,
+                ApiKey = authProvider.Credentials.Key.GetString(),
                 Nonce = n,
                 Payload = "AUTH" + n
             };

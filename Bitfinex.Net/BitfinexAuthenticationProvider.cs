@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
 
@@ -14,7 +15,7 @@ namespace Bitfinex.Net
         public BitfinexAuthenticationProvider(ApiCredentials credentials) : base(credentials)
         {
             locker = new object();
-            encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(credentials.Secret));
+            encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(credentials.Secret.GetString()));
         }
 
         public override string AddAuthenticationToUriString(string uri, bool signed)

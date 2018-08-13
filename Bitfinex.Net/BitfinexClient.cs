@@ -25,7 +25,6 @@ namespace Bitfinex.Net
         private const string GetMethod = "GET";
         private const string PostMethod = "POST";
 
-        private string baseAddress;
         private const string ApiVersion1 = "1";
         private const string ApiVersion2 = "2";
 
@@ -73,6 +72,7 @@ namespace Bitfinex.Net
         private const string CancelAllOrderEndpoint = "order/cancel/all";
         private const string OrderStatusEndpoint = "order/status";
 
+        private const string WithdrawEndpoint = "withdraw";
 
         private static string nonce => BitfinexSocketClient.Nonce;
         #endregion
@@ -905,6 +905,117 @@ namespace Bitfinex.Net
             return await ExecuteRequest<BitfinexAvailableBalance>(GetUrl(CalcAvailableBalanceEndpoint, ApiVersion2), PostMethod, parameters, true).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Synchronized version of the <see cref="WithdrawAsync"/> method
+        /// </summary>
+        /// <returns></returns>
+        public CallResult<BitfinexWithdrawalResult> Withdraw(WithdrawalType withdrawType,
+                                                             WithdrawWallet wallet,
+                                                             decimal amount,
+                                                             string address = null,
+                                                             string accountNumber = null,
+                                                             string bankSwift = null,
+                                                             string bankName = null,
+                                                             string bankAddress = null,
+                                                             string bankCity = null,
+                                                             string bankCountry = null,
+                                                             string paymentDetails = null,
+                                                             bool? expressWire = null,
+                                                             string intermediaryBankName = null,
+                                                             string intermediaryBankAddress = null,
+                                                             string intermediaryBankCity = null,
+                                                             string intermediaryBankCountry = null,
+                                                             string intermediaryBankAccount = null,
+                                                             string intermediaryBankSwift = null,
+                                                             string accountName = null,
+                                                             string paymentId = null) =>
+                                                             WithdrawAsync(withdrawType, wallet, amount, address, accountNumber, bankSwift, bankName, bankAddress,
+                                                                 bankCity, bankCountry, paymentDetails, expressWire, intermediaryBankName, intermediaryBankAddress,
+                                                                 intermediaryBankCity, intermediaryBankCountry, intermediaryBankAccount, intermediaryBankSwift,
+                                                                 accountName, paymentId).Result;
+                                                                                    
+
+        /// <summary>
+        /// Withdraw funds from Bitfinex, either to a cryptocurrency address or a bank account
+        /// All withdrawals need the withdrawType, wallet and amount parameters
+        /// CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
+        /// Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.
+        /// </summary>
+        /// <param name="withdrawType">The type of funds to withdraw</param>
+        /// <param name="wallet">The wallet to withdraw from</param>
+        /// <param name="amount">The amount to withdraw</param>
+        /// <param name="address">The destination of the withdrawal</param>
+        /// <param name="accountNumber">The account number</param>
+        /// <param name="bankSwift">The SWIFT code of the bank</param>
+        /// <param name="bankName">The bank name</param>
+        /// <param name="bankAddress">The bank address</param>
+        /// <param name="bankCity">The bank city</param>
+        /// <param name="bankCountry">The bank country</param>
+        /// <param name="paymentDetails">Message for the receiver</param>
+        /// <param name="expressWire">Whether it is an express wire withdrawal</param>
+        /// <param name="intermediaryBankName">Intermediary bank name</param>
+        /// <param name="intermediaryBankAddress">Intermediary bank address</param>
+        /// <param name="intermediaryBankCity">Intermediary bank city</param>
+        /// <param name="intermediaryBankCountry">Intermediary bank country</param>
+        /// <param name="intermediaryBankAccount">Intermediary bank account</param>
+        /// <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
+        /// <param name="accountName">The name of the account</param>
+        /// <param name="paymentId">Hex string for Monero transaction</param>
+        /// <returns></returns>
+        public async Task<CallResult<BitfinexWithdrawalResult>> WithdrawAsync(WithdrawalType withdrawType, 
+                                                                         WithdrawWallet wallet, 
+                                                                         decimal amount, 
+                                                                         string address = null, 
+                                                                         string accountNumber = null,
+                                                                         string bankSwift = null, 
+                                                                         string bankName = null,
+                                                                         string bankAddress = null,
+                                                                         string bankCity = null,
+                                                                         string bankCountry = null,
+                                                                         string paymentDetails = null,
+                                                                         bool? expressWire = null,
+                                                                         string intermediaryBankName = null,
+                                                                         string intermediaryBankAddress = null,
+                                                                         string intermediaryBankCity = null,
+                                                                         string intermediaryBankCountry = null,
+                                                                         string intermediaryBankAccount = null,
+                                                                         string intermediaryBankSwift = null,
+                                                                         string accountName = null, 
+                                                                         string paymentId = null)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "withdraw_type", JsonConvert.SerializeObject(withdrawType, new WithdrawalTypeConverter(false)) },
+                { "walletselected", JsonConvert.SerializeObject(wallet, new WithdrawWalletConverter(false)) },
+                { "amount", amount.ToString(CultureInfo.InvariantCulture) }
+            };
+            parameters.AddOptionalParameter("address", address);
+            parameters.AddOptionalParameter("payment_id", paymentId);
+            parameters.AddOptionalParameter("account_name", accountName);
+            parameters.AddOptionalParameter("account_number", accountNumber);
+            parameters.AddOptionalParameter("swift", bankSwift);
+            parameters.AddOptionalParameter("bank_name", bankName);
+            parameters.AddOptionalParameter("bank_address", bankAddress);
+            parameters.AddOptionalParameter("bank_city", bankCity);
+            parameters.AddOptionalParameter("bank_country", bankCountry);
+            parameters.AddOptionalParameter("detail_payment", paymentDetails);
+            parameters.AddOptionalParameter("expressWire", expressWire == null ? null :JsonConvert.SerializeObject(expressWire, new BoolToIntConverter(false)));
+            parameters.AddOptionalParameter("intermediary_bank_name", intermediaryBankName);
+            parameters.AddOptionalParameter("intermediary_bank_address", intermediaryBankAddress);
+            parameters.AddOptionalParameter("intermediary_bank_city", intermediaryBankCity);
+            parameters.AddOptionalParameter("intermediary_bank_country", intermediaryBankCountry);
+            parameters.AddOptionalParameter("intermediary_bank_account", intermediaryBankAccount);
+            parameters.AddOptionalParameter("intermediary_bank_swift", intermediaryBankSwift);
+
+            var result = await ExecuteRequest<BitfinexWithdrawalResult[]>(GetUrl(WithdrawEndpoint, ApiVersion1), PostMethod, parameters, true).ConfigureAwait(false);
+            if (!result.Success)
+                return new CallResult<BitfinexWithdrawalResult>(null, result.Error);
+
+            if(result.Data[0].Status == "error")
+                return new CallResult<BitfinexWithdrawalResult>(result.Data[0], new ServerError(result.Data[0].Message));
+            return new CallResult<BitfinexWithdrawalResult>(result.Data[0], null);
+        }
+
         #endregion
 
         #region private methods
@@ -962,7 +1073,7 @@ namespace Bitfinex.Net
                 var payload = Convert.ToBase64String(Encoding.ASCII.GetBytes(signature.ToString()));
                 var signedData = authProvider.Sign(payload);
                     
-                request.Headers.Add($"X-BFX-APIKEY: {authProvider.Credentials.Key}");
+                request.Headers.Add($"X-BFX-APIKEY: {authProvider.Credentials.Key.GetString()}");
                 request.Headers.Add($"X-BFX-PAYLOAD: {payload}");
                 request.Headers.Add($"X-BFX-SIGNATURE: {signedData.ToLower()}");
             }
@@ -1007,8 +1118,6 @@ namespace Bitfinex.Net
         private void Configure(BitfinexClientOptions options)
         {
             base.Configure(options);
-
-            baseAddress = options.BaseAddress;
         }
         #endregion
         #endregion
