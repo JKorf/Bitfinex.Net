@@ -24,7 +24,12 @@ Also check out my other exchange API wrappers:
 </td>
 <td><img src="https://github.com/JKorf/Bittrex.Net/blob/master/Resources/icon.png?raw=true">
 <br />
-<a href="https://github.com/JKorf/Bittrex.Net">Bittrex</a></td>
+<a href="https://github.com/JKorf/Bittrex.Net">Bittrex</a>
+</td>
+<td><img src="https://github.com/JKorf/CoinEx.Net/blob/master/Resources/icon.png?raw=true">
+<br />
+<a href="https://github.com/JKorf/CoinEx.Net">CoinEx</a>
+</td>
 </table>
 
 And other API wrappers based on CryptoExchange.Net:
