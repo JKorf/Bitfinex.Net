@@ -1086,11 +1086,15 @@ namespace Bitfinex.Net
 
         private void ProcessData()
         {
+            log.Write(LogVerbosity.Debug, $"Starting process loop");
             while (running)
             {
                 var received = receivedMessages.TryTake(out string dequeued, TimeSpan.FromMilliseconds(100));
                 if (!received)
                 {
+                    if (state != SocketState.Connected)
+                        break;
+
                     if ((DateTime.UtcNow - lastReceivedMessage) > socketReceiveTimeout)
                     {
                         log.Write(LogVerbosity.Warning, $"No data received for {socketReceiveTimeout.TotalSeconds} seconds, restarting connection");
@@ -1200,6 +1204,9 @@ namespace Bitfinex.Net
                             {
                                 case 20051:
                                     // reconnect
+                                    if (state != SocketState.Connected)
+                                        continue;
+
                                     log.Write(LogVerbosity.Info, "Received status code 20051, going to reconnect the websocket");
                                     Task.Run(() => StopInternal());
                                     continue;
@@ -1265,6 +1272,7 @@ namespace Bitfinex.Net
                     log.Write(LogVerbosity.Error, $"Error in processing loop. {e.GetType()}, {e.Message}, {e.StackTrace}, message: {dequeued}");
                 }
             }
+            log.Write(LogVerbosity.Debug, $"Process loop ended");
         }
 
         private void HandleRequestResponse(BitfinexEventType eventType, JArray dataObject)
