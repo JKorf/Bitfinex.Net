@@ -341,7 +341,7 @@ namespace Bitfinex.Net
                 Send(data);
 
                 if (!waitAction.Wait(out result, (int)Math.Round(orderActionConfirmationTimeout.TotalMilliseconds, 0)))
-                    result = new CallResult<bool>(false, new ServerError("No update order confirmation received"));
+                    result = new CallResult<bool>(false, new ServerError("No cancel order confirmation received"));
 
                 pendingCancels.TryRemove(orderId, out waitAction);
             }).ConfigureAwait(false);
@@ -350,8 +350,168 @@ namespace Bitfinex.Net
             return result;
         }
 
+        /// <summary>
+        /// Synchronized version of the <see cref="CancelOrdersByGroupIdAsync"/> method
+        /// </summary>
+        /// <returns></returns>
+        public CallResult<bool> CancelOrdersByGroupId(long groupOrderId) => CancelOrdersByGroupIdAsync(groupOrderId).Result;
+
+        /// <summary>
+        /// Cancels multiple orders based on their groupId
+        /// </summary>
+        /// <param name="groupOrderId">The group id to cancel</param>
+        /// <returns>True if successfully committed on server</returns>
+        public async Task<CallResult<bool>> CancelOrdersByGroupIdAsync(long groupOrderId)
+        {
+            return await CancelOrdersAsync(null, null, new Dictionary<long, long?>() { { groupOrderId, null } });
+        }
+
+        /// <summary>
+        /// Synchronized version of the <see cref="CancelOrdersByGroupIdsAsync"/> method
+        /// </summary>
+        /// <returns></returns>
+        public CallResult<bool> CancelOrdersByGroupIds(long[] groupOrderIds) => CancelOrdersByGroupIdsAsync(groupOrderIds).Result;
+
+        /// <summary>
+        /// Cancels multiple orders based on their groupIds
+        /// </summary>
+        /// <param name="groupOrderIds">The group ids to cancel</param>
+        /// <returns>True if successfully committed on server</returns>
+        public async Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(long[] groupOrderIds)
+        {
+            return await CancelOrdersAsync(null, null, groupOrderIds.ToDictionary(v => v, k => { return (long?)null; }));
+        }
+
+        /// <summary>
+        /// Synchronized version of the <see cref="CancelOrdersByGroupIds"/> method
+        /// </summary>
+        /// <returns></returns>
+        public CallResult<bool> CancelOrdersByGroupIds(Dictionary<long, long?> groupOrderIds) => CancelOrdersByGroupIdsAsync(groupOrderIds).Result;
+
+        /// <summary>
+        /// Cancels multiple orders based on their groupIds
+        /// </summary>
+        /// <param name="groupOrderIds">The group ids to cancel, listed as (GroupId, MaxOrderId) pair. If MaxOrderId is provided all order ids which are in the group id with higher orderIds than the MaxOrderId won't get canceled</param>
+        /// <returns>True if successfully committed on server</returns>
+        public async Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(Dictionary<long, long?> groupOrderIds)
+        {
+            return await CancelOrdersAsync(null, null, groupOrderIds);
+        }
+
+        /// <summary>
+        /// Synchronized version of the <see cref="CancelOrdersByOrderIdsAsync"/> method
+        /// </summary>
+        /// <returns></returns>
+        public CallResult<bool> CancelOrdersByOrderIds(long[] orderIds) => CancelOrdersByOrderIdsAsync(orderIds).Result;
+
+        /// <summary>
+        /// Cancels multiple orders based on their order ids
+        /// </summary>
+        /// <param name="orderIds">The order ids to cancel</param>
+        /// <returns>True if successfully committed on server</returns>
+        public async Task<CallResult<bool>> CancelOrdersByOrderIdsAsync(long[] orderIds)
+        {
+            return await CancelOrdersAsync(orderIds, null, null);
+        }
+
+        /// <summary>
+        /// Synchronized version of the <see cref="CancelOrdersByClientOrderIdsAsync"/> method
+        /// </summary>
+        /// <returns></returns>
+        public CallResult<bool> CancelOrdersByClientOrderIds(Dictionary<long, DateTime> clientOrderIds) => CancelOrdersByClientOrderIdsAsync(clientOrderIds).Result;
+
+        /// <summary>
+        /// Cancels multiple orders based on their clientOrderIds
+        /// </summary>
+        /// <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
+        /// <returns>True if successfully committed on server</returns>
+        public async Task<CallResult<bool>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds)
+        {
+            return await CancelOrdersAsync(null, clientOrderIds, null);
+        }
+
+        private async Task<CallResult<bool>> CancelOrdersAsync(long[] orderIds = null, Dictionary<long, DateTime> clientOrderIds = null, Dictionary<long, long?> groupOrderIds = null)
+        {
+            if (orderIds == null && clientOrderIds == null && groupOrderIds == null)
+                return new CallResult<bool>(false, new ArgumentError("Either orderIds, clientOrderIds or groupOrderIds should be provided"));
+
+            if (pendingCancels.Any(p => p.Key == 0))
+                return new CallResult<bool>(false, new ArgumentError("A multi cancel is already in progress"));
+
+            if (!CheckConnection())
+                return new CallResult<bool>(false, new WebError("Socket needs to be started before canceling orders, call the Start() method prior prior to this"));
+
+            if (State == SocketState.Paused)
+                return new CallResult<bool>(false, new WebError("Socket is currently paused on request of the server, pause should take max 120 seconds"));
+
+            if (!CheckAuthentication())
+                return new CallResult<bool>(false, new NoApiCredentialsError());
+
+            log.Write(LogVerbosity.Info, "Going to cancel multiple orders");
+            JObject obj = new JObject();
+            if (orderIds != null)
+                obj["id"] = new JArray(orderIds);
+
+            if (clientOrderIds != null) {
+                var array = new JArray();
+                for(int i = 0; i < clientOrderIds.Count; i++)
+                    array.Add(new JArray() { clientOrderIds.ElementAt(i).Key, clientOrderIds.ElementAt(i).Value.ToString("yyyy-MM-dd") });
+                obj["cid"] = array;
+            }
+
+            if(groupOrderIds != null)
+            {
+                var array = new JArray();
+                for (int i = 0; i < groupOrderIds.Count; i++)
+                {
+                    var subArray = new JArray();
+                    subArray.Add(groupOrderIds.ElementAt(i).Key);
+                    if (groupOrderIds.ElementAt(i).Value != null)
+                        subArray.Add(groupOrderIds.ElementAt(i).Value);
+                    array.Add(subArray);
+                }
+
+                obj["gid"] = array;
+            }
+
+            var wrapper = new JArray(0, "oc_multi", null, obj);
+            var data = JsonConvert.SerializeObject(wrapper);
+
+            CallResult<bool> result = null;
+            await Task.Run(() =>
+            {
+                var waitAction = new WaitAction<bool>();
+                pendingCancels.TryAdd(0, waitAction);
+                Send(data);
+
+                if (!waitAction.Wait(out result, (int)Math.Round(orderActionConfirmationTimeout.TotalMilliseconds, 0)))
+                    result = new CallResult<bool>(false, new ServerError("No cancel multi order confirmation received"));
+
+                pendingCancels.TryRemove(0, out waitAction);
+            }).ConfigureAwait(false);
+
+            log.Write(LogVerbosity.Info, result.Data ? "Multiorder canceled" : "Multiorder cancel failed");
+            return result;
+        }
+
+
+        /// <summary>
+        /// Synchronized version of the <see cref="CancelOrderAsync"/> method
+        /// </summary>
+        /// <returns></returns>
         public CallResult<bool> UpdateOrder(long orderId, decimal? price = null, decimal? amount = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null) => UpdateOrderAsync(orderId, price, amount, delta, priceAuxiliaryLimit, priceTrailing, flags).Result;
 
+        /// <summary>
+        /// Updates an order
+        /// </summary>
+        /// <param name="orderId">The id of the order to update</param>
+        /// <param name="price">The new price of the order</param>
+        /// <param name="amount">The new amount of the order</param>
+        /// <param name="delta">The delta to change</param>
+        /// <param name="priceAuxiliaryLimit">the new aux limit price</param>
+        /// <param name="priceTrailing">The new trailing price</param>
+        /// <param name="flags">The new flags</param>
+        /// <returns></returns>
         public async Task<CallResult<bool>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? amount = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null)
         {
             if (!CheckConnection())
@@ -1222,6 +1382,20 @@ namespace Bitfinex.Net
                             }
                         }
                     }
+                }
+                else if (notificationType == BitfinexEventType.OrderCancelMultiRequest)
+                {
+                    var pendingMultiCancel = pendingCancels.ToList().SingleOrDefault(p => p.Key == 0);
+                    if (pendingMultiCancel.Equals(default(KeyValuePair<long, WaitAction<bool>>)))
+                        return;
+
+                    // cancel multi order request
+                    var error = dataArray[6].ToString().ToLower() == "error";
+                    var message = dataArray[7].ToString();
+                    if (!error)
+                        pendingMultiCancel.Value.Set(new CallResult<bool>(true, null));
+                    else
+                        pendingMultiCancel.Value.Set(new CallResult<bool>(false, new ServerError(message)));
                 }
             }
         }
