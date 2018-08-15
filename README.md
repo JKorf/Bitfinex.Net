@@ -162,6 +162,11 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.1.6 - 15 aug 2018
+	* Fixed subscribe calls always reporting success
+	* Made resubscribing after lost connection more robust
+	* Added reconnect interval setting
+
 * Version 1.1.5 - 13 aug 2018
 	* Added CancelOrders methods to socket client
 	* Updated CryptoExchange.Net
