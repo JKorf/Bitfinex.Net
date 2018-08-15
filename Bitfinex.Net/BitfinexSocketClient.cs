@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -26,6 +27,7 @@ namespace Bitfinex.Net
         private TimeSpan socketReceiveTimeout;
         private TimeSpan subscribeResponseTimeout;
         private TimeSpan orderActionConfirmationTimeout;
+        private TimeSpan reconnectInterval;
 
         internal IWebsocket socket;
 
@@ -50,6 +52,7 @@ namespace Bitfinex.Net
         private object outstandingSubscriptionRequestsLock = new object();
         private object outstandingUnsubscriptionRequestsLock = new object();
         private object registrationsLock = new object();
+        private object subscriptionRegistrationLock = new object();
 
         private Task sendTask;
         private Task receiveTask;
@@ -57,6 +60,7 @@ namespace Bitfinex.Net
 
         private bool running;
         private bool reconnect = true;
+        private bool reconnecting = false;
         private bool lost;
 
         private SocketState state = SocketState.Disconnected;
@@ -65,8 +69,11 @@ namespace Bitfinex.Net
             get => state;
             private set
             {
-                log.Write(LogVerbosity.Debug, $"Socket state change {state} => {value}");
-                state = value;
+                if (value != state)
+                {
+                    log.Write(LogVerbosity.Debug, $"Socket state change {state} => {value}");
+                    state = value;
+                }
             }
         }
         
@@ -710,7 +717,9 @@ namespace Bitfinex.Net
                 return new CallResult<int>(id, null);
 
             log.Write(LogVerbosity.Info, "Subscribing to ticker updates for " + symbol);
-            await SubscribeAndWait(sub).ConfigureAwait(false);
+            var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
+            if (!subResult.Success)
+                return new CallResult<int>(0, subResult.Error);
             return new CallResult<int>(id, null);
         }
 
@@ -732,7 +741,9 @@ namespace Bitfinex.Net
                 return new CallResult<int>(id, null);
 
             log.Write(LogVerbosity.Info, "Subscribing to trade updates for " + symbol);
-            await SubscribeAndWait(sub).ConfigureAwait(false);
+            var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
+            if (!subResult.Success)
+                return new CallResult<int>(0, subResult.Error);
             return new CallResult<int>(id, null);
         }
 
@@ -757,7 +768,9 @@ namespace Bitfinex.Net
                 return new CallResult<int>(id, null);
 
             log.Write(LogVerbosity.Info, $"Subscribing to book updates for {symbol}, {precision}, {frequency}, {length}");
-            await SubscribeAndWait(sub).ConfigureAwait(false);
+            var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
+            if (!subResult.Success)
+                return new CallResult<int>(0, subResult.Error);
             return new CallResult<int>(id, null);
         }
 
@@ -780,7 +793,9 @@ namespace Bitfinex.Net
                 return new CallResult<int>(id, null);
 
             log.Write(LogVerbosity.Info, $"Subscribing to raw book updates for {symbol}, {length}");
-            await SubscribeAndWait(sub).ConfigureAwait(false);
+            var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
+            if (!subResult.Success)
+                return new CallResult<int>(0, subResult.Error);
             return new CallResult<int>(id, null);
         }
 
@@ -809,7 +824,9 @@ namespace Bitfinex.Net
                 return new CallResult<int>(id, null);
 
             log.Write(LogVerbosity.Info, $"Subscribing to candle updates for {symbol}, {interval}");
-            await SubscribeAndWait(sub).ConfigureAwait(false);
+            var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
+            if (!subResult.Success)
+                return new CallResult<int>(0, subResult.Error);
             return new CallResult<int>(id, null);
         }
 
@@ -968,6 +985,11 @@ namespace Bitfinex.Net
                 Dispose();
                 return;
             }
+            if (reconnecting)
+                return; // Already reconnecting
+
+            State = SocketState.Disconnected;
+            reconnecting = true;
 
             foreach (var pending in pendingUpdates)
                 pending.Value.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
@@ -983,6 +1005,8 @@ namespace Bitfinex.Net
                 foreach (var request in outstandingUnsubscriptionRequests)
                     request.ConfirmedEvent.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
 
+            if (stoppingTask == null)
+                StopInternal();
 
             Task.Run(() =>
             {
@@ -992,9 +1016,10 @@ namespace Bitfinex.Net
                     ConnectionLost?.Invoke();
                 }
 
-                Thread.Sleep(2000);
+                Thread.Sleep(reconnectInterval);
                 while(!stoppingTask.IsCompleted)
-                    Thread.Sleep(2000); // Wait for stopping to complete before starting again
+                    Thread.Sleep(100); // Wait for stopping to complete before starting again
+                reconnecting = false;
                 StartInternal();
             });
         }
@@ -1038,7 +1063,7 @@ namespace Bitfinex.Net
                         // If we dc'd while reconnecting, just reset everything
                         log.Write(LogVerbosity.Info, "DC'd while resending subscriptions, resetting all");
                         lock(subscriptionRequestsLock)
-                            subscriptionRequests.ForEach(s => s.ChannelId = null);
+                            subscriptionRequests.ForEach(s => s.ResetSubscription());
                         return;
                     }
 
@@ -1054,7 +1079,12 @@ namespace Bitfinex.Net
                         log.Write(LogVerbosity.Warning, $"Failed to (re)sub {sub.GetType()}: {subResult.Error}, trying again");
                     else
                     {
-                        log.Write(LogVerbosity.Error, $"Failed to (re)sub {sub.GetType()}: {subResult.Error}, tried {currentTry} times");
+                        log.Write(LogVerbosity.Error, $"Failed to (re)sub {sub.GetType()}: {subResult.Error}, tried {currentTry} times. Resetting subscription and try to reconnect");
+
+                        lock (subscriptionRequestsLock)
+                            subscriptionRequests.ForEach(s => s.ResetSubscription());
+
+                        StopInternal();
                         break;
                     }
                 }
@@ -1515,6 +1545,7 @@ namespace Bitfinex.Net
             subscribeResponseTimeout = options.SubscribeResponseTimeout;
             orderActionConfirmationTimeout = options.OrderActionConfirmationTimeout;
             baseAddress = options.BaseAddress;
+            reconnectInterval = options.ReconnectionInterval;
         }
 
         private bool CheckConnection()
@@ -1561,7 +1592,8 @@ namespace Bitfinex.Net
                     registrations = new List<SubscriptionRegistration>();
             }
 
-            GetSubscriptionResponseTypes();
+            lock(subscriptionRegistrationLock)
+                GetSubscriptionResponseTypes();
         }
 
         private long GenerateClientOrderId()

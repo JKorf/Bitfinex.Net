@@ -39,10 +39,10 @@ namespace Bitfinex.Net.Objects
         public OrderType? TypePrevious { get; set; }
 
         [ArrayProperty(10)]
-        internal string PlaceHolder1 { get; set; }
+        public string PlaceHolder1 { get; set; }
 
         [ArrayProperty(11)]
-        internal string PlaceHolder2 { get; set; }
+        public string PlaceHolder2 { get; set; }
 
         [ArrayProperty(12)]
         public int? Flags { get; set; }
@@ -52,10 +52,10 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(13)]
         public string StatusString { get; set; }
         [ArrayProperty(14)]
-        internal string PlaceHolder3 { get; set; }
+        public string PlaceHolder3 { get; set; }
 
         [ArrayProperty(15)]
-        internal string PlaceHolder4 { get; set; }
+        public string PlaceHolder4 { get; set; }
 
         [ArrayProperty(16)]
         public decimal Price { get; set; }
@@ -69,11 +69,11 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(19)]
         public decimal PriceAuxilliaryLimit { get; set; }
         [ArrayProperty(20)]
-        internal string PlaceHolder5 { get; set; }
+        public string PlaceHolder5 { get; set; }
         [ArrayProperty(21)]
-        internal string PlaceHolder6 { get; set; }
+        public string PlaceHolder6 { get; set; }
         [ArrayProperty(22)]
-        internal string PlaceHolder7 { get; set; }
+        public string PlaceHolder7 { get; set; }
 
         [ArrayProperty(23)]
         public bool Notify { get; set; }

@@ -30,10 +30,10 @@ namespace Bitfinex.Net.Objects
         public FundingType FundingType { get; set; }
 
         [ArrayProperty(7)]
-        internal string PlaceHolder1 { get; set; }
+        public string PlaceHolder1 { get; set; }
 
         [ArrayProperty(8)]
-        internal string PlaceHolder2 { get; set; }
+        public string PlaceHolder2 { get; set; }
 
         [ArrayProperty(9)]
         public int? Flags { get; set; }
@@ -44,13 +44,13 @@ namespace Bitfinex.Net.Objects
         public string StatusString { get; set; }
 
         [ArrayProperty(11)]
-        internal string PlaceHolder3 { get; set; }
+        public string PlaceHolder3 { get; set; }
 
         [ArrayProperty(12)]
-        internal string PlaceHolder4 { get; set; }
+        public string PlaceHolder4 { get; set; }
 
         [ArrayProperty(13)]
-        internal string PlaceHolder5 { get; set; }
+        public string PlaceHolder5 { get; set; }
 
         [ArrayProperty(14)]
         public decimal Rate { get; set; }
@@ -65,7 +65,7 @@ namespace Bitfinex.Net.Objects
         public bool Hidden { get; set; }
 
         [ArrayProperty(18)]
-        internal string PlaceHolder6 { get; set; }
+        public string PlaceHolder6 { get; set; }
 
         [ArrayProperty(19), JsonConverter(typeof(BoolToIntConverter))]
         public bool Renew { get; set; }

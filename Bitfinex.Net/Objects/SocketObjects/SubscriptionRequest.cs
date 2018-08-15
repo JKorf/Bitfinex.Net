@@ -80,7 +80,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
 
     public abstract class SubscriptionResponse
     {
+        [JsonProperty("event")]
         public string Event { get; set; }
+        [JsonProperty("channel")]
         public string Channel { get; set; }
         [JsonProperty("chanId")]
         public int ChannelId { get; set; }

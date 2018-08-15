@@ -4,8 +4,11 @@ namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class BitfinexAuthenticationResponse
     {
+        [JsonProperty("event")]
         public string Event { get; set; }
+        [JsonProperty("status")]
         public string Status { get; set; }
+        [JsonProperty("userId")]
         public long UserId { get; set; }
         [JsonProperty("chanId")]
         public long ChannelId { get; set; }

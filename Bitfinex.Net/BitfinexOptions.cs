@@ -32,5 +32,10 @@ namespace Bitfinex.Net
         /// The time to wait for an order confirmation
         /// </summary>
         public TimeSpan OrderActionConfirmationTimeout { get; set; } = TimeSpan.FromSeconds(30);
+
+        /// <summary>
+        /// The time to wait before trying to reconnect on lost connection
+        /// </summary>
+        public TimeSpan ReconnectionInterval { get; set; } = TimeSpan.FromSeconds(2);
     }
 }
