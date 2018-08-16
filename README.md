@@ -162,6 +162,11 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.1.7 - 16 aug 2018
+	* Added client interfaces
+	* Fixed some resharper warnings
+	* Updated CryptoExchange.Net
+
 * Version 1.1.6 - 15 aug 2018
 	* Fixed subscribe calls always reporting success
 	* Made resubscribing after lost connection more robust
