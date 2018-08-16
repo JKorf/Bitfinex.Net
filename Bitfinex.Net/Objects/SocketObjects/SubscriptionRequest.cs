@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -20,7 +19,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonIgnore]
         public int StreamId { get; set; }
         [JsonIgnore]
-        public WaitAction<bool> ConfirmedEvent { get; private set; }
+        public WaitAction<bool> ConfirmedEvent { get; }
 
         [JsonIgnore]
         public bool Requested { get; set; }

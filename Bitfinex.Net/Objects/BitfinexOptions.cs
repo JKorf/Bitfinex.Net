@@ -1,7 +1,7 @@
 ﻿using System;
 using CryptoExchange.Net;
 
-namespace Bitfinex.Net
+namespace Bitfinex.Net.Objects
 {
     public class BitfinexClientOptions : ExchangeOptions
     {

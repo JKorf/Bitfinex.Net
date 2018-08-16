@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;

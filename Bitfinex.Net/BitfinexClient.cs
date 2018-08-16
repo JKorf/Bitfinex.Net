@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bitfinex.Net.Converters;
+using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.RestV1Objects;
 using CryptoExchange.Net;
@@ -16,7 +17,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Bitfinex.Net
 {
-    public class BitfinexClient : ExchangeClient
+    public class BitfinexClient : ExchangeClient, IBitfinexClient
     {
         #region fields
 
@@ -143,7 +144,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<string[]>> GetSymbolsAsync()
         {
-            return await ExecuteRequest<string[]>(GetUrl(SymbolsEndpoint, ApiVersion1), GetMethod, null).ConfigureAwait(false);
+            return await ExecuteRequest<string[]>(GetUrl(SymbolsEndpoint, ApiVersion1)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -158,7 +159,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexSymbolDetails[]>> GetSymbolDetailsAsync()
         {
-            return await ExecuteRequest<BitfinexSymbolDetails[]>(GetUrl(SymbolDetailsEndpoint, ApiVersion1), GetMethod, null).ConfigureAwait(false);
+            return await ExecuteRequest<BitfinexSymbolDetails[]>(GetUrl(SymbolDetailsEndpoint, ApiVersion1)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -788,6 +789,12 @@ namespace Bitfinex.Net
         /// <param name="type">Type of the order</param>
         /// <param name="amount">The amount of the order</param>
         /// <param name="price">The price for the order</param>
+        /// <param name="hidden">If the order should be placed as hidden</param>
+        /// <param name="postOnly">If the only should only be placed if it isn't immediatly filled</param>
+        /// <param name="useAllAvailable">If all available funds should be used</param>
+        /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
+        /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
+        /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
         /// <returns></returns>
         public async Task<CallResult<BitfinexPlacedOrder>> PlaceOrderAsync(
             string symbol, 
@@ -1089,10 +1096,8 @@ namespace Bitfinex.Net
                 var error = JArray.Parse(data).ToObject<BitfinexError>();
                 return new ServerError(error.ErrorCode, error.ErrorMessage);
             }
-            else
-            {
-                return new ServerError(-1, token["message"].ToString());
-            }
+
+            return new ServerError(-1, token["message"].ToString());
         }
 
         private Uri GetUrl(string endpoint, string version)

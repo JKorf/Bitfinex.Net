@@ -4,7 +4,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class PositionUpdateRegistration : SubscriptionRegistration
     {
-        private Action<BitfinexSocketEvent<BitfinexPosition[]>> handler;
+        private readonly Action<BitfinexSocketEvent<BitfinexPosition[]>> handler;
 
         public PositionUpdateRegistration(Action<BitfinexSocketEvent<BitfinexPosition[]>> handler, int streamId) 
             : base(typeof(BitfinexPosition), streamId, BitfinexEventType.PositionSnapshot,

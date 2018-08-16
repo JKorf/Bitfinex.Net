@@ -15,7 +15,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("len")]
         public int Length { get; set; }
 
-        private Action<BitfinexOrderBookBase[]> handler;
+        private readonly Action<BitfinexOrderBookBase[]> handler;
 
         public BookSubscriptionRequest(string symbol, string precision, string frequency, int length, Action<BitfinexOrderBookBase[]> handler)
         {
@@ -47,7 +47,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("len")]
         public int Length { get; set; }
 
-        private Action<BitfinexOrderBookBase[]> handler;
+        private readonly Action<BitfinexOrderBookBase[]> handler;
 
         public RawBookSubscriptionRequest(string symbol, string precision, int length, Action<BitfinexOrderBookBase[]> handler)
         {

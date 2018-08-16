@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Converters;
+using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects;
 using CryptoExchange.Net;
@@ -19,7 +19,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Bitfinex.Net
 {
-    public class BitfinexSocketClient: ExchangeClient
+    public class BitfinexSocketClient: ExchangeClient, IBitfinexSocketClient
     {
         #region fields
         private static BitfinexSocketClientOptions defaultOptions = new BitfinexSocketClientOptions();
@@ -47,12 +47,12 @@ namespace Bitfinex.Net
         private List<UnsubscriptionRequest> outstandingUnsubscriptionRequests;
         private List<SubscriptionRegistration> registrations;
 
-        private object confirmedRequestLock = new object();
-        private object subscriptionRequestsLock = new object();
-        private object outstandingSubscriptionRequestsLock = new object();
-        private object outstandingUnsubscriptionRequestsLock = new object();
-        private object registrationsLock = new object();
-        private object subscriptionRegistrationLock = new object();
+        private readonly object confirmedRequestLock = new object();
+        private readonly object subscriptionRequestsLock = new object();
+        private readonly object outstandingSubscriptionRequestsLock = new object();
+        private readonly object outstandingUnsubscriptionRequestsLock = new object();
+        private readonly object registrationsLock = new object();
+        private readonly object subscriptionRegistrationLock = new object();
 
         private Task sendTask;
         private Task receiveTask;
@@ -60,7 +60,7 @@ namespace Bitfinex.Net
 
         private bool running;
         private bool reconnect = true;
-        private bool reconnecting = false;
+        private bool reconnecting;
         private bool lost;
 
         private SocketState state = SocketState.Disconnected;
@@ -386,7 +386,7 @@ namespace Bitfinex.Net
         /// <returns>True if successfully committed on server</returns>
         public async Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(long[] groupOrderIds)
         {
-            return await CancelOrdersAsync(null, null, groupOrderIds.ToDictionary(v => v, k => { return (long?)null; }));
+            return await CancelOrdersAsync(null, null, groupOrderIds.ToDictionary(v => v, k => (long?)null));
         }
 
         /// <summary>
@@ -418,7 +418,7 @@ namespace Bitfinex.Net
         /// <returns>True if successfully committed on server</returns>
         public async Task<CallResult<bool>> CancelOrdersByOrderIdsAsync(long[] orderIds)
         {
-            return await CancelOrdersAsync(orderIds, null, null);
+            return await CancelOrdersAsync(orderIds);
         }
 
         /// <summary>
@@ -434,7 +434,7 @@ namespace Bitfinex.Net
         /// <returns>True if successfully committed on server</returns>
         public async Task<CallResult<bool>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds)
         {
-            return await CancelOrdersAsync(null, clientOrderIds, null);
+            return await CancelOrdersAsync(null, clientOrderIds);
         }
 
         private async Task<CallResult<bool>> CancelOrdersAsync(long[] orderIds = null, Dictionary<long, DateTime> clientOrderIds = null, Dictionary<long, long?> groupOrderIds = null)
@@ -471,8 +471,7 @@ namespace Bitfinex.Net
                 var array = new JArray();
                 for (int i = 0; i < groupOrderIds.Count; i++)
                 {
-                    var subArray = new JArray();
-                    subArray.Add(groupOrderIds.ElementAt(i).Key);
+                    var subArray = new JArray {groupOrderIds.ElementAt(i).Key};
                     if (groupOrderIds.ElementAt(i).Value != null)
                         subArray.Add(groupOrderIds.ElementAt(i).Value);
                     array.Add(subArray);
@@ -1144,124 +1143,121 @@ namespace Bitfinex.Net
                     if (dataObject is JObject)
                     {
                         var evnt = dataObject["event"].ToString();
-                        if (evnt == "auth")
+                        switch (evnt)
                         {
-                            if (state != SocketState.Connected)
-                                // Don't process if are no longer connected to prevent threading issues
+                            case "auth":
+                                if (state != SocketState.Connected)
+                                    // Don't process if are no longer connected to prevent threading issues
+                                    continue;
+
+                                ProcessAuthenticationResponse(dataObject.ToObject<BitfinexAuthenticationResponse>());
                                 continue;
-
-                            ProcessAuthenticationResponse(dataObject.ToObject<BitfinexAuthenticationResponse>());
-                            continue;
-                        }
-
-                        if (evnt == "subscribed")
-                        {
-                            if (state != SocketState.Connected)
-                                // Don't process if are no longer connected to prevent threading issues
-                                continue;
-
-                            var channel = dataObject["channel"].ToString();
-                            if (!subscriptionResponseTypes.ContainsKey(channel))
+                            case "subscribed":
                             {
-                                log.Write(LogVerbosity.Warning, "Unknown response channel name: " + channel);
-                                continue;
-                            }
+                                if (state != SocketState.Connected)
+                                    // Don't process if are no longer connected to prevent threading issues
+                                    continue;
 
-                            SubscriptionResponse subResponse = (SubscriptionResponse) dataObject.ToObject(subscriptionResponseTypes[channel]);
-                            var responseSubKeys = subResponse.GetSubscriptionKeys();
-                            SubscriptionRequest pending = null;
-
-                            foreach (var key in responseSubKeys)
-                            {
-                                IEnumerable<SubscriptionRequest> results;
-                                lock (outstandingSubscriptionRequestsLock)
-                                    results = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == key.ToLower());
-
-                                if (results.Count() > 1)
+                                var channel = dataObject["channel"].ToString();
+                                if (!subscriptionResponseTypes.ContainsKey(channel))
                                 {
-                                    // TODO Debug logging, this shouldn't happen
-                                    log.Write(LogVerbosity.Warning, "Found multiple matching subscription requests for a response. " +
-                                                                    "Request keys: " + string.Join(",", results.Select(r => r.GetSubscriptionKey())) + ". " +
-                                                                    "Subscription response: " + dequeued + ", current response sub key: " + key);
+                                    log.Write(LogVerbosity.Warning, "Unknown response channel name: " + channel);
+                                    continue;
                                 }
 
-                                if (results.Any())
-                                    // For now assume first
-                                    pending = results.First();
+                                SubscriptionResponse subResponse = (SubscriptionResponse) dataObject.ToObject(subscriptionResponseTypes[channel]);
+                                var responseSubKeys = subResponse.GetSubscriptionKeys();
+                                SubscriptionRequest pending = null;
 
-                                // If any of the keys match its a match
-                                if (pending != null)
-                                    break;
-                            }
+                                foreach (var key in responseSubKeys)
+                                {
+                                    IEnumerable<SubscriptionRequest> results;
+                                    lock (outstandingSubscriptionRequestsLock)
+                                        results = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == key.ToLower());
 
-                            if (pending == null)
-                            {
-                                log.Write(LogVerbosity.Debug, "Couldn't find sub request for response");
-                                continue;
-                            }
-
-                            pending.ChannelId = subResponse.ChannelId;
-                            pending.Responded = true;
-                            pending.ConfirmedEvent.Set(new CallResult<bool>(true, null));
-                            continue;
-                        }
-
-                        if (evnt == "unsubscribed")
-                        {
-                            UnsubscriptionRequest pending;
-                            lock (outstandingUnsubscriptionRequestsLock)
-                                pending = outstandingUnsubscriptionRequests.SingleOrDefault(r => r.ChannelId == (int) dataObject["chanId"]);
-
-                            if (pending == null)
-                            {
-                                log.Write(LogVerbosity.Debug, "Received unsub confirmation, but no pending unsubscriptions");
-                                continue;
-                            }
-                            pending.ConfirmedEvent.Set(new CallResult<bool>(true, null));
-                            continue;
-                        }
-
-                        if (evnt == "info")
-                        {
-                            if (dataObject["version"] != null)
-                            {
-                                log.Write(LogVerbosity.Info, $"Websocket version: {dataObject["version"]}, platform status: {((int) dataObject["platform"]["status"] == 1 ? "operational" : "maintance")}");
-                                continue;
-                            }
-
-                            var code = (int) dataObject["code"];
-                            switch (code)
-                            {
-                                case 20051:
-                                    // reconnect
-                                    if (state != SocketState.Connected)
-                                        continue;
-
-                                    log.Write(LogVerbosity.Info, "Received status code 20051, going to reconnect the websocket");
-                                    Task.Run(() => StopInternal());
-                                    continue;
-                                case 20060:
-                                    // pause
-                                    log.Write(LogVerbosity.Info, "Received status code 20060, pausing websocket activity");
-                                    State = SocketState.Paused;
-                                    SocketPaused?.Invoke();
-                                    continue;
-                                case 20061:
-                                    // resume
-                                    log.Write(LogVerbosity.Info, "Received status code 20061, resuming websocket activity");
-                                    Task.Run(async () =>
+                                    if (results.Count() > 1)
                                     {
-                                        foreach (var sub in confirmedRequests.ToList())
-                                            await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value)).ConfigureAwait(false);
+                                        // TODO Debug logging, this shouldn't happen
+                                        log.Write(LogVerbosity.Warning, "Found multiple matching subscription requests for a response. " +
+                                                                        "Request keys: " + string.Join(",", results.Select(r => r.GetSubscriptionKey())) + ". " +
+                                                                        "Subscription response: " + dequeued + ", current response sub key: " + key);
+                                    }
 
-                                        await SubscribeUnsend().ConfigureAwait(false);
-                                        SocketResumed?.Invoke();
-                                    });
-                                    State = SocketState.Connected;
+                                    if (results.Any())
+                                        // For now assume first
+                                        pending = results.First();
+
+                                    // If any of the keys match its a match
+                                    if (pending != null)
+                                        break;
+                                }
+
+                                if (pending == null)
+                                {
+                                    log.Write(LogVerbosity.Debug, "Couldn't find sub request for response");
                                     continue;
-                            }
+                                }
 
-                            log.Write(LogVerbosity.Warning, $"Received unknown status code: {code}, data: {dataObject}");
+                                pending.ChannelId = subResponse.ChannelId;
+                                pending.Responded = true;
+                                pending.ConfirmedEvent.Set(new CallResult<bool>(true, null));
+                                continue;
+                            }
+                            case "unsubscribed":
+                            {
+                                UnsubscriptionRequest pending;
+                                lock (outstandingUnsubscriptionRequestsLock)
+                                    pending = outstandingUnsubscriptionRequests.SingleOrDefault(r => r.ChannelId == (int) dataObject["chanId"]);
+
+                                if (pending == null)
+                                {
+                                    log.Write(LogVerbosity.Debug, "Received unsub confirmation, but no pending unsubscriptions");
+                                    continue;
+                                }
+                                pending.ConfirmedEvent.Set(new CallResult<bool>(true, null));
+                                continue;
+                            }
+                            case "info":
+                                if (dataObject["version"] != null)
+                                {
+                                    log.Write(LogVerbosity.Info, $"Websocket version: {dataObject["version"]}, platform status: {((int) dataObject["platform"]["status"] == 1 ? "operational" : "maintance")}");
+                                    continue;
+                                }
+
+                                var code = (int) dataObject["code"];
+                                switch (code)
+                                {
+                                    case 20051:
+                                        // reconnect
+                                        if (state != SocketState.Connected)
+                                            continue;
+
+                                        log.Write(LogVerbosity.Info, "Received status code 20051, going to reconnect the websocket");
+                                        Task.Run(() => StopInternal());
+                                        continue;
+                                    case 20060:
+                                        // pause
+                                        log.Write(LogVerbosity.Info, "Received status code 20060, pausing websocket activity");
+                                        State = SocketState.Paused;
+                                        SocketPaused?.Invoke();
+                                        continue;
+                                    case 20061:
+                                        // resume
+                                        log.Write(LogVerbosity.Info, "Received status code 20061, resuming websocket activity");
+                                        Task.Run(async () =>
+                                        {
+                                            foreach (var sub in confirmedRequests.ToList())
+                                                await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value)).ConfigureAwait(false);
+
+                                            await SubscribeUnsend().ConfigureAwait(false);
+                                            SocketResumed?.Invoke();
+                                        });
+                                        State = SocketState.Connected;
+                                        continue;
+                                }
+
+                                log.Write(LogVerbosity.Warning, $"Received unknown status code: {code}, data: {dataObject}");
+                                break;
                         }
                     }
                     else
@@ -1307,134 +1303,144 @@ namespace Bitfinex.Net
 
         private void HandleRequestResponse(BitfinexEventType eventType, JArray dataObject)
         {
-            if (eventType == BitfinexEventType.OrderNew)
+            switch (eventType)
             {
-                // new order
-                var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
-                if (!orderResult.Success)
+                case BitfinexEventType.OrderNew:
                 {
-                    log.Write(LogVerbosity.Warning, "Failed to deserialize new order from stream: " + orderResult.Error);
-                    return;
-                }
-
-                CheckOrderPlacementConfirmation(orderResult.Data);
-            }
-            else if (eventType == BitfinexEventType.OrderCancel)
-            {
-                // canceled order
-                var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
-                if (!orderResult.Success)
-                {
-                    log.Write(LogVerbosity.Warning, "Failed to deserialize canceled order from stream: " + orderResult.Error);
-                    return;
-                }
-
-                if (orderResult.Data.Type == OrderType.ExchangeFillOrKill
-                 || orderResult.Data.Type == OrderType.FillOrKill)
-                {
-                    if (orderResult.Data.Status == OrderStatus.Canceled)
+                    // new order
+                    var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
+                    if (!orderResult.Success)
                     {
-                        // OC also gets send if a FillOrKill order doesn't get executed, so search for it in placements waiting for confirmation
+                        log.Write(LogVerbosity.Warning, "Failed to deserialize new order from stream: " + orderResult.Error);
+                        return;
+                    }
+
+                    CheckOrderPlacementConfirmation(orderResult.Data);
+                    break;
+                }
+                case BitfinexEventType.OrderCancel:
+                {
+                    // canceled order
+                    var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
+                    if (!orderResult.Success)
+                    {
+                        log.Write(LogVerbosity.Warning, "Failed to deserialize canceled order from stream: " + orderResult.Error);
+                        return;
+                    }
+
+                    if (orderResult.Data.Type == OrderType.ExchangeFillOrKill
+                        || orderResult.Data.Type == OrderType.FillOrKill)
+                    {
+                        if (orderResult.Data.Status == OrderStatus.Canceled)
+                        {
+                            // OC also gets send if a FillOrKill order doesn't get executed, so search for it in placements waiting for confirmation
+                            if (!CheckOrderPlacementConfirmation(orderResult.Data))
+                                log.Write(LogVerbosity.Debug, $"Did not find a placed order for {orderResult.Data.Type}, assuming it's already been processed");
+                        }
+                    }
+
+                    if (orderResult.Data.Status == OrderStatus.Executed)
+                    {
+                        // Bitfinex market order handling is weird
+                        // 1. The order gets accepted by n - on-req
+                        // 2. A pu (position update) is send
+                        // 3. An oc (order canceled) is send in which the status is actually 'Executed @ xxx'
+                        // So even though oc should be an order canceled confirmation, also check if it isn't a market order execution
                         if (!CheckOrderPlacementConfirmation(orderResult.Data))
                             log.Write(LogVerbosity.Debug, $"Did not find a placed order for {orderResult.Data.Type}, assuming it's already been processed");
+
                     }
-                }
-
-                if (orderResult.Data.Status == OrderStatus.Executed)
-                {
-                    // Bitfinex market order handling is weird
-                    // 1. The order gets accepted by n - on-req
-                    // 2. A pu (position update) is send
-                    // 3. An oc (order canceled) is send in which the status is actually 'Executed @ xxx'
-                    // So even though oc should be an order canceled confirmation, also check if it isn't a market order execution
-                    if (!CheckOrderPlacementConfirmation(orderResult.Data))
-                        log.Write(LogVerbosity.Debug, $"Did not find a placed order for {orderResult.Data.Type}, assuming it's already been processed");
-
-                }
-                else
-                {
-                    CheckOrderCancelConfirmation(orderResult.Data);
-                }
-                
-            }
-
-            else if (eventType == BitfinexEventType.OrderUpdate)
-            {
-                // updated order
-                var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
-                if (!orderResult.Success)
-                {
-                    log.Write(LogVerbosity.Warning, "Failed to deserialize updated order from stream: " + orderResult.Error);
-                    return;
-                }
-
-                CheckOrderUpdateConfirmation(orderResult.Data);
-            }
-
-            else if (eventType == BitfinexEventType.Notification)
-            {
-                // notification
-                var dataArray = (JArray)dataObject[2];
-                var notificationTypeString = dataArray[1].ToString();
-                if (!BitfinexEvents.EventMapping.ContainsKey(notificationTypeString))
-                {
-                    log.Write(LogVerbosity.Warning, $"No mapping found for notification {notificationTypeString}");
-                    return;
-                }
-
-                var notificationType = BitfinexEvents.EventMapping[notificationTypeString];
-                if (notificationType == BitfinexEventType.OrderNewRequest || notificationType == BitfinexEventType.OrderCancelRequest)
-                {
-                    var orderData = (JArray)dataArray[4];
-                    var error = dataArray[6].ToString().ToLower() == "error";
-                    var message = dataArray[7].ToString();
-                    if (!error)
-                        // Only check when 'error', otherwise wait for order confirmed message
-                        return;
-
-                    if (notificationType == BitfinexEventType.OrderNewRequest)
-                    {
-                        // new order request
-                        var clientId = (long)orderData[2];
-                        foreach (var pendingOrder in pendingOrders.ToList())
-                        {
-                            var o = pendingOrder.Key;
-                            if (o.ClientOrderId == clientId)
-                            {
-                                pendingOrder.Value.Set(new CallResult<BitfinexOrder>(null, new ServerError(message)));
-                                break;
-                            }
-                        }
-                    }
-                    else if (notificationType == BitfinexEventType.OrderCancelRequest)
-                    {
-                        // cancel order request
-                        var orderId = (long)orderData[0];
-                        foreach (var pendingCancel in pendingCancels.ToList())
-                        {
-                            var o = pendingCancel.Key;
-                            if (o == orderId)
-                            {
-                                pendingCancel.Value.Set(new CallResult<bool>(false, new ServerError(message)));
-                                break;
-                            }
-                        }
-                    }
-                }
-                else if (notificationType == BitfinexEventType.OrderCancelMultiRequest)
-                {
-                    var pendingMultiCancel = pendingCancels.ToList().SingleOrDefault(p => p.Key == 0);
-                    if (pendingMultiCancel.Equals(default(KeyValuePair<long, WaitAction<bool>>)))
-                        return;
-
-                    // cancel multi order request
-                    var error = dataArray[6].ToString().ToLower() == "error";
-                    var message = dataArray[7].ToString();
-                    if (!error)
-                        pendingMultiCancel.Value.Set(new CallResult<bool>(true, null));
                     else
-                        pendingMultiCancel.Value.Set(new CallResult<bool>(false, new ServerError(message)));
+                    {
+                        CheckOrderCancelConfirmation(orderResult.Data);
+                    }
+
+                    break;
                 }
+                case BitfinexEventType.OrderUpdate:
+                {
+                    // updated order
+                    var orderResult = Deserialize<BitfinexOrder>(dataObject[2].ToString());
+                    if (!orderResult.Success)
+                    {
+                        log.Write(LogVerbosity.Warning, "Failed to deserialize updated order from stream: " + orderResult.Error);
+                        return;
+                    }
+
+                    CheckOrderUpdateConfirmation(orderResult.Data);
+                    break;
+                }
+                case BitfinexEventType.Notification:
+                    // notification
+                    var dataArray = (JArray)dataObject[2];
+                    var notificationTypeString = dataArray[1].ToString();
+                    if (!BitfinexEvents.EventMapping.ContainsKey(notificationTypeString))
+                    {
+                        log.Write(LogVerbosity.Warning, $"No mapping found for notification {notificationTypeString}");
+                        return;
+                    }
+
+                    var notificationType = BitfinexEvents.EventMapping[notificationTypeString];
+                    switch (notificationType)
+                    {
+                        case BitfinexEventType.OrderNewRequest:
+                        case BitfinexEventType.OrderCancelRequest:
+                        {
+                            var orderData = (JArray)dataArray[4];
+                            var error = dataArray[6].ToString().ToLower() == "error";
+                            var message = dataArray[7].ToString();
+                            if (!error)
+                                // Only check when 'error', otherwise wait for order confirmed message
+                                return;
+
+                            switch (notificationType)
+                            {
+                                case BitfinexEventType.OrderNewRequest:
+                                    // new order request
+                                    var clientId = (long)orderData[2];
+                                    foreach (var pendingOrder in pendingOrders.ToList())
+                                    {
+                                        var o = pendingOrder.Key;
+                                        if (o.ClientOrderId == clientId)
+                                        {
+                                            pendingOrder.Value.Set(new CallResult<BitfinexOrder>(null, new ServerError(message)));
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                case BitfinexEventType.OrderCancelRequest:
+                                    // cancel order request
+                                    var orderId = (long)orderData[0];
+                                    foreach (var pendingCancel in pendingCancels.ToList())
+                                    {
+                                        var o = pendingCancel.Key;
+                                        if (o == orderId)
+                                        {
+                                            pendingCancel.Value.Set(new CallResult<bool>(false, new ServerError(message)));
+                                            break;
+                                        }
+                                    }
+                                    break;
+                            }
+                            break;
+                        }
+                        case BitfinexEventType.OrderCancelMultiRequest:
+                        {
+                            var pendingMultiCancel = pendingCancels.ToList().SingleOrDefault(p => p.Key == 0);
+                            if (pendingMultiCancel.Equals(default(KeyValuePair<long, WaitAction<bool>>)))
+                                return;
+
+                            // cancel multi order request
+                            var error = dataArray[6].ToString().ToLower() == "error";
+                            var message = dataArray[7].ToString();
+                            if (!error)
+                                pendingMultiCancel.Value.Set(new CallResult<bool>(true, null));
+                            else
+                                pendingMultiCancel.Value.Set(new CallResult<bool>(false, new ServerError(message)));
+                            break;
+                        }
+                    }
+                    break;
             }
         }
 

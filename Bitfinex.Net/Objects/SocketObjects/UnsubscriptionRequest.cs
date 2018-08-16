@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {

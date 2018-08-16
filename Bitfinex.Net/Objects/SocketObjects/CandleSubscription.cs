@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("key")]
         public string Key { get; set; }
 
-        private Action<BitfinexCandle[]> handler;
+        private readonly Action<BitfinexCandle[]> handler;
 
         public CandleSubscriptionRequest(string symbol, string interval, Action<BitfinexCandle[]> handler)
         {

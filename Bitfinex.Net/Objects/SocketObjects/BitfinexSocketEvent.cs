@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Bitfinex.Net.Objects.SocketObjects
+﻿namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class BitfinexSocketEvent<T>
     {

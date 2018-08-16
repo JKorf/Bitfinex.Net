@@ -4,7 +4,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class FundingLoansUpdateRegistration : SubscriptionRegistration
     {
-        private Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> handler;
+        private readonly Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> handler;
 
         public FundingLoansUpdateRegistration(Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> handler, int streamId)
             : base(typeof(BitfinexFundingLoan), streamId, BitfinexEventType.FundingLoanSnapshot,

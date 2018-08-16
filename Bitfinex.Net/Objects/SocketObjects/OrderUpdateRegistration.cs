@@ -4,7 +4,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class OrderUpdateRegistration: SubscriptionRegistration
     {
-        private Action<BitfinexSocketEvent<BitfinexOrder[]>> handler;
+        private readonly Action<BitfinexSocketEvent<BitfinexOrder[]>> handler;
 
         public OrderUpdateRegistration(Action<BitfinexSocketEvent<BitfinexOrder[]>> handler, int streamId) 
             : base(typeof(BitfinexOrder), streamId, BitfinexEventType.OrderSnapshot,

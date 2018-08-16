@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("symbol")]
         public string Symbol { get; set; }
 
-        private Action<BitfinexMarketOverview[]> handler;
+        private readonly Action<BitfinexMarketOverview[]> handler;
 
         public TickerSubscriptionRequest(string symbol, Action<BitfinexMarketOverview[]> handler)
         {
