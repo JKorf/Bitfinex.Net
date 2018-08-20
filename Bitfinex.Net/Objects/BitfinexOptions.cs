@@ -1,5 +1,6 @@
 ﻿using System;
 using CryptoExchange.Net;
+using CryptoExchange.Net.Objects;
 
 namespace Bitfinex.Net.Objects
 {

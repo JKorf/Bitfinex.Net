@@ -12,6 +12,7 @@ using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Linq;
+using CryptoExchange.Net.Objects;
 
 namespace Bitfinex.Net.UnitTests
 {
