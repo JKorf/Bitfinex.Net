@@ -23,6 +23,26 @@ namespace Bitfinex.Net
         #region fields
 
         private static BitfinexClientOptions defaultOptions = new BitfinexClientOptions();
+        private static BitfinexClientOptions DefaultOptions
+        {
+            get
+            {
+                var result = new BitfinexClientOptions()
+                {
+                    LogVerbosity = defaultOptions.LogVerbosity,
+                    BaseAddress = defaultOptions.BaseAddress,
+                    LogWriters = defaultOptions.LogWriters,
+                    Proxy = defaultOptions.Proxy,
+                    RateLimiters = defaultOptions.RateLimiters,
+                    RateLimitingBehaviour = defaultOptions.RateLimitingBehaviour,
+                };
+
+                if (defaultOptions.ApiCredentials != null)
+                    result.ApiCredentials = new ApiCredentials(defaultOptions.ApiCredentials.Key.GetString(), defaultOptions.ApiCredentials.Secret.GetString());
+
+                return result;
+            }
+        }
 
         private const string GetMethod = "GET";
         private const string PostMethod = "POST";
@@ -83,7 +103,7 @@ namespace Bitfinex.Net
         /// <summary>
         /// Create a new instance of BinanceClient using the default options
         /// </summary>
-        public BitfinexClient(): this(defaultOptions)
+        public BitfinexClient(): this(DefaultOptions)
         {
         }
 

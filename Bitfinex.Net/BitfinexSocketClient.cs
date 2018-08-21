@@ -24,6 +24,30 @@ namespace Bitfinex.Net
     {
         #region fields
         private static BitfinexSocketClientOptions defaultOptions = new BitfinexSocketClientOptions();
+        private static BitfinexSocketClientOptions DefaultOptions
+        {
+            get
+            {
+                var result = new BitfinexSocketClientOptions()
+                {
+                    LogVerbosity = defaultOptions.LogVerbosity,
+                    BaseAddress = defaultOptions.BaseAddress,
+                    LogWriters = defaultOptions.LogWriters,
+                    Proxy = defaultOptions.Proxy,
+                    RateLimiters = defaultOptions.RateLimiters,
+                    RateLimitingBehaviour = defaultOptions.RateLimitingBehaviour,
+                    SocketReceiveTimeout = defaultOptions.SocketReceiveTimeout,
+                    OrderActionConfirmationTimeout = defaultOptions.OrderActionConfirmationTimeout,
+                    ReconnectionInterval = defaultOptions.ReconnectionInterval,
+                    SubscribeResponseTimeout = defaultOptions.SubscribeResponseTimeout
+                };
+
+                if (defaultOptions.ApiCredentials != null)
+                    result.ApiCredentials = new ApiCredentials(defaultOptions.ApiCredentials.Key.GetString(), defaultOptions.ApiCredentials.Secret.GetString());
+
+                return result;
+            }
+        }
 
         private TimeSpan socketReceiveTimeout;
         private TimeSpan subscribeResponseTimeout;
@@ -55,13 +79,12 @@ namespace Bitfinex.Net
         private readonly object registrationsLock = new object();
         private readonly object subscriptionRegistrationLock = new object();
 
-        private Task sendTask;
-        private Task receiveTask;
-        private Task stoppingTask;
+        private Thread sendThread;
+        private Thread receiveThread;
+        private Thread reconnectThread;
 
         private bool running;
         private bool reconnect = true;
-        private bool reconnecting;
         private bool lost;
 
         private SocketState state = SocketState.Disconnected;
@@ -73,7 +96,9 @@ namespace Bitfinex.Net
                 if (value != state)
                 {
                     log.Write(LogVerbosity.Debug, $"Socket state change {state} => {value}");
+                    var prevState = state;
                     state = value;
+                    StateChanged?.Invoke(prevState, state);
                 }
             }
         }
@@ -132,6 +157,10 @@ namespace Bitfinex.Net
         /// Happens when connection to the server is restored after it was lost
         /// </summary>
         public event Action ConnectionRestored;
+        /// <summary>
+        /// Happens when the connection state has changed, providing from, to parameters
+        /// </summary>
+        public event Action<SocketState, SocketState> StateChanged;
         #endregion
 
         #region properties
@@ -142,7 +171,7 @@ namespace Bitfinex.Net
         /// <summary>
         /// Create a new instance of BinanceClient using the default options
         /// </summary>
-        public BitfinexSocketClient(): this(defaultOptions)
+        public BitfinexSocketClient(): this(DefaultOptions)
         {
         }
 
@@ -203,8 +232,23 @@ namespace Bitfinex.Net
 
                 var result = Open().Result;
                 State = result ? SocketState.Connected : SocketState.Disconnected;
-                return result;
+                if (!result)
+                    return false;
+
+                reconnectThread = null;
+                lastReceivedMessage = DateTime.UtcNow;
             }
+
+            if (lost)
+            {
+                ConnectionRestored?.Invoke();
+                lost = false;
+            }
+
+            Authenticate();
+            SubscribeUnsend().Wait();
+
+            return true;
         }
 
         /// <summary>
@@ -221,24 +265,68 @@ namespace Bitfinex.Net
         {
             lock (connectionLock)
             {
+                if (State == SocketState.Disconnected)
+                    return;
+
                 if (socket != null && socket.IsOpen)
                 {
                     State = SocketState.Disconnecting;
                     socket.Close().Wait();
-                    State = SocketState.Disconnected;
+                    socket.Dispose();
                 }
-            }
 
-            stoppingTask = Task.Run(() => {
                 running = false;
-                sendTask.Wait();
-                receiveTask.Wait();
+                sendThread.Join();
+                receiveThread.Join();
+                reconnectThread?.Join();
 
                 Init();
+                socket = null;
+                State = SocketState.Disconnected;
 
+                foreach (var pending in pendingUpdates)
+                    pending.Value.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
+                foreach (var pending in pendingCancels)
+                    pending.Value.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
+                foreach (var pending in pendingOrders)
+                    pending.Value.Set(new CallResult<BitfinexOrder>(null, new WebError("Server disconnected")));
+
+                lock (outstandingSubscriptionRequestsLock)
+                    foreach (var request in outstandingSubscriptionRequests)
+                        request.ConfirmedEvent.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
+                lock (outstandingUnsubscriptionRequestsLock)
+                    foreach (var request in outstandingUnsubscriptionRequests)
+                        request.ConfirmedEvent.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
+            }
+
+            if (reconnect)
+            {
+                if (!lost)
+                {
+                    lost = true;
+                    ConnectionLost?.Invoke();
+                }
+
+                if (reconnectThread == null)
+                {
+                    reconnectThread = new Thread(Reconnect);
+                    reconnectThread.Start();
+                }
+            }
+        }
+
+        private void Reconnect()
+        {
+            while (reconnect)
+            {
+                Thread.Sleep(reconnectInterval);
                 if (!reconnect)
-                    socket = null;
-            });
+                    return;
+
+                log.Write(LogVerbosity.Info, "Going to try to reconnect");
+                if (StartInternal())
+                    return;
+            }
         }
 
         /// <summary>
@@ -371,7 +459,7 @@ namespace Bitfinex.Net
         /// <returns>True if successfully committed on server</returns>
         public async Task<CallResult<bool>> CancelOrdersByGroupIdAsync(long groupOrderId)
         {
-            return await CancelOrdersAsync(null, null, new Dictionary<long, long?>() { { groupOrderId, null } });
+            return await CancelOrdersAsync(null, null, new Dictionary<long, long?> { { groupOrderId, null } });
         }
 
         /// <summary>
@@ -887,6 +975,7 @@ namespace Bitfinex.Net
         internal void Create()
         {
             socket = SocketFactory.CreateWebsocket(log, baseAddress);
+            log.Write(LogVerbosity.Debug, "Created new socket");
             socket.OnClose += SocketClosed;
             socket.OnError += SocketError;
             socket.OnOpen += SocketOpened;
@@ -903,8 +992,10 @@ namespace Bitfinex.Net
             }
 
             running = true;
-            receiveTask = Task.Run(() => ProcessData());
-            sendTask = Task.Run(() => ProcessSending());
+            receiveThread = new Thread(ProcessData);
+            receiveThread.Start();
+            sendThread = new Thread(ProcessSending);
+            sendThread.Start();
 
             log.Write(LogVerbosity.Info, "Socket connection established");
             return true;
@@ -982,46 +1073,12 @@ namespace Bitfinex.Net
             log.Write(LogVerbosity.Debug, "Socket closed");
             if (!reconnect)
             {
-                Dispose();
+                State = SocketState.Disconnected;
                 return;
             }
-            if (reconnecting)
-                return; // Already reconnecting
-
-            State = SocketState.Disconnected;
-            reconnecting = true;
-
-            foreach (var pending in pendingUpdates)
-                pending.Value.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
-            foreach (var pending in pendingCancels)
-                pending.Value.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
-            foreach (var pending in pendingOrders)
-                pending.Value.Set(new CallResult<BitfinexOrder>(null, new WebError("Server disconnected")));
-
-            lock(outstandingSubscriptionRequestsLock)
-                foreach (var request in outstandingSubscriptionRequests)
-                    request.ConfirmedEvent.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
-            lock (outstandingUnsubscriptionRequestsLock)
-                foreach (var request in outstandingUnsubscriptionRequests)
-                    request.ConfirmedEvent.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
-
-            if (stoppingTask == null)
-                StopInternal();
-
-            Task.Run(() =>
-            {
-                if (!lost)
-                {
-                    lost = true;
-                    ConnectionLost?.Invoke();
-                }
-
-                Thread.Sleep(reconnectInterval);
-                while(!stoppingTask.IsCompleted)
-                    Thread.Sleep(100); // Wait for stopping to complete before starting again
-                reconnecting = false;
-                StartInternal();
-            });
+            
+            if(reconnectThread == null)
+                Task.Run(() => StopInternal());
         }
 
         private void SocketError(Exception ex)
@@ -1033,20 +1090,9 @@ namespace Bitfinex.Net
         {
             log.Write(LogVerbosity.Debug, "Socket opened");
             State = SocketState.Connected;
-            Task.Run(async () =>
-            {
-                if (lost)
-                {
-                    ConnectionRestored?.Invoke();
-                    lost = false;
-                }
-
-                Authenticate();
-                await SubscribeUnsend().ConfigureAwait(false);
-            }).ConfigureAwait(false);
         }
 
-        private async Task SubscribeUnsend()
+        private async Task<bool> SubscribeUnsend()
         {
             IEnumerable<SubscriptionRequest> toResub;
             lock (subscriptionRequestsLock)
@@ -1064,7 +1110,7 @@ namespace Bitfinex.Net
                         log.Write(LogVerbosity.Info, "DC'd while resending subscriptions, resetting all");
                         lock(subscriptionRequestsLock)
                             subscriptionRequests.ForEach(s => s.ResetSubscription());
-                        return;
+                        return false;
                     }
 
                     currentTry++;
@@ -1085,10 +1131,14 @@ namespace Bitfinex.Net
                             subscriptionRequests.ForEach(s => s.ResetSubscription());
 
                         StopInternal();
-                        break;
+                        return false;
                     }
                 }
             }
+
+            if(toResub.Any())
+                log.Write(LogVerbosity.Info, $"Successfully resubscribed {toResub.Count()} subscriptions");
+            return true;
         }
 
         private void SocketMessage(string msg)
@@ -1128,7 +1178,7 @@ namespace Bitfinex.Net
                     if ((DateTime.UtcNow - lastReceivedMessage) > socketReceiveTimeout)
                     {
                         log.Write(LogVerbosity.Warning, $"No data received for {socketReceiveTimeout.TotalSeconds} seconds, restarting connection");
-                        StopInternal();
+                        Task.Run(() => StopInternal()); // Has to be done in a task because it will wait for this thread to be completed
                         break;
                     }
                     continue;
@@ -1234,8 +1284,8 @@ namespace Bitfinex.Net
                                             continue;
 
                                         log.Write(LogVerbosity.Info, "Received status code 20051, going to reconnect the websocket");
-                                        Task.Run(() => StopInternal());
-                                        continue;
+                                        Task.Run(() => StopInternal()); // Has to be done in a task because it will wait for this thread to be completed
+                                        return;
                                     case 20060:
                                         // pause
                                         log.Write(LogVerbosity.Info, "Received status code 20060, pausing websocket activity");
@@ -1557,7 +1607,8 @@ namespace Bitfinex.Net
 
         private bool CheckConnection()
         {
-            return socket != null && !socket.IsClosed;
+            lock(connectionLock)
+                return socket != null && !socket.IsClosed;
         }
 
         private void Init()
