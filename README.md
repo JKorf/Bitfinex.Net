@@ -162,6 +162,10 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.2.0 - 21 aug 2018
+	* Refactored connecting/reconnecting
+	* Fixed bug disposing default credentials
+
 * Version 1.1.8 - 20 aug 2018
 	* Updated CryptoExchange.Net to fix disposed socket issue
 
