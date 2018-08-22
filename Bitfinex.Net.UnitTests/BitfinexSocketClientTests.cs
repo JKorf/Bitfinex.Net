@@ -463,8 +463,8 @@ namespace Bitfinex.Net.UnitTests
             }));
 
             client.Start();
-            BitfinexTradeSimple[] expected = new[] { new BitfinexTradeSimple() };
-            BitfinexTradeSimple[] actual = null;
+            BitfinexSocketEvent<BitfinexTradeSimple[]> expected = new BitfinexSocketEvent<BitfinexTradeSimple[]>(BitfinexEventType.TradesSnapshot, new [] { new BitfinexTradeSimple() });
+            BitfinexSocketEvent<BitfinexTradeSimple[]> actual = null;
             ManualResetEvent evnt = new ManualResetEvent(false);
             var sub = client.SubscribeToTradeUpdates("Test", data =>
             {
@@ -482,11 +482,12 @@ namespace Bitfinex.Net.UnitTests
             sub.Wait();
 
             // act
-            TestHelpers.InvokeWebsocket(client, $"[1, {JsonConvert.SerializeObject(expected)}]");
+            TestHelpers.InvokeWebsocket(client, $"[1, {JsonConvert.SerializeObject(expected.Data)}]");
             evnt.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], actual[0]));
+            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, actual, "Data"));
+            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data[0], actual.Data[0]));
 
             client.Stop();
         }
