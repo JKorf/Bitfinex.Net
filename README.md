@@ -162,6 +162,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.2.1 - 21 aug 2018
+	* Changed SubscribeToTradeUpdates update data to BitfinexSocketEvent<BitfinexTradeSimple[]> to be able to distinguish execution and update messages
+
 * Version 1.2.0 - 21 aug 2018
 	* Refactored connecting/reconnecting
 	* Fixed bug disposing default credentials
