@@ -23,9 +23,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
             return Key;
         }
 
-        protected override void Handle(object obj)
+        protected override void Handle(params object[] obj)
         {
-            handler((BitfinexCandle[])obj);
+            handler((BitfinexCandle[])obj[0]);
         }
     }
 

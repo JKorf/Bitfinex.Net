@@ -236,7 +236,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        Task<CallResult<int>> SubscribeToTradeUpdates(string symbol, Action<BitfinexTradeSimple[]> handler);
+        Task<CallResult<int>> SubscribeToTradeUpdates(string symbol, Action<BitfinexSocketEvent<BitfinexTradeSimple[]>> handler);
 
         /// <summary>
         /// Subscribes to orderbook update for a symbol. Requires socket to be connected

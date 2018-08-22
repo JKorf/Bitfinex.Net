@@ -22,9 +22,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
             return Symbol;
         }
 
-        protected override void Handle(object obj)
+        protected override void Handle(params object[] obj)
         {
-            handler((BitfinexMarketOverview[]) obj);
+            handler((BitfinexMarketOverview[]) obj[0]);
         }
     }
 

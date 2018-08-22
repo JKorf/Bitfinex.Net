@@ -52,11 +52,23 @@ namespace Bitfinex.Net.Objects.SocketObjects
 
         public void Handle(JArray obj)
         {
+            BitfinexEventType? evnt = null;
             JToken data;
             if (obj[1] is JArray)
                 data = obj[1];
             else
-                data = EventTypeAnnounced ? obj[2] : obj[1];
+            {
+                if (EventTypeAnnounced)
+                {
+                    evnt = BitfinexEvents.EventMapping[obj[1].ToString()];
+                    data = obj[2];
+                }
+                else
+                {
+                    data = obj[1];
+                }
+
+            }
 
             if (!data.HasValues)
                 return;
@@ -64,17 +76,20 @@ namespace Bitfinex.Net.Objects.SocketObjects
             if (data[0] is JArray)
             {
                 var typed = data.ToObject(EventType.MakeArrayType());
-                Handle(typed);
+                if (!EventTypeAnnounced) Handle(typed);
+                else Handle(evnt, typed);
             }
             else
             {
                 var array = Array.CreateInstance(EventType, 1);
                 array.SetValue(data.ToObject(EventType), 0);
-                Handle(array);
+
+                if (!EventTypeAnnounced) Handle(array);
+                else Handle(evnt, array);
             }
         }
 
-        protected abstract void Handle(object obj);
+        protected abstract void Handle(params object[] objs);
     }
 
     public abstract class SubscriptionResponse

@@ -9,9 +9,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("symbol")]
         public string Symbol { get; set; }
 
-        private readonly Action<BitfinexTradeSimple[]> handler;
+        private readonly Action<BitfinexSocketEvent<BitfinexTradeSimple[]>> handler;
 
-        public TradesSubscriptionRequest(string symbol, Action<BitfinexTradeSimple[]> handler)
+        public TradesSubscriptionRequest(string symbol, Action<BitfinexSocketEvent<BitfinexTradeSimple[]>> handler)
         {
             Symbol = symbol;
             this.handler = handler;
@@ -22,9 +22,10 @@ namespace Bitfinex.Net.Objects.SocketObjects
             return Symbol;
         }
 
-        protected override void Handle(object obj)
+        protected override void Handle(params object[] obj)
         {
-            handler((BitfinexTradeSimple[]) obj);
+            var evntType = (BitfinexEventType?) obj[0];
+            handler(new BitfinexSocketEvent<BitfinexTradeSimple[]>(evntType ?? BitfinexEventType.TradesSnapshot, (BitfinexTradeSimple[])obj[1]));
         }
     }
 

@@ -31,9 +31,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
             return Symbol+Precision+Frequency+Length;
         }
 
-        protected override void Handle(object obj)
+        protected override void Handle(params object[] obj)
         {
-            handler((BitfinexOrderBookEntry[])obj);
+            handler((BitfinexOrderBookEntry[])obj[0]);
         }
     }
 
@@ -62,9 +62,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
             return Symbol + Precision + "F0" + Length;
         }
 
-        protected override void Handle(object obj)
+        protected override void Handle(params object[] obj)
         {
-            handler((BitfinexRawOrderBookEntry[])obj);
+            handler((BitfinexRawOrderBookEntry[])obj[0]);
         }
     }
 

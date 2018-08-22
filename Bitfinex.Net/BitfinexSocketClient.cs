@@ -817,7 +817,7 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns>A stream id with which can be unsubscribed</returns>
-        public async Task<CallResult<int>> SubscribeToTradeUpdates(string symbol, Action<BitfinexTradeSimple[]> handler)
+        public async Task<CallResult<int>> SubscribeToTradeUpdates(string symbol, Action<BitfinexSocketEvent<BitfinexTradeSimple[]>> handler)
         {
             var id = NextStreamId;
             var sub = new TradesSubscriptionRequest(symbol, handler) { StreamId = id };
