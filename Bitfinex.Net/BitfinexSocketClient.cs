@@ -224,7 +224,7 @@ namespace Bitfinex.Net
             {
                 if (CheckConnection())
                     return true;
-
+                
                 reconnect = true;
                 State = SocketState.Connecting;
                 if (socket == null)
@@ -980,6 +980,9 @@ namespace Bitfinex.Net
             socket.OnError += SocketError;
             socket.OnOpen += SocketOpened;
             socket.OnMessage += SocketMessage;
+
+            if (apiProxy != null)
+                socket.SetProxy(apiProxy.Host, apiProxy.Port);
         }
 
         private async Task<bool> Open()
