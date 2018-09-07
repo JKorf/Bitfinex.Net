@@ -22,7 +22,7 @@ namespace Bitfinex.Net.Objects
         /// <summary>
         /// The receive timeout after which a lost connection is assumed
         /// </summary>
-        public TimeSpan SocketReceiveTimeout { get; set; } = TimeSpan.FromSeconds(15);
+        public TimeSpan SocketReceiveTimeout { get; set; } = TimeSpan.FromSeconds(20);
 
         /// <summary>
         /// The time to wait for a subscribe response

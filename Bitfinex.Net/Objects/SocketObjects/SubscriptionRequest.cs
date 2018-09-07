@@ -19,7 +19,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonIgnore]
         public int StreamId { get; set; }
         [JsonIgnore]
-        public WaitAction<bool> ConfirmedEvent { get; }
+        public WaitAction<bool> ConfirmedEvent { get; private set; }
 
         [JsonIgnore]
         public bool Requested { get; set; }
@@ -41,6 +41,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
             Requested = false;
             Responded = false;
             ChannelId = null;
+            ConfirmedEvent = new WaitAction<bool>();
         }
 
         public string GetSubscriptionKey()

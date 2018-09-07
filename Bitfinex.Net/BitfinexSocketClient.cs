@@ -224,7 +224,13 @@ namespace Bitfinex.Net
             {
                 if (CheckConnection())
                     return true;
-                
+
+                if (socket?.SocketState == WebSocket4Net.WebSocketState.Connecting)
+                {
+                    log.Write(LogVerbosity.Error, "Trying to connect again while still connecting..");
+                    return false;
+                }
+
                 reconnect = true;
                 State = SocketState.Connecting;
                 if (socket == null)
@@ -235,14 +241,15 @@ namespace Bitfinex.Net
                 if (!result)
                     return false;
 
-                reconnectThread = null;
                 lastReceivedMessage = DateTime.UtcNow;
-            }
+                
+                if (lost)
+                {
+                    Task.Run(() => ConnectionRestored?.Invoke());
+                    lost = false;
 
-            if (lost)
-            {
-                ConnectionRestored?.Invoke();
-                lost = false;
+                    reconnectThread = null;
+                }
             }
 
             Authenticate();
@@ -297,20 +304,17 @@ namespace Bitfinex.Net
                 lock (outstandingUnsubscriptionRequestsLock)
                     foreach (var request in outstandingUnsubscriptionRequests)
                         request.ConfirmedEvent.Set(new CallResult<bool>(false, new WebError("Server disconnected")));
-            }
 
-            if (reconnect)
-            {
-                if (!lost)
+                if (reconnect)
                 {
-                    lost = true;
-                    ConnectionLost?.Invoke();
-                }
+                    if (!lost)
+                    {
+                        lost = true;
+                        Task.Run(() => ConnectionLost?.Invoke());
 
-                if (reconnectThread == null)
-                {
-                    reconnectThread = new Thread(Reconnect);
-                    reconnectThread.Start();
+                        reconnectThread = new Thread(Reconnect);
+                        reconnectThread.Start();
+                    }
                 }
             }
         }
@@ -798,7 +802,15 @@ namespace Bitfinex.Net
             var id = NextStreamId;
             var sub = new TickerSubscriptionRequest(symbol, handler) {StreamId = id};
 
-            lock(subscriptionRequestsLock)
+            bool alreadySubbed;
+            lock (outstandingSubscriptionRequestsLock)
+                lock (confirmedRequestLock)
+                    alreadySubbed = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any() || confirmedRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any();
+
+            if (alreadySubbed)
+                return new CallResult<int>(0, new ArgumentError("Duplicate subscription request, trying to subscribe the same symbol multiple times"));
+
+            lock (subscriptionRequestsLock)
                 subscriptionRequests.Add(sub);
 
             if (State != SocketState.Connected)
@@ -821,6 +833,14 @@ namespace Bitfinex.Net
         {
             var id = NextStreamId;
             var sub = new TradesSubscriptionRequest(symbol, handler) { StreamId = id };
+
+            bool alreadySubbed;
+            lock (outstandingSubscriptionRequestsLock)
+                lock (confirmedRequestLock)
+                    alreadySubbed = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any() || confirmedRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any();
+
+            if (alreadySubbed)
+                return new CallResult<int>(0, new ArgumentError("Duplicate subscription request, trying to subscribe the same symbol multiple times"));
 
             lock (subscriptionRequestsLock)
                 subscriptionRequests.Add(sub);
@@ -849,6 +869,14 @@ namespace Bitfinex.Net
             var id = NextStreamId;
             var sub = new BookSubscriptionRequest(symbol, JsonConvert.SerializeObject(precision, new PrecisionConverter(false)), JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)), length, (data) => handler((BitfinexOrderBookEntry[])data)) { StreamId = id };
 
+            bool alreadySubbed;
+            lock (outstandingSubscriptionRequestsLock)
+                lock (confirmedRequestLock)
+                    alreadySubbed = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any() || confirmedRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any();
+
+            if (alreadySubbed)
+                return new CallResult<int>(0, new ArgumentError("Duplicate subscription request, trying to subscribe the same symbol multiple times"));
+
             lock (subscriptionRequestsLock)
                 subscriptionRequests.Add(sub);
 
@@ -873,6 +901,14 @@ namespace Bitfinex.Net
         {
             var id = NextStreamId;
             var sub = new RawBookSubscriptionRequest(symbol, "R0", length, (data) => handler((BitfinexRawOrderBookEntry[])data)) { StreamId = id };
+
+            bool alreadySubbed;
+            lock (outstandingSubscriptionRequestsLock)
+                lock (confirmedRequestLock)
+                    alreadySubbed = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any() || confirmedRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any();
+
+            if (alreadySubbed)
+                return new CallResult<int>(0, new ArgumentError("Duplicate subscription request, trying to subscribe the same symbol multiple times"));
 
             lock (subscriptionRequestsLock)
                 subscriptionRequests.Add(sub);
@@ -904,6 +940,14 @@ namespace Bitfinex.Net
 
             var id = NextStreamId;
             var sub = new CandleSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false)), handler) { StreamId = id };
+
+            bool alreadySubbed;
+            lock (outstandingSubscriptionRequestsLock)
+                lock (confirmedRequestLock)
+                    alreadySubbed = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any() || confirmedRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any();
+
+            if(alreadySubbed)
+                return new CallResult<int>(0, new ArgumentError("Duplicate subscription request, trying to subscribe the same symbol multiple times"));            
 
             lock (subscriptionRequestsLock)
                 subscriptionRequests.Add(sub);
@@ -1133,7 +1177,8 @@ namespace Bitfinex.Net
                         lock (subscriptionRequestsLock)
                             subscriptionRequests.ForEach(s => s.ResetSubscription());
 
-                        StopInternal();
+                        if (reconnectThread == null)
+                            StopInternal();
                         return false;
                     }
                 }
