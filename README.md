@@ -162,6 +162,11 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.2.2 - 07 sep 2018
+	* Fix for reconnecting
+	* Fix for resubscribing always reporting successful when socket disconnects in the mean time
+	* Added error message for duplicate subscriptions
+
 * Version 1.2.1 - 21 aug 2018
 	* Changed SubscribeToTradeUpdates update data to BitfinexSocketEvent<BitfinexTradeSimple[]> to be able to distinguish execution and update messages
 
