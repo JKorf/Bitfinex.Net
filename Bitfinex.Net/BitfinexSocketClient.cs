@@ -239,7 +239,11 @@ namespace Bitfinex.Net
                 var result = Open().Result;
                 State = result ? SocketState.Connected : SocketState.Disconnected;
                 if (!result)
+                {
+                    socket.Dispose();
+                    socket = null;
                     return false;
+                }
 
                 lastReceivedMessage = DateTime.UtcNow;
                 
