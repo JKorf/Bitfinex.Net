@@ -162,6 +162,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.2.3 - 19 sep 2018
+	* Fix for exception during reconnecting if socket hangs in connecting state
+
 * Version 1.2.2 - 07 sep 2018
 	* Fix for reconnecting
 	* Fix for resubscribing always reporting successful when socket disconnects in the mean time
