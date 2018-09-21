@@ -162,6 +162,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.2.4 - 21 sep 2018
+	* Updated CryptoExchange.Net
+
 * Version 1.2.3 - 19 sep 2018
 	* Fix for exception during reconnecting if socket hangs in connecting state
 

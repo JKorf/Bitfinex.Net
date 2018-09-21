@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Bitfinex.Net
 {
@@ -18,14 +21,55 @@ namespace Bitfinex.Net
             encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(credentials.Secret.GetString()));
         }
 
-        public override string AddAuthenticationToUriString(string uri, bool signed)
+        public override Dictionary<string, string> AddAuthenticationToHeaders(string uri, string method, Dictionary<string, object> parameters, bool signed)
         {
-            throw new NotImplementedException();
+            var result = new Dictionary<string, string>();
+            if (!signed)
+                return result;
+
+            if (uri.Contains("v1"))
+            {
+                var signature = JsonConvert.SerializeObject(parameters);
+
+                var payload = Convert.ToBase64String(Encoding.ASCII.GetBytes(signature));
+                var signedData = Sign(payload);
+
+                result.Add($"X-BFX-APIKEY", Credentials.Key.GetString());
+                result.Add($"X-BFX-PAYLOAD", payload);
+                result.Add($"X-BFX-SIGNATURE", signedData.ToLower());
+            }
+            else if (uri.Contains("v2"))
+            {
+                var json = JsonConvert.SerializeObject(parameters);
+                var data = Encoding.UTF8.GetBytes(json);
+                var n = BitfinexSocketClient.Nonce;
+                var signature = $"/api{uri.Split(new[] { ".com" }, StringSplitOptions.None)[1]}{n}{json}";
+                var signedData = Sign(signature);
+
+                result.Add($"bfx-apikey", Credentials.Key.GetString());
+                result.Add($"bfx-nonce", n.ToString());
+                result.Add($"bfx-signature", signedData.ToLower());
+            }
+
+            return result;
         }
 
-        public override IRequest AddAuthenticationToRequest(IRequest request, bool signed)
+        public override Dictionary<string, object> AddAuthenticationToParameters(string uri, string method, Dictionary<string, object> parameters, bool signed)
         {
-            throw new NotImplementedException();
+            if (!signed)
+                return parameters;
+
+            if (uri.Contains("v1"))
+            {
+                parameters.Add("request", uri.Split(new[] { ".com" }, StringSplitOptions.None)[1]);
+                parameters.Add("nonce", BitfinexSocketClient.Nonce);
+            }
+            else if (uri.Contains("v2"))
+            {
+                // Nothing
+            }
+
+            return parameters;
         }
 
         public override string Sign(string toSign)

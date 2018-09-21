@@ -1047,68 +1047,6 @@ namespace Bitfinex.Net
         #endregion
 
         #region private methods
-        protected override IRequest ConstructRequest(Uri uri, string method, Dictionary<string, object> parameters, bool signed)
-        {
-            var uriString = uri.ToString();
-            if (!signed && parameters != null)
-            {
-                if (!uriString.EndsWith("?"))
-                    uriString += "?";
-
-                uriString += $"{string.Join("&", parameters.Select(s => $"{s.Key}={s.Value}"))}";
-            }
-
-            var request = RequestFactory.Create(uriString);
-            request.Method = method;
-            request.ContentType = "application/json";
-            request.Accept = "application/json";
-
-            if (!signed)
-                return request;
-
-            if (uri.ToString().Contains("v2"))
-            {
-                if (parameters == null)
-                    parameters = new Dictionary<string, object>();
-
-                var json = JsonConvert.SerializeObject(parameters);
-                var data = Encoding.UTF8.GetBytes(json);
-
-                var n = nonce;
-                var signature = $"/api{uri.PathAndQuery}{n}{json}";
-                var signedData = authProvider.Sign(signature);
-                request.Headers.Add($"bfx-nonce: {n}");
-                request.Headers.Add($"bfx-apikey: {authProvider.Credentials.Key.GetString()}");
-                request.Headers.Add($"bfx-signature: {signedData.ToLower()}");
-
-                using (var stream = request.GetRequestStream().Result)
-                    stream.Write(data, 0, data.Length);
-            }
-            else
-            {
-                var path = uri.PathAndQuery;
-                var n = nonce;
-
-                var signature = new JObject
-                {
-                    ["request"] = path,
-                    ["nonce"] = n
-                };
-                if (parameters != null)
-                    foreach (var keyvalue in parameters)
-                        signature.Add(keyvalue.Key, JToken.FromObject(keyvalue.Value));
-                    
-                var payload = Convert.ToBase64String(Encoding.ASCII.GetBytes(signature.ToString()));
-                var signedData = authProvider.Sign(payload);
-                    
-                request.Headers.Add($"X-BFX-APIKEY: {authProvider.Credentials.Key.GetString()}");
-                request.Headers.Add($"X-BFX-PAYLOAD: {payload}");
-                request.Headers.Add($"X-BFX-SIGNATURE: {signedData.ToLower()}");
-            }
-
-            return request;
-        }
-
         protected override Error ParseErrorResponse(string data)
         {
             var token = JToken.Parse(data);
