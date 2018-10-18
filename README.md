@@ -162,6 +162,9 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.2.5 - 18 okt 2018
+	* Fixed handling of confirmation preventing missed messages
+
 * Version 1.2.4 - 21 sep 2018
 	* Updated CryptoExchange.Net
 
