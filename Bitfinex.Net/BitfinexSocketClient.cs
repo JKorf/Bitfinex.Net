@@ -1073,10 +1073,6 @@ namespace Bitfinex.Net
                     return;
                 }
 
-                if (result.Data)
-                    lock (confirmedRequestLock)
-                        confirmedRequests.Add(request);
-
                 log.Write(LogVerbosity.Debug, !result.Data ? "No confirmation received" : "Subscription confirmed");
             }).ConfigureAwait(false);
 
@@ -1105,10 +1101,6 @@ namespace Bitfinex.Net
                     result = new CallResult<bool>(false, new ServerError("No unsubscription confirmation received"));
                     return;
                 }
-
-                if (result.Data)
-                    lock (confirmedRequestLock)
-                        confirmedRequests.RemoveAll(r => r.ChannelId == request.ChannelId);
 
                 lock (subscriptionRequestsLock)
                     subscriptionRequests.Single(s => s.ChannelId == request.ChannelId).ResetSubscription(); // ??
@@ -1303,7 +1295,10 @@ namespace Bitfinex.Net
 
                                 pending.ChannelId = subResponse.ChannelId;
                                 pending.Responded = true;
-                                pending.ConfirmedEvent.Set(new CallResult<bool>(true, null));
+                                lock (confirmedRequestLock)
+                                    confirmedRequests.Add(pending);
+
+                                pending.ConfirmedEvent.Set(new CallResult<bool>(true, null));                                
                                 continue;
                             }
                             case "unsubscribed":
@@ -1317,6 +1312,10 @@ namespace Bitfinex.Net
                                     log.Write(LogVerbosity.Debug, "Received unsub confirmation, but no pending unsubscriptions");
                                     continue;
                                 }
+
+                                lock (confirmedRequestLock)
+                                    confirmedRequests.RemoveAll(r => r.ChannelId == pending.ChannelId);
+
                                 pending.ConfirmedEvent.Set(new CallResult<bool>(true, null));
                                 continue;
                             }
