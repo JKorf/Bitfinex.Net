@@ -1364,6 +1364,24 @@ namespace Bitfinex.Net
 
                                 log.Write(LogVerbosity.Warning, $"Received unknown status code: {code}, data: {dataObject}");
                                 break;
+
+                            case "error":
+                                log.Write(LogVerbosity.Warning, $"Received error: " + dataObject["msg"]);
+                                var errorChannel = dataObject["channel"].ToString();
+                                if (!subscriptionResponseTypes.ContainsKey(errorChannel))
+                                {
+                                    log.Write(LogVerbosity.Warning, "Unknown error response channel name: " + errorChannel);
+                                    continue;
+                                }
+
+                                var response = (SubscriptionResponse)dataObject.ToObject(subscriptionResponseTypes[errorChannel]);
+
+                                SubscriptionRequest request;
+                                lock (outstandingSubscriptionRequestsLock)
+                                    request = outstandingSubscriptionRequests.SingleOrDefault(r => response.GetSubscriptionKeys().Any(k => k == r.GetSubscriptionKey()));
+
+                                request?.ConfirmedEvent.Set(new CallResult<bool>(false, new ServerError(dataObject["msg"].ToString())));
+                                break;
                         }
                     }
                     else
