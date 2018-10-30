@@ -162,6 +162,10 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 1.2.6 - 30 okt 2018
+	* Fixed error message handling during subscription
+	* Fixed reconnect trying to resubscribe failed subscriptions
+
 * Version 1.2.5 - 18 okt 2018
 	* Fixed handling of confirmation preventing missed messages
 
