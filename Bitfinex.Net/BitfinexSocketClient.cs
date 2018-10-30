@@ -110,7 +110,7 @@ namespace Bitfinex.Net
         private static long lastNonce;
         private bool authenticating;
         private bool authenticated;
-        private Random random = new Random();
+        private readonly Random random = new Random();
 
         internal static string Nonce
         {
@@ -809,7 +809,7 @@ namespace Bitfinex.Net
             bool alreadySubbed;
             lock (outstandingSubscriptionRequestsLock)
                 lock (confirmedRequestLock)
-                    alreadySubbed = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any() || confirmedRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any();
+                    alreadySubbed = outstandingSubscriptionRequests.Any(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()) || confirmedRequests.Any(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower());
 
             if (alreadySubbed)
                 return new CallResult<int>(0, new ArgumentError("Duplicate subscription request, trying to subscribe the same symbol multiple times"));
@@ -821,10 +821,8 @@ namespace Bitfinex.Net
                 return new CallResult<int>(id, null);
 
             log.Write(LogVerbosity.Info, "Subscribing to ticker updates for " + symbol);
-            var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
-            if (!subResult.Success)
-                return new CallResult<int>(0, subResult.Error);
-            return new CallResult<int>(id, null);
+            var subResult = await SubscribeAndWait(sub, true).ConfigureAwait(false);
+            return !subResult.Success ? new CallResult<int>(0, subResult.Error) : new CallResult<int>(id, null);
         }
 
         /// <summary>
@@ -841,7 +839,7 @@ namespace Bitfinex.Net
             bool alreadySubbed;
             lock (outstandingSubscriptionRequestsLock)
                 lock (confirmedRequestLock)
-                    alreadySubbed = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any() || confirmedRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any();
+                    alreadySubbed = outstandingSubscriptionRequests.Any(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()) || confirmedRequests.Any(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower());
 
             if (alreadySubbed)
                 return new CallResult<int>(0, new ArgumentError("Duplicate subscription request, trying to subscribe the same symbol multiple times"));
@@ -853,10 +851,8 @@ namespace Bitfinex.Net
                 return new CallResult<int>(id, null);
 
             log.Write(LogVerbosity.Info, "Subscribing to trade updates for " + symbol);
-            var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
-            if (!subResult.Success)
-                return new CallResult<int>(0, subResult.Error);
-            return new CallResult<int>(id, null);
+            var subResult = await SubscribeAndWait(sub, true).ConfigureAwait(false);
+            return !subResult.Success ? new CallResult<int>(0, subResult.Error) : new CallResult<int>(id, null);
         }
 
         /// <summary>
@@ -876,7 +872,7 @@ namespace Bitfinex.Net
             bool alreadySubbed;
             lock (outstandingSubscriptionRequestsLock)
                 lock (confirmedRequestLock)
-                    alreadySubbed = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any() || confirmedRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any();
+                    alreadySubbed = outstandingSubscriptionRequests.Any(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()) || confirmedRequests.Any(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower());
 
             if (alreadySubbed)
                 return new CallResult<int>(0, new ArgumentError("Duplicate subscription request, trying to subscribe the same symbol multiple times"));
@@ -888,10 +884,8 @@ namespace Bitfinex.Net
                 return new CallResult<int>(id, null);
 
             log.Write(LogVerbosity.Info, $"Subscribing to book updates for {symbol}, {precision}, {frequency}, {length}");
-            var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
-            if (!subResult.Success)
-                return new CallResult<int>(0, subResult.Error);
-            return new CallResult<int>(id, null);
+            var subResult = await SubscribeAndWait(sub, true).ConfigureAwait(false);
+            return !subResult.Success ? new CallResult<int>(0, subResult.Error) : new CallResult<int>(id, null);
         }
 
         /// <summary>
@@ -909,7 +903,7 @@ namespace Bitfinex.Net
             bool alreadySubbed;
             lock (outstandingSubscriptionRequestsLock)
                 lock (confirmedRequestLock)
-                    alreadySubbed = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any() || confirmedRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any();
+                    alreadySubbed = outstandingSubscriptionRequests.Any(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()) || confirmedRequests.Any(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower());
 
             if (alreadySubbed)
                 return new CallResult<int>(0, new ArgumentError("Duplicate subscription request, trying to subscribe the same symbol multiple times"));
@@ -921,10 +915,8 @@ namespace Bitfinex.Net
                 return new CallResult<int>(id, null);
 
             log.Write(LogVerbosity.Info, $"Subscribing to raw book updates for {symbol}, {length}");
-            var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
-            if (!subResult.Success)
-                return new CallResult<int>(0, subResult.Error);
-            return new CallResult<int>(id, null);
+            var subResult = await SubscribeAndWait(sub, true).ConfigureAwait(false);
+            return !subResult.Success ? new CallResult<int>(0, subResult.Error) : new CallResult<int>(id, null);
         }
 
         /// <summary>
@@ -948,7 +940,7 @@ namespace Bitfinex.Net
             bool alreadySubbed;
             lock (outstandingSubscriptionRequestsLock)
                 lock (confirmedRequestLock)
-                    alreadySubbed = outstandingSubscriptionRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any() || confirmedRequests.Where(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()).Any();
+                    alreadySubbed = outstandingSubscriptionRequests.Any(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower()) || confirmedRequests.Any(r => r.GetSubscriptionKey().ToLower() == sub.GetSubscriptionKey().ToLower());
 
             if(alreadySubbed)
                 return new CallResult<int>(0, new ArgumentError("Duplicate subscription request, trying to subscribe the same symbol multiple times"));            
@@ -960,10 +952,8 @@ namespace Bitfinex.Net
                 return new CallResult<int>(id, null);
 
             log.Write(LogVerbosity.Info, $"Subscribing to candle updates for {symbol}, {interval}");
-            var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
-            if (!subResult.Success)
-                return new CallResult<int>(0, subResult.Error);
-            return new CallResult<int>(id, null);
+            var subResult = await SubscribeAndWait(sub, true).ConfigureAwait(false);
+            return !subResult.Success ? new CallResult<int>(0, subResult.Error) : new CallResult<int>(id, null);
         }
 
         /// <summary>
@@ -982,7 +972,7 @@ namespace Bitfinex.Net
             {
                 if (State == SocketState.Connected)
                 {
-                    var result = await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value)).ConfigureAwait(false);
+                    var result = await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value), true).ConfigureAwait(false);
                     if (!result.Success)
                         return result;
 
@@ -1052,7 +1042,7 @@ namespace Bitfinex.Net
             return true;
         }
 
-        private async Task<CallResult<bool>> SubscribeAndWait(SubscriptionRequest request)
+        private async Task<CallResult<bool>> SubscribeAndWait(SubscriptionRequest request, bool removeSubscriptionOnFail)
         {
             lock (outstandingSubscriptionRequestsLock)
                 outstandingSubscriptionRequests.Add(request);
@@ -1069,6 +1059,12 @@ namespace Bitfinex.Net
 
                 if (!triggered)
                 {
+                    if (removeSubscriptionOnFail)
+                    {
+                        lock (subscriptionRequestsLock)
+                            subscriptionRequests.Remove(request);
+                    }
+
                     result = new CallResult<bool>(false, new ServerError("No subscription confirmation received"));
                     return;
                 }
@@ -1079,7 +1075,7 @@ namespace Bitfinex.Net
             return result;
         }
 
-        private async Task<CallResult<bool>> UnsubscribeAndWait(UnsubscriptionRequest request)
+        private async Task<CallResult<bool>> UnsubscribeAndWait(UnsubscriptionRequest request, bool removeSubscription)
         {
             if (!CheckConnection())
                 return new CallResult<bool>(false, new WebError("Can't unsubscribe when not connected"));
@@ -1102,8 +1098,16 @@ namespace Bitfinex.Net
                     return;
                 }
 
-                lock (subscriptionRequestsLock)
-                    subscriptionRequests.Single(s => s.ChannelId == request.ChannelId).ResetSubscription(); // ??
+                if (!removeSubscription)
+                {
+                    lock (subscriptionRequestsLock)
+                        subscriptionRequests.Single(s => s.ChannelId == request.ChannelId).ResetSubscription();
+                }
+                else
+                {
+                    lock (subscriptionRequestsLock)
+                        subscriptionRequests.RemoveAll(s => s.ChannelId == request.ChannelId);
+                }
 
                 log.Write(LogVerbosity.Debug, !result.Data ? "No confirmation received" : "Unsubscription confirmed");
             }).ConfigureAwait(false);
@@ -1157,7 +1161,7 @@ namespace Bitfinex.Net
                     }
 
                     currentTry++;
-                    var subResult = await SubscribeAndWait(sub).ConfigureAwait(false);
+                    var subResult = await SubscribeAndWait(sub, false).ConfigureAwait(false);
                     if (subResult.Success)
                     {
                         log.Write(LogVerbosity.Info, $"Successfuly (re)subscribed {sub.GetType()}");
@@ -1349,7 +1353,7 @@ namespace Bitfinex.Net
                                         Task.Run(async () =>
                                         {
                                             foreach (var sub in confirmedRequests.ToList())
-                                                await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value)).ConfigureAwait(false);
+                                                await UnsubscribeAndWait(new UnsubscriptionRequest(sub.ChannelId.Value), false).ConfigureAwait(false);
 
                                             await SubscribeUnsend().ConfigureAwait(false);
                                             SocketResumed?.Invoke();
