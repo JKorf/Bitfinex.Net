@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using CryptoExchange.Net.Sockets;
+using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
-    public class BitfinexAuthentication
+    public class BitfinexAuthentication: SocketRequest
     {
         [JsonProperty("event")]
         public string Event { get; set; }
@@ -14,5 +15,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public string Signature { get; set; }
         [JsonProperty("authNonce")]
         public string Nonce { get; set; }
+        [JsonProperty("filter")]
+        public string[] Filter { get; set; }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
-using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
 
 namespace Bitfinex.Net.Objects
 {
-    public class BitfinexClientOptions : ExchangeOptions
+    public class BitfinexClientOptions : ClientOptions
     {
         public BitfinexClientOptions()
         {
@@ -12,13 +11,8 @@ namespace Bitfinex.Net.Objects
         }
     }
 
-    public class BitfinexSocketClientOptions: ExchangeOptions
+    public class BitfinexSocketClientOptions: SocketClientOptions
     {
-        public BitfinexSocketClientOptions()
-        {
-            BaseAddress = "wss://api.bitfinex.com/ws/2";
-        }
-
         /// <summary>
         /// The receive timeout after which a lost connection is assumed
         /// </summary>
@@ -34,9 +28,19 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         public TimeSpan OrderActionConfirmationTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
-        /// <summary>
-        /// The time to wait before trying to reconnect on lost connection
-        /// </summary>
-        public TimeSpan ReconnectionInterval { get; set; } = TimeSpan.FromSeconds(2);
+
+        public BitfinexSocketClientOptions()
+        {
+            BaseAddress = "wss://api.bitfinex.com/ws/2";
+        }        
+
+        public BitfinexSocketClientOptions Copy()
+        {
+            var copy = Copy<BitfinexSocketClientOptions>();
+            copy.SocketReceiveTimeout = SocketReceiveTimeout;
+            copy.SubscribeResponseTimeout = SubscribeResponseTimeout;
+            copy.OrderActionConfirmationTimeout = OrderActionConfirmationTimeout;
+            return copy;
+        }
     }
 }

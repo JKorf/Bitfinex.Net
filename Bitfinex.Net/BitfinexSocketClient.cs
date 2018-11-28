@@ -6,53 +6,28 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Converters;
-using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
-using CryptoExchange.Net.Implementation;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Sockets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Bitfinex.Net
 {
-    public class BitfinexSocketClient: ExchangeClient, IBitfinexSocketClient
+    public class BitfinexSocketClient: SocketClient//, IBitfinexSocketClient
     {
         #region fields
         private static BitfinexSocketClientOptions defaultOptions = new BitfinexSocketClientOptions();
-        private static BitfinexSocketClientOptions DefaultOptions
-        {
-            get
-            {
-                var result = new BitfinexSocketClientOptions()
-                {
-                    LogVerbosity = defaultOptions.LogVerbosity,
-                    BaseAddress = defaultOptions.BaseAddress,
-                    LogWriters = defaultOptions.LogWriters,
-                    Proxy = defaultOptions.Proxy,
-                    RateLimiters = defaultOptions.RateLimiters,
-                    RateLimitingBehaviour = defaultOptions.RateLimitingBehaviour,
-                    SocketReceiveTimeout = defaultOptions.SocketReceiveTimeout,
-                    OrderActionConfirmationTimeout = defaultOptions.OrderActionConfirmationTimeout,
-                    ReconnectionInterval = defaultOptions.ReconnectionInterval,
-                    SubscribeResponseTimeout = defaultOptions.SubscribeResponseTimeout
-                };
-
-                if (defaultOptions.ApiCredentials != null)
-                    result.ApiCredentials = new ApiCredentials(defaultOptions.ApiCredentials.Key.GetString(), defaultOptions.ApiCredentials.Secret.GetString());
-
-                return result;
-            }
-        }
+        private static BitfinexSocketClientOptions DefaultOptions => defaultOptions.Copy();
 
         private TimeSpan socketReceiveTimeout;
         private TimeSpan subscribeResponseTimeout;
         private TimeSpan orderActionConfirmationTimeout;
-        private TimeSpan reconnectInterval;
 
         internal IWebsocket socket;
 
@@ -104,9 +79,7 @@ namespace Bitfinex.Net
         }
         
         private readonly object connectionLock = new object();
-        private static readonly object streamIdLock = new object();
         private static readonly object nonceLock = new object();
-        private static int lastStreamId;
         private static long lastNonce;
         private bool authenticating;
         private bool authenticated;
@@ -123,18 +96,6 @@ namespace Bitfinex.Net
 
                     lastNonce += 1;
                     return lastNonce.ToString(CultureInfo.InvariantCulture);
-                }
-            }
-        }
-
-        private static int NextStreamId
-        {
-            get
-            {
-                lock (streamIdLock)
-                {
-                    lastStreamId -= 1;
-                    return lastStreamId;
                 }
             }
         }
@@ -162,11 +123,7 @@ namespace Bitfinex.Net
         /// </summary>
         public event Action<SocketState, SocketState> StateChanged;
         #endregion
-
-        #region properties
-        public IWebsocketFactory SocketFactory { get; set; } = new WebsocketFactory();
-        #endregion
-
+        
         #region ctor
         /// <summary>
         /// Create a new instance of BinanceClient using the default options
@@ -673,7 +630,7 @@ namespace Bitfinex.Net
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
             log.Write(LogVerbosity.Info, "Subscribing to wallet updates");
-            var id = NextStreamId;
+            var id = NextId();
 
             lock(registrationsLock)
                 registrations.Add(new WalletUpdateRegistration(handler, id));
@@ -692,7 +649,7 @@ namespace Bitfinex.Net
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
             log.Write(LogVerbosity.Info, "Subscribing to order updates");
-            var id = NextStreamId;
+            var id = NextId();
 
             lock(registrationsLock)
                 registrations.Add(new OrderUpdateRegistration(handler, id));
@@ -711,7 +668,7 @@ namespace Bitfinex.Net
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
             log.Write(LogVerbosity.Info, "Subscribing to position updates");
-            var id = NextStreamId;
+            var id = NextId();
 
             lock (registrationsLock)
                 registrations.Add(new PositionUpdateRegistration(handler, id));
@@ -730,7 +687,7 @@ namespace Bitfinex.Net
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
             log.Write(LogVerbosity.Info, "Subscribing to trade updates");
-            var id = NextStreamId;
+            var id = NextId();
 
             lock (registrationsLock)
                 registrations.Add(new TradesUpdateRegistration(handler, id));
@@ -749,7 +706,7 @@ namespace Bitfinex.Net
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
             log.Write(LogVerbosity.Info, "Subscribing to funding offer updates");
-            var id = NextStreamId;
+            var id = NextId();
 
             lock (registrationsLock)
                 registrations.Add(new FundingOffersUpdateRegistration(handler, id));
@@ -768,7 +725,7 @@ namespace Bitfinex.Net
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
             log.Write(LogVerbosity.Info, "Subscribing to funding credit updates");
-            var id = NextStreamId;
+            var id = NextId();
 
             lock (registrationsLock)
                 registrations.Add(new FundingCreditsUpdateRegistration(handler, id));
@@ -787,7 +744,7 @@ namespace Bitfinex.Net
                 return new CallResult<int>(0, new NoApiCredentialsError());
 
             log.Write(LogVerbosity.Info, "Subscribing to funding loan updates");
-            var id = NextStreamId;
+            var id = NextId();
 
             lock (registrationsLock)
                 registrations.Add(new FundingLoansUpdateRegistration(handler, id));
@@ -803,7 +760,7 @@ namespace Bitfinex.Net
         /// <returns>A stream id with which can be unsubscribed</returns>
         public async Task<CallResult<int>> SubscribeToTickerUpdates(string symbol, Action<BitfinexMarketOverview[]> handler)
         {
-            var id = NextStreamId;
+            var id = NextId();
             var sub = new TickerSubscriptionRequest(symbol, handler) {StreamId = id};
 
             bool alreadySubbed;
@@ -833,7 +790,7 @@ namespace Bitfinex.Net
         /// <returns>A stream id with which can be unsubscribed</returns>
         public async Task<CallResult<int>> SubscribeToTradeUpdates(string symbol, Action<BitfinexSocketEvent<BitfinexTradeSimple[]>> handler)
         {
-            var id = NextStreamId;
+            var id = NextId();
             var sub = new TradesSubscriptionRequest(symbol, handler) { StreamId = id };
 
             bool alreadySubbed;
@@ -866,7 +823,7 @@ namespace Bitfinex.Net
         /// <returns>A stream id with which can be unsubscribed</returns>
         public async Task<CallResult<int>> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<BitfinexOrderBookEntry[]> handler)
         {
-            var id = NextStreamId;
+            var id = NextId();
             var sub = new BookSubscriptionRequest(symbol, JsonConvert.SerializeObject(precision, new PrecisionConverter(false)), JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)), length, (data) => handler((BitfinexOrderBookEntry[])data)) { StreamId = id };
 
             bool alreadySubbed;
@@ -897,7 +854,7 @@ namespace Bitfinex.Net
         /// <returns>A stream id with which can be unsubscribed</returns>
         public async Task<CallResult<int>> SubscribeToRawBookUpdates(string symbol, int length, Action<BitfinexRawOrderBookEntry[]> handler)
         {
-            var id = NextStreamId;
+            var id = NextId();
             var sub = new RawBookSubscriptionRequest(symbol, "R0", length, (data) => handler((BitfinexRawOrderBookEntry[])data)) { StreamId = id };
 
             bool alreadySubbed;
@@ -934,7 +891,7 @@ namespace Bitfinex.Net
                 symbol = "t" + symbol;
             }
 
-            var id = NextStreamId;
+            var id = NextId();
             var sub = new CandleSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false)), handler) { StreamId = id };
 
             bool alreadySubbed;
@@ -1669,13 +1626,10 @@ namespace Bitfinex.Net
 
         private void Configure(BitfinexSocketClientOptions options)
         {
-            base.Configure(options);
-
             socketReceiveTimeout = options.SocketReceiveTimeout;
             subscribeResponseTimeout = options.SubscribeResponseTimeout;
             orderActionConfirmationTimeout = options.OrderActionConfirmationTimeout;
             baseAddress = options.BaseAddress;
-            reconnectInterval = options.ReconnectionInterval;
         }
 
         private bool CheckConnection()
@@ -1738,6 +1692,11 @@ namespace Bitfinex.Net
         {
             base.Dispose();
             socket.Dispose();
+        }
+
+        protected override bool SocketReconnect(SocketSubscription subscription, TimeSpan disconnectedTime)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

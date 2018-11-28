@@ -16,6 +16,7 @@ namespace Bitfinex.Net.Objects
         public decimal Amount { get; set; }
     }
 
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexRawOrderBookEntry : BitfinexOrderBookBase
     {
         [ArrayProperty(0)]
