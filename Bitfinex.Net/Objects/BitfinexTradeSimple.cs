@@ -15,5 +15,8 @@ namespace Bitfinex.Net.Objects
         public decimal Amount { get; set; }
         [ArrayProperty(3)]
         public decimal Price { get; set; }
+
+        [JsonIgnore]
+        public BitfinexEventType UpdateType { get; set; } = BitfinexEventType.TradeSnapshot;
     }
 }

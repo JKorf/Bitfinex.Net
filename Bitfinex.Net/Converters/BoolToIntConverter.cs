@@ -6,23 +6,33 @@ namespace Bitfinex.Net.Converters
     public class BoolToIntConverter : JsonConverter
     {
         private readonly bool quotes;
+        private readonly bool asInt;
 
         public BoolToIntConverter()
         {
             quotes = true;
+            asInt = false;
         }
 
-        public BoolToIntConverter(bool useQuotes = true)
+        public BoolToIntConverter(bool useQuotes = true, bool writeAsInt = false)
         {
             quotes = useQuotes;
+            asInt = writeAsInt;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (quotes)
-                writer.WriteValue((bool)value ? "1": "0");
+            if (asInt)
+            {
+                writer.WriteValue((bool)value ? 1 : 0);
+            }
             else
-                writer.WriteRawValue((bool)value ? "1" : "0");
+            {
+                if (quotes)
+                    writer.WriteValue((bool)value ? "1" : "0");
+                else
+                    writer.WriteRawValue((bool)value ? "1" : "0");
+            }
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

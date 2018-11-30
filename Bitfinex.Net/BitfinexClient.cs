@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bitfinex.Net.Converters;
-using Bitfinex.Net.Interfaces;
+﻿using Bitfinex.Net.Converters;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.RestV1Objects;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Converters;
-using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Threading.Tasks;
+using Bitfinex.Net.Interfaces;
 
 namespace Bitfinex.Net
 {
-    public class BitfinexClient : RestClient//, IBitfinexClient
+    public class BitfinexClient : RestClient, IBitfinexClient
     {
         #region fields
 
@@ -54,8 +51,8 @@ namespace Bitfinex.Net
         private const string FundingCreditsEndpoint = "auth/r/funding/credits/{}";
         private const string FundingCreditsHistoryEndpoint = "auth/r/funding/credits/{}/hist";
         private const string FundingTradesEndpoint = "auth/r/funding/trades/{}/hist";
-        private const string MaginInfoBaseEndpoint = "auth/r/info/margin/base";
-        private const string MaginInfoSymbolEndpoint = "auth/r/info/margin/{}";
+        private const string MarginInfoBaseEndpoint = "auth/r/info/margin/base";
+        private const string MarginInfoSymbolEndpoint = "auth/r/info/margin/{}";
         private const string FundingInfoEndpoint = "auth/r/info/funding/{}";
 
         private const string MovementsEndpoint = "auth/r/movements/{}/hist";
@@ -73,20 +70,18 @@ namespace Bitfinex.Net
         private const string OrderStatusEndpoint = "order/status";
 
         private const string WithdrawEndpoint = "withdraw";
-
-        private static string nonce => BitfinexSocketClient.Nonce;
         #endregion
 
         #region constructor/destructor
         /// <summary>
-        /// Create a new instance of BinanceClient using the default options
+        /// Create a new instance of BitfinexClient using the default options
         /// </summary>
         public BitfinexClient(): this(DefaultOptions)
         {
         }
 
         /// <summary>
-        /// Create a new instance of BinanceClient using provided options
+        /// Create a new instance of BitfinexClient using provided options
         /// </summary>
         /// <param name="options">The options to use for this client</param>
         public BitfinexClient(BitfinexClientOptions options) : base(options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
@@ -117,9 +112,9 @@ namespace Bitfinex.Net
 
         #region Version2
         /// <summary>
-        /// Synchronized version of the <see cref="GetPlatformStatusAsync"/> method
+        /// Gets the platform status
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Whether Bitfinex platform is running normally or not</returns>
         public CallResult<BitfinexPlatformStatus> GetPlatformStatus() => GetPlatformStatusAsync().Result;
 
         /// <summary>
@@ -132,7 +127,7 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetSymbolsAsync"/> method
+        /// Gets a list of all symbols
         /// </summary>
         /// <returns></returns>
         public CallResult<string[]> GetSymbols() => GetSymbolsAsync().Result;
@@ -147,7 +142,7 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetSymbolDetailsAsync"/> method
+        /// Gets details of all symbols
         /// </summary>
         /// <returns></returns>
         public CallResult<BitfinexSymbolDetails[]> GetSymbolDetails() => GetSymbolDetailsAsync().Result;
@@ -162,13 +157,14 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetTickerAsync"/> method
+        /// Returns basic market data for the provided symbols
         /// </summary>
-        /// <returns></returns>
+        /// <param name="symbols">The symbols to get data for</param>
+        /// <returns>Market data</returns>
         public CallResult<BitfinexMarketOverviewRest[]> GetTicker(params string[] symbols) => GetTickerAsync(symbols).Result;
 
         /// <summary>
-        /// Returns basic market data for the provided smbols
+        /// Returns basic market data for the provided symbols
         /// </summary>
         /// <param name="symbols">The symbols to get data for</param>
         /// <returns>Market data</returns>
@@ -183,9 +179,14 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetTradesAsync"/> method
+        /// Get recent trades for a symbol
         /// </summary>
-        /// <returns></returns>
+        /// <param name="symbol">The symbol to get trades for</param>
+        /// <param name="limit">The amount of results</param>
+        /// <param name="startTime">The start time to return trades for</param>
+        /// <param name="endTime">The end time to return trades for</param>
+        /// <param name="sorting">The way the result is sorted</param>
+        /// <returns>Trades for the symbol</returns>
         public CallResult<BitfinexTradeSimple[]> GetTrades(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null) => GetTradesAsync(symbol, limit, startTime, endTime, sorting).Result;
 
         /// <summary>
@@ -193,8 +194,8 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="symbol">The symbol to get trades for</param>
         /// <param name="limit">The amount of results</param>
-        /// <param name="startTime">The starttime to return trades for</param>
-        /// <param name="endTime">The endtime to return trades for</param>
+        /// <param name="startTime">The start time to return trades for</param>
+        /// <param name="endTime">The end time to return trades for</param>
         /// <param name="sorting">The way the result is sorted</param>
         /// <returns>Trades for the symbol</returns>
         public async Task<CallResult<BitfinexTradeSimple[]>> GetTradesAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null)
@@ -213,18 +214,21 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetOrderBookAsync"/> method
-        /// </summary>
-        /// <returns></returns>
-        public CallResult<BitfinexOrderBookEntry[]> GetOrderBook(string symbol, Precision precision, int? limit = null) => GetOrderBookAsync(symbol, precision, limit).Result;
-
-        /// <summary>
-        /// Gets the orderbook for a symbol
+        /// Gets the order book for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to get the order book for</param>
         /// <param name="precision">The precision of the data</param>
         /// <param name="limit">The amount of results in the book</param>
-        /// <returns>The orderbook for the symbol</returns>
+        /// <returns>The order book for the symbol</returns>
+        public CallResult<BitfinexOrderBookEntry[]> GetOrderBook(string symbol, Precision precision, int? limit = null) => GetOrderBookAsync(symbol, precision, limit).Result;
+
+        /// <summary>
+        /// Gets the order book for a symbol
+        /// </summary>
+        /// <param name="symbol">The symbol to get the order book for</param>
+        /// <param name="precision">The precision of the data</param>
+        /// <param name="limit">The amount of results in the book</param>
+        /// <returns>The order book for the symbol</returns>
         public async Task<CallResult<BitfinexOrderBookEntry[]>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null)
         {
             if (limit != null && (limit != 25 && limit != 100))
@@ -238,8 +242,13 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetStatsAsync"/> method
+        /// Get various stats for the symbol
         /// </summary>
+        /// <param name="symbol">The symbol to request stats for</param>
+        /// <param name="key">The type of stats</param>
+        /// <param name="side">Side of the stats</param>
+        /// <param name="section">Section of the stats</param>
+        /// <param name="sorting">The way the result should be sorted</param>
         /// <returns></returns>
         public CallResult<BitfinexStats> GetStats(string symbol, StatKey key, StatSide side, StatSection section, Sorting? sorting = null) => GetStatsAsync(symbol, key, side, section, sorting).Result;
 
@@ -267,16 +276,18 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetLastCandleAsync"/> method
+        /// Get the last candle for a symbol
         /// </summary>
-        /// <returns></returns>
+        /// <param name="timeFrame">The time frame of the candle</param>
+        /// <param name="symbol">The symbol to get the candle for</param>
+        /// <returns>The last candle for the symbol</returns>
         public CallResult<BitfinexCandle> GetLastCandle(TimeFrame timeFrame, string symbol)
             => GetLastCandleAsync(timeFrame, symbol).Result;
 
         /// <summary>
         /// Get the last candle for a symbol
         /// </summary>
-        /// <param name="timeFrame">The timeframe of the candle</param>
+        /// <param name="timeFrame">The time frame of the candle</param>
         /// <param name="symbol">The symbol to get the candle for</param>
         /// <returns>The last candle for the symbol</returns>
         public async Task<CallResult<BitfinexCandle>> GetLastCandleAsync(TimeFrame timeFrame, string symbol)
@@ -287,8 +298,14 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetCandlesAsync"/> method
+        /// Gets candles for a symbol
         /// </summary>
+        /// <param name="timeFrame">The time frame of the candles</param>
+        /// <param name="symbol">The symbol to get the candles for</param>
+        /// <param name="limit">The amount of results</param>
+        /// <param name="startTime">The start time of the candles</param>
+        /// <param name="endTime">The end time of the candles</param>
+        /// <param name="sorting">The way the result is sorted</param>
         /// <returns></returns>
         public CallResult<BitfinexCandle[]> GetCandles(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null) 
             => GetCandlesAsync(timeFrame, symbol, limit, startTime, endTime, sorting).Result;
@@ -296,7 +313,7 @@ namespace Bitfinex.Net
         /// <summary>
         /// Gets candles for a symbol
         /// </summary>
-        /// <param name="timeFrame">The timeframe of the candles</param>
+        /// <param name="timeFrame">The time frame of the candles</param>
         /// <param name="symbol">The symbol to get the candles for</param>
         /// <param name="limit">The amount of results</param>
         /// <param name="startTime">The start time of the candles</param>
@@ -319,9 +336,13 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetMarketAveragePriceAsync"/> method
+        /// Calculate the average execution price
         /// </summary>
-        /// <returns></returns>
+        /// <param name="symbol">The symbol to calculate for</param>
+        /// <param name="amount">The amount to execute</param>
+        /// <param name="rateLimit">Limit to price</param>
+        /// <param name="period">Maximum period for margin funding</param>
+        /// <returns>The average price at which the execution would happen</returns>
         public CallResult<BitfinexMarketAveragePrice> GetMarketAveragePrice(string symbol, decimal amount, decimal rateLimit, int? period = null) => GetMarketAveragePriceAsync(symbol, amount, rateLimit, period).Result;
         
         /// <summary>
@@ -334,7 +355,7 @@ namespace Bitfinex.Net
         /// <returns>The average price at which the execution would happen</returns>
         public async Task<CallResult<BitfinexMarketAveragePrice>> GetMarketAveragePriceAsync(string symbol, decimal amount, decimal? rateLimit = null, int? period = null)
         {
-            var parameters = new Dictionary<string, object>()
+            var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },
                 { "amount", amount.ToString(CultureInfo.InvariantCulture) },
@@ -346,7 +367,7 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetWalletsAsync"/> method
+        /// Get all funds
         /// </summary>
         /// <returns></returns>
         public CallResult<BitfinexWallet[]> GetWallets() => GetWalletsAsync().Result;
@@ -361,7 +382,7 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetActiveOrdersAsync"/> method
+        /// Get the active orders
         /// </summary>
         /// <returns></returns>
         public CallResult<BitfinexOrder[]> GetActiveOrders() => GetActiveOrdersAsync().Result;
@@ -376,8 +397,12 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetOrderHistoryAsync"/> method
+        /// Get the order history for a symbol for this account
         /// </summary>
+        /// <param name="symbol">The symbol to get the history for</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
         public CallResult<BitfinexOrder[]> GetOrderHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetOrderHistoryAsync(symbol, startTime, endTime, limit).Result;
 
@@ -400,8 +425,10 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetTradesForOrderAsync"/> method
+        /// Get the individual trades for an order
         /// </summary>
+        /// <param name="symbol">The symbol of the order</param>
+        /// <param name="orderId">The order Id</param>
         /// <returns></returns>
         public CallResult<BitfinexTradeDetails[]> GetTradesForOrder(string symbol, long orderId) => GetTradesForOrderAsync(symbol, orderId).Result;
 
@@ -417,8 +444,12 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetTradeHistoryAsync"/> method
+        /// Get the trade history for a symbol
         /// </summary>
+        /// <param name="symbol">The symbol to get history for</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
         public CallResult<BitfinexTradeDetails[]> GetTradeHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetTradeHistoryAsync(symbol, startTime, endTime, limit).Result;
 
@@ -441,7 +472,7 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetActivePositionsAsync"/> method
+        /// Get the active positions
         /// </summary>
         /// <returns></returns>
         public CallResult<BitfinexPosition[]> GetActivePositions() => GetActivePositionsAsync().Result;
@@ -456,8 +487,9 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetActiveFundingOffersAsync"/> method
+        /// Get the active funding offers
         /// </summary>
+        /// <param name="symbol">The symbol to return the funding offer for</param>
         /// <returns></returns>
         public CallResult<BitfinexFundingOffer[]> GetActiveFundingOffers(string symbol) => GetActiveFundingOffersAsync(symbol).Result;
 
@@ -472,8 +504,12 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetFundingOfferHistoryAsync"/> method
+        /// Get the funding offer history
         /// </summary>
+        /// <param name="symbol">The symbol to get history for</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
         public CallResult<BitfinexFundingOffer[]> GetFundingOfferHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetFundingOfferHistoryAsync(symbol, startTime, endTime, limit).Result;
         
@@ -496,8 +532,9 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetFundingLoansAsync"/> method
+        /// Get the funding loans
         /// </summary>
+        /// <param name="symbol">The symbol to get the funding loans for</param>
         /// <returns></returns>
         public CallResult<BitfinexFundingLoan[]> GetFundingLoans(string symbol) => GetFundingLoansAsync(symbol).Result;
 
@@ -512,8 +549,12 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetFundingLoansHistoryAsync"/> method
+        /// Get the funding loan history
         /// </summary>
+        /// <param name="symbol">The symbol to get history for</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
         public CallResult<BitfinexFundingLoan[]> GetFundingLoansHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetFundingLoansHistoryAsync(symbol, startTime, endTime, limit).Result;
 
@@ -536,8 +577,9 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetFundingCreditsAsync"/> method
+        /// Get the funding credits
         /// </summary>
+        /// <param name="symbol">The symbol to get the funding credits for</param>
         /// <returns></returns>
         public CallResult<BitfinexFundingCredit[]> GetFundingCredits(string symbol) => GetFundingCreditsAsync(symbol).Result;
 
@@ -552,8 +594,12 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetFundingCreditsHistoryAsyncTask"/> method
+        /// Get the funding credits history
         /// </summary>
+        /// <param name="symbol">The symbol to get history for</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
         public CallResult<BitfinexFundingCredit[]> GetFundingCreditsHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetFundingCreditsHistoryAsyncTask(symbol, startTime, endTime, limit).Result;
 
@@ -576,8 +622,12 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetFundingTradesHistoryAsync"/> method
+        /// Get the funding trades history
         /// </summary>
+        /// <param name="symbol">The symbol to get history for</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
         public CallResult<BitfinexFundingTrade[]> GetFundingTradesHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetFundingTradesHistoryAsync(symbol, startTime, endTime, limit).Result;
 
@@ -600,7 +650,7 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetBaseMarginInfoAsync"/> method
+        /// Get the base margin info
         /// </summary>
         /// <returns></returns>
         public CallResult<BitfinexMarginBase> GetBaseMarginInfo() => GetBaseMarginInfoAsync().Result;
@@ -611,12 +661,13 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexMarginBase>> GetBaseMarginInfoAsync()
         {
-            return await ExecuteRequest<BitfinexMarginBase>(GetUrl(MaginInfoBaseEndpoint, ApiVersion2), Constants.PostMethod, null, true).ConfigureAwait(false);
+            return await ExecuteRequest<BitfinexMarginBase>(GetUrl(MarginInfoBaseEndpoint, ApiVersion2), Constants.PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetSymbolMarginInfoAsync"/> method
+        /// Get the margin info for a symbol
         /// </summary>
+        /// <param name="symbol">The symbol to get the info for</param>
         /// <returns></returns>
         public CallResult<BitfinexMarginSymbol> GetSymbolMarginInfo(string symbol) => GetSymbolMarginInfoAsync(symbol).Result;
 
@@ -627,12 +678,13 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexMarginSymbol>> GetSymbolMarginInfoAsync(string symbol)
         {
-            return await ExecuteRequest<BitfinexMarginSymbol>(GetUrl(FillPathParameter(MaginInfoSymbolEndpoint, symbol), ApiVersion2), Constants.PostMethod, null, true).ConfigureAwait(false);
+            return await ExecuteRequest<BitfinexMarginSymbol>(GetUrl(FillPathParameter(MarginInfoSymbolEndpoint, symbol), ApiVersion2), Constants.PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetFundingInfoAsync"/> method
+        /// Get funding info for a symbol
         /// </summary>
+        /// <param name="symbol">The symbol to get the info for</param>
         /// <returns></returns>
         public CallResult<BitfinexFundingInfo> GetFundingInfo(string symbol) => GetFundingInfoAsync(symbol).Result;
 
@@ -647,8 +699,9 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetMovementsAsync"/> method
+        /// Get the withdrawal/deposit history
         /// </summary>
+        /// <param name="symbol">Symbol to get history for</param>
         /// <returns></returns>
         public CallResult<BitfinexMovement[]> GetMovements(string symbol) => GetMovementsAsync(symbol).Result;
 
@@ -670,7 +723,7 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetAlertListAsync"/> method
+        /// Get the list of alerts
         /// </summary>
         /// <returns></returns>
         public CallResult<BitfinexAlert[]> GetAlertList() => GetAlertListAsync().Result;
@@ -690,8 +743,10 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="SetAlertAsync"/> method
+        /// Set an alert
         /// </summary>
+        /// <param name="symbol">The symbol to set the alert for</param>
+        /// <param name="price">The price to set the alert for</param>
         /// <returns></returns>
         public CallResult<BitfinexAlert> SetAlert(string symbol, decimal price) => SetAlertAsync(symbol, price).Result;
 
@@ -714,8 +769,10 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="DeleteAlertAsync"/> method
+        /// Delete an existing alert
         /// </summary>
+        /// <param name="symbol">The symbol of the alert to delete</param>
+        /// <param name="price">The price of the alert to delete</param>
         /// <returns></returns>
         public CallResult<BitfinexSuccessResult> DeleteAlert(string symbol, decimal price) => DeleteAlertAsync(symbol, price).Result;
 
@@ -733,7 +790,7 @@ namespace Bitfinex.Net
 
         #region Version1
         /// <summary>
-        /// Synchronized version of the <see cref="GetAccountInfoAsync"/> method
+        /// Get information about your account
         /// </summary>
         /// <returns></returns>
         public CallResult<BitfinexAccountInfo> GetAccountInfo() => GetAccountInfoAsync().Result;
@@ -749,7 +806,7 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetWithdrawalFeesAsync"/> method
+        /// Get withdrawal fees for this account
         /// </summary>
         /// <returns></returns>
         public CallResult<BitfinexWithdrawalFees> GetWithdrawalFees() => GetWithdrawalFeesAsync().Result;
@@ -764,8 +821,19 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="PlaceOrderAsync"/> method
+        /// Place a new order
         /// </summary>
+        /// <param name="symbol">Symbol to place order for</param>
+        /// <param name="side">Side of the order</param>
+        /// <param name="type">Type of the order</param>
+        /// <param name="amount">The amount of the order</param>
+        /// <param name="price">The price for the order</param>
+        /// <param name="hidden">If the order should be placed as hidden</param>
+        /// <param name="postOnly">If the only should only be placed if it isn't immediatly filled</param>
+        /// <param name="useAllAvailable">If all available funds should be used</param>
+        /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
+        /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
+        /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
         /// <returns></returns>
         public CallResult<BitfinexPlacedOrder> PlaceOrder(
             string symbol,
@@ -828,8 +896,9 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="CancelOrderAsync"/> method
+        /// Cancel a specific order
         /// </summary>
+        /// <param name="orderId">The id of the order to cancel</param>
         /// <returns></returns>
         public CallResult<BitfinexPlacedOrder> CancelOrder(long orderId) => CancelOrderAsync(orderId).Result;
 
@@ -849,7 +918,7 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="CancelAllOrdersAsync"/> method
+        /// Cancels all open orders
         /// </summary>
         /// <returns></returns>
         public CallResult<BitfinexResult> CancelAllOrders() => CancelAllOrdersAsync().Result;
@@ -864,8 +933,9 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetOrderAsync"/> method
+        /// Get the status of a specific order
         /// </summary>
+        /// <param name="orderId">The order id of the order to get</param>
         /// <returns></returns>
         public CallResult<BitfinexPlacedOrder> GetOrder(long orderId) => GetOrderAsync(orderId).Result;
 
@@ -885,8 +955,12 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="GetAvailableBalanceAsync"/> method
+        /// Calculates the available balance for a symbol at a specific rate
         /// </summary>
+        /// <param name="symbol">The symbol</param>
+        /// <param name="side">Buy or sell</param>
+        /// <param name="rate">The rate/price</param>
+        /// <param name="type">The wallet type</param>
         /// <returns></returns>
         public CallResult<BitfinexAvailableBalance> GetAvailableBalance(string symbol, OrderSide side, decimal rate, WalletType type) => GetAvailableBalanceAsync(symbol, side, rate, type).Result;
 
@@ -912,8 +986,31 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Synchronized version of the <see cref="WithdrawAsync"/> method
+        /// Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
+        /// All withdrawals need the withdrawType, wallet and amount parameters
+        /// CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
+        /// Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.
         /// </summary>
+        /// <param name="withdrawType">The type of funds to withdraw</param>
+        /// <param name="wallet">The wallet to withdraw from</param>
+        /// <param name="amount">The amount to withdraw</param>
+        /// <param name="address">The destination of the withdrawal</param>
+        /// <param name="accountNumber">The account number</param>
+        /// <param name="bankSwift">The SWIFT code of the bank</param>
+        /// <param name="bankName">The bank name</param>
+        /// <param name="bankAddress">The bank address</param>
+        /// <param name="bankCity">The bank city</param>
+        /// <param name="bankCountry">The bank country</param>
+        /// <param name="paymentDetails">Message for the receiver</param>
+        /// <param name="expressWire">Whether it is an express wire withdrawal</param>
+        /// <param name="intermediaryBankName">Intermediary bank name</param>
+        /// <param name="intermediaryBankAddress">Intermediary bank address</param>
+        /// <param name="intermediaryBankCity">Intermediary bank city</param>
+        /// <param name="intermediaryBankCountry">Intermediary bank country</param>
+        /// <param name="intermediaryBankAccount">Intermediary bank account</param>
+        /// <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
+        /// <param name="accountName">The name of the account</param>
+        /// <param name="paymentId">Hex string for Monero transaction</param>
         /// <returns></returns>
         public CallResult<BitfinexWithdrawalResult> Withdraw(WithdrawalType withdrawType,
                                                              WithdrawWallet wallet,
@@ -942,7 +1039,7 @@ namespace Bitfinex.Net
                                                                                     
 
         /// <summary>
-        /// Withdraw funds from Bitfinex, either to a cryptocurrency address or a bank account
+        /// Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
         /// All withdrawals need the withdrawType, wallet and amount parameters
         /// CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
         /// Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.

@@ -186,11 +186,13 @@ namespace Bitfinex.Net.Objects
         OrderNew,
         OrderNewRequest,
         OrderUpdate,
+        OrderUpdateRequest,
         OrderCancel,
         OrderCancelRequest,
+        OrderCancelMulti,
         OrderCancelMultiRequest,
 
-        TradesSnapshot,
+        TradeSnapshot,
         TradeExecuted,
         TradeExecutionUpdate,
 

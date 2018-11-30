@@ -14,20 +14,10 @@ namespace Bitfinex.Net.Objects
     public class BitfinexSocketClientOptions: SocketClientOptions
     {
         /// <summary>
-        /// The receive timeout after which a lost connection is assumed
+        /// The time to wait for a socket response
         /// </summary>
-        public TimeSpan SocketReceiveTimeout { get; set; } = TimeSpan.FromSeconds(20);
-
-        /// <summary>
-        /// The time to wait for a subscribe response
-        /// </summary>
-        public TimeSpan SubscribeResponseTimeout { get; set; } = TimeSpan.FromSeconds(15);
-
-        /// <summary>
-        /// The time to wait for an order confirmation
-        /// </summary>
-        public TimeSpan OrderActionConfirmationTimeout { get; set; } = TimeSpan.FromSeconds(30);
-
+        public TimeSpan SocketResponseTimeout { get; set; } = TimeSpan.FromSeconds(10);
+        
 
         public BitfinexSocketClientOptions()
         {
@@ -37,9 +27,7 @@ namespace Bitfinex.Net.Objects
         public BitfinexSocketClientOptions Copy()
         {
             var copy = Copy<BitfinexSocketClientOptions>();
-            copy.SocketReceiveTimeout = SocketReceiveTimeout;
-            copy.SubscribeResponseTimeout = SubscribeResponseTimeout;
-            copy.OrderActionConfirmationTimeout = OrderActionConfirmationTimeout;
+            copy.SocketResponseTimeout = SocketResponseTimeout;
             return copy;
         }
     }

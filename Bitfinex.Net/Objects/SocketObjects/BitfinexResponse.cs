@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Bitfinex.Net.Objects.SocketV2
+namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class BitfinexResponse
     {
