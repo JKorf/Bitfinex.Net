@@ -42,6 +42,7 @@ namespace Bitfinex.Net
         private const string OrderHistoryEndpoint = "auth/r/orders/{}/hist";
         private const string OrderTradesEndpoint = "auth/r/order/{}:{}/trades";
         private const string MyTradesEndpoint = "auth/r/trades/{}/hist";
+        private const string UserInfoEndpoint = "auth/r/info/user";
 
         private const string ActivePositionsEndpoint = "auth/r/positions";
         private const string ActiveFundingOffersEndpoint = "auth/r/funding/offers/{}";
@@ -1119,24 +1120,40 @@ namespace Bitfinex.Net
             return new CallResult<BitfinexWithdrawalResult>(result.Data[0], null);
         }
 
+        /// <summary>
+        /// Gets information about the user associated with the api key/secret
+        /// </summary>
+        /// <returns></returns>
+        public CallResult<BitfinexUserInfo> GetUserInfo() => GetUserInfoAsync().Result;
+
+        /// <summary>
+        /// Gets information about the user associated with the api key/secret
+        /// </summary>
+        /// <returns></returns>
+        public async Task<CallResult<BitfinexUserInfo>> GetUserInfoAsync()
+        {
+            return await ExecuteRequest<BitfinexUserInfo>(GetUrl(UserInfoEndpoint, ApiVersion2), Constants.PostMethod, signed:true).ConfigureAwait(false);
+        }
+
+
         #endregion
 
         #region private methods
-        protected override Error ParseErrorResponse(string data)
+
+        protected override Error ParseErrorResponse(JToken data)
         {
-            var token = JToken.Parse(data);
-            if (token is JArray)
+            if (data is JArray)
             {
-                var error = JArray.Parse(data).ToObject<BitfinexError>();
+                var error = data.ToObject<BitfinexError>();
                 return new ServerError(error.ErrorCode, error.ErrorMessage);
             }
 
-            return new ServerError(-1, token["message"].ToString());
+            return new ServerError(-1, data["message"].ToString());
         }
 
         private Uri GetUrl(string endpoint, string version)
         {
-            var result = $"{baseAddress}/v{version}/{endpoint}";
+            var result = $"{BaseAddress}/v{version}/{endpoint}";
             return new Uri(result);
         }
         #endregion
