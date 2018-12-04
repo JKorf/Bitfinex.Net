@@ -593,7 +593,14 @@ namespace Bitfinex.Net
                 // Use earlier created background socket to query without having to connect again
                 subscription.Events.Single(s => s.Name == DataEvent).Reset();
                 subscription.MessageHandlers[DataHandlerName] = (subs, data) => DataHandlerQuery((BitfinexSocketSubscription)subs, data, internalHandler);
-            }           
+            }
+
+            var bitfinexSubscription = (BitfinexSocketSubscription) subscription;
+            if (bitfinexSubscription.MaintenanceMode)
+            {
+                log.Write(LogVerbosity.Info, "Socket in maintenance mode, canceling query");
+                return new CallResult<T>(default(T), new ServerError("Socket in maintenance mode, try again after the socket is reconnected"));
+            }
 
             subscription.Request = request;
             var waitTask = subscription.WaitForEvent(DataEvent, request.Id, socketResponseTimeout);
@@ -699,7 +706,7 @@ namespace Bitfinex.Net
 
         private async Task<CallResult<BitfinexSocketSubscription>> CreateAndConnectSocket(Action<JToken> onMessage)
         {
-            var socket = CreateSocket(baseAddress);
+            var socket = CreateSocket(BaseAddress);
             var subscription = new BitfinexSocketSubscription(socket);
             subscription.MessageHandlers.Add(HeartbeatHandlerName, HeartbeatHandler);
             subscription.MessageHandlers.Add(DataHandlerName, (subs, data) => DataHandler(subs, data, onMessage));
@@ -717,7 +724,7 @@ namespace Bitfinex.Net
 
         private async Task<CallResult<BitfinexSocketSubscription>> CreateAndConnectSocketAuth(Action<BitfinexSocketEvent<JToken>> onMessage, bool subscribing)
         {
-            var socket = CreateSocket(baseAddress);
+            var socket = CreateSocket(BaseAddress);
             var subscription = new BitfinexSocketSubscription(socket);
             subscription.MessageHandlers.Add(HeartbeatHandlerName, HeartbeatHandler);
             if (subscribing)
@@ -747,6 +754,30 @@ namespace Bitfinex.Net
                 return false;
 
             log.Write(LogVerbosity.Debug, $"Info event received: {data}");
+            if (data["code"] == null)
+                return true;
+
+            int code = (int) data["code"];
+            switch (code)
+            {
+                case 20051:
+                    log.Write(LogVerbosity.Info, $"Code {code} received, reconnecting socket");
+                    subscription.Socket.Close(); // Closing it via socket will automatically reconnect
+                    break;
+                case 20060:
+                    log.Write(LogVerbosity.Info, $"Code {code} received, entering maintenance mode");
+                    ((BitfinexSocketSubscription) subscription).MaintenanceMode = true;
+                    break;
+                case 20061:
+                    log.Write(LogVerbosity.Info, $"Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
+                    ((BitfinexSocketSubscription)subscription).MaintenanceMode = false;
+                    subscription.Socket.Close(); // Closing it via socket will automatically reconnect
+                    break;
+                default:
+                    log.Write(LogVerbosity.Warning, $"Unknown info code received: {code}");
+                    break;
+            }
+
             return true;
         }
 
