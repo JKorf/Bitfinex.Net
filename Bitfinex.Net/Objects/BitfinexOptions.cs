@@ -17,7 +17,11 @@ namespace Bitfinex.Net.Objects
         /// The time to wait for a socket response
         /// </summary>
         public TimeSpan SocketResponseTimeout { get; set; } = TimeSpan.FromSeconds(10);
-        
+        /// <summary>
+        /// The time after which the connection is assumed to be dropped
+        /// </summary>
+        public TimeSpan SocketNoDataTimeout { get; set; } = TimeSpan.FromSeconds(30);
+
 
         public BitfinexSocketClientOptions()
         {
@@ -28,6 +32,7 @@ namespace Bitfinex.Net.Objects
         {
             var copy = Copy<BitfinexSocketClientOptions>();
             copy.SocketResponseTimeout = SocketResponseTimeout;
+            copy.SocketNoDataTimeout = SocketNoDataTimeout;
             return copy;
         }
     }

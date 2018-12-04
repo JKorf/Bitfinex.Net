@@ -41,6 +41,7 @@ namespace Bitfinex.Net
         }
 
         private TimeSpan socketResponseTimeout;
+        private TimeSpan socketNoDataTimeout;
 
         private const string HeartbeatHandlerName = "HeartbeatHandler";
         private const string InfoHandlerName = "InfoHandlerName";
@@ -707,6 +708,7 @@ namespace Bitfinex.Net
         private async Task<CallResult<BitfinexSocketSubscription>> CreateAndConnectSocket(Action<JToken> onMessage)
         {
             var socket = CreateSocket(BaseAddress);
+            socket.Timeout = socketNoDataTimeout;
             var subscription = new BitfinexSocketSubscription(socket);
             subscription.MessageHandlers.Add(HeartbeatHandlerName, HeartbeatHandler);
             subscription.MessageHandlers.Add(DataHandlerName, (subs, data) => DataHandler(subs, data, onMessage));
@@ -725,6 +727,7 @@ namespace Bitfinex.Net
         private async Task<CallResult<BitfinexSocketSubscription>> CreateAndConnectSocketAuth(Action<BitfinexSocketEvent<JToken>> onMessage, bool subscribing)
         {
             var socket = CreateSocket(BaseAddress);
+            socket.Timeout = socketNoDataTimeout;
             var subscription = new BitfinexSocketSubscription(socket);
             subscription.MessageHandlers.Add(HeartbeatHandlerName, HeartbeatHandler);
             if (subscribing)
@@ -1032,6 +1035,7 @@ namespace Bitfinex.Net
         private void Configure(BitfinexSocketClientOptions options)
         {
             socketResponseTimeout = options.SocketResponseTimeout;
+            socketNoDataTimeout = options.SocketNoDataTimeout;
         }
         #endregion
     }
