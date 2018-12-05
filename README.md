@@ -162,6 +162,11 @@ Console.ReadLine();
 
 
 ## Release notes
+* Version 2.0.0 - 05 dec 2018
+	* Updated to CryptoExchange.Net version 2
+		* Libraries now use the same standard functionalities
+		* Objects returned by socket subscriptions standardized across libraries
+
 * Version 1.2.6 - 30 okt 2018
 	* Fixed error message handling during subscription
 	* Fixed reconnect trying to resubscribe failed subscriptions
