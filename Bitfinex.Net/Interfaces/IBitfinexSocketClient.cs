@@ -238,6 +238,13 @@ namespace Bitfinex.Net.Interfaces
         /// </summary>
         /// <param name="orderId">The id of the order to cancel</param>
         /// <returns></returns>
+        CallResult<BitfinexOrder> CancelOrder(long orderId);
+
+        /// <summary>
+        /// Cancels an order
+        /// </summary>
+        /// <param name="orderId">The id of the order to cancel</param>
+        /// <returns></returns>
         Task<CallResult<BitfinexOrder>> CancelOrderAsync(long orderId);
 
         /// <summary>

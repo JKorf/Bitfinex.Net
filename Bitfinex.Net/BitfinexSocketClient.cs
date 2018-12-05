@@ -435,6 +435,13 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="orderId">The id of the order to cancel</param>
         /// <returns></returns>
+        public CallResult<BitfinexOrder> CancelOrder(long orderId) => CancelOrderAsync(orderId).Result;
+
+        /// <summary>
+        /// Cancels an order
+        /// </summary>
+        /// <param name="orderId">The id of the order to cancel</param>
+        /// <returns></returns>
         public async Task<CallResult<BitfinexOrder>> CancelOrderAsync(long orderId)
         {
             log.Write(LogVerbosity.Info, "Going to cancel order " + orderId);
@@ -964,31 +971,19 @@ namespace Bitfinex.Net
                 return false;
             }
 
-            if (request.QueryType != eventType)
-                return false;
-
-            var objData = (JArray)data[2];
-            JToken resultData = null;
-            if (eventType == BitfinexEventType.OrderNew)
+            if (eventType == BitfinexEventType.OrderNew
+                || eventType == BitfinexEventType.OrderUpdate
+                || eventType == BitfinexEventType.OrderCancel)
             {
-                if ((string)objData[2] != request.Id)
+                var orderData = (JArray)data[2];
+                if ((string)orderData[2] != request.Id && (string)orderData[0] != request.Id)
                     return false;
 
-                resultData = data[2];
+                var resultEvnt = new BitfinexSocketEvent<JToken> { EventType = eventType, Data = orderData };
+                handler(resultEvnt);
+                subscription.SetEventByName(DataEvent, true, null);
             }
 
-            if (eventType == BitfinexEventType.OrderCancel
-             || eventType == BitfinexEventType.OrderUpdate)
-            {
-                if ((string)objData[0] != request.Id)
-                    return false;
-
-                resultData = data[2];
-            }
-
-            var result = new BitfinexSocketEvent<JToken> {EventType = eventType, Data = resultData};
-            handler(result);
-            subscription.SetEventByName(DataEvent, true, null);
             return true;
         }
 
