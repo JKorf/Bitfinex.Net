@@ -107,6 +107,18 @@ using(var client = new BitfinexClient())
 ## Options & Authentication
 The default behavior of the clients can be changed by providing options to the constructor, or using the `SetDefaultOptions` before creating a new client to set options for all new clients. Api credentials can be provided in the options.
 
+## Websockets
+The Bitfinex.Net socket client provides several socket endpoint to which can be subscribed and follow this function structure
+
+```C#
+var client = new BitfinexSocketClient();
+
+var subscribeResult = client.SubscribeToTickerUpdates("tBTCETH", data =>
+{
+	// handle data
+});
+```
+
 **Handling socket events**
 
 Subscribing to a socket stream returns a UpdateSubscription object. This object can be used to be notified when a socket is disconnected or reconnected:
