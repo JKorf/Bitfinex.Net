@@ -12,6 +12,7 @@ using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Linq;
+using Bitfinex.Net.UnitTests.TestImplementations;
 using CryptoExchange.Net.Objects;
 
 namespace Bitfinex.Net.UnitTests
@@ -28,21 +29,21 @@ namespace Bitfinex.Net.UnitTests
                 Status = PlatformStatus.Operative
             };
 
-            var objects = TestHelpers.PrepareClient(() => Construct(), JsonConvert.SerializeObject(new object[] { (int)expected.Status }));
+            var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = objects.Client.GetPlatformStatus();
+            var result = client.GetPlatformStatus();
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, result.Data));
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [TestCase]
         public void GetTicker_Should_RespondWithPrices()
         {
             // arrange
-            var expected = new []
+            var expected = new[]
             {
                 new BitfinexMarketOverviewRest()
                 {
@@ -60,14 +61,14 @@ namespace Bitfinex.Net.UnitTests
                 }
             };
 
-            var objects = TestHelpers.PrepareClient(() => Construct(), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = objects.Client.GetTicker("Test");
+            var result = client.GetTicker("Test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
         }
 
         [TestCase]
@@ -92,15 +93,15 @@ namespace Bitfinex.Net.UnitTests
                 }
             };
 
-            var objects = TestHelpers.PrepareClient(() => Construct(), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = objects.Client.GetTrades("Test");
+            var result = client.GetTrades("Test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -123,15 +124,15 @@ namespace Bitfinex.Net.UnitTests
                 }
             };
 
-            var objects = TestHelpers.PrepareClient(() => Construct(), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = objects.Client.GetOrderBook("Test", Precision.PrecisionLevel0);
+            var result = client.GetOrderBook("Test", Precision.PrecisionLevel0);
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -141,18 +142,18 @@ namespace Bitfinex.Net.UnitTests
             var expected =
                 new BitfinexStats()
                 {
-                    Timestamp = new DateTime(2017, 1 ,1),
+                    Timestamp = new DateTime(2017, 1, 1),
                     Value = 0.1m
                 };
 
-            var objects = TestHelpers.PrepareClient(() => Construct(), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = objects.Client.GetStats("test", StatKey.ActiveFundingInPositions, StatSide.Long, StatSection.History);
+            var result = client.GetStats("test", StatKey.ActiveFundingInPositions, StatSide.Long, StatSection.History);
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, result.Data));
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [TestCase]
@@ -170,14 +171,14 @@ namespace Bitfinex.Net.UnitTests
                     Open = 0.5m
                 };
 
-            var objects = TestHelpers.PrepareClient(() => Construct(), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = objects.Client.GetLastCandle(TimeFrame.FiveMinute, "test");
+            var result = client.GetLastCandle(TimeFrame.FiveMinute, "test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, result.Data));
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [TestCase]
@@ -205,15 +206,15 @@ namespace Bitfinex.Net.UnitTests
                     Open = 1.1m
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = objects.Client.GetCandles(TimeFrame.FiveMinute, "test");
+            var result = client.GetCandles(TimeFrame.FiveMinute, "test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -227,14 +228,14 @@ namespace Bitfinex.Net.UnitTests
                     AverageRate = 0.2m
                 };
 
-            var objects = TestHelpers.PrepareClient(() => Construct(), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = objects.Client.GetMarketAveragePrice("test", 0.1m, 0.2m);
+            var result = client.GetMarketAveragePrice("test", 0.1m, 0.2m);
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, result.Data));
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [TestCase]
@@ -260,18 +261,15 @@ namespace Bitfinex.Net.UnitTests
                     UnsettledInterest = 0.6m
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetWallets();
+            var result = client.GetWallets();
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -327,23 +325,16 @@ namespace Bitfinex.Net.UnitTests
                     TypePrevious = null
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected
-                //new object[]{
-                //    new object[] { 1, null, 2, "test", GetTimestamp(new DateTime(2017,1,1)), GetTimestamp(new DateTime(2017,1,1)), 0.1m, 0.3m, "EXCHANGE FOK", null, null, null, 0, "ACTIVE", null, null, 0.2m, 0.4m, 0.5m, 0, null, null, null, 0, 0, 3 },
-                //    new object[] { 4, null, 5, "test", GetTimestamp(new DateTime(2016,1,1)), GetTimestamp(new DateTime(2016,1,1)), 0.6m, 0.8m, "LIMIT", null, null, null, 0, "ACTIVE", null, null, 0.7m, 0.9m, 1.1m, 0, null, null, null, 0, 0, 6 },
-                //}
-                ));
+
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetActiveOrders();
+            var result = client.GetActiveOrders();
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -381,18 +372,15 @@ namespace Bitfinex.Net.UnitTests
                     Pair = "TEST"
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetTradesForOrder("TEST", 1);
+            var result = client.GetTradesForOrder("TEST", 1);
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -428,18 +416,15 @@ namespace Bitfinex.Net.UnitTests
                     ProfitLossPercentage = 1.5m
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetActivePositions();
+            var result = client.GetActivePositions();
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -487,20 +472,17 @@ namespace Bitfinex.Net.UnitTests
                     Renew = true
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetActiveFundingOffers("Test");
+            var result = client.GetActiveFundingOffers("Test");
 
             // assert
             result.Data[1].Status = OrderStatus.PartiallyFilled;
             result.Data[1].StatusString = "INSUFFICIENT BALANCE (G1) was: ACTIVE (note:POSCLOSE), PARTIALLY FILLED @ 6123.96104092(-0.07139999)";
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -552,18 +534,15 @@ namespace Bitfinex.Net.UnitTests
                     TimestampOpened = new DateTime(2016,1,1)
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetFundingLoans("Test");
+            var result = client.GetFundingLoans("Test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -617,18 +596,15 @@ namespace Bitfinex.Net.UnitTests
                     PositionPair = "Test"
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetFundingCredits("Test");
+            var result = client.GetFundingCredits("Test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -660,18 +636,15 @@ namespace Bitfinex.Net.UnitTests
                     OfferId = 6
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetFundingTradesHistory("Test");
+            var result = client.GetFundingTradesHistory("Test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }
 
         [TestCase]
@@ -689,17 +662,14 @@ namespace Bitfinex.Net.UnitTests
                     UserSwapsAmount = 0.4m
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetBaseMarginInfo();
+            var result = client.GetBaseMarginInfo();
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, result.Data));
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [TestCase]
@@ -717,17 +687,14 @@ namespace Bitfinex.Net.UnitTests
                     TradeableBalance = 0.4m
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetSymbolMarginInfo("test");
+            var result = client.GetSymbolMarginInfo("test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, result.Data));
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [TestCase]
@@ -746,17 +713,14 @@ namespace Bitfinex.Net.UnitTests
                     YieldLoan = 0.4m
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetFundingInfo("test");
+            var result = client.GetFundingInfo("test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, result.Data));
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [TestCase]
@@ -779,17 +743,14 @@ namespace Bitfinex.Net.UnitTests
                     Updated = new DateTime(2017, 1, 1)
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetMovements("test");
+            var result = client.GetMovements("test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
         }
 
         [TestCase]
@@ -807,17 +768,14 @@ namespace Bitfinex.Net.UnitTests
                     T = 0.2m
                 }
             };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetAlertList();
+            var result = client.GetAlertList();
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
         }
 
         [TestCase]
@@ -833,17 +791,14 @@ namespace Bitfinex.Net.UnitTests
                     Symbol = "symbol",
                     T = 0.2m
                 };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.SetAlert("symbol", 0.1m);
+            var result = client.SetAlert("symbol", 0.1m);
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, result.Data));
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [TestCase]
@@ -855,17 +810,14 @@ namespace Bitfinex.Net.UnitTests
                 {
                     Success = true
                 };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.DeleteAlert("symbol", 0.1m);
+            var result = client.DeleteAlert("symbol", 0.1m);
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, result.Data));
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [TestCase]
@@ -887,18 +839,15 @@ namespace Bitfinex.Net.UnitTests
                         }
                     }
                 };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(new[] { expected }));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(new [] {expected});
 
             // act
-            var result = objects.Client.GetAccountInfo();
+            var result = client.GetAccountInfo();
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, result.Data, "Fees"));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Fees[0], result.Data.Fees[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data, "Fees"));
+            Assert.IsTrue(TestHelpers.AreEqual(expected.Fees[0], result.Data.Fees[0]));
         }
 
         [TestCase]
@@ -914,35 +863,16 @@ namespace Bitfinex.Net.UnitTests
                         { "ETH", 0.2m },
                     }
                 };
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }), JsonConvert.SerializeObject(expected));
+            var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = objects.Client.GetWithdrawalFees();
+            var result = client.GetWithdrawalFees();
 
             // assert
             Assert.AreEqual(true, result.Success);
             Assert.AreEqual(expected.Withdraw["BTC"], result.Data.Withdraw["BTC"]);
             Assert.AreEqual(expected.Withdraw["ETH"], result.Data.Withdraw["ETH"]);
         }
-
-        [TestCase()]
-        public void ReceivingBitfinexError_Should_ReturnBitfinexErrorAndNotSuccess()
-        {
-            // arrange
-            var client = TestHelpers.PrepareExceptionClient<BitfinexClient>(JsonConvert.SerializeObject(new ArgumentError("TestMessage")), "504 error", 504);
-
-            // act
-            var result = client.GetCandles(TimeFrame.FiveMinute, "Test");
-
-            // assert
-            Assert.IsFalse(result.Success);
-            Assert.IsNotNull(result.Error);
-            Assert.IsTrue(result.Error.Message.Contains("504 error"));
-        }
-
 
         [Test]
         public void ProvidingApiCredentials_Should_SaveApiCredentials()
@@ -973,44 +903,32 @@ namespace Bitfinex.Net.UnitTests
         public void MakingAuthv2Call_Should_SendAuthHeaders()
         {
             // arrange
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("TestKey", "TestSecret")
-            }), "");
+            var client = TestHelpers.CreateClient(new BitfinexClientOptions(){ ApiCredentials = new ApiCredentials("TestKey", "t")});
+            var request = TestHelpers.SetResponse((RestClient)client, "{}");
 
             // act
-            objects.Client.GetActiveOrders();
+            client.GetActiveOrders();
 
             // assert
-            Assert.IsTrue(objects.Request.Object.Headers.AllKeys.Contains("bfx-nonce"));
-            Assert.IsTrue(objects.Request.Object.Headers.AllKeys.Contains("bfx-signature"));
-            objects.Request.Object.Headers["bfx-apikey"] = "TestKey";
+            Assert.IsTrue(request.Headers.AllKeys.Contains("bfx-nonce"));
+            Assert.IsTrue(request.Headers.AllKeys.Contains("bfx-signature"));
+            Assert.IsTrue(request.Headers["bfx-apikey"] == "TestKey");
         }
 
         [Test]
         public void MakingAuthv1Call_Should_SendAuthHeaders()
         {
             // arrange
-            var objects = TestHelpers.PrepareClient(() => Construct(new BitfinexClientOptions()
-            {
-                ApiCredentials = new ApiCredentials("TestKey", "TestSecret")
-            }), "");
+            var client = TestHelpers.CreateClient(new BitfinexClientOptions() { ApiCredentials = new ApiCredentials("TestKey", "t") });
+            var request = TestHelpers.SetResponse((RestClient)client, "{}");
 
             // act
-            objects.Client.GetAccountInfo();
+            client.GetAccountInfo();
 
             // assert
-            Assert.IsTrue(objects.Request.Object.Headers.AllKeys.Contains("X-BFX-SIGNATURE"));
-            Assert.IsTrue(objects.Request.Object.Headers.AllKeys.Contains("X-BFX-PAYLOAD"));
-            objects.Request.Object.Headers["X-BFX-APIKEY"] = "TestKey";
-        }
-
-
-        private BitfinexClient Construct(BitfinexClientOptions options = null)
-        {
-            if (options != null)
-                return new BitfinexClient(options);
-            return new BitfinexClient();
+            Assert.IsTrue(request.Headers.AllKeys.Contains("X-BFX-SIGNATURE"));
+            Assert.IsTrue(request.Headers.AllKeys.Contains("X-BFX-PAYLOAD"));
+            Assert.IsTrue(request.Headers["X-BFX-APIKEY"] == "TestKey");
         }
     }
 }

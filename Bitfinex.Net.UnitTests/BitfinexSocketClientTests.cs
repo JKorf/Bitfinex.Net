@@ -11,6 +11,8 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Binance.Net.UnitTests.TestImplementations;
+using Bitfinex.Net.UnitTests.TestImplementations;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Logging;
 
@@ -19,73 +21,58 @@ namespace Bitfinex.Net.UnitTests
     [TestFixture]
     public class BitfinexSocketClientTests
     {
-        [TestCase()]
-        public void CallingStart_Should_ConnectWebsocket()
-        {
-            // arrange
-            var client = TestHelpers.PrepareSocketClient(() => Construct());
+        //        [TestCase()]
+        //        public void CallingStop_Should_DisconnectWebsocket()
+        //        {
+        //            // arrange
+        //            var client = TestHelpers.PrepareSocketClient(() => Construct());
 
-            // act
-            var waitTask = TestHelpers.WaitForConnect(client);
-            var result = client.Start();
+        //            // act
+        //            var result = client.Start();
+        //            var waitTask = TestHelpers.WaitForClose(client);
+        //            client.Stop();
 
-            // assert
-            Assert.IsTrue(result);
-            Assert.IsTrue(waitTask.Result);
-        }
+        //            // assert
+        //            Assert.IsTrue(result);
+        //            Assert.IsTrue(waitTask.Result);
+        //        }
 
-        [TestCase()]
-        public void CallingStop_Should_DisconnectWebsocket()
-        {
-            // arrange
-            var client = TestHelpers.PrepareSocketClient(() => Construct());
+        //        [TestCase()]
+        //        public void CallingPlaceOrderWithoutStarting_Should_FailAndGiveError()
+        //        {
+        //            // arrange
+        //            var client = TestHelpers.PrepareSocketClient(() => Construct());
 
-            // act
-            var result = client.Start();
-            var waitTask = TestHelpers.WaitForClose(client);
-            client.Stop();
+        //            // act
+        //            var result = client.PlaceOrder(OrderType.Stop, "Test", 1);
 
-            // assert
-            Assert.IsTrue(result);
-            Assert.IsTrue(waitTask.Result);
-        }
+        //            // assert
+        //            Assert.IsFalse(result.Success);
+        //        }
 
-        [TestCase()]
-        public void CallingPlaceOrderWithoutStarting_Should_FailAndGiveError()
-        {
-            // arrange
-            var client = TestHelpers.PrepareSocketClient(() => Construct());
+        //        [TestCase()]
+        //        public void NotReceivingSubResponse_Should_ResultInError()
+        //        {
+        //            // Arrange
+        //            var sb = new StringWriter(new StringBuilder());
+        //            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
+        //            {
+        //                LogVerbosity = LogVerbosity.Debug,
+        //                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
+        //                SubscribeResponseTimeout = TimeSpan.FromMilliseconds(100),
+        //                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
+        //            }));
+        //            client.Start();
 
-            // act
-            var result = client.PlaceOrder(OrderType.Stop, "Test", 1);
+        //            // Act
+        //            var result = client.SubscribeToBookUpdates("Test", Precision.PrecisionLevel0, Frequency.Realtime, 10, data => { });
+        //            result.Wait();
 
-            // assert
-            Assert.IsFalse(result.Success);
-        }
+        //            // assert
+        //            Assert.IsFalse(result.Result.Success);
 
-        [TestCase()]
-        public void NotReceivingSubResponse_Should_ResultInError()
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                SubscribeResponseTimeout = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
-            client.Start();
-
-            // Act
-            var result = client.SubscribeToBookUpdates("Test", Precision.PrecisionLevel0, Frequency.Realtime, 10, data => { });
-            result.Wait();
-
-            // assert
-            Assert.IsFalse(result.Result.Success);
-
-            client.Stop();
-        }
+        //            client.Stop();
+        //        }
 
         [TestCase(Precision.PrecisionLevel0, Frequency.Realtime)]
         [TestCase(Precision.PrecisionLevel1, Frequency.Realtime)]
@@ -97,19 +84,15 @@ namespace Bitfinex.Net.UnitTests
         [TestCase(Precision.PrecisionLevel3, Frequency.TwoSeconds)]
         public void SubscribingToBookUpdates_Should_SubscribeSuccessfully(Precision prec, Frequency freq)
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
-            client.Start();
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateSocketClient(socket);
 
-            // act
-            var result = client.SubscribeToBookUpdates("Test", prec, freq, 10, data => { });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new BookSubscriptionResponse()
+            BitfinexOrderBookEntry[] result;
+            var subTask = client.SubscribeToBookUpdatesAsync("Test", prec, freq, 10, data => result = data);
+
+            var subResponse = new BookSubscriptionResponse()
             {
                 Channel = "book",
                 Event = "subscribed",
@@ -119,13 +102,15 @@ namespace Bitfinex.Net.UnitTests
                 Pair = "Test",
                 Precision = JsonConvert.SerializeObject(prec, new PrecisionConverter(false)),
                 Symbol = "Test"
-            }));
-            result.Wait();
+            };
+
+            // act
+            socket.InvokeMessage(subResponse);
+
+            subTask.Wait(5000);
 
             // assert
-            Assert.IsTrue(result.Result.Success);
-
-            client.Stop();
+            Assert.IsTrue(subTask.Result.Success);
         }
 
         [TestCase(Precision.PrecisionLevel0, Frequency.Realtime)]
@@ -138,24 +123,15 @@ namespace Bitfinex.Net.UnitTests
         [TestCase(Precision.PrecisionLevel3, Frequency.TwoSeconds)]
         public void SubscribingToBookUpdates_Should_TriggerWithBookUpdate(Precision prec, Frequency freq)
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
-            client.Start();
-            BitfinexOrderBookEntry[] expected = new[] { new BitfinexOrderBookEntry() };
-            BitfinexOrderBookEntry[] actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-            var sub = client.SubscribeToBookUpdates("Test", prec, freq, 10, data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new BookSubscriptionResponse()
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateSocketClient(socket);
+
+            BitfinexOrderBookEntry[] result = null;
+            var subTask = client.SubscribeToBookUpdatesAsync("Test", prec, freq, 10, data => result = data);
+
+            var subResponse = new BookSubscriptionResponse()
             {
                 Channel = "book",
                 Event = "subscribed",
@@ -165,17 +141,16 @@ namespace Bitfinex.Net.UnitTests
                 Pair = "Test",
                 Precision = JsonConvert.SerializeObject(prec, new PrecisionConverter(false)),
                 Symbol = "Test"
-            }));
-            sub.Wait();
+            };
+            socket.InvokeMessage(subResponse);
+            subTask.Wait(5000);
+            BitfinexOrderBookEntry[] expected = new[] { new BitfinexOrderBookEntry() };
 
             // act
-            TestHelpers.InvokeWebsocket(client, $"[1, {JsonConvert.SerializeObject(expected)}]");
-            evnt.WaitOne(1000);
+            socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], actual[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
         }
 
         [TestCase(TimeFrame.OneMinute)]
@@ -192,32 +167,28 @@ namespace Bitfinex.Net.UnitTests
         public void SubscribingToCandleUpdates_Should_SubscribeSuccessfully(TimeFrame timeframe)
         {
             // arrange
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
-            client.Start();
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateSocketClient(socket);
 
-            // act
-            var result = client.SubscribeToCandleUpdates("Test", timeframe, data => { });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new CandleSubscriptionResponse()
+            var subTask = client.SubscribeToCandleUpdatesAsync("Test", timeframe, data => { });
+
+            var subResponse = new CandleSubscriptionResponse()
             {
                 Channel = "candles",
                 Event = "subscribed",
                 ChannelId = 1,
                 Symbol = "Test",
                 Key = "trade:" + JsonConvert.SerializeObject(timeframe, new TimeFrameConverter(false)) + ":Test"
-            }));
-            result.Wait();
+            };
+
+            // act
+            socket.InvokeMessage(subResponse);
+
+            subTask.Wait(5000);
 
             // assert
-            Assert.IsTrue(result.Result.Success);
-
-            client.Stop();
+            Assert.IsTrue(subTask.Result.Success);
         }
 
         [TestCase(TimeFrame.OneMinute)]
@@ -234,130 +205,101 @@ namespace Bitfinex.Net.UnitTests
         public void SubscribingToCandleUpdates_Should_TriggerWithCandleUpdate(TimeFrame timeframe)
         {
             // arrange
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
-            client.Start();
-            BitfinexCandle[] expected = new[] { new BitfinexCandle() };
-            BitfinexCandle[] actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-            var sub = client.SubscribeToCandleUpdates("Test", timeframe, data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new CandleSubscriptionResponse()
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateSocketClient(socket);
+
+            BitfinexCandle[] result = null;
+            var subTask = client.SubscribeToCandleUpdatesAsync("Test", timeframe, data => result = data);
+
+            var subResponse = new CandleSubscriptionResponse()
             {
                 Channel = "candles",
                 Event = "subscribed",
                 ChannelId = 1,
                 Symbol = "Test",
                 Key = "trade:" + JsonConvert.SerializeObject(timeframe, new TimeFrameConverter(false)) + ":Test"
-            }));
-            sub.Wait();
+            };
+            socket.InvokeMessage(subResponse);
+            subTask.Wait(5000);
+            BitfinexCandle[] expected = new[] { new BitfinexCandle() };
 
             // act
-            TestHelpers.InvokeWebsocket(client, $"[1, {JsonConvert.SerializeObject(expected)}]");
-            evnt.WaitOne(1000);
+            socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], actual[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
         }
 
         [Test]
         public void SubscribingToTickerUpdates_Should_SubscribeSuccessfully()
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
-            client.Start();
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateSocketClient(socket);
 
-            // act
-            var result = client.SubscribeToTickerUpdates("Test", data => { });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new TickerSubscriptionResponse()
+            var subTask = client.SubscribeToTickerUpdatesAsync("Test", data => { });
+
+            var subResponse = new TickerSubscriptionResponse()
             {
                 Channel = "ticker",
                 Event = "subscribed",
                 ChannelId = 1,
                 Symbol = "Test",
                 Pair = "Test"
-            }));
-            result.Wait();
+            };
+
+            // act
+            socket.InvokeMessage(subResponse);
+
+            subTask.Wait(5000);
 
             // assert
-            Assert.IsTrue(result.Result.Success);
-
-            client.Stop();
+            Assert.IsTrue(subTask.Result.Success);
         }
 
         [Test]
         public void SubscribingToTickerUpdates_Should_TriggerWithTickerUpdate()
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
-            client.Start();
-            BitfinexMarketOverview[] expected = new[] { new BitfinexMarketOverview() };
-            BitfinexMarketOverview[] actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-            var sub = client.SubscribeToTickerUpdates("Test", data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new TickerSubscriptionResponse()
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateSocketClient(socket);
+
+            BitfinexMarketOverview result = null;
+            var subTask = client.SubscribeToTickerUpdatesAsync("Test", data => result = data);
+
+            var subResponse = new TickerSubscriptionResponse()
             {
                 Channel = "ticker",
                 Event = "subscribed",
                 ChannelId = 1,
                 Symbol = "Test",
                 Pair = "Test"
-            }));
-            sub.Wait();
+            };
+            socket.InvokeMessage(subResponse);
+            subTask.Wait(5000);
+            BitfinexMarketOverview expected = new BitfinexMarketOverview();
 
             // act
-            TestHelpers.InvokeWebsocket(client, $"[1, {JsonConvert.SerializeObject(expected)}]");
-            evnt.WaitOne(1000);
+            socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], actual[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result, expected));
         }
 
         [Test]
         public void SubscribingToRawBookUpdates_Should_SubscribeSuccessfully()
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
-            client.Start();
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateSocketClient(socket);
 
-            // act
-            var result = client.SubscribeToRawBookUpdates("Test", 10, data => { });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new BookSubscriptionResponse()
+            var subTask = client.SubscribeToRawBookUpdatesAsync("Test", 10, data => { });
+
+            var subResponse = new BookSubscriptionResponse()
             {
                 Channel = "book",
                 Event = "subscribed",
@@ -367,36 +309,29 @@ namespace Bitfinex.Net.UnitTests
                 Frequency = "F0",
                 Precision = "R0",
                 Length = 10
-            }));
-            result.Wait();
+            };
+
+            // act
+            socket.InvokeMessage(subResponse);
+
+            subTask.Wait(5000);
 
             // assert
-            Assert.IsTrue(result.Result.Success);
-
-            client.Stop();
+            Assert.IsTrue(subTask.Result.Success);
         }
 
         [Test]
         public void SubscribingToRawBookUpdates_Should_TriggerWithRawBookUpdate()
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
-            client.Start();
-            BitfinexRawOrderBookEntry[] expected = new[] { new BitfinexRawOrderBookEntry() };
-            BitfinexRawOrderBookEntry[] actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-            var sub = client.SubscribeToRawBookUpdates("Test", 10, data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new BookSubscriptionResponse()
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateSocketClient(socket);
+
+            BitfinexRawOrderBookEntry[] result = null;
+            var subTask = client.SubscribeToRawBookUpdatesAsync("Test", 10, data => result = data);
+
+            var subResponse = new BookSubscriptionResponse()
             {
                 Channel = "book",
                 Event = "subscribed",
@@ -406,1089 +341,444 @@ namespace Bitfinex.Net.UnitTests
                 Frequency = "F0",
                 Precision = "R0",
                 Length = 10
-            }));
-            sub.Wait();
+            };
+            socket.InvokeMessage(subResponse);
+            subTask.Wait(5000);
+            BitfinexRawOrderBookEntry[] expected = new []{ new BitfinexRawOrderBookEntry()};
 
             // act
-            TestHelpers.InvokeWebsocket(client, $"[1, {JsonConvert.SerializeObject(expected)}]");
-            evnt.WaitOne(1000);
+            socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected[0], actual[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
         }
 
         [Test]
         public void SubscribingToTradeUpdates_Should_SubscribeSuccessfully()
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
-            client.Start();
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateSocketClient(socket);
 
-            // act
-            var result = client.SubscribeToTradeUpdates("Test", data => { });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new TradesSubscriptionResponse()
+            var subTask = client.SubscribeToTradeUpdatesAsync("Test", data => { });
+
+            var subResponse = new TradesSubscriptionResponse()
             {
                 Channel = "trades",
                 Event = "subscribed",
                 ChannelId = 1,
                 Symbol = "Test",
                 Pair = "Test"
-            }));
-            result.Wait();
+            };
+
+            // act
+            socket.InvokeMessage(subResponse);
+
+            subTask.Wait(5000);
 
             // assert
-            Assert.IsTrue(result.Result.Success);
-
-            client.Stop();
+            Assert.IsTrue(subTask.Result.Success);
         }
 
         [Test]
         public void SubscribingToTradeUpdates_Should_TriggerWithTradeUpdate()
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-            }));
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateSocketClient(socket);
 
-            client.Start();
-            BitfinexSocketEvent<BitfinexTradeSimple[]> expected = new BitfinexSocketEvent<BitfinexTradeSimple[]>(BitfinexEventType.TradesSnapshot, new [] { new BitfinexTradeSimple() });
-            BitfinexSocketEvent<BitfinexTradeSimple[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-            var sub = client.SubscribeToTradeUpdates("Test", data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new TradesSubscriptionResponse()
+            BitfinexTradeSimple[] result = null;
+            var subTask = client.SubscribeToTradeUpdatesAsync("Test", data => result = data);
+
+            var subResponse = new TradesSubscriptionResponse()
             {
                 Channel = "trades",
                 Event = "subscribed",
                 ChannelId = 1,
                 Symbol = "Test",
                 Pair = "Test"
-            }));
-            sub.Wait();
+            };
+            socket.InvokeMessage(subResponse);
+            subTask.Wait(5000);
+            BitfinexTradeSimple[] expected = new[] { new BitfinexTradeSimple() };
 
             // act
-            TestHelpers.InvokeWebsocket(client, $"[1, {JsonConvert.SerializeObject(expected.Data)}]");
-            evnt.WaitOne(1000);
+            socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, actual, "Data"));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data[0], actual.Data[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
         }
-
+        
         [TestCase("ou", BitfinexEventType.OrderUpdate)]
         [TestCase("on", BitfinexEventType.OrderNew)]
         [TestCase("oc", BitfinexEventType.OrderCancel)]
-        public void SubscribingToOrderUpdates_Should_TriggerWithOrderUpdate(string updateType, BitfinexEventType eventType)
+        [TestCase("os", BitfinexEventType.OrderSnapshot, false)]
+        public void SubscribingToOrderUpdates_Should_TriggerWithOrderUpdate(string updateType, BitfinexEventType eventType, bool single=true)
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
+
+            var rstEvent = new ManualResetEvent(false);
+            BitfinexSocketEvent<BitfinexOrder[]> result = null;
+            var expected = new BitfinexSocketEvent<BitfinexOrder[]>(eventType, new [] { new BitfinexOrder() { StatusString = "ACTIVE" }});
+            client.SubscribeToTradingUpdatesAsync(data =>
             {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexOrder>(eventType, new BitfinexOrder() { StatusString = "ACTIVE" });
-            BitfinexSocketEvent<BitfinexOrder[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
+                result = data;
+                rstEvent.Set();
+            }, null, null);
 
             // act
-            var result = client.SubscribeToOrderUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, updateType, new BitfinexOrder() }));
-            evnt.WaitOne(1000);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(single ? new object[] {0, updateType, new BitfinexOrder()} : new object[] {0, updateType, new[] {new BitfinexOrder()}});
+            rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data, actual.Data[0]));
-
-            client.Stop();
-        }
-
-        [Test]
-        public void SubscribingToOrderUpdates_Should_TriggerWithOrderSnapshot()
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexOrder[]>(BitfinexEventType.OrderSnapshot, new[] { new BitfinexOrder() { StatusString = "ACTIVE" } });
-            BitfinexSocketEvent<BitfinexOrder[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-
-            // act
-            var result = client.SubscribeToOrderUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, "os", new[] { new BitfinexOrder() } }));
-            evnt.WaitOne(1000);
-
-            // assert
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected, actual, "Data"));
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data[0], actual.Data[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
         }
 
         [TestCase("te", BitfinexEventType.TradeExecuted)]
         [TestCase("tu", BitfinexEventType.TradeExecutionUpdate)]
-        public void SubscribingToTradeUpdates_Should_TriggerWithTradeUpdate(string updateType, BitfinexEventType eventType)
+        public void SubscribingToTradeUpdates_Should_TriggerWithTradeUpdate(string updateType, BitfinexEventType eventType, bool single = true)
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexTradeDetails>(eventType, new BitfinexTradeDetails());
-            BitfinexSocketEvent<BitfinexTradeDetails[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
+            var rstEvent = new ManualResetEvent(false);
+            BitfinexSocketEvent<BitfinexTradeDetails[]> result = null;
+            var expected = new BitfinexSocketEvent<BitfinexTradeDetails[]>(eventType, new[] { new BitfinexTradeDetails() { } });
+            client.SubscribeToTradingUpdatesAsync(null,
+                data =>
+                {
+                    result = data;
+                    rstEvent.Set();
+                }, null);
 
             // act
-            var result = client.SubscribeToTradeUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, updateType, new BitfinexTradeDetails() }));
-            evnt.WaitOne(1000);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexTradeDetails() } : new object[] { 0, updateType, new[] { new BitfinexTradeDetails() } });
+            rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data, actual.Data[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
         }
 
-        [Test]
-        public void SubscribingToWalletUpdates_Should_TriggerWithWalletUpdate()
+        [TestCase("ws", BitfinexEventType.WalletSnapshot, false)]
+        [TestCase("wu", BitfinexEventType.WalletUpdate)]
+        public void SubscribingToWalletUpdates_Should_TriggerWithWalletUpdate(string updateType, BitfinexEventType eventType, bool single = true)
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexWallet>(BitfinexEventType.WalletUpdate, new BitfinexWallet());
-            BitfinexSocketEvent<BitfinexWallet[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
+            var rstEvent = new ManualResetEvent(false);
+            BitfinexSocketEvent<BitfinexWallet[]> result = null;
+            var expected = new BitfinexSocketEvent<BitfinexWallet[]>(eventType, new[] { new BitfinexWallet() { } });
+            client.SubscribeToWalletUpdatesAsync(data =>
+                {
+                    result = data;
+                    rstEvent.Set();
+                });
 
             // act
-            var result = client.SubscribeToWalletUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, "wu", new BitfinexWallet() }));
-            evnt.WaitOne(1000);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexWallet() } : new object[] { 0, updateType, new[] { new BitfinexWallet() } });
+            rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data, actual.Data[0]));
-
-            client.Stop();
-        }
-
-        [Test]
-        public void SubscribingToWalletUpdates_Should_TriggerWithWalletSnapshot()
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexWallet[]>(BitfinexEventType.WalletSnapshot, new[] { new BitfinexWallet() });
-            BitfinexSocketEvent<BitfinexWallet[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-
-            // act
-            var result = client.SubscribeToWalletUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, "ws", new[] { new BitfinexWallet() } }));
-            evnt.WaitOne(1000);
-
-            // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data[0], actual.Data[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
         }
 
         [TestCase("pn", BitfinexEventType.PositionNew)]
-        [TestCase("pu", BitfinexEventType.PositionUpdate)]
         [TestCase("pc", BitfinexEventType.PositionClose)]
-        public void SubscribingToPositionUpdates_Should_TriggerWithPositionUpdates(string updateType, BitfinexEventType evntType)
+        [TestCase("pu", BitfinexEventType.PositionUpdate)]
+        [TestCase("ps", BitfinexEventType.PositionSnapshot, false)]
+        public void SubscribingToPositionUpdates_Should_TriggerWithPositionUpdate(string updateType, BitfinexEventType eventType, bool single = true)
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
+
+            var rstEvent = new ManualResetEvent(false);
+            BitfinexSocketEvent<BitfinexPosition[]> result = null;
+            var expected = new BitfinexSocketEvent<BitfinexPosition[]>(eventType, new[] { new BitfinexPosition() { } });
+            client.SubscribeToTradingUpdatesAsync(null, null, data =>
             {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexPosition>(evntType, new BitfinexPosition() { });
-            BitfinexSocketEvent<BitfinexPosition[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-
-            // act
-            var result = client.SubscribeToPositionUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
+                result = data;
+                rstEvent.Set();
             });
 
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, updateType, new BitfinexPosition() }));
-            evnt.WaitOne(1000);
-
-            // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data, actual.Data[0]));
-
-            client.Stop();
-        }
-
-        [Test]
-        public void SubscribingToPositionUpdates_Should_TriggerWithPositionSnapshot()
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexPosition[]>(BitfinexEventType.PositionSnapshot, new[] { new BitfinexPosition() });
-            BitfinexSocketEvent<BitfinexPosition[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-
             // act
-            var result = client.SubscribeToPositionUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, "ps", new[] { new BitfinexPosition() } }));
-            evnt.WaitOne(1000);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexPosition() } : new object[] { 0, updateType, new[] { new BitfinexPosition() } });
+            rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data[0], actual.Data[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
         }
 
         [TestCase("fcn", BitfinexEventType.FundingCreditsNew)]
         [TestCase("fcu", BitfinexEventType.FundingCreditsUpdate)]
         [TestCase("fcc", BitfinexEventType.FundingCreditsClose)]
-        public void SubscribingToFundingCreditsUpdates_Should_TriggerWithFundingCreditsUpdates(string updateType, BitfinexEventType evntType)
+        [TestCase("fcs", BitfinexEventType.FundingCreditsSnapshot, false)]
+        public void SubscribingToFundingCreditsUpdates_Should_TriggerWithFundingCreditsUpdate(string updateType, BitfinexEventType eventType, bool single = true)
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
+
+            var rstEvent = new ManualResetEvent(false);
+            BitfinexSocketEvent<BitfinexFundingCredit[]> result = null;
+            var expected = new BitfinexSocketEvent<BitfinexFundingCredit[]>(eventType, new[] { new BitfinexFundingCredit() { StatusString="ACTIVE" } });
+            client.SubscribeToFundingUpdatesAsync(null,data =>
             {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexFundingCredit>(evntType, new BitfinexFundingCredit() { StatusString = "ACTIVE" });
-            BitfinexSocketEvent<BitfinexFundingCredit[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
+                result = data;
+                rstEvent.Set();
+            }, null);
 
             // act
-            var result = client.SubscribeToFundingCreditsUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, updateType, new BitfinexFundingCredit() }));
-            evnt.WaitOne(1000);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFundingCredit() } : new object[] { 0, updateType, new[] { new BitfinexFundingCredit() } });
+            rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data, actual.Data[0]));
-
-            client.Stop();
-        }
-
-        public void SubscribingToFundingCreditsUpdates_Should_TriggerWithFundingCreditsSnapshot()
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexFundingCredit[]>(BitfinexEventType.FundingCreditsSnapshot, new[] { new BitfinexFundingCredit() { StatusString = "ACTIVE" } });
-            BitfinexSocketEvent<BitfinexFundingCredit[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-
-            // act
-            var result = client.SubscribeToFundingCreditsUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, "fcs", new[] { new BitfinexFundingCredit() } }));
-            evnt.WaitOne(1000);
-
-            // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data[0], actual.Data[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
         }
 
         [TestCase("fln", BitfinexEventType.FundingLoanNew)]
         [TestCase("flu", BitfinexEventType.FundingLoanUpdate)]
         [TestCase("flc", BitfinexEventType.FundingLoanClose)]
-        public void SubscribingToFundingLoanUpdates_Should_TriggerWithFundingLoanUpdates(string updateType, BitfinexEventType evntType)
+        [TestCase("fls", BitfinexEventType.FundingLoanSnapshot, false)]
+        public void SubscribingToFundingLoanUpdates_Should_TriggerWithFundingLoanUpdate(string updateType, BitfinexEventType eventType, bool single = true)
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
+
+            var rstEvent = new ManualResetEvent(false);
+            BitfinexSocketEvent<BitfinexFundingLoan[]> result = null;
+            var expected = new BitfinexSocketEvent<BitfinexFundingLoan[]>(eventType, new[] { new BitfinexFundingLoan() { StatusString = "ACTIVE" } });
+            client.SubscribeToFundingUpdatesAsync(null, null, data =>
             {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexFundingLoan>(evntType, new BitfinexFundingLoan() { StatusString = "ACTIVE" });
-            BitfinexSocketEvent<BitfinexFundingLoan[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-
-            // act
-            var result = client.SubscribeToFundingLoansUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
+                result = data;
+                rstEvent.Set();
             });
 
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, updateType, new BitfinexFundingLoan() }));
-            evnt.WaitOne(1000);
-
-            // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data, actual.Data[0]));
-
-            client.Stop();
-        }
-
-        [Test]
-        public void SubscribingToFundingLoanUpdates_Should_TriggerWithFundingLoanSnapshot()
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexFundingLoan[]>(BitfinexEventType.FundingLoanSnapshot, new[] { new BitfinexFundingLoan() { StatusString = "ACTIVE" } });
-            BitfinexSocketEvent<BitfinexFundingLoan[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-
             // act
-            var result = client.SubscribeToFundingLoansUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, "fls", new[] { new BitfinexFundingLoan() } }));
-            evnt.WaitOne(1000);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFundingLoan() } : new object[] { 0, updateType, new[] { new BitfinexFundingLoan() } });
+            rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data[0], actual.Data[0]));
-
-            client.Stop();
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
         }
 
         [TestCase("fon", BitfinexEventType.FundingOfferNew)]
         [TestCase("fou", BitfinexEventType.FundingOfferUpdate)]
         [TestCase("foc", BitfinexEventType.FundingOfferCancel)]
-        public void SubscribingToFundingOfferUpdates_Should_TriggerWithFundingOfferUpdates(string updateType, BitfinexEventType evntType)
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-
-            var expected = new BitfinexSocketEvent<BitfinexFundingOffer>(evntType, new BitfinexFundingOffer() { StatusString = "ACTIVE" });
-            BitfinexSocketEvent<BitfinexFundingOffer[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-
-            // act
-            var result = client.SubscribeToFundingOfferUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, updateType, new BitfinexFundingOffer() }));
-            evnt.WaitOne(1000);
-
-            // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data, actual.Data[0]));
-
-            client.Stop();
-        }
-
-        [Test]
-        public void SubscribingToFundingOfferUpdates_Should_TriggerWithFundingOfferSnapshot()
-        {
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-                ApiCredentials = new ApiCredentials("Test", "Test")
-            }));
-            
-            if(!StartAndWaitForAuthentication(client))
-                Assert.Fail(sb.ToString());
-            
-            var expected = new BitfinexSocketEvent<BitfinexFundingOffer[]>(BitfinexEventType.FundingOfferSnapshot, new[] { new BitfinexFundingOffer() { StatusString = "ACTIVE" } });
-            BitfinexSocketEvent<BitfinexFundingOffer[]> actual = null;
-            ManualResetEvent evnt = new ManualResetEvent(false);
-
-            // act
-            client.SubscribeToFundingOfferUpdates(data =>
-            {
-                actual = data;
-                evnt.Set();
-            });
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new object[] { 0, "fos", new[] { new BitfinexFundingOffer() } }));
-            evnt.WaitOne(1000);
-
-            // assert
-            Assert.IsTrue(expected.EventType == actual.EventType);
-            Assert.IsTrue(TestHelpers.PublicInstancePropertiesEqual(expected.Data[0], actual.Data[0]));
-
-            client.Stop();
-        }
-
-        [Test]
-        public void UnsubscribingFromUpdates_Should_UnsubscribeSuccessfully()
+        [TestCase("fos", BitfinexEventType.FundingOfferSnapshot, false)]
+        public void SubscribingToFundingOfferUpdates_Should_TriggerWithFundingOfferUpdate(string updateType, BitfinexEventType eventType, bool single = true)
         {
             // arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() }
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
-            }));
-            client.Start();
-
-            var result = client.SubscribeToRawBookUpdates("Test", 10, data => { });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new BookSubscriptionResponse()
+            var rstEvent = new ManualResetEvent(false);
+            BitfinexSocketEvent<BitfinexFundingOffer[]> result = null;
+            var expected = new BitfinexSocketEvent<BitfinexFundingOffer[]>(eventType, new[] { new BitfinexFundingOffer() { StatusString = "ACTIVE" } });
+            client.SubscribeToFundingUpdatesAsync(data =>
             {
-                Channel = "book",
-                Event = "subscribed",
-                ChannelId = 1,
-                Symbol = "Test",
-                Pair = "Test",
-                Frequency = "F0",
-                Precision = "R0",
-                Length = 10
-            }));
-            result.Wait();
+                result = data;
+                rstEvent.Set();
+            }, null, null);
 
             // act
-            var task = client.UnsubscribeFromChannel(result.Result.Data);
-            TestHelpers.InvokeWebsocket(client, "{ \"event\": \"unsubscribed\", \"chanId\": 1, \"channel\": \"book\" }");
-            task.Wait();
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFundingOffer() } : new object[] { 0, updateType, new[] { new BitfinexFundingOffer() } });
+            rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(task.Result.Success);
-
-            client.Stop();
-        }
-
-        [Test]
-        public void UnsubscribingFromUpdatesNoResponse_Should_NotSucceed()
-        {
-            // arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                SubscribeResponseTimeout = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() }
-
-            }));
-            client.Start();
-
-            var result = client.SubscribeToRawBookUpdates("Test", 10, data => { });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new BookSubscriptionResponse()
-            {
-                Channel = "book",
-                Event = "subscribed",
-                ChannelId = 1,
-                Symbol = "Test",
-                Pair = "Test",
-                Frequency = "F0",
-                Precision = "R0",
-                Length = 10
-            }));
-            result.Wait();
-
-            // act
-            var task = client.UnsubscribeFromChannel(result.Result.Data).Result;
-
-            // assert
-            Assert.IsFalse(task.Success);
-
-            client.Stop();
-        }
-
-        [Test]
-        public void UnsubscribingFromUpdates_Should_NoLongerReceiveUpdates()
-        {
-            // arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() }
-
-            }));
-            client.Start();
-
-            BitfinexRawOrderBookEntry[] expected = new[] { new BitfinexRawOrderBookEntry() };
-            BitfinexRawOrderBookEntry[] actual = null;
-
-            var result = client.SubscribeToRawBookUpdates("Test", 10, data => { actual = data; });
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new BookSubscriptionResponse()
-            {
-                Channel = "book",
-                Event = "subscribed",
-                ChannelId = 1,
-                Symbol = "Test",
-                Pair = "Test",
-                Frequency = "F0",
-                Precision = "R0",
-                Length = 10
-            }));
-            result.Wait();
-
-            var task = client.UnsubscribeFromChannel(result.Result.Data);
-            TestHelpers.InvokeWebsocket(client, "{ \"event\": \"unsubscribed\", \"chanId\": 1, \"channel\": \"book\" }");
-            task.Wait();
-
-            // act
-            TestHelpers.InvokeWebsocket(client, $"[1, {JsonConvert.SerializeObject(expected)}]");
-            Thread.Sleep(100);
-
-            // assert
-            Assert.IsTrue(result.Result.Success);
-            Assert.IsTrue(task.Result.Success);
-            Assert.IsTrue(actual == null);
-
-            client.Stop();
-        }
-
-        [Test]
-        public void WhenConnectionIsLost_Socket_ShouldReconnect()
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() }
-
-            }));
-            client.Start();
-
-            // Act
-            var waitConnect = TestHelpers.WaitForConnect(client);
-            TestHelpers.CloseWebsocket(client);
-            if (!waitConnect.Result)
-                Assert.IsTrue(false, sb.ToString());
-
-            // Assert
-            Assert.IsTrue(true, sb.ToString());
-        }
-
-        [Test]
-        public void WhenNoDataReceived_Socket_ShouldReconnect()
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                SocketReceiveTimeout = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() }
-
-            }));
-
-            client.Start();
-
-            // Act
-            var waitConnect = TestHelpers.WaitForConnect(client);
-            if (!waitConnect.Result)
-                Assert.IsTrue(false, sb.ToString());
-
-            // Assert
-            Assert.IsTrue(true, sb.ToString());
-        }
-
-        [Test]
-        public void WhenReconnecting_Socket_ShouldResubscribe()
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() }
-
-            }));
-            
-            client.Start();
-            if (!WaitForSubscription(client))
-                Assert.IsTrue(false, sb.ToString());
-
-            // Act
-            var waitConnect = TestHelpers.WaitForConnect(client);
-            var waitResub = TestHelpers.WaitForSend(client, 3000, "{\"key\":\"trade:5m:Test\",\"event\":\"subscribe\",\"channel\":\"candles\"}");
-            TestHelpers.CloseWebsocket(client);
-            if (!waitConnect.Result)
-                Assert.IsTrue(false, sb.ToString());
-            if (!waitResub.Result)
-                Assert.IsTrue(false, sb.ToString());
-
-            // Assert
-            Assert.IsTrue(true, sb.ToString());
-        }
-
-        [Test]
-        public void WhenResubscribingFails_Socket_ShouldReconnectAndTryAgain()
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() }
-
-            }));
-
-            // Sub first time
-            client.Start();
-            if(!WaitForSubscription(client))
-                Assert.IsTrue(false, sb.ToString());
-
-            // Close socket first time
-            var waitConnect = TestHelpers.WaitForConnect(client);
-            var waitResub = TestHelpers.WaitForSend(client);
-            TestHelpers.CloseWebsocket(client);
-            if(!waitConnect.Result)
-                Assert.IsTrue(false, sb.ToString());
-            if(!waitResub.Result)
-                Assert.IsTrue(false, sb.ToString());
-
-            // Close socket second time
-            waitConnect = TestHelpers.WaitForConnect(client);
-            waitResub = TestHelpers.WaitForSend(client, 3000, "{\"key\":\"trade:5m:Test\",\"event\":\"subscribe\",\"channel\":\"candles\"}");
-            TestHelpers.CloseWebsocket(client);
-            if (!waitConnect.Result)
-                Assert.IsTrue(false, sb.ToString());
-            if (!waitResub.Result)
-                Assert.IsTrue(false, sb.ToString());
-
-            // Assert
-            Assert.IsTrue(true);
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
         }
 
         [Test]
         public void PlacingAnOrder_Should_SucceedIfSuccessResponse()
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
+
+            var expected = new BitfinexOrder()
             {
-                LogVerbosity = LogVerbosity.Debug,
-                LogWriters = new List<TextWriter> { sb },
-                ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("Test", "Test")
-            }));
+                Price = 0.1m,
+                Amount = 0.2m,
+                Symbol = "tBTCUSD",
+                Type = OrderType.ExchangeLimit,
+                ClientOrderId = 1234,
+                StatusString = "ACTIVE",
+                Status = OrderStatus.Active
+            };
 
-            if (!StartAndWaitForAuthentication(client))
-                Assert.IsTrue(false, "Failed to auth");
+            // act
+            var placeTask = client.PlaceOrderAsync(OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            Thread.Sleep(100);
+            socket.InvokeMessage($"[0, \"on\", {JsonConvert.SerializeObject(expected)}]");
+            var result = placeTask.Result;
 
-            var response = JsonConvert.SerializeObject(new BitfinexOrder()
-            {
-                ClientOrderId = 1234
-            });
-
-            // Act
-            var waitSend = TestHelpers.WaitForSend(client);
-            var placeTask = client.PlaceOrderAsync(OrderType.ExchangeLimit, "Test", 1, price: 1, clientOrderId: 1234);
-            if (!waitSend.Result)
-                Assert.IsTrue(false, "No place order send");
-
-            TestHelpers.InvokeWebsocket(client, $"[0, \"on\", {response}]");
-            placeTask.Wait();
-
-            // Assert
-            Assert.IsTrue(placeTask.Result.Success, sb.ToString());
+            // assert
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [Test]
         public void PlacingAnOrder_Should_FailIfErrorResponse()
         {
-            // Arrange
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("Test", "Test")
-            }));
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
+            var order = new BitfinexOrder() {ClientOrderId = 123};
 
-            if (!StartAndWaitForAuthentication(client))
-                Assert.IsTrue(false, "Failed to auth");
+            // act
+            var placeTask = client.PlaceOrderAsync(OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            Thread.Sleep(100);
+            socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(order)}, 0, \"error\", \"order placing failed\"]]");
+            var result = placeTask.Result;
 
-            var response = JsonConvert.SerializeObject(new BitfinexOrder()
-            {
-                ClientOrderId = 1234
-            });
-
-            // Act
-            var waitSend = TestHelpers.WaitForSend(client);
-            var placeTask = client.PlaceOrderAsync(OrderType.ExchangeLimit, "Test", 1, price: 1, clientOrderId: 1234);
-            if (!waitSend.Result)
-                Assert.IsTrue(false, "No place order send");
-
-            TestHelpers.InvokeWebsocket(client, $"[0, \"n\", [0, \"on-req\", 0, 0, {response}, 0, \"error\", \"order placing failed\"]]");
-
-            placeTask.Wait();
-
-            // Assert
-            Assert.IsFalse(placeTask.Result.Success);
-            Assert.IsTrue(placeTask.Result.Error.Message.Contains("order placing failed"));
+            // assert
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.Error.Message.Contains("order placing failed"));
         }
 
         [Test]
         public void PlacingAnOrder_Should_FailIfNoResponse()
         {
-            // Arrange
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket, new BitfinexSocketClientOptions()
             {
+                ApiCredentials = new ApiCredentials("Test", "Test"),
                 LogVerbosity = LogVerbosity.Debug,
-                ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("Test", "Test"),
-                OrderActionConfirmationTimeout = TimeSpan.FromMilliseconds(100)
-            }));
-            if (!StartAndWaitForAuthentication(client))
-                Assert.IsTrue(false, "Failed to auth");
+                SocketResponseTimeout = TimeSpan.FromMilliseconds(100)
+            });
 
-            // Act
-            var placeTask = client.PlaceOrderAsync(OrderType.ExchangeLimit, "Test", 1, price: 1, clientOrderId: 1234);
+            // act
+            var placeTask = client.PlaceOrderAsync(OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            var result = placeTask.Result;
 
-            // Assert
-            Assert.IsFalse(placeTask.Result.Success);
+            // assert
+            Assert.IsFalse(result.Success);
         }
 
         [Test]
-        public void PlacingAMarketOrder_Should_SucceedIfSuccessResponse()
+        public void PlacingAnMarketOrder_Should_SucceedIfSuccessResponse()
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                LogWriters = new List<TextWriter> { sb },
-                ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("Test", "Test"),
-                OrderActionConfirmationTimeout = TimeSpan.FromMilliseconds(100)
-            }));
-            if (!StartAndWaitForAuthentication(client))
-                Assert.IsTrue(false, "Failed to auth");
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
-            var response = JsonConvert.SerializeObject(new BitfinexOrder()
+            var expected = new BitfinexOrder()
             {
+                Price = 0.1m,
+                Amount = 0.2m,
+                Symbol = "tBTCUSD",
+                Type = OrderType.ExchangeMarket,
                 ClientOrderId = 1234,
-                Status = OrderStatus.Executed,
-                StatusString = "EXECUTED"
-            });
+                StatusString = "EXECUTED",
+                Status = OrderStatus.Executed
+            };
 
-            // Act
-            var waitSend = TestHelpers.WaitForSend(client);
-            var placeTask = client.PlaceOrderAsync(OrderType.Market, "Test", 1, price: 1, clientOrderId: 1234);
-            if (!waitSend.Result)
-                Assert.IsTrue(false, "No place order send");
+            // act
+            var placeTask = client.PlaceOrderAsync(OrderType.ExchangeMarket, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            Thread.Sleep(100);
+            socket.InvokeMessage($"[0, \"oc\", {JsonConvert.SerializeObject(expected)}]");
+            var result = placeTask.Result;
 
-            TestHelpers.InvokeWebsocket(client, $"[0, \"oc\", {response}]");
-
-            placeTask.Wait();
-            
-            // Assert
-            Assert.IsTrue(placeTask.Result.Success, sb.ToString());
+            // assert
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
-        [TestCase(OrderType.Market)]
-        [TestCase(OrderType.ExchangeMarket)]
-        public void PlacingAMarketOrder_Should_FailIfStatusNotExecuted(OrderType orderType)
+        [Test]
+        public void PlacingAnFOKOrder_Should_SucceedIfCanceledResponse()
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                LogWriters = new List<TextWriter> { sb },
-                ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("Test", "Test"),
-                OrderActionConfirmationTimeout = TimeSpan.FromMilliseconds(100)
-            }));
-            if (!StartAndWaitForAuthentication(client))
-                Assert.IsTrue(false, "Failed to auth");
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
-            var response = JsonConvert.SerializeObject(new BitfinexOrder()
+            var expected = new BitfinexOrder()
             {
+                Price = 0.1m,
+                Amount = 0.2m,
+                Symbol = "tBTCUSD",
+                Type = OrderType.ExchangeFillOrKill,
                 ClientOrderId = 1234,
                 Status = OrderStatus.Canceled,
-                Type = orderType
-            });
+                StatusString = "CANCELED"
+            };
 
-            // Act
-            var waitSend = TestHelpers.WaitForSend(client);
-            var placeTask = client.PlaceOrderAsync(orderType, "Test", 1, price: 1, clientOrderId: 1234);
-            if (!waitSend.Result)
-                Assert.IsTrue(false, "No place order send");
+            // act
+            var placeTask = client.PlaceOrderAsync(OrderType.ExchangeFillOrKill, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            Thread.Sleep(100);
+            socket.InvokeMessage($"[0, \"oc\", {JsonConvert.SerializeObject(expected)}]");
+            var result = placeTask.Result;
 
-            TestHelpers.InvokeWebsocket(client, $"[0, \"oc\", {response}]");
-
-            placeTask.Wait();
-
-            // Assert
-            Assert.IsFalse(placeTask.Result.Success, sb.ToString());
-        }
-
-        [TestCase(OrderType.FillOrKill)]
-        [TestCase(OrderType.ExchangeFillOrKill)]
-        public void PlacingAFOKOrder_Should_FailIfReceiveCanceled(OrderType type)
-        {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-            {
-                LogVerbosity = LogVerbosity.Debug,
-                LogWriters = new List<TextWriter> { sb },
-                ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("Test", "Test")
-            }));
-            
-            var response = JsonConvert.SerializeObject(new BitfinexOrder()
-            {
-                ClientOrderId = 1234,
-                Type = type,
-                Status = OrderStatus.Canceled
-            });
-
-            if (!StartAndWaitForAuthentication(client))
-                Assert.IsTrue(false, "Failed to auth");
-
-            // Act
-            var waitSend = TestHelpers.WaitForSend(client);
-            var placeTask = client.PlaceOrderAsync(type, "Test", 1, price: 1, clientOrderId: 1234);
-            if(!waitSend.Result)
-                Assert.IsTrue(false, "No place order send");
-
-            TestHelpers.InvokeWebsocket(client, $"[0, \"oc\", {response}]");
-            
-            placeTask.Wait();
-
-            // Assert
-            Assert.IsTrue(placeTask.Result.Success, sb.ToString());
+            // assert
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [Test]
         public void ReceivingAReconnectMessage_Should_ReconnectWebsocket()
         {
-            // Arrange
-            var sb = new StringWriter(new StringBuilder());
-            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket, new BitfinexSocketClientOptions()
             {
                 LogVerbosity = LogVerbosity.Debug,
-                LogWriters = new List<TextWriter> { sb },
-                ReconnectionInterval = TimeSpan.FromMilliseconds(100)
-            }));
+                ReconnectInterval = TimeSpan.FromMilliseconds(10)
+            });
 
-            client.Start();
-            if(!WaitForSubscription(client))
-                Assert.IsTrue(false, "Initial subscription failed");
-
-            var waitConnect = TestHelpers.WaitForConnect(client);
-
-            // Act
-            TestHelpers.InvokeWebsocket(client, "{\"event\":\"info\", \"code\": 20051}");
-            bool triggered = waitConnect.Result;
-
-            // Assert
-            Assert.IsTrue(triggered, sb.ToString());
-        }
-
-        private bool WaitForSubscription(BitfinexSocketClient client)
-        {
-            var sendWait = TestHelpers.WaitForSend(client);
-            var result = client.SubscribeToCandleUpdates("Test", TimeFrame.FiveMinute, data => { });
-
-            if (!sendWait.Result)
-                return false;
-
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new CandleSubscriptionResponse()
+            var rstEvent = new ManualResetEvent(false);
+            var subTask = client.SubscribeToCandleUpdatesAsync("tBTCUSD", TimeFrame.FiveMinute, data => { });
+            socket.InvokeMessage(new CandleSubscriptionResponse()
             {
                 Channel = "candles",
                 Event = "subscribed",
                 ChannelId = 1,
                 Symbol = "Test",
                 Key = "trade:" + JsonConvert.SerializeObject(TimeFrame.FiveMinute, new TimeFrameConverter(false)) + ":Test"
-            }));
-            result.Wait();
-            return result.Result.Success;
-        }
+            });
+            var subResult = subTask.Result;
 
-        private bool StartAndWaitForAuthentication(BitfinexSocketClient client)
-        {
-            var sendWait = TestHelpers.WaitForSend(client);
-            client.Start();
+            subResult.Data.ConnectionRestored += (t) => rstEvent.Set();
 
-            if (!sendWait.Result)
-                return false;
+            // act
+            socket.InvokeMessage("{\"event\":\"info\", \"code\": 20051}");
+            var triggered = rstEvent.WaitOne(1000);
 
-            TestHelpers.InvokeWebsocket(client, JsonConvert.SerializeObject(new BitfinexAuthenticationResponse()
-            {
-                ChannelId = 0,
-                Event = "auth",
-                Status = "OK"
-            }));
-            return true;
-        }
-
-
-        private BitfinexSocketClient Construct(BitfinexSocketClientOptions options = null)
-        {
-            if (options != null)
-                return new BitfinexSocketClient(options);
-            return new BitfinexSocketClient();
+            // assert
+            Assert.IsTrue(triggered);
         }
     }
 }
