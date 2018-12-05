@@ -8,7 +8,7 @@ Bitfinex.Net is a .Net wrapper for the Bitfinex API as described on [Bitfinex](h
 * Reading balances and funds
 * Live updates using the websocket
 
-Next to that it adds some convenience features like:
+Additionally it adds some convenience features like:
 * Configurable rate limiting
 * Autmatic logging
 
@@ -107,58 +107,62 @@ using(var client = new BitfinexClient())
 ## Options & Authentication
 The default behavior of the clients can be changed by providing options to the constructor, or using the `SetDefaultOptions` before creating a new client to set options for all new clients. Api credentials can be provided in the options.
 
-## Websocket
-To use the websocket the various Subscribe methods can be used. The `Start` method should be used to actually connect the websocket. When connection to the websocket has been made the server will send various snapshots of data, so make sure your event handlers are set up before starting.
-The websocket will automatically handle reconnect/pause messages send from the server. To unsubscribe from a stream use the `UnsubscribeFromChannel` method with the stream id you received when subscribing. To stop the websocket completly the `Stop` method can be used.
+**Handling socket events**
+
+Subscribing to a socket stream returns a UpdateSubscription object. This object can be used to be notified when a socket is disconnected or reconnected:
 ````C#
-var options = new BitfinexSocketClientOptions()
+var subscriptionResult = client.SubscribeToTickerUpdates("tBTCETH", data =>
 {
-	ApiCredentials = new ApiCredentials("KEY", "SECRET")
-};
-
-var client = new BitfinexSocketClient(options);
-var walletSub = client.SubscribeToWalletUpdates(data =>
-{
-	Console.WriteLine("Wallet update");
-});
-var tickerSub = await client.SubscribeToTicker("tBTCUSD", data =>
-{
-	Console.WriteLine("Ticker update");
+	Console.WriteLine("Received ticker update");
 });
 
-var startOk = client.Start();
-Console.WriteLine(startOk ? "Connected": "Connection failed");
+if(subscriptionResult.Success){
+	sub.Data.Disconnected += () =>
+	{
+		Console.WriteLine("Socket disconnected");
+	};
 
-Console.ReadLine();
-await client.UnsubscribeFromChannel(walletSub.Data);
-await client.UnsubscribeFromChannel(tickerSub.Data);
-client.Stop();
+	sub.Data.Reconnected += (e) =>
+	{
+		Console.WriteLine("Socket reconnected after " + e);
+	};
+}
 ````
 
-The websocket also supports the placing and canceling of orders:
-````C#
-var options = new BitfinexSocketClientOptions()
+**Unsubscribing from socket endpoints:**
+
+Sockets streams can be unsubscribed by using the `client.Unsubscribe` method in combination with the stream subscription received from subscribing:
+```C#
+var client = new BitfinexSocketClient();
+
+var successTicker = client.SubscribeToTickerUpdates("tBTCETH", (data) =>
 {
-	ApiCredentials = new ApiCredentials("KEY", "SECRET")
-};
+	// handle data
+});
 
-var client = new BitfinexSocketClient(options);
-var startOk = client.Start();
-Console.WriteLine(startOk ? "Connected": "Connection failed");
+client.Unsubscribe(successTicker.Data);
+```
 
-Console.ReadLine();
-
-var placeResult = client.PlaceOrder(OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1);
-Console.WriteLine(placeResult.Success ? "order placed": "failed placing order: " + placeResult.Error);
-
-if (placeResult.Success)
+Additionaly, all sockets can be closed with the `UnsubscribeAll` method. Beware that when a client is disposed the sockets are automatically disposed. This means that if the code is no longer in the using statement the eventhandler won't fire anymore. To prevent this from happening make sure the code doesn't leave the using statement or don't use the socket client in a using statement:
+```C#
+// Doesn't leave the using block
+using(var client = new BitfinexSocketClient())
 {
-	var cancelResult = client.CancelOrder(placeResult.Data.Id);
-	Console.WriteLine(cancelResult.Success ? "order canceled" : "failed canceling order: " + cancelResult.Error);
+	var successTicker = client.SubscribeToTickerUpdates("tBTCETH", (data) =>
+	{
+		// handle data
+	});
+
+	Console.ReadLine();
 }
 
-Console.ReadLine();
-````
+// Without using block
+var client = new BitfinexSocketClient();
+client.SubscribeToTickerUpdates("tBTCETH", (data) =>
+{
+	// handle data
+});
+```
 
 
 ## Release notes
