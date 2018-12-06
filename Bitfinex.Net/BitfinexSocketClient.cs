@@ -660,6 +660,9 @@ namespace Bitfinex.Net
 
         private async Task<CallResult<UpdateSubscription>> Authenticate(SocketSubscription subscription, params string[] filter)
         {
+            if(authProvider == null)
+                return new CallResult<UpdateSubscription>(null, new NoApiCredentialsError());
+
             var authObject = GetAuthObject(filter);
             var waitTask = subscription.WaitForEvent(AuthenticationEvent, socketResponseTimeout);
             Send(subscription.Socket, authObject);
