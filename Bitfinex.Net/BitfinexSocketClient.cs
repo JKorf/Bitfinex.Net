@@ -91,7 +91,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<BitfinexMarketOverview> handler)
         {
             var internalHandler = new Action<JToken>(data => HandleData("Ticker", (JArray)data[1], handler));
-            return await Subscribe(new BitfinexSubscriptionRequest("ticker", symbol), internalHandler);
+            return await Subscribe(new BitfinexSubscriptionRequest("ticker", symbol), internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Bitfinex.Net
                 JsonConvert.SerializeObject(precision, new PrecisionConverter(false)), 
                 JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)), 
                 length);
-            return await Subscribe(sub, internalHandler);
+            return await Subscribe(sub, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Bitfinex.Net
                 else
                     HandleSingleToArrayData("Raw book update", dataArray, handler);           
             });
-            return await Subscribe(new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), internalHandler);
+            return await Subscribe(new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace Bitfinex.Net
                     handler(new[] { desResult.Data });
                 }
             });
-            return await Subscribe(new BitfinexSubscriptionRequest("trades", symbol), internalHandler);
+            return await Subscribe(new BitfinexSubscriptionRequest("trades", symbol), internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Bitfinex.Net
                 else
                     HandleSingleToArrayData("Kline update", dataArray, handler);
             });
-            return await Subscribe(new BitfinexKlineSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false))), internalHandler);
+            return await Subscribe(new BitfinexKlineSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false))), internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace Bitfinex.Net
                 HandleAuthUpdate(tokenData, positionHandler, BitfinexEvents.GetEventsForCategory("Positions"));
             });
 
-            return await SubscribeAuth("trading", tokenHandler);
+            return await SubscribeAuth("trading", tokenHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace Bitfinex.Net
                 HandleAuthUpdate(tokenData, walletHandler, BitfinexEvents.GetEventsForCategory("Wallet"));
             });
 
-            return await SubscribeAuth("wallet", tokenHandler);
+            return await SubscribeAuth("wallet", tokenHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -315,7 +315,7 @@ namespace Bitfinex.Net
                 HandleAuthUpdate(tokenData, fundingLoanHandler, BitfinexEvents.GetEventsForCategory("FundingLoans"));
             });
 
-            return await SubscribeAuth("funding", tokenHandler);
+            return await SubscribeAuth("funding", tokenHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace Bitfinex.Net
                 PriceTrailing = priceTrailing
             });
 
-            return await Query<BitfinexOrder>(query, true);
+            return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -409,7 +409,7 @@ namespace Bitfinex.Net
                 PriceTrailing = priceTrailing
             });
 
-            return await Query<BitfinexOrder>(query, true);
+            return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -427,7 +427,7 @@ namespace Bitfinex.Net
             log.Write(LogVerbosity.Info, "Going to cancel all orders");
             var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, new BitfinexMultiCancel() { All = true });
 
-            return await Query<bool>(query, true);
+            return await Query<bool>(query, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -447,7 +447,7 @@ namespace Bitfinex.Net
             log.Write(LogVerbosity.Info, "Going to cancel order " + orderId);
             var query = new BitfinexSocketQuery(orderId.ToString(), BitfinexEventType.OrderCancel, new JObject { ["id"] = orderId });
 
-            return await Query<BitfinexOrder>(query, true);
+            return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -464,7 +464,7 @@ namespace Bitfinex.Net
         /// <returns>True if successfully committed on server</returns>
         public async Task<CallResult<bool>> CancelOrdersByGroupIdAsync(long groupOrderId)
         {
-            return await CancelOrdersAsync(null, null, new Dictionary<long, long?> { { groupOrderId, null } });
+            return await CancelOrdersAsync(null, null, new Dictionary<long, long?> { { groupOrderId, null } }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -481,7 +481,7 @@ namespace Bitfinex.Net
         /// <returns>True if successfully committed on server</returns>
         public async Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(long[] groupOrderIds)
         {
-            return await CancelOrdersAsync(null, null, groupOrderIds.ToDictionary(v => v, k => (long?)null));
+            return await CancelOrdersAsync(null, null, groupOrderIds.ToDictionary(v => v, k => (long?)null)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -498,7 +498,7 @@ namespace Bitfinex.Net
         /// <returns>True if successfully committed on server</returns>
         public async Task<CallResult<bool>> CancelOrdersAsync(long[] orderIds)
         {
-            return await CancelOrdersAsync(orderIds, null);
+            return await CancelOrdersAsync(orderIds, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -515,7 +515,7 @@ namespace Bitfinex.Net
         /// <returns>True if successfully committed on server</returns>
         public async Task<CallResult<bool>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds)
         {
-            return await CancelOrdersAsync(null, clientOrderIds);
+            return await CancelOrdersAsync(null, clientOrderIds).ConfigureAwait(false);
         }
         #endregion
 
@@ -567,7 +567,7 @@ namespace Bitfinex.Net
                 cancelObject.GroupIds = new[] { groupOrderIds.Select(g => g.Key).ToArray() };
 
             var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, cancelObject);
-            return await Query<bool>(query, true);
+            return await Query<bool>(query, true).ConfigureAwait(false);
         }
 
         private async Task<CallResult<T>> Query<T>(BitfinexSocketQuery request, bool signed)
@@ -579,7 +579,7 @@ namespace Bitfinex.Net
             if (subscription == null)
             {
                 // We don't have a background socket to query, create a new one
-                var connectResult = await CreateAndConnectSocketAuth(internalHandler, false);
+                var connectResult = await CreateAndConnectSocketAuth(internalHandler, false).ConfigureAwait(false);
                 if (!connectResult.Success)
                     return new CallResult<T>(default(T), connectResult.Error);
 
@@ -588,10 +588,10 @@ namespace Bitfinex.Net
 
                 if (signed)
                 {
-                    var authResult = await Authenticate(subscription, "trading", "notify");
+                    var authResult = await Authenticate(subscription, "trading", "notify").ConfigureAwait(false);
                     if (!authResult.Success)
                     {
-                        await subscription.Close();
+                        await subscription.Close().ConfigureAwait(false);
                         return new CallResult<T>(default(T), authResult.Error);
                     }
                 }
@@ -613,7 +613,7 @@ namespace Bitfinex.Net
             subscription.Request = request;
             var waitTask = subscription.WaitForEvent(DataEvent, request.Id, socketResponseTimeout);
             Send(subscription.Socket, request);
-            var dataResult = await waitTask;
+            var dataResult = await waitTask.ConfigureAwait(false);
 
             if (!dataResult.Success)
                 return new CallResult<T>(default(T), dataResult.Error);
@@ -623,11 +623,11 @@ namespace Bitfinex.Net
 
         private async Task<CallResult<UpdateSubscription>> Subscribe(BitfinexSubscriptionRequest request, Action<JToken> onData)
         {
-            var connectResult = await CreateAndConnectSocket(onData);
+            var connectResult = await CreateAndConnectSocket(onData).ConfigureAwait(false);
             if (!connectResult.Success)
                 return new CallResult<UpdateSubscription>(null, connectResult.Error);
 
-            return await Subscribe(connectResult.Data, request);
+            return await Subscribe(connectResult.Data, request).ConfigureAwait(false);
         }
 
         private async Task<CallResult<UpdateSubscription>> Subscribe(SocketSubscription subscription, BitfinexSubscriptionRequest request)
@@ -636,10 +636,10 @@ namespace Bitfinex.Net
             Send(subscription.Socket, request);
 
             subscription.Request = request;
-            var subResult = await waitTask;
+            var subResult = await waitTask.ConfigureAwait(false);
             if (!subResult.Success)
             {
-                await subscription.Close();
+                await subscription.Close().ConfigureAwait(false);
                 return new CallResult<UpdateSubscription>(null, subResult.Error);
             }
 
@@ -649,15 +649,15 @@ namespace Bitfinex.Net
 
         private async Task<CallResult<UpdateSubscription>> SubscribeAuth(string filter, Action<BitfinexSocketEvent<JToken>> onData)
         {
-            var connectResult = await CreateAndConnectSocketAuth(onData, true);
+            var connectResult = await CreateAndConnectSocketAuth(onData, true).ConfigureAwait(false);
             if (!connectResult.Success)
                 return new CallResult<UpdateSubscription>(null, connectResult.Error);
 
-            var result = await Authenticate(connectResult.Data, filter);
+            var result = await Authenticate(connectResult.Data, filter).ConfigureAwait(false);
             if(!result.Success)            
-                await connectResult.Data.Close();
-
-            connectResult.Data.Socket.ShouldReconnect = true;
+                await connectResult.Data.Close().ConfigureAwait(false);
+            else
+                connectResult.Data.Socket.ShouldReconnect = true;
             return result;
         }
 
@@ -668,7 +668,7 @@ namespace Bitfinex.Net
             Send(subscription.Socket, authObject);
 
             subscription.Request = authObject;            
-            var subResult = await waitTask;
+            var subResult = await waitTask.ConfigureAwait(false);
             if (!subResult.Success)
                 return new CallResult<UpdateSubscription>(null, subResult.Error);            
 
@@ -724,7 +724,7 @@ namespace Bitfinex.Net
             subscription.MessageHandlers.Add(InfoHandlerName, InfoHandler);
             subscription.AddEvent(SubscriptionEvent);
 
-            var connectResult = await ConnectSocket(subscription);
+            var connectResult = await ConnectSocket(subscription).ConfigureAwait(false);
             if (!connectResult.Success)
                 return new CallResult<BitfinexSocketSubscription>(null, connectResult.Error);
 
@@ -749,7 +749,7 @@ namespace Bitfinex.Net
             subscription.AddEvent(AuthenticationEvent);
             subscription.MessageHandlers.Add(InfoHandlerName, InfoHandler);
 
-            var connectResult = await ConnectSocket(subscription);
+            var connectResult = await ConnectSocket(subscription).ConfigureAwait(false);
             if (!connectResult.Success)
                 return new CallResult<BitfinexSocketSubscription>(null, connectResult.Error);
 
