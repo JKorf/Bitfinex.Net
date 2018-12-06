@@ -178,6 +178,9 @@ client.SubscribeToTickerUpdates("tBTCETH", (data) =>
 
 
 ## Release notes
+* Version 2.0.1 - 06 dec 2018
+	* Fixed freezes if called from the UI thread	
+
 * Version 2.0.0 - 05 dec 2018
 	* Updated to CryptoExchange.Net version 2
 		* Libraries now use the same standard functionalities
