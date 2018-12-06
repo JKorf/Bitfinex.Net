@@ -1,7 +1,6 @@
 ﻿using Bitfinex.Net.Converters;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects;
-using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;

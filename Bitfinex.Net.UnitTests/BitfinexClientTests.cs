@@ -1,19 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.RestV1Objects;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net;
-using Moq;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Linq;
 using Bitfinex.Net.UnitTests.TestImplementations;
-using CryptoExchange.Net.Objects;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -51,7 +44,7 @@ namespace Bitfinex.Net.UnitTests
                     AskSize = 0.2m,
                     Bid = 0.3m,
                     BidSize = 0.4m,
-                    DailtyChangePercentage = 0.5m,
+                    DailyChangePercentage = 0.5m,
                     DailyChange = 0.6m,
                     High = 0.7m,
                     LastPrice = 0.8m,
