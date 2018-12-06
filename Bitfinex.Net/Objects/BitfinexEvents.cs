@@ -21,7 +21,7 @@ namespace Bitfinex.Net.Objects
 
     public static class BitfinexEvents
     {
-        public static List<BitfinexEvent> Events = new List<BitfinexEvent>()
+        public static List<BitfinexEvent> Events = new List<BitfinexEvent>
         {
             new BitfinexEvent("hb", BitfinexEventType.HeartBeat, "Heartbeat", true),
 
@@ -56,7 +56,7 @@ namespace Bitfinex.Net.Objects
             new BitfinexEvent("flc", BitfinexEventType.FundingLoanClose, "FundingLoans", true),
             new BitfinexEvent("fln", BitfinexEventType.FundingLoanNew, "FundingLoans", true),
             new BitfinexEvent("flu", BitfinexEventType.FundingLoanUpdate, "FundingLoans", true),
-            new BitfinexEvent("fls", BitfinexEventType.FundingLoanSnapshot, "FundingLoans", false),
+            new BitfinexEvent("fls", BitfinexEventType.FundingLoanSnapshot, "FundingLoans", false)
 
         };
 
@@ -65,7 +65,7 @@ namespace Bitfinex.Net.Objects
             return Events.Where(e => e.Category == cat);
         }
 
-        public static Dictionary<string, BitfinexEventType> EventMapping = new Dictionary<string, BitfinexEventType>()
+        public static Dictionary<string, BitfinexEventType> EventMapping = new Dictionary<string, BitfinexEventType>
         {
             { "hb", BitfinexEventType.HeartBeat },
             { "bu", BitfinexEventType.BalanceUpdate },
@@ -108,7 +108,7 @@ namespace Bitfinex.Net.Objects
             { "flc", BitfinexEventType.FundingLoanClose },
             { "hfls", BitfinexEventType.HistoricalFundingLoanSnapshot },
             { "hfts", BitfinexEventType.HistoricalFundingTradeSnapshot },
-            { "uac", BitfinexEventType.UserCustomPriceAlert },
+            { "uac", BitfinexEventType.UserCustomPriceAlert }
         };
     }
 }

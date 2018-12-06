@@ -9,10 +9,10 @@ namespace Bitfinex.Net.Converters
         public PlatformStatusConverter(): this(true) { }
         public PlatformStatusConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<PlatformStatus, string> Mapping => new Dictionary<PlatformStatus, string>()
+        protected override Dictionary<PlatformStatus, string> Mapping => new Dictionary<PlatformStatus, string>
         {
             { PlatformStatus.Maintenance, "0" },
-            { PlatformStatus.Operative, "1" },
+            { PlatformStatus.Operative, "1" }
         };
     }
 }

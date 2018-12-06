@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Converters
         public DepositMethodConverter(): this(true) { }
         public DepositMethodConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<DepositMethod, string> Mapping => new Dictionary<DepositMethod, string>()
+        protected override Dictionary<DepositMethod, string> Mapping => new Dictionary<DepositMethod, string>
         {
             { DepositMethod.Bitcoin, "bitcoin" },
             { DepositMethod.Litecoin, "litecoin" },

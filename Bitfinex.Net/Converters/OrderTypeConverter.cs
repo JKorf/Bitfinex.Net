@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Converters
         public OrderTypeV1Converter(): this(true) { }
         public OrderTypeV1Converter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<OrderTypeV1, string> Mapping => new Dictionary<OrderTypeV1, string>()
+        protected override Dictionary<OrderTypeV1, string> Mapping => new Dictionary<OrderTypeV1, string>
         {
             { OrderTypeV1.Market, "market" },
             { OrderTypeV1.Limit, "limit" },
@@ -22,7 +22,7 @@ namespace Bitfinex.Net.Converters
             { OrderTypeV1.ExchangeStop, "exchange stop" },
             { OrderTypeV1.ExchangeStopLimit, "exchange stop limit" },
             { OrderTypeV1.ExchangeTrailingStop, "exchange trailing-stop" },
-            { OrderTypeV1.ExchangeFillOrKill, "exchange fill-or-kill" },
+            { OrderTypeV1.ExchangeFillOrKill, "exchange fill-or-kill" }
         };
     }
 }

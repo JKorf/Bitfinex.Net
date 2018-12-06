@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(4)]
         public decimal DailyChange { get; set; }
         [ArrayProperty(5)]
-        public decimal DailtyChangePercentage { get; set; }
+        public decimal DailyChangePercentage { get; set; }
         [ArrayProperty(6)]
         public decimal LastPrice { get; set; }
         [ArrayProperty(7)]

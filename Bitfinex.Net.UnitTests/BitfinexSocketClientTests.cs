@@ -5,12 +5,7 @@ using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Binance.Net.UnitTests.TestImplementations;
 using Bitfinex.Net.UnitTests.TestImplementations;
 using CryptoExchange.Net.Authentication;
@@ -21,59 +16,6 @@ namespace Bitfinex.Net.UnitTests
     [TestFixture]
     public class BitfinexSocketClientTests
     {
-        //        [TestCase()]
-        //        public void CallingStop_Should_DisconnectWebsocket()
-        //        {
-        //            // arrange
-        //            var client = TestHelpers.PrepareSocketClient(() => Construct());
-
-        //            // act
-        //            var result = client.Start();
-        //            var waitTask = TestHelpers.WaitForClose(client);
-        //            client.Stop();
-
-        //            // assert
-        //            Assert.IsTrue(result);
-        //            Assert.IsTrue(waitTask.Result);
-        //        }
-
-        //        [TestCase()]
-        //        public void CallingPlaceOrderWithoutStarting_Should_FailAndGiveError()
-        //        {
-        //            // arrange
-        //            var client = TestHelpers.PrepareSocketClient(() => Construct());
-
-        //            // act
-        //            var result = client.PlaceOrder(OrderType.Stop, "Test", 1);
-
-        //            // assert
-        //            Assert.IsFalse(result.Success);
-        //        }
-
-        //        [TestCase()]
-        //        public void NotReceivingSubResponse_Should_ResultInError()
-        //        {
-        //            // Arrange
-        //            var sb = new StringWriter(new StringBuilder());
-        //            var client = TestHelpers.PrepareSocketClient(() => Construct(new BitfinexSocketClientOptions()
-        //            {
-        //                LogVerbosity = LogVerbosity.Debug,
-        //                ReconnectionInterval = TimeSpan.FromMilliseconds(100),
-        //                SubscribeResponseTimeout = TimeSpan.FromMilliseconds(100),
-        //                LogWriters = new List<TextWriter>() { sb, new DebugTextWriter() },
-        //            }));
-        //            client.Start();
-
-        //            // Act
-        //            var result = client.SubscribeToBookUpdates("Test", Precision.PrecisionLevel0, Frequency.Realtime, 10, data => { });
-        //            result.Wait();
-
-        //            // assert
-        //            Assert.IsFalse(result.Result.Success);
-
-        //            client.Stop();
-        //        }
-
         [TestCase(Precision.PrecisionLevel0, Frequency.Realtime)]
         [TestCase(Precision.PrecisionLevel1, Frequency.Realtime)]
         [TestCase(Precision.PrecisionLevel2, Frequency.Realtime)]
@@ -160,7 +102,7 @@ namespace Bitfinex.Net.UnitTests
         [TestCase(TimeFrame.OneHour)]
         [TestCase(TimeFrame.ThreeHour)]
         [TestCase(TimeFrame.SixHour)]
-        [TestCase(TimeFrame.TwelfHour)]
+        [TestCase(TimeFrame.TwelveHour)]
         [TestCase(TimeFrame.OneDay)]
         [TestCase(TimeFrame.SevenDay)]
         [TestCase(TimeFrame.FourteenDay)]
@@ -198,7 +140,7 @@ namespace Bitfinex.Net.UnitTests
         [TestCase(TimeFrame.OneHour)]
         [TestCase(TimeFrame.ThreeHour)]
         [TestCase(TimeFrame.SixHour)]
-        [TestCase(TimeFrame.TwelfHour)]
+        [TestCase(TimeFrame.TwelveHour)]
         [TestCase(TimeFrame.OneDay)]
         [TestCase(TimeFrame.SevenDay)]
         [TestCase(TimeFrame.FourteenDay)]

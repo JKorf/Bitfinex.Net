@@ -9,12 +9,12 @@ namespace Bitfinex.Net.Converters
 {
     public class OrderStatusConverter: JsonConverter
     {
-        private readonly Dictionary<string, OrderStatus> mapping = new Dictionary<string, OrderStatus>()
+        private readonly Dictionary<string, OrderStatus> mapping = new Dictionary<string, OrderStatus>
         {
             { "PARTIALLY FILLED",OrderStatus.PartiallyFilled },
             { "EXECUTED", OrderStatus.Executed },
             { "CANCELED", OrderStatus.Canceled },
-            { "ACTIVE", OrderStatus.Active },
+            { "ACTIVE", OrderStatus.Active }
         };
         
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

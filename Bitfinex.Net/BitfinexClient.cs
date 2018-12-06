@@ -171,7 +171,7 @@ namespace Bitfinex.Net
         /// <returns>Market data</returns>
         public async Task<CallResult<BitfinexMarketOverviewRest[]>> GetTickerAsync(params string[] symbols)
         {
-            var parameters = new Dictionary<string, object>()
+            var parameters = new Dictionary<string, object>
             {
                 {"symbols", string.Join(",", symbols)}
             };
@@ -232,7 +232,7 @@ namespace Bitfinex.Net
         /// <returns>The order book for the symbol</returns>
         public async Task<CallResult<BitfinexOrderBookEntry[]>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null)
         {
-            if (limit != null && (limit != 25 && limit != 100))
+            if (limit != null && limit != 25 && limit != 100)
                 return new CallResult<BitfinexOrderBookEntry[]>(null, new ArgumentError("Limit should be either 25 or 100"));
 
             var parameters = new Dictionary<string, object>();
@@ -359,7 +359,7 @@ namespace Bitfinex.Net
             var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },
-                { "amount", amount.ToString(CultureInfo.InvariantCulture) },
+                { "amount", amount.ToString(CultureInfo.InvariantCulture) }
             };
             parameters.AddOptionalParameter("period", period?.ToString());
             parameters.AddOptionalParameter("rate_limit", rateLimit?.ToString(CultureInfo.InvariantCulture));
@@ -735,7 +735,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexAlert[]>> GetAlertListAsync()
         {
-            var parameters = new Dictionary<string, object>()
+            var parameters = new Dictionary<string, object>
             {
                 { "type", "price" } 
             };
@@ -759,7 +759,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexAlert>> SetAlertAsync(string symbol, decimal price)
         {
-            var parameters = new Dictionary<string, object>()
+            var parameters = new Dictionary<string, object>
             {
                 { "type", "price" },
                 { "symbol", symbol },
@@ -830,7 +830,7 @@ namespace Bitfinex.Net
         /// <param name="amount">The amount of the order</param>
         /// <param name="price">The price for the order</param>
         /// <param name="hidden">If the order should be placed as hidden</param>
-        /// <param name="postOnly">If the only should only be placed if it isn't immediatly filled</param>
+        /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
         /// <param name="useAllAvailable">If all available funds should be used</param>
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
@@ -858,7 +858,7 @@ namespace Bitfinex.Net
         /// <param name="amount">The amount of the order</param>
         /// <param name="price">The price for the order</param>
         /// <param name="hidden">If the order should be placed as hidden</param>
-        /// <param name="postOnly">If the only should only be placed if it isn't immediatly filled</param>
+        /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
         /// <param name="useAllAvailable">If all available funds should be used</param>
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
@@ -877,14 +877,14 @@ namespace Bitfinex.Net
             decimal? ocoBuyPrice = null,
             decimal? ocoSellPrice = null)
         {
-            var parameters = new Dictionary<string, object>()
+            var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },
                 { "amount", amount.ToString(CultureInfo.InvariantCulture) },
                 { "price", price.ToString(CultureInfo.InvariantCulture) },
                 { "exchange", "bitfinex" },
                 { "side", JsonConvert.SerializeObject(side, new OrderSideConverter(false)) },
-                { "type", JsonConvert.SerializeObject(type, new OrderTypeV1Converter(false)) },
+                { "type", JsonConvert.SerializeObject(type, new OrderTypeV1Converter(false)) }
             };
             parameters.AddOptionalParameter("is_hidden", hidden);
             parameters.AddOptionalParameter("is_postonly", postOnly);
@@ -910,7 +910,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexPlacedOrder>> CancelOrderAsync(long orderId)
         {
-            var parameters = new Dictionary<string, object>()
+            var parameters = new Dictionary<string, object>
             {
                 { "order_id", orderId }
             };
@@ -947,7 +947,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexPlacedOrder>> GetOrderAsync(long orderId)
         {
-            var parameters = new Dictionary<string, object>()
+            var parameters = new Dictionary<string, object>
             {
                 { "order_id", orderId }
             };
@@ -975,7 +975,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal rate, WalletType type)
         {
-            var parameters = new Dictionary<string, object>()
+            var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },
                 { "dir", side == OrderSide.Buy ? 1: -1 },
@@ -1087,7 +1087,7 @@ namespace Bitfinex.Net
                                                                          string accountName = null, 
                                                                          string paymentId = null)
         {
-            var parameters = new Dictionary<string, object>()
+            var parameters = new Dictionary<string, object>
             {
                 { "withdraw_type", JsonConvert.SerializeObject(withdrawType, new WithdrawalTypeConverter(false)) },
                 { "walletselected", JsonConvert.SerializeObject(wallet, new WithdrawWalletConverter(false)) },
@@ -1142,13 +1142,12 @@ namespace Bitfinex.Net
 
         protected override Error ParseErrorResponse(JToken data)
         {
-            if (data is JArray)
-            {
-                var error = data.ToObject<BitfinexError>();
-                return new ServerError(error.ErrorCode, error.ErrorMessage);
-            }
+            if (!(data is JArray))
+                return new ServerError(-1, data["message"].ToString());
 
-            return new ServerError(-1, data["message"].ToString());
+            var error = data.ToObject<BitfinexError>();
+            return new ServerError(error.ErrorCode, error.ErrorMessage);
+
         }
 
         private Uri GetUrl(string endpoint, string version)

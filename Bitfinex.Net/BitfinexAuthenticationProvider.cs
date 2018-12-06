@@ -32,21 +32,20 @@ namespace Bitfinex.Net
                 var payload = Convert.ToBase64String(Encoding.ASCII.GetBytes(signature));
                 var signedData = Sign(payload);
 
-                result.Add($"X-BFX-APIKEY", Credentials.Key.GetString());
-                result.Add($"X-BFX-PAYLOAD", payload);
-                result.Add($"X-BFX-SIGNATURE", signedData.ToLower());
+                result.Add("X-BFX-APIKEY", Credentials.Key.GetString());
+                result.Add("X-BFX-PAYLOAD", payload);
+                result.Add("X-BFX-SIGNATURE", signedData.ToLower());
             }
             else if (uri.Contains("v2"))
             {
                 var json = JsonConvert.SerializeObject(parameters);
-                var data = Encoding.UTF8.GetBytes(json);
                 var n = BitfinexSocketClient.Nonce;
                 var signature = $"/api{uri.Split(new[] { ".com" }, StringSplitOptions.None)[1]}{n}{json}";
                 var signedData = Sign(signature);
 
-                result.Add($"bfx-apikey", Credentials.Key.GetString());
-                result.Add($"bfx-nonce", n.ToString());
-                result.Add($"bfx-signature", signedData.ToLower());
+                result.Add("bfx-apikey", Credentials.Key.GetString());
+                result.Add("bfx-nonce", n);
+                result.Add("bfx-signature", signedData.ToLower());
             }
 
             return result;

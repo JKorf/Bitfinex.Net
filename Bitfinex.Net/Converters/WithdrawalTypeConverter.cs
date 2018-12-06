@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Converters
         public WithdrawalTypeConverter() : this(true) { }
         public WithdrawalTypeConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<WithdrawalType, string> Mapping => new Dictionary<WithdrawalType, string>()
+        protected override Dictionary<WithdrawalType, string> Mapping => new Dictionary<WithdrawalType, string>
         {
             { WithdrawalType.Bitcoin, "bitcoin" },
             { WithdrawalType.Litecoin, "litecoin" },

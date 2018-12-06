@@ -9,10 +9,10 @@ namespace Bitfinex.Net.Converters
         public FundingTypeConverter(): this(true) { }
         public FundingTypeConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<FundingType, string> Mapping => new Dictionary<FundingType, string>()
+        protected override Dictionary<FundingType, string> Mapping => new Dictionary<FundingType, string>
         {
             { FundingType.Lend, "lend" },
-            { FundingType.Loan, "loan" },
+            { FundingType.Loan, "loan" }
         };
     }
 }

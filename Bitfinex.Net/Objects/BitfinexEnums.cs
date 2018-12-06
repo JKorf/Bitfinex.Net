@@ -34,7 +34,7 @@ namespace Bitfinex.Net.Objects
         TotalOpenPosition,
         TotalActiveFunding,
         ActiveFundingInPositions,
-        ActiveFundingInPositionsPerTradingSymbol,
+        ActiveFundingInPositionsPerTradingSymbol
     }
 
     public enum StatSide
@@ -58,7 +58,7 @@ namespace Bitfinex.Net.Objects
         OneHour,
         ThreeHour,
         SixHour,
-        TwelfHour,
+        TwelveHour,
         OneDay,
         SevenDay,
         FourteenDay,

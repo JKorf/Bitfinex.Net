@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Converters
         public WalletTypeConverter(): this(true) { }
         public WalletTypeConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<WalletType, string> Mapping => new Dictionary<WalletType, string>()
+        protected override Dictionary<WalletType, string> Mapping => new Dictionary<WalletType, string>
         {
             { WalletType.Exchange, "exchange" },
             { WalletType.Funding, "funding" },

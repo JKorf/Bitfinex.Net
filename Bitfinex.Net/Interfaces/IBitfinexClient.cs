@@ -537,7 +537,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="amount">The amount of the order</param>
         /// <param name="price">The price for the order</param>
         /// <param name="hidden">If the order should be placed as hidden</param>
-        /// <param name="postOnly">If the only should only be placed if it isn't immediatly filled</param>
+        /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
         /// <param name="useAllAvailable">If all available funds should be used</param>
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
@@ -565,7 +565,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="amount">The amount of the order</param>
         /// <param name="price">The price for the order</param>
         /// <param name="hidden">If the order should be placed as hidden</param>
-        /// <param name="postOnly">If the only should only be placed if it isn't immediatly filled</param>
+        /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
         /// <param name="useAllAvailable">If all available funds should be used</param>
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>

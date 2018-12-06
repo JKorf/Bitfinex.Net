@@ -354,7 +354,7 @@ namespace Bitfinex.Net
             if (clientOrderId == null)
                 clientOrderId = GenerateClientOrderId();
 
-            var query = new BitfinexSocketQuery(clientOrderId.ToString(), BitfinexEventType.OrderNew, new BitfinexNewOrder()
+            var query = new BitfinexSocketQuery(clientOrderId.ToString(), BitfinexEventType.OrderNew, new BitfinexNewOrder
             {
                 Amount = amount,
                 OrderType = type,
@@ -399,7 +399,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexOrder>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? amount = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null)
         {
             log.Write(LogVerbosity.Info, "Going to update order " + orderId);
-            var query = new BitfinexSocketQuery(orderId.ToString(), BitfinexEventType.OrderUpdate, new BitfinexUpdateOrder()
+            var query = new BitfinexSocketQuery(orderId.ToString(), BitfinexEventType.OrderUpdate, new BitfinexUpdateOrder
             {
                 OrderId = orderId,
                 Amount = amount,
@@ -425,7 +425,7 @@ namespace Bitfinex.Net
         {
             // Doesn't seem to work even though it is implemented as described at https://docs.bitfinex.com/v2/reference#ws-input-order-cancel-multi 
             log.Write(LogVerbosity.Info, "Going to cancel all orders");
-            var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, new BitfinexMultiCancel() { All = true });
+            var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, new BitfinexMultiCancel { All = true });
 
             return await Query<bool>(query, true).ConfigureAwait(false);
         }
@@ -615,10 +615,7 @@ namespace Bitfinex.Net
             Send(subscription.Socket, request);
             var dataResult = await waitTask.ConfigureAwait(false);
 
-            if (!dataResult.Success)
-                return new CallResult<T>(default(T), dataResult.Error);
-
-            return result;
+            return !dataResult.Success ? new CallResult<T>(default(T), dataResult.Error) : result;
         }
 
         private async Task<CallResult<UpdateSubscription>> Subscribe(BitfinexSubscriptionRequest request, Action<JToken> onData)
@@ -767,7 +764,7 @@ namespace Bitfinex.Net
             if (data["code"] == null)
                 return true;
 
-            int code = (int) data["code"];
+            var code = (int) data["code"];
             switch (code)
             {
                 case 20051:
@@ -933,7 +930,7 @@ namespace Bitfinex.Net
                         subscription.SetEventByName(DataEvent, false, new ServerError((string)notificationData[7]));
                         return true;
                     }
-                    else if(request.QueryType == BitfinexEventType.OrderCancel && notificationType == BitfinexEventType.OrderCancelRequest)
+                    if(request.QueryType == BitfinexEventType.OrderCancel && notificationType == BitfinexEventType.OrderCancelRequest)
                     {
                         var orderData = notificationData[4];
                         if ((string)orderData[0] != request.Id)
@@ -942,7 +939,7 @@ namespace Bitfinex.Net
                         subscription.SetEventByName(DataEvent, false, new ServerError((string)notificationData[7]));
                         return true;
                     }                    
-                    else if(request.QueryType == BitfinexEventType.OrderUpdate && notificationType == BitfinexEventType.OrderUpdateRequest)
+                    if(request.QueryType == BitfinexEventType.OrderUpdate && notificationType == BitfinexEventType.OrderUpdateRequest)
                     {
                         // OrderUpdateRequest not found notification doesn't carry the order id, where as OrderCancelRequest not found notification does..
                         // Anyway, can't check for ids, so just assume its for this one
@@ -950,7 +947,7 @@ namespace Bitfinex.Net
                         subscription.SetEventByName(DataEvent, false, new ServerError((string)notificationData[7]));
                         return true;
                     }
-                    else if(request.QueryType == BitfinexEventType.OrderCancelMulti && notificationType == BitfinexEventType.OrderCancelMultiRequest)
+                    if(request.QueryType == BitfinexEventType.OrderCancelMulti && notificationType == BitfinexEventType.OrderCancelMultiRequest)
                     {
                         subscription.SetEventByName(DataEvent, false, new ServerError((string)notificationData[7]));
                         return true;
@@ -959,7 +956,7 @@ namespace Bitfinex.Net
 
                 if(notificationType == BitfinexEventType.OrderCancelMultiRequest)
                 {
-                    handler(new BitfinexSocketEvent<JToken>()
+                    handler(new BitfinexSocketEvent<JToken>
                     {
                         EventType = BitfinexEventType.OrderCancelMulti,
                         Data = JToken.Parse("true")
@@ -990,7 +987,7 @@ namespace Bitfinex.Net
         private BitfinexAuthentication GetAuthObject(params string[] filter)
         {
             var n = Nonce;
-            var authentication = new BitfinexAuthentication()
+            var authentication = new BitfinexAuthentication
             {
                 Event = "auth",
                 ApiKey = authProvider.Credentials.Key.GetString(),
@@ -1022,7 +1019,7 @@ namespace Bitfinex.Net
 
         private long GenerateClientOrderId()
         {
-            byte[] buffer = new byte[8];
+            var buffer = new byte[8];
             random.NextBytes(buffer);
             return (long)Math.Round(Math.Abs(BitConverter.ToInt64(buffer, 0)) / 1000m);
         }

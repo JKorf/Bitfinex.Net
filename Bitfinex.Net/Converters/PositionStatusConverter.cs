@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Converters
         public PositionStatusConverter(): this(true) { }
         public PositionStatusConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<PositionStatus, string> Mapping => new Dictionary<PositionStatus, string>()
+        protected override Dictionary<PositionStatus, string> Mapping => new Dictionary<PositionStatus, string>
         {
             { PositionStatus.Closed, "CLOSED" },
             { PositionStatus.Active, "ACTIVE" }
