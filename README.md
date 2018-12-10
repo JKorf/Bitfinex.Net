@@ -183,6 +183,9 @@ client.SubscribeToTickerUpdates("tBTCETH", (data) =>
 
 
 ## Release notes
+* Version 2.0.3 - 10 dec 2018
+	* Fix for status field serialization in BitfinexOrder object
+
 * Version 2.0.2 - 06 dec 2018
 	* Fix CryptoExchange reference
 
