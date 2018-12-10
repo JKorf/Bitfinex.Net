@@ -47,8 +47,9 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(12)]
         public int? Flags { get; set; }
 
-        [ArrayProperty(13), JsonConverter(typeof(OrderStatusConverter))]
-        public OrderStatus Status { get; set; }
+        [JsonIgnore]
+        public OrderStatus Status => new OrderStatusConverter().FromString(StatusString);
+
         [ArrayProperty(13)]
         public string StatusString { get; set; }
         [ArrayProperty(14)]

@@ -374,7 +374,7 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
-            socket.InvokeMessage(single ? new object[] {0, updateType, new BitfinexOrder()} : new object[] {0, updateType, new[] {new BitfinexOrder()}});
+            socket.InvokeMessage(single ? new object[] {0, updateType, expected.Data[0] } : new object[] {0, updateType, new[] { expected.Data[0]} });
             rstEvent.WaitOne(1000);
 
             // assert
@@ -567,8 +567,7 @@ namespace Bitfinex.Net.UnitTests
                 Symbol = "tBTCUSD",
                 Type = OrderType.ExchangeLimit,
                 ClientOrderId = 1234,
-                StatusString = "ACTIVE",
-                Status = OrderStatus.Active
+                StatusString = "ACTIVE"
             };
 
             // act
@@ -641,8 +640,7 @@ namespace Bitfinex.Net.UnitTests
                 Symbol = "tBTCUSD",
                 Type = OrderType.ExchangeMarket,
                 ClientOrderId = 1234,
-                StatusString = "EXECUTED",
-                Status = OrderStatus.Executed
+                StatusString = "EXECUTED"
             };
 
             // act
@@ -672,7 +670,6 @@ namespace Bitfinex.Net.UnitTests
                 Symbol = "tBTCUSD",
                 Type = OrderType.ExchangeFillOrKill,
                 ClientOrderId = 1234,
-                Status = OrderStatus.Canceled,
                 StatusString = "CANCELED"
             };
 
