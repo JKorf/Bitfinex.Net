@@ -614,6 +614,8 @@ namespace Bitfinex.Net
             var waitTask = subscription.WaitForEvent(DataEvent, request.Id, socketResponseTimeout);
             Send(subscription.Socket, request);
             var dataResult = await waitTask.ConfigureAwait(false);
+            if(!dataResult.Success)
+                subscription.SetEventById(request.Id, false, dataResult.Error);
 
             return !dataResult.Success ? new CallResult<T>(default(T), dataResult.Error) : result;
         }
