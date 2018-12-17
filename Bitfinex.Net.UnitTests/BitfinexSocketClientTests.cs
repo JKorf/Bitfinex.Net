@@ -487,7 +487,7 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
-            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFundingCredit() } : new object[] { 0, updateType, new[] { new BitfinexFundingCredit() } });
+            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFundingCredit() { StatusString = "ACTIVE" } } : new object[] { 0, updateType, new[] { new BitfinexFundingCredit() { StatusString = "ACTIVE" } } });
             rstEvent.WaitOne(1000);
 
             // assert
@@ -516,7 +516,7 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
-            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFundingLoan() } : new object[] { 0, updateType, new[] { new BitfinexFundingLoan() } });
+            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFundingLoan() { StatusString = "ACTIVE" } } : new object[] { 0, updateType, new[] { new BitfinexFundingLoan() { StatusString = "ACTIVE" } } });
             rstEvent.WaitOne(1000);
 
             // assert
@@ -545,7 +545,7 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
-            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFundingOffer() } : new object[] { 0, updateType, new[] { new BitfinexFundingOffer() } });
+            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFundingOffer() { StatusString = "ACTIVE" } } : new object[] { 0, updateType, new[] { new BitfinexFundingOffer() { StatusString = "ACTIVE" } } });
             rstEvent.WaitOne(1000);
 
             // assert

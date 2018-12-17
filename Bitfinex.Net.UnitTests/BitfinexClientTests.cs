@@ -429,7 +429,6 @@ namespace Bitfinex.Net.UnitTests
                     Amount = 0.1m,
                     Symbol = "Test",
                     Id = 1,
-                    Status = OrderStatus.Active,
                     StatusString = "ACTIVE",
                     TimestampCreated = new DateTime(2017,1,1),
                     TimestampUpdated = new DateTime(2017,1,1),
@@ -448,7 +447,6 @@ namespace Bitfinex.Net.UnitTests
                     Amount = 0.5m,
                     Symbol = "Test",
                     Id = 2,
-                    Status = OrderStatus.PartiallyFilled,
                     StatusString = "INSUFFICIENT BALANCE (G1) was: ACTIVE (note:POSCLOSE), PARTIALLY FILLED @ 6123.96104092(-0.07139999)",
                     TimestampCreated = new DateTime(2016,1,1),
                     TimestampUpdated = new DateTime(2016,1,1),
@@ -469,8 +467,6 @@ namespace Bitfinex.Net.UnitTests
             var result = client.GetActiveFundingOffers("Test");
 
             // assert
-            result.Data[1].Status = OrderStatus.PartiallyFilled;
-            result.Data[1].StatusString = "INSUFFICIENT BALANCE (G1) was: ACTIVE (note:POSCLOSE), PARTIALLY FILLED @ 6123.96104092(-0.07139999)";
             Assert.AreEqual(true, result.Success);
             Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
             Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
@@ -487,7 +483,6 @@ namespace Bitfinex.Net.UnitTests
                     Amount = 0.1m,
                     Symbol = "Test",
                     Id = 1,
-                    Status = OrderStatus.Active,
                     StatusString = "ACTIVE",
                     TimestampCreated = new DateTime(2017,1,1),
                     TimestampUpdated = new DateTime(2017,1,1),
@@ -508,7 +503,6 @@ namespace Bitfinex.Net.UnitTests
                     Amount = 0.5m,
                     Symbol = "Test",
                     Id = 2,
-                    Status = OrderStatus.Canceled,
                     StatusString = "CANCELED",
                     TimestampCreated = new DateTime(2016,1,1),
                     TimestampUpdated = new DateTime(2016,1,1),
@@ -548,7 +542,6 @@ namespace Bitfinex.Net.UnitTests
                     Symbol = "Test",
                     Id = 1,
                     StatusString = "ACTIVE",
-                    Status = OrderStatus.Active,
                     TimestampCreated = new DateTime(2017,1,1),
                     TimestampUpdated = new DateTime(2017,1,1),
                     Flags = 0,
@@ -570,7 +563,6 @@ namespace Bitfinex.Net.UnitTests
                     Symbol = "Test",
                     Id = 2,
                     StatusString = "CANCELED",
-                    Status = OrderStatus.Canceled,
                     TimestampCreated = new DateTime(2016,1,1),
                     TimestampUpdated = new DateTime(2016,1,1),
                     Flags = 0,
