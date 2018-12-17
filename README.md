@@ -183,6 +183,11 @@ client.SubscribeToTickerUpdates("tBTCETH", (data) =>
 
 
 ## Release notes
+* Version 2.0.4 - 17 dec 2018
+	* Fixed status fields when serializing
+	* Fixed reconnecting sometimes throwing an error
+	* Fixed error after event timeout in socket client
+
 * Version 2.0.3 - 10 dec 2018
 	* Fix for status field serialization in BitfinexOrder object
 
