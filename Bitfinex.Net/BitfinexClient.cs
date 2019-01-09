@@ -1013,7 +1013,7 @@ namespace Bitfinex.Net
         /// <param name="accountName">The name of the account</param>
         /// <param name="paymentId">Hex string for Monero transaction</param>
         /// <returns></returns>
-        public CallResult<BitfinexWithdrawalResult> Withdraw(WithdrawalType withdrawType,
+        public CallResult<BitfinexWithdrawalResult> Withdraw(string withdrawType,
                                                              WithdrawWallet wallet,
                                                              decimal amount,
                                                              string address = null,
@@ -1066,7 +1066,7 @@ namespace Bitfinex.Net
         /// <param name="accountName">The name of the account</param>
         /// <param name="paymentId">Hex string for Monero transaction</param>
         /// <returns></returns>
-        public async Task<CallResult<BitfinexWithdrawalResult>> WithdrawAsync(WithdrawalType withdrawType, 
+        public async Task<CallResult<BitfinexWithdrawalResult>> WithdrawAsync(string withdrawType, 
                                                                          WithdrawWallet wallet, 
                                                                          decimal amount, 
                                                                          string address = null, 
@@ -1089,7 +1089,7 @@ namespace Bitfinex.Net
         {
             var parameters = new Dictionary<string, object>
             {
-                { "withdraw_type", JsonConvert.SerializeObject(withdrawType, new WithdrawalTypeConverter(false)) },
+                { "withdraw_type", withdrawType },
                 { "walletselected", JsonConvert.SerializeObject(wallet, new WithdrawWalletConverter(false)) },
                 { "amount", amount.ToString(CultureInfo.InvariantCulture) }
             };

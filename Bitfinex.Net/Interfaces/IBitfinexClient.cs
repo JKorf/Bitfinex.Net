@@ -671,7 +671,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="accountName">The name of the account</param>
         /// <param name="paymentId">Hex string for Monero transaction</param>
         /// <returns></returns>
-        CallResult<BitfinexWithdrawalResult> Withdraw(WithdrawalType withdrawType,
+        CallResult<BitfinexWithdrawalResult> Withdraw(string withdrawType,
             WithdrawWallet wallet,
             decimal amount,
             string address = null,
@@ -719,7 +719,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="accountName">The name of the account</param>
         /// <param name="paymentId">Hex string for Monero transaction</param>
         /// <returns></returns>
-        Task<CallResult<BitfinexWithdrawalResult>> WithdrawAsync(WithdrawalType withdrawType, 
+        Task<CallResult<BitfinexWithdrawalResult>> WithdrawAsync(string withdrawType, 
             WithdrawWallet wallet, 
             decimal amount, 
             string address = null, 
