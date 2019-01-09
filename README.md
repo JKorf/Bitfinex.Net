@@ -183,6 +183,10 @@ client.SubscribeToTickerUpdates("tBTCETH", (data) =>
 
 
 ## Release notes
+* Version 2.0.5 - 09 jan 2018
+	* Changed withdraw type from enum to string
+	* Updated CryptoExchange.net
+
 * Version 2.0.4 - 17 dec 2018
 	* Fixed status fields when serializing
 	* Fixed reconnecting sometimes throwing an error
