@@ -405,8 +405,8 @@ namespace Bitfinex.Net
                 Amount = amount,
                 Price = price,
                 Flags = flags,
-                PriceAuxiliaryLimit = priceAuxiliaryLimit,
-                PriceTrailing = priceTrailing
+                PriceAuxiliaryLimit = priceAuxiliaryLimit.HasValue ? priceAuxiliaryLimit.Value.ToString(CultureInfo.InvariantCulture) : null,
+                PriceTrailing = priceTrailing.HasValue ? priceTrailing.Value.ToString(CultureInfo.InvariantCulture): null
             });
 
             return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);
