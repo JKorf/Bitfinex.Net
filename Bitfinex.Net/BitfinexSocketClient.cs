@@ -1026,7 +1026,7 @@ namespace Bitfinex.Net
         {
             var buffer = new byte[8];
             random.NextBytes(buffer);
-            return (long)Math.Round(Math.Abs(BitConverter.ToInt64(buffer, 0)) / 1000m);
+            return (long)Math.Round(Math.Abs(BitConverter.ToInt32(buffer, 0)) / 1000m);
         }
 
         private void Configure(BitfinexSocketClientOptions options)
