@@ -15,13 +15,13 @@ namespace Bitfinex.Net.Converters
             { OrderTypeV1.Limit, "limit" },
             { OrderTypeV1.Stop, "stop" },
             { OrderTypeV1.StopLimit, "stop limit" },
-            { OrderTypeV1.TrailingStop, "trailing-stop" },
+            { OrderTypeV1.TrailingStop, "trailing stop" },
             { OrderTypeV1.FillOrKill, "fill-or-kill" },
             { OrderTypeV1.ExchangeMarket, "exchange market" },
             { OrderTypeV1.ExchangeLimit, "exchange limit" },
             { OrderTypeV1.ExchangeStop, "exchange stop" },
             { OrderTypeV1.ExchangeStopLimit, "exchange stop limit" },
-            { OrderTypeV1.ExchangeTrailingStop, "exchange trailing-stop" },
+            { OrderTypeV1.ExchangeTrailingStop, "exchange trailing stop" },
             { OrderTypeV1.ExchangeFillOrKill, "exchange fill-or-kill" }
         };
     }
