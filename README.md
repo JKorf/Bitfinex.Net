@@ -183,6 +183,11 @@ client.SubscribeToTickerUpdates("tBTCETH", (data) =>
 
 
 ## Release notes
+* Version 2.0.6 - 01 feb 2018
+	* Fixed result parsing of placed trailing stop orders
+	* Fixed invalid cid when placing order with socket client
+	* Fixed parameters in update order
+
 * Version 2.0.5 - 09 jan 2018
 	* Changed withdraw type from enum to string
 	* Updated CryptoExchange.net
