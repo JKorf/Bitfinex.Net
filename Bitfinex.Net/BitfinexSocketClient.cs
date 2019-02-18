@@ -31,10 +31,11 @@ namespace Bitfinex.Net
             {
                 lock (nonceLock)
                 {
-                    if (lastNonce == 0)
-                        lastNonce = (long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000);
+                    var nonce = (long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000);
+                    if (nonce == lastNonce)
+                        nonce += 1;
 
-                    lastNonce += 1;
+                    lastNonce = nonce;
                     return lastNonce.ToString(CultureInfo.InvariantCulture);
                 }
             }
