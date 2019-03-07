@@ -9,10 +9,10 @@ namespace Bitfinex.Net.Converters
         public MarginFundingTypeConverter(): this(true) { }
         public MarginFundingTypeConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<MarginFundingType, string> Mapping => new Dictionary<MarginFundingType, string>
+        protected override List<KeyValuePair<MarginFundingType, string>> Mapping => new List<KeyValuePair<MarginFundingType, string>>
         {
-            { MarginFundingType.Daily, "0" },
-            { MarginFundingType.Term, "1" }
+            new KeyValuePair<MarginFundingType, string>(MarginFundingType.Daily, "0"),
+            new KeyValuePair<MarginFundingType, string>(MarginFundingType.Term, "1")
         };
     }
 }

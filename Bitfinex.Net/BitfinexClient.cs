@@ -88,6 +88,7 @@ namespace Bitfinex.Net
         public BitfinexClient(BitfinexClientOptions options) : base(options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
         {
             Configure(options);
+            postParametersPosition = PostParameters.InUri;
         }
         #endregion
 
@@ -980,7 +981,7 @@ namespace Bitfinex.Net
                 { "symbol", symbol },
                 { "dir", side == OrderSide.Buy ? 1: -1 },
                 { "rate", rate },
-                { "type", JsonConvert.SerializeObject(type, new WalletTypeConverter(false)) }
+                { "type", JsonConvert.SerializeObject(type, new WalletTypeConverter(false)).ToUpper() }
             };
 
             return await ExecuteRequest<BitfinexAvailableBalance>(GetUrl(CalcAvailableBalanceEndpoint, ApiVersion2), Constants.PostMethod, parameters, true).ConfigureAwait(false);

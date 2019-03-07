@@ -9,11 +9,11 @@ namespace Bitfinex.Net.Converters
         public WithdrawWalletConverter() : this(true) { }
         public WithdrawWalletConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<WithdrawWallet, string> Mapping => new Dictionary<WithdrawWallet, string>
+        protected override List<KeyValuePair<WithdrawWallet, string>> Mapping => new List<KeyValuePair<WithdrawWallet, string>>
         {
-            { WithdrawWallet.Deposit, "deposit" },
-            { WithdrawWallet.Exchange, "exchange" },
-            { WithdrawWallet.Trading, "trading" },
+            new KeyValuePair<WithdrawWallet, string>(WithdrawWallet.Deposit, "deposit"),
+            new KeyValuePair<WithdrawWallet, string>(WithdrawWallet.Exchange, "exchange"),
+            new KeyValuePair<WithdrawWallet, string>(WithdrawWallet.Trading, "trading")
         };
     }
 }

@@ -9,10 +9,10 @@ namespace Bitfinex.Net.Converters
         public FrequencyConverter() : this(true) { }
         public FrequencyConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<Frequency, string> Mapping => new Dictionary<Frequency, string>
+        protected override List<KeyValuePair<Frequency, string>> Mapping => new List<KeyValuePair<Frequency, string>>
         {
-            { Frequency.Realtime, "F0" },
-            { Frequency.TwoSeconds, "F1" }
+            new KeyValuePair<Frequency, string>(Frequency.Realtime, "F0"),
+            new KeyValuePair<Frequency, string>(Frequency.TwoSeconds, "F1")
         };
     }
 }

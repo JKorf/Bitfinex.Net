@@ -9,10 +9,10 @@ namespace Bitfinex.Net.Converters
         public StatSectionConverter(): this(true) { }
         public StatSectionConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<StatSection, string> Mapping => new Dictionary<StatSection, string>
+        protected override List<KeyValuePair<StatSection, string>> Mapping => new List<KeyValuePair<StatSection, string>>
         {
-            { StatSection.History, "hist" },
-            { StatSection.Last, "last" }
+            new KeyValuePair<StatSection, string>(StatSection.History, "hist"),
+            new KeyValuePair<StatSection, string>(StatSection.Last, "last")
         };
     }
 }
