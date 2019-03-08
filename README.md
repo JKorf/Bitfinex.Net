@@ -187,6 +187,13 @@ client.SubscribeToTickerUpdates("tBTCETH", (data) =>
 
 
 ## Release notes
+* Version 2.0.9 - 08 mar 2019
+	* Changed rest client returns from CallResult to WebCallResult
+	* Revert checkin of experimental code resulting in api key invalid errors
+
+* Version 2.0.8 - 07 mar 2019
+	* Updated CryptoExchange.Net
+
 * Version 2.0.7 - 18 feb 2019
 	* Updated CryptoExchange.Net
 	* Adjusted Nonce calculation
