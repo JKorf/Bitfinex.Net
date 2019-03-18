@@ -429,7 +429,7 @@ namespace Bitfinex.Net.UnitTests
                     Amount = 0.1m,
                     Symbol = "Test",
                     Id = 1,
-                    StatusString = "ACTIVE",
+                    StatusString = "CANCELED was: PARTIALLY FILLED @ 4104.2(0.0620667)",
                     TimestampCreated = new DateTime(2017,1,1),
                     TimestampUpdated = new DateTime(2017,1,1),
                     Flags = 0,
@@ -468,6 +468,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
+            var a = result.Data[0].Status;
+            var ab = result.Data[1].Status;
             Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
             Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
         }

@@ -187,6 +187,9 @@ client.SubscribeToTickerUpdates("tBTCETH", (data) =>
 
 
 ## Release notes
+* Version 2.0.10 - 18 mar 2019
+	* Fix for order status parsing
+
 * Version 2.0.9 - 08 mar 2019
 	* Changed rest client returns from CallResult to WebCallResult
 	* Revert checkin of experimental code resulting in api key invalid errors
