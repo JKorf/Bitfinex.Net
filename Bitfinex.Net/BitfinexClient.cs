@@ -233,7 +233,7 @@ namespace Bitfinex.Net
         public async Task<WebCallResult<BitfinexOrderBookEntry[]>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null)
         {
             if (limit != null && limit != 25 && limit != 100)
-                return new WebCallResult<BitfinexOrderBookEntry[]>(null, null, new ArgumentError("Limit should be either 25 or 100"));
+                return WebCallResult<BitfinexOrderBookEntry[]>.CreateErrorResult(new ArgumentError("Limit should be either 25 or 100"));
 
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("len", limit?.ToString());
@@ -803,7 +803,7 @@ namespace Bitfinex.Net
         public async Task<WebCallResult<BitfinexAccountInfo>> GetAccountInfoAsync()
         {
             var result = await ExecuteRequest<BitfinexAccountInfo[]>(GetUrl(AccountInfoEndpoint, ApiVersion1), Constants.PostMethod, null, true).ConfigureAwait(false);
-            return result.Success ? new WebCallResult<BitfinexAccountInfo>(result.ResponseStatusCode, result.Data[0], null) : new WebCallResult<BitfinexAccountInfo>(result.ResponseStatusCode, null, result.Error);
+            return result.Success ? new WebCallResult<BitfinexAccountInfo>(result.ResponseStatusCode, result.ResponseHeaders, result.Data[0], null) : WebCallResult<BitfinexAccountInfo>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
         }
 
         /// <summary>
@@ -1113,11 +1113,11 @@ namespace Bitfinex.Net
 
             var result = await ExecuteRequest<BitfinexWithdrawalResult[]>(GetUrl(WithdrawEndpoint, ApiVersion1), Constants.PostMethod, parameters, true).ConfigureAwait(false);
             if (!result.Success)
-                return new WebCallResult<BitfinexWithdrawalResult>(result.ResponseStatusCode, null, result.Error);
+                return WebCallResult<BitfinexWithdrawalResult>.CreateErrorResult(result.ResponseStatusCode, null, result.Error);
 
             if(result.Data[0].Status == "error")
-                return new WebCallResult<BitfinexWithdrawalResult>(result.ResponseStatusCode, result.Data[0], new ServerError(result.Data[0].Message));
-            return new WebCallResult<BitfinexWithdrawalResult>(result.ResponseStatusCode, result.Data[0], null);
+                return WebCallResult<BitfinexWithdrawalResult>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new ServerError(result.Data[0].Message));
+            return new WebCallResult<BitfinexWithdrawalResult>(result.ResponseStatusCode, result.ResponseHeaders, result.Data[0], null);
         }
 
         /// <summary>

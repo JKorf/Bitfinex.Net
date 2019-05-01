@@ -3,7 +3,21 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
-    public class BitfinexSubscriptionRequest: SocketRequest
+    public class BitfinexUnsubscribeRequest
+    {
+        [JsonProperty("event")]
+        public string Event { get; set; }
+        [JsonProperty("chanId")]
+        public int ChannelId { get; set; }
+
+        public BitfinexUnsubscribeRequest(int channelId)
+        {
+            Event = "unsubscribe";
+            ChannelId = channelId;
+        }
+    }
+
+    public class BitfinexSubscriptionRequest
     {
         [JsonIgnore]
         public int ChannelId { get; set; }

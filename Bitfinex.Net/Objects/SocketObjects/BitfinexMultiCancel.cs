@@ -5,7 +5,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
 {
     public class BitfinexMultiCancel
     {
-        [JsonProperty("all"), JsonConverter(typeof(BoolToIntConverter), new [] { false, true })]
+        [JsonProperty("all"), JsonConverter(typeof(BoolToIntConverter))]//, new [] { false, true })]
         public bool? All { get; set; }
         [JsonProperty("id")]
         public long[] OrderIds { get; set; }

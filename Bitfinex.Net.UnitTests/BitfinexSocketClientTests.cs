@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Binance.Net.UnitTests.TestImplementations;
 using Bitfinex.Net.UnitTests.TestImplementations;
 using CryptoExchange.Net.Authentication;
@@ -23,12 +24,12 @@ namespace Bitfinex.Net.UnitTests
         [TestCase(Precision.PrecisionLevel1, Frequency.TwoSeconds)]
         [TestCase(Precision.PrecisionLevel2, Frequency.TwoSeconds)]
         [TestCase(Precision.PrecisionLevel3, Frequency.TwoSeconds)]
-        public void SubscribingToBookUpdates_Should_SubscribeSuccessfully(Precision prec, Frequency freq)
+        public async Task SubscribingToBookUpdates_Should_SubscribeSuccessfully(Precision prec, Frequency freq)
         {
             // arrange
             var socket = new TestSocket();
             socket.CanConnect = true;
-            var client = TestHelpers.CreateSocketClient(socket);
+            var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){ LogVerbosity = LogVerbosity.Debug});
 
             BitfinexOrderBookEntry[] result;
             var subTask = client.SubscribeToBookUpdatesAsync("Test", prec, freq, 10, data => result = data);
@@ -48,10 +49,10 @@ namespace Bitfinex.Net.UnitTests
             // act
             socket.InvokeMessage(subResponse);
 
-            subTask.Wait(5000);
+            var taskResult = await subTask.ConfigureAwait(false);
 
             // assert
-            Assert.IsTrue(subTask.Result.Success);
+            Assert.IsTrue(taskResult.Success);
         }
 
         [TestCase(Precision.PrecisionLevel0, Frequency.Realtime)]

@@ -9,7 +9,7 @@ using CryptoExchange.Net.Sockets;
 
 namespace Bitfinex.Net.Interfaces
 {
-    public interface IBitfinexSocketClient
+    public interface IBitfinexSocketClient: ISocketClient
     {
         /// <summary>
         /// Subscribes to ticker updates for a symbol
@@ -109,7 +109,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
         /// <returns></returns>
         CallResult<UpdateSubscription> SubscribeToTradingUpdates(
-            Action<BitfinexSocketEvent<BitfinexOrder[]>> orderHandler, 
+            Action<BitfinexSocketEvent<BitfinexOrder[]>> orderHandler,
             Action<BitfinexSocketEvent<BitfinexTradeDetails[]>> tradeHandler,
             Action<BitfinexSocketEvent<BitfinexPosition[]>> positionHandler);
 
@@ -121,7 +121,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
         /// <returns></returns>
         Task<CallResult<UpdateSubscription>> SubscribeToTradingUpdatesAsync(
-            Action<BitfinexSocketEvent<BitfinexOrder[]>> orderHandler, 
+            Action<BitfinexSocketEvent<BitfinexOrder[]>> orderHandler,
             Action<BitfinexSocketEvent<BitfinexTradeDetails[]>> tradeHandler,
             Action<BitfinexSocketEvent<BitfinexPosition[]>> positionHandler);
 
@@ -137,7 +137,7 @@ namespace Bitfinex.Net.Interfaces
         /// </summary>
         /// <param name="walletHandler">Data handler for wallet updates</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToWalletUpdatesAsync( Action<BitfinexSocketEvent<BitfinexWallet[]>> walletHandler);
+        Task<CallResult<UpdateSubscription>> SubscribeToWalletUpdatesAsync(Action<BitfinexSocketEvent<BitfinexWallet[]>> walletHandler);
 
         /// <summary>
         /// Subscribe to funding information updates
@@ -222,18 +222,6 @@ namespace Bitfinex.Net.Interfaces
         Task<CallResult<BitfinexOrder>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? amount = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null);
 
         /// <summary>
-        /// Cancel all open orders
-        /// </summary>
-        /// <returns></returns>
-        CallResult<bool> CancelAllOrders();
-
-        /// <summary>
-        /// Cancel all open orders
-        /// </summary>
-        /// <returns></returns>
-        Task<CallResult<bool>> CancelAllOrdersAsync();
-
-        /// <summary>
         /// Cancels an order
         /// </summary>
         /// <param name="orderId">The id of the order to cancel</param>
@@ -302,25 +290,5 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
         /// <returns>True if successfully committed on server</returns>
         Task<CallResult<bool>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds);
-
-        /// <summary>
-        /// The factory for creating sockets. Used for unit testing
-        /// </summary>
-        IWebsocketFactory SocketFactory { get; set; }
-
-        /// <summary>
-        /// Unsubscribe from a stream
-        /// </summary>
-        /// <param name="subscription">The subscription to unsubscribe</param>
-        /// <returns></returns>
-        Task Unsubscribe(UpdateSubscription subscription);
-
-        /// <summary>
-        /// Unsubscribe all subscriptions
-        /// </summary>
-        /// <returns></returns>
-        Task UnsubscribeAll();
-
-        void Dispose();
     }
 }

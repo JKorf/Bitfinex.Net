@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
-    public class BitfinexAuthentication: SocketRequest
+    public class BitfinexAuthentication: object
     {
         [JsonProperty("event")]
         public string Event { get; set; }

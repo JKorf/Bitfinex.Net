@@ -13,27 +13,11 @@ namespace Bitfinex.Net.Objects
 
     public class BitfinexSocketClientOptions: SocketClientOptions
     {
-        /// <summary>
-        /// The time to wait for a socket response
-        /// </summary>
-        public TimeSpan SocketResponseTimeout { get; set; } = TimeSpan.FromSeconds(10);
-        /// <summary>
-        /// The time after which the connection is assumed to be dropped
-        /// </summary>
-        public TimeSpan SocketNoDataTimeout { get; set; } = TimeSpan.FromSeconds(30);
-
-
         public BitfinexSocketClientOptions()
         {
+            SocketSubscriptionsCombineTarget = 10;
             BaseAddress = "wss://api.bitfinex.com/ws/2";
-        }        
-
-        public BitfinexSocketClientOptions Copy()
-        {
-            var copy = Copy<BitfinexSocketClientOptions>();
-            copy.SocketResponseTimeout = SocketResponseTimeout;
-            copy.SocketNoDataTimeout = SocketNoDataTimeout;
-            return copy;
+            SocketNoDataTimeout = TimeSpan.FromSeconds(30);
         }
     }
 }

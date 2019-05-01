@@ -60,14 +60,14 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             return self == to;
         }
 
-        public static IBitfinexSocketClient CreateAuthenticatedSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
+        public static BitfinexSocketClient CreateAuthenticatedSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
         {
             return (BitfinexSocketClient)CreateSocketClient(socket, options ?? new BitfinexSocketClientOptions() { ApiCredentials = new ApiCredentials("Test", "Test"), LogVerbosity = LogVerbosity.Debug});
         }
 
-        public static IBitfinexSocketClient CreateSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
+        public static BitfinexSocketClient CreateSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
         {
-            IBitfinexSocketClient client;
+            BitfinexSocketClient client;
             client = options != null ? new BitfinexSocketClient(options) : new BitfinexSocketClient();
             client.SocketFactory = Mock.Of<IWebsocketFactory>();
             Mock.Get(client.SocketFactory).Setup(f => f.CreateWebsocket(It.IsAny<Log>(), It.IsAny<string>())).Returns(socket);

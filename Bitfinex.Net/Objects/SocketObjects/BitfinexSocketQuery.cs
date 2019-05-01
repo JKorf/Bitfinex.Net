@@ -6,7 +6,7 @@ using System.Linq;
 namespace Bitfinex.Net.Objects.SocketObjects
 {
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexSocketQuery: SocketRequest
+    public class BitfinexSocketQuery
     {
         [JsonIgnore]
         public string Id { get; set; }

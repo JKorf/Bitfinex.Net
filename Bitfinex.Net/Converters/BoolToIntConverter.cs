@@ -24,14 +24,14 @@ namespace Bitfinex.Net.Converters
         {
             if (asInt)
             {
-                writer.WriteValue((bool)value ? 1 : 0);
+                writer.WriteValue((bool?)value == true ? 1 : 0);
             }
             else
             {
                 if (quotes)
-                    writer.WriteValue((bool)value ? "1" : "0");
+                    writer.WriteValue((bool?)value == true ? "1" : "0");
                 else
-                    writer.WriteRawValue((bool)value ? "1" : "0");
+                    writer.WriteRawValue((bool?)value == true ? "1" : "0");
             }
         }
 
