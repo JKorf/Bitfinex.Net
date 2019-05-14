@@ -32,7 +32,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){ LogVerbosity = LogVerbosity.Debug});
 
             BitfinexOrderBookEntry[] result;
-            var subTask = client.SubscribeToBookUpdatesAsync("Test", prec, freq, 10, data => result = data);
+            var subTask = client.SubscribeToBookUpdatesAsync("Test", prec, freq, 25, data => result = data);
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -40,7 +40,7 @@ namespace Bitfinex.Net.UnitTests
                 Event = "subscribed",
                 ChannelId = 1,
                 Frequency = JsonConvert.SerializeObject(freq, new FrequencyConverter(false)),
-                Length = 10,
+                Length = 25,
                 Pair = "Test",
                 Precision = JsonConvert.SerializeObject(prec, new PrecisionConverter(false)),
                 Symbol = "Test"
@@ -68,10 +68,10 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var socket = new TestSocket();
             socket.CanConnect = true;
-            var client = TestHelpers.CreateSocketClient(socket);
+            var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){LogVerbosity =LogVerbosity.Debug});
 
             BitfinexOrderBookEntry[] result = null;
-            var subTask = client.SubscribeToBookUpdatesAsync("Test", prec, freq, 10, data => result = data);
+            var subTask = client.SubscribeToBookUpdatesAsync("Test", prec, freq, 25, data => result = data);
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -79,7 +79,7 @@ namespace Bitfinex.Net.UnitTests
                 Event = "subscribed",
                 ChannelId = 1,
                 Frequency = JsonConvert.SerializeObject(freq, new FrequencyConverter(false)),
-                Length = 10,
+                Length = 25,
                 Pair = "Test",
                 Precision = JsonConvert.SerializeObject(prec, new PrecisionConverter(false)),
                 Symbol = "Test"
@@ -714,6 +714,16 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             socket.InvokeMessage("{\"event\":\"info\", \"code\": 20051}");
+            Thread.Sleep(100);
+            socket.InvokeMessage(new CandleSubscriptionResponse()
+            {
+                Channel = "candles",
+                Event = "subscribed",
+                ChannelId = 1,
+                Symbol = "Test",
+                Key = "trade:" + JsonConvert.SerializeObject(TimeFrame.FiveMinute, new TimeFrameConverter(false)) + ":Test"
+            });
+
             var triggered = rstEvent.WaitOne(1000);
 
             // assert

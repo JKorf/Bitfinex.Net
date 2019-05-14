@@ -105,13 +105,13 @@ namespace Bitfinex.Net.UnitTests
             {
                 new BitfinexOrderBookEntry()
                 {
-                    Amount = 0.1m,
+                    Quantity = 0.1m,
                     Price = 0.2m,
                     Count = 1
                 },
                 new BitfinexOrderBookEntry()
                 {
-                    Amount = 0.3m,
+                    Quantity = 0.3m,
                     Price = 0.4m,
                     Count = 2
                 }
