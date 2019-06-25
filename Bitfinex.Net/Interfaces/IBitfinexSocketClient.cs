@@ -149,7 +149,7 @@ namespace Bitfinex.Net.Interfaces
         CallResult<UpdateSubscription> SubscribeToFundingUpdates(
             Action<BitfinexSocketEvent<BitfinexFundingOffer[]>> fundingOfferHandler,
             Action<BitfinexSocketEvent<BitfinexFundingCredit[]>> fundingCreditHandler,
-            Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> fundingLoanHandler);
+            Action<BitfinexSocketEvent<BitfinexFunding[]>> fundingLoanHandler);
 
         /// <summary>
         /// Subscribe to funding information updates
@@ -161,7 +161,7 @@ namespace Bitfinex.Net.Interfaces
         Task<CallResult<UpdateSubscription>> SubscribeToFundingUpdatesAsync(
             Action<BitfinexSocketEvent<BitfinexFundingOffer[]>> fundingOfferHandler,
             Action<BitfinexSocketEvent<BitfinexFundingCredit[]>> fundingCreditHandler,
-            Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> fundingLoanHandler);
+            Action<BitfinexSocketEvent<BitfinexFunding[]>> fundingLoanHandler);
 
         /// <summary>
         /// Places a new order

@@ -299,7 +299,7 @@ namespace Bitfinex.Net
         public CallResult<UpdateSubscription> SubscribeToFundingUpdates(
             Action<BitfinexSocketEvent<BitfinexFundingOffer[]>> fundingOfferHandler,
             Action<BitfinexSocketEvent<BitfinexFundingCredit[]>> fundingCreditHandler,
-            Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> fundingLoanHandler) => SubscribeToFundingUpdatesAsync(fundingOfferHandler, fundingCreditHandler, fundingLoanHandler).Result;
+            Action<BitfinexSocketEvent<BitfinexFunding[]>> fundingLoanHandler) => SubscribeToFundingUpdatesAsync(fundingOfferHandler, fundingCreditHandler, fundingLoanHandler).Result;
         /// <summary>
         /// Subscribe to funding information updates
         /// </summary>
@@ -310,7 +310,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<UpdateSubscription>> SubscribeToFundingUpdatesAsync(
             Action<BitfinexSocketEvent<BitfinexFundingOffer[]>> fundingOfferHandler,
             Action<BitfinexSocketEvent<BitfinexFundingCredit[]>> fundingCreditHandler,
-            Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> fundingLoanHandler)
+            Action<BitfinexSocketEvent<BitfinexFunding[]>> fundingLoanHandler)
         {
             var tokenHandler = new Action<JToken>(tokenData =>
             {

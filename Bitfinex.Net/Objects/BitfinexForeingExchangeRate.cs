@@ -4,12 +4,12 @@ using Newtonsoft.Json;
 namespace Bitfinex.Net.Objects
 {
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexAvailableBalance
+    public class BitfinexForeignExchangeRate
     {
         /// <summary>
-        /// The available balance
+        /// The current exchange rate
         /// </summary>
         [ArrayProperty(0)]
-        public decimal AvailableBalance { get; set; }
+        public decimal CurrentRate { get; set; }
     }
 }

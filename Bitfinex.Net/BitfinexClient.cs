@@ -15,7 +15,7 @@ using Bitfinex.Net.Interfaces;
 
 namespace Bitfinex.Net
 {
-    public class BitfinexClient : RestClient, IBitfinexClient
+    public class BitfinexClient: RestClient, IBitfinexClient
     {
         #region fields
 
@@ -26,8 +26,11 @@ namespace Bitfinex.Net
         private const string ApiVersion2 = "2";
 
         private const string StatusEndpoint = "platform/status";
+        private const string FundingBookEndpoint = "lendbook/{}";
+        private const string LendsEndpoint = "lends/{}";
         private const string SymbolsEndpoint = "symbols";
         private const string SymbolDetailsEndpoint = "symbols_details";
+        private const string CurrenciesEndpoint = "conf/pub:map:currency:label";
         private const string TickersEndpoint = "tickers";
         private const string TradesEndpoint = "trades/{}/hist";
         private const string OrderBookEndpoint = "book/{}/{}";
@@ -35,6 +38,7 @@ namespace Bitfinex.Net
         private const string LastCandleEndpoint = "candles/trade:{}:{}/last";
         private const string CandlesEndpoint = "candles/trade:{}:{}/hist";
         private const string MarketAverageEndpoint = "calc/trade/avg";
+        private const string ForeignExchangeEndpoint = "calc/fx";
 
         private const string WalletsEndpoint = "auth/r/wallets";
         private const string CalcAvailableBalanceEndpoint = "auth/calc/order/avail";
@@ -43,8 +47,11 @@ namespace Bitfinex.Net
         private const string OrderTradesEndpoint = "auth/r/order/{}:{}/trades";
         private const string MyTradesEndpoint = "auth/r/trades/{}/hist";
         private const string UserInfoEndpoint = "auth/r/info/user";
+        private const string LedgerEntriesEndpoint = "auth/r/ledgers/{}/hist";
 
         private const string ActivePositionsEndpoint = "auth/r/positions";
+        private const string PositionHistoryEndpoint = "auth/r/positions/hist";
+        private const string PositionAuditEndpoint = "auth/r/positions/audit";
         private const string ActiveFundingOffersEndpoint = "auth/r/funding/offers/{}";
         private const string FundingOfferHistoryEndpoint = "auth/r/funding/offers/{}/hist";
         private const string FundingLoansEndpoint = "auth/r/funding/loans/{}";
@@ -64,13 +71,23 @@ namespace Bitfinex.Net
         private const string DeleteAlertEndpoint = "auth/w/alert/price:{}:{}/del";
 
         private const string AccountInfoEndpoint = "account_infos";
+        private const string SummaryEndpoint = "summary";
         private const string WithdrawalFeeEndpoint = "account_fees";
         private const string PlaceOrderEndpoint = "order/new";
         private const string CancelOrderEndpoint = "order/cancel";
         private const string CancelAllOrderEndpoint = "order/cancel/all";
         private const string OrderStatusEndpoint = "order/status";
 
+        private const string DepositAddressEndpoint = "deposit/new";
+        private const string TransferEndpoint = "transfer";
         private const string WithdrawEndpoint = "withdraw";
+
+        private const string ClaimPositionEndpoint = "position/claim";
+        private const string NewOfferEndpoint = "offer/new";
+        private const string CancelOfferEndpoint = "offer/cancel";
+        private const string GetOfferEndpoint = "offer/status";
+        private const string CloseMarginFundingEndpoint = "funding/close";
+        private const string ClosePositionEndpoint = "position/close";
         #endregion
 
         #region constructor/destructor
@@ -128,34 +145,23 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Gets a list of all symbols
+        /// Gets a list of supported currencies
         /// </summary>
         /// <returns></returns>
-        public WebCallResult<string[]> GetSymbols() => GetSymbolsAsync().Result;
+        public WebCallResult<BitfinexCurrency[]> GetCurrencies() => GetCurrenciesAsync().Result;
 
         /// <summary>
-        /// Gets a list of all symbols
+        /// Gets a list of supported currencies
         /// </summary>
         /// <returns></returns>
-        public async Task<WebCallResult<string[]>> GetSymbolsAsync()
+        public async Task<WebCallResult<BitfinexCurrency[]>> GetCurrenciesAsync(params string[] symbols)
         {
-            return await ExecuteRequest<string[]>(GetUrl(SymbolsEndpoint, ApiVersion1)).ConfigureAwait(false);
+            var result = await ExecuteRequest<List<BitfinexCurrency[]>>(GetUrl(CurrenciesEndpoint, ApiVersion2), Constants.GetMethod).ConfigureAwait(false);
+            if(!result.Success)
+                return WebCallResult<BitfinexCurrency[]>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            return new WebCallResult<BitfinexCurrency[]>(result.ResponseStatusCode, result.ResponseHeaders, result.Data[0], null);
         }
 
-        /// <summary>
-        /// Gets details of all symbols
-        /// </summary>
-        /// <returns></returns>
-        public WebCallResult<BitfinexSymbolDetails[]> GetSymbolDetails() => GetSymbolDetailsAsync().Result;
-
-        /// <summary>
-        /// Gets details of all symbols
-        /// </summary>
-        /// <returns></returns>
-        public async Task<WebCallResult<BitfinexSymbolDetails[]>> GetSymbolDetailsAsync()
-        {
-            return await ExecuteRequest<BitfinexSymbolDetails[]>(GetUrl(SymbolDetailsEndpoint, ApiVersion1)).ConfigureAwait(false);
-        }
 
         /// <summary>
         /// Returns basic market data for the provided symbols
@@ -368,6 +374,29 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
+        /// Returns the exchange rate for the currencies
+        /// </summary>
+        /// <param name="currency1">The first currency</param>
+        /// <param name="currency2">The second currency</param>
+        public WebCallResult<BitfinexForeignExchangeRate> GetForeignExchangeRate(string currency1, string currency2) => GetForeignExchangeRateAsync(currency1, currency2).Result;
+
+        /// <summary>
+        /// Returns the exchange rate for the currencies
+        /// </summary>
+        /// <param name="currency1">The first currency</param>
+        /// <param name="currency2">The second currency</param>
+        public async Task<WebCallResult<BitfinexForeignExchangeRate>> GetForeignExchangeRateAsync(string currency1, string currency2)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "ccy1", currency1 },
+                { "ccy2", currency2 }
+            };
+
+            return await ExecuteRequest<BitfinexForeignExchangeRate>(GetUrl(ForeignExchangeEndpoint, ApiVersion2), Constants.PostMethod, parameters).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Get all funds
         /// </summary>
         /// <returns></returns>
@@ -488,6 +517,63 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
+        /// Get a list of historical positions
+        /// </summary>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexPositionExtended[]> GetPositionHistory(DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetPositionHistoryAsync(startTime, endTime, limit).Result;
+
+        /// <summary>
+        /// Get a list of historical positions
+        /// </summary>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexPositionExtended[]>> GetPositionHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
+            parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
+
+            return await ExecuteRequest<BitfinexPositionExtended[]>(GetUrl(PositionHistoryEndpoint, ApiVersion2), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get positions by id
+        /// </summary>
+        /// <param name="ids">The id's of positions to return</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexPositionExtended[]> GetPositionsById(string[] ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetPositionsByIdAsync(ids, startTime, endTime, limit).Result;
+
+        /// <summary>
+        /// Get positions by id
+        /// </summary>
+        /// <param name="ids">The id's of positions to return</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexPositionExtended[]>> GetPositionsByIdAsync(string[] ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "id", ids }
+            };
+            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
+            parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
+
+            return await ExecuteRequest<BitfinexPositionExtended[]>(GetUrl(PositionAuditEndpoint, ApiVersion2), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Get the active funding offers
         /// </summary>
         /// <param name="symbol">The symbol to return the funding offer for</param>
@@ -537,16 +623,16 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="symbol">The symbol to get the funding loans for</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexFundingLoan[]> GetFundingLoans(string symbol) => GetFundingLoansAsync(symbol).Result;
+        public WebCallResult<BitfinexFunding[]> GetFundingLoans(string symbol) => GetFundingLoansAsync(symbol).Result;
 
         /// <summary>
         /// Get the funding loans
         /// </summary>
         /// <param name="symbol">The symbol to get the funding loans for</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitfinexFundingLoan[]>> GetFundingLoansAsync(string symbol)
+        public async Task<WebCallResult<BitfinexFunding[]>> GetFundingLoansAsync(string symbol)
         {
-            return await ExecuteRequest<BitfinexFundingLoan[]>(GetUrl(FillPathParameter(FundingLoansEndpoint, symbol), ApiVersion2), Constants.PostMethod, null, true).ConfigureAwait(false);
+            return await ExecuteRequest<BitfinexFunding[]>(GetUrl(FillPathParameter(FundingLoansEndpoint, symbol), ApiVersion2), Constants.PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -557,7 +643,7 @@ namespace Bitfinex.Net
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexFundingLoan[]> GetFundingLoansHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetFundingLoansHistoryAsync(symbol, startTime, endTime, limit).Result;
+        public WebCallResult<BitfinexFunding[]> GetFundingLoansHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetFundingLoansHistoryAsync(symbol, startTime, endTime, limit).Result;
 
         /// <summary>
         /// Get the funding loan history
@@ -567,14 +653,14 @@ namespace Bitfinex.Net
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitfinexFundingLoan[]>> GetFundingLoansHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
+        public async Task<WebCallResult<BitfinexFunding[]>> GetFundingLoansHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
-            return await ExecuteRequest<BitfinexFundingLoan[]>(GetUrl(FillPathParameter(FundingLoansHistoryEndpoint, symbol), ApiVersion2), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+            return await ExecuteRequest<BitfinexFunding[]>(GetUrl(FillPathParameter(FundingLoansHistoryEndpoint, symbol), ApiVersion2), Constants.PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -602,7 +688,7 @@ namespace Bitfinex.Net
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexFundingCredit[]> GetFundingCreditsHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetFundingCreditsHistoryAsyncTask(symbol, startTime, endTime, limit).Result;
+        public WebCallResult<BitfinexFundingCredit[]> GetFundingCreditsHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetFundingCreditsHistoryAsync(symbol, startTime, endTime, limit).Result;
 
         /// <summary>
         /// Get the funding credits history
@@ -612,7 +698,7 @@ namespace Bitfinex.Net
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitfinexFundingCredit[]>> GetFundingCreditsHistoryAsyncTask(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
+        public async Task<WebCallResult<BitfinexFundingCredit[]>> GetFundingCreditsHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
@@ -787,9 +873,159 @@ namespace Bitfinex.Net
         {
             return await ExecuteRequest<BitfinexSuccessResult>(GetUrl(FillPathParameter(DeleteAlertEndpoint, symbol, price.ToString(CultureInfo.InvariantCulture)), ApiVersion2), Constants.PostMethod, null, true).ConfigureAwait(false);
         }
+
+        /// <summary>
+        /// Calculates the available balance for a symbol at a specific rate
+        /// </summary>
+        /// <param name="symbol">The symbol</param>
+        /// <param name="side">Buy or sell</param>
+        /// <param name="rate">The rate/price</param>
+        /// <param name="type">The wallet type</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexAvailableBalance> GetAvailableBalance(string symbol, OrderSide side, decimal rate, WalletType type) => GetAvailableBalanceAsync(symbol, side, rate, type).Result;
+
+        /// <summary>
+        /// Calculates the available balance for a symbol at a specific rate
+        /// </summary>
+        /// <param name="symbol">The symbol</param>
+        /// <param name="side">Buy or sell</param>
+        /// <param name="rate">The rate/price</param>
+        /// <param name="type">The wallet type</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal rate, WalletType type)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "symbol", symbol },
+                { "dir", side == OrderSide.Buy ? 1: -1 },
+                { "rate", rate },
+                { "type", JsonConvert.SerializeObject(type, new WalletTypeConverter(false)).ToUpper() }
+            };
+
+            return await ExecuteRequest<BitfinexAvailableBalance>(GetUrl(CalcAvailableBalanceEndpoint, ApiVersion2), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get changes in your balance for a currency
+        /// </summary>
+        /// <param name="currency">The currency to check the ledger for</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexLedgerEntry[]> GetLedgerEntries(string currency, DateTime? startTime = null, DateTime? endTime = null, int? limit = null) => GetLedgerEntriesAsync(currency, startTime, endTime, limit).Result;
+
+        /// <summary>
+        /// Get changes in your balance for a currency
+        /// </summary>
+        /// <param name="currency">The currency to check the ledger for</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string currency, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
+            parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
+
+            return await ExecuteRequest<BitfinexLedgerEntry[]>(GetUrl(FillPathParameter(LedgerEntriesEndpoint, currency), ApiVersion2), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+        }
+        
+        /// <summary>
+        /// Gets information about the user associated with the api key/secret
+        /// </summary>
+        /// <returns></returns>
+        public WebCallResult<BitfinexUserInfo> GetUserInfo() => GetUserInfoAsync().Result;
+
+        /// <summary>
+        /// Gets information about the user associated with the api key/secret
+        /// </summary>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexUserInfo>> GetUserInfoAsync()
+        {
+            return await ExecuteRequest<BitfinexUserInfo>(GetUrl(UserInfoEndpoint, ApiVersion2), Constants.PostMethod, signed: true).ConfigureAwait(false);
+        }
         #endregion
 
         #region Version1
+
+        /// <summary>
+        /// Gets the margin funding book
+        /// </summary>
+        /// <param name="currency">Currency to get the book for</param>
+        /// <param name="limit">Limit of the results</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexFundingBook> GetFundingBook(string currency, int? limit = null) => GetFundingBookAsync(currency, limit).Result;
+
+        /// <summary>
+        /// Gets the margin funding book
+        /// </summary>
+        /// <param name="currency">Currency to get the book for</param>
+        /// <param name="limit">Limit of the results</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexFundingBook>> GetFundingBookAsync(string currency, int? limit = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("limit_bids", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("limit_asks", limit?.ToString(CultureInfo.InvariantCulture));
+            return await ExecuteRequest<BitfinexFundingBook>(GetUrl(FillPathParameter(FundingBookEndpoint, currency), ApiVersion1)).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Gets the most recent lends
+        /// </summary>
+        /// <param name="currency">Currency to get the book for</param>
+        /// <param name="startTime">Return data after this time</param>
+        /// <param name="limit">Limit of the results</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexLend[]> GetLends(string currency, DateTime? startTime = null, int? limit = null) => GetLendsAsync(currency, startTime, limit).Result;
+
+        /// <summary>
+        /// Gets the most recent lends
+        /// </summary>
+        /// <param name="currency">Currency to get the book for</param>
+        /// <param name="startTime">Return data after this time</param>
+        /// <param name="limit">Limit of the results</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexLend[]>> GetLendsAsync(string currency, DateTime? startTime = null, int ? limit = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("limit_lends", limit?.ToString(CultureInfo.InvariantCulture));
+            return await ExecuteRequest<BitfinexLend[]>(GetUrl(FillPathParameter(LendsEndpoint, currency), ApiVersion1)).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Gets a list of all symbols
+        /// </summary>
+        /// <returns></returns>
+        public WebCallResult<string[]> GetSymbols() => GetSymbolsAsync().Result;
+
+        /// <summary>
+        /// Gets a list of all symbols
+        /// </summary>
+        /// <returns></returns>
+        public async Task<WebCallResult<string[]>> GetSymbolsAsync()
+        {
+            return await ExecuteRequest<string[]>(GetUrl(SymbolsEndpoint, ApiVersion1)).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Gets details of all symbols
+        /// </summary>
+        /// <returns></returns>
+        public WebCallResult<BitfinexSymbolDetails[]> GetSymbolDetails() => GetSymbolDetailsAsync().Result;
+
+        /// <summary>
+        /// Gets details of all symbols
+        /// </summary>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexSymbolDetails[]>> GetSymbolDetailsAsync()
+        {
+            return await ExecuteRequest<BitfinexSymbolDetails[]>(GetUrl(SymbolDetailsEndpoint, ApiVersion1)).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Get information about your account
         /// </summary>
@@ -819,6 +1055,21 @@ namespace Bitfinex.Net
         public async Task<WebCallResult<BitfinexWithdrawalFees>> GetWithdrawalFeesAsync()
         {
             return await ExecuteRequest<BitfinexWithdrawalFees>(GetUrl(WithdrawalFeeEndpoint, ApiVersion1), Constants.PostMethod, null, true).ConfigureAwait(false);
+        }
+        
+        /// <summary>
+        /// Get 30-day summary on trading volume and margin funding
+        /// </summary>
+        /// <returns></returns>
+        public WebCallResult<Bitfinex30DaySummary> Get30DaySummary() => Get30DaySummaryAsync().Result;
+
+        /// <summary>
+        /// Get 30-day summary on trading volume and margin funding
+        /// </summary>
+        /// <returns></returns>
+        public async Task<WebCallResult<Bitfinex30DaySummary>> Get30DaySummaryAsync()
+        {
+            return await ExecuteRequest<Bitfinex30DaySummary>(GetUrl(SummaryEndpoint, ApiVersion1), Constants.PostMethod, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -954,36 +1205,63 @@ namespace Bitfinex.Net
 
             return await ExecuteRequest<BitfinexPlacedOrder>(GetUrl(OrderStatusEndpoint, ApiVersion1), Constants.PostMethod, parameters, true).ConfigureAwait(false);
         }
+        
+        /// <summary>
+        /// Gets a deposit address for a currency
+        /// </summary>
+        /// <param name="currency">The currency to get address for</param>
+        /// <param name="toWallet">The type of wallet the deposit is for</param>
+        /// <param name="forceNew">If true a new address will be generated (previous addresses will still be valid)</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexDepositAddress> GetDepositAddress(string currency, WithdrawWallet toWallet, bool? forceNew = null) => GetDepositAddressAsync(currency, toWallet, forceNew).Result;
 
         /// <summary>
-        /// Calculates the available balance for a symbol at a specific rate
+        /// Gets a deposit address for a currency
         /// </summary>
-        /// <param name="symbol">The symbol</param>
-        /// <param name="side">Buy or sell</param>
-        /// <param name="rate">The rate/price</param>
-        /// <param name="type">The wallet type</param>
+        /// <param name="currency">The currency to get address for</param>
+        /// <param name="toWallet">The type of wallet the deposit is for</param>
+        /// <param name="forceNew">If true a new address will be generated (previous addresses will still be valid)</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexAvailableBalance> GetAvailableBalance(string symbol, OrderSide side, decimal rate, WalletType type) => GetAvailableBalanceAsync(symbol, side, rate, type).Result;
-
-        /// <summary>
-        /// Calculates the available balance for a symbol at a specific rate
-        /// </summary>
-        /// <param name="symbol">The symbol</param>
-        /// <param name="side">Buy or sell</param>
-        /// <param name="rate">The rate/price</param>
-        /// <param name="type">The wallet type</param>
-        /// <returns></returns>
-        public async Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal rate, WalletType type)
+        public async Task<WebCallResult<BitfinexDepositAddress>> GetDepositAddressAsync(string currency, WithdrawWallet toWallet, bool? forceNew = null)
         {
             var parameters = new Dictionary<string, object>
             {
-                { "symbol", symbol },
-                { "dir", side == OrderSide.Buy ? 1: -1 },
-                { "rate", rate },
-                { "type", JsonConvert.SerializeObject(type, new WalletTypeConverter(false)).ToUpper() }
+                { "method", currency },
+                { "wallet_name", JsonConvert.SerializeObject(toWallet, new WithdrawWalletConverter(false)) }
             };
+            parameters.AddOptionalParameter("renew", forceNew.HasValue? JsonConvert.SerializeObject(toWallet, new BoolToIntConverter(false)): null);
 
-            return await ExecuteRequest<BitfinexAvailableBalance>(GetUrl(CalcAvailableBalanceEndpoint, ApiVersion2), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+            return await ExecuteRequest<BitfinexDepositAddress>(GetUrl(DepositAddressEndpoint, ApiVersion1), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Transfers funds from one wallet to another
+        /// </summary>
+        /// <param name="currency">The currency to transfer</param>
+        /// <param name="fromWallet">The wallet to remove funds from</param>
+        /// <param name="toWallet">The wallet to add funds to</param>
+        /// <param name="amount">The amount to transfer</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexTransferResult> WalletTransfer(string currency, decimal amount, WithdrawWallet fromWallet, WithdrawWallet toWallet) => WalletTransferAsync(currency, amount, fromWallet, toWallet).Result;
+
+        /// <summary>
+        /// Transfers funds from one wallet to another
+        /// </summary>
+        /// <param name="currency">The currency to transfer</param>
+        /// <param name="fromWallet">The wallet to remove funds from</param>
+        /// <param name="toWallet">The wallet to add funds to</param>
+        /// <param name="amount">The amount to transfer</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexTransferResult>> WalletTransferAsync(string currency, decimal amount, WithdrawWallet fromWallet, WithdrawWallet toWallet)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "currency", currency },
+                { "amount", amount },
+                { "walletfrom", JsonConvert.SerializeObject(fromWallet, new WithdrawWalletConverter(false)) },
+                { "walletto", JsonConvert.SerializeObject(toWallet, new WithdrawWalletConverter(false)) },
+            };
+            return await ExecuteRequest<BitfinexTransferResult>(GetUrl(TransferEndpoint, ApiVersion1), Constants.PostMethod, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1115,27 +1393,151 @@ namespace Bitfinex.Net
             if (!result.Success)
                 return WebCallResult<BitfinexWithdrawalResult>.CreateErrorResult(result.ResponseStatusCode, null, result.Error);
 
-            if(result.Data[0].Status == "error")
+            if(!result.Data[0].Success)
                 return WebCallResult<BitfinexWithdrawalResult>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new ServerError(result.Data[0].Message));
             return new WebCallResult<BitfinexWithdrawalResult>(result.ResponseStatusCode, result.ResponseHeaders, result.Data[0], null);
         }
+        
+        /// <summary>
+        /// Claim a position
+        /// </summary>
+        /// <param name="id">The id of the position to claim</param>
+        /// <param name="amount">The (partial) amount to be claimed</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexDepositAddress> ClaimPosition(long id, decimal amount) => ClaimPositionAsync(id, amount).Result;
 
         /// <summary>
-        /// Gets information about the user associated with the api key/secret
+        /// Claim a position
         /// </summary>
+        /// <param name="id">The id of the position to claim</param>
+        /// <param name="amount">The (partial) amount to be claimed</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexUserInfo> GetUserInfo() => GetUserInfoAsync().Result;
-
-        /// <summary>
-        /// Gets information about the user associated with the api key/secret
-        /// </summary>
-        /// <returns></returns>
-        public async Task<WebCallResult<BitfinexUserInfo>> GetUserInfoAsync()
+        public async Task<WebCallResult<BitfinexDepositAddress>> ClaimPositionAsync(long id, decimal amount)
         {
-            return await ExecuteRequest<BitfinexUserInfo>(GetUrl(UserInfoEndpoint, ApiVersion2), Constants.PostMethod, signed:true).ConfigureAwait(false);
+            var parameters = new Dictionary<string, object>
+            {
+                { "position_id", id },
+                { "amount", amount }
+            };
+            return await ExecuteRequest<BitfinexDepositAddress>(GetUrl(ClaimPositionEndpoint, ApiVersion1), Constants.PostMethod, parameters, true).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Submit a new order
+        /// </summary>
+        /// <param name="currency">The currency</param>
+        /// <param name="amount">The amount</param>
+        /// <param name="rate">Rate to lend or borrow at in percent per 365 days (0 for FRR)</param>
+        /// <param name="period">Number of days</param>
+        /// <param name="direction">Direction of the offer</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexOffer> NewOffer(string currency, decimal amount, decimal rate, int period, FundingType direction) => NewOfferAsync(currency, amount, rate, period, direction).Result;
 
+        /// <summary>
+        /// Submit a new order
+        /// </summary>
+        /// <param name="currency">The currency</param>
+        /// <param name="amount">The amount</param>
+        /// <param name="rate">Rate to lend or borrow at in percent per 365 days (0 for FRR)</param>
+        /// <param name="period">Number of days</param>
+        /// <param name="direction">Direction of the offer</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexOffer>> NewOfferAsync(string currency, decimal amount, decimal rate, int period, FundingType direction)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "currency", currency },
+                { "amount", amount },
+                { "rate", rate },
+                { "period", period },
+                { "direction", JsonConvert.SerializeObject(direction, new FundingTypeConverter(false)) },
+            };
+            return await ExecuteRequest<BitfinexOffer>(GetUrl(NewOfferEndpoint, ApiVersion1), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Cancel an offer
+        /// </summary>
+        /// <param name="offerId">The id of the offer to cancel</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexOffer> CancelOffer(long offerId) => CancelOfferAsync(offerId).Result;
+
+        /// <summary>
+        /// Cancel an offer
+        /// </summary>
+        /// <param name="offerId">The id of the offer to cancel</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexOffer>> CancelOfferAsync(long offerId)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "offer_id", offerId }
+            };
+            return await ExecuteRequest<BitfinexOffer>(GetUrl(CancelOfferEndpoint, ApiVersion1), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Cancel an offer
+        /// </summary>
+        /// <param name="offerId">The id of the offer to cancel</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexOffer> GetOffer(long offerId) => GetOfferAsync(offerId).Result;
+
+        /// <summary>
+        /// Cancel an offer
+        /// </summary>
+        /// <param name="offerId">The id of the offer to cancel</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexOffer>> GetOfferAsync(long offerId)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "offer_id", offerId }
+            };
+            return await ExecuteRequest<BitfinexOffer>(GetUrl(GetOfferEndpoint, ApiVersion1), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Close margin funding
+        /// </summary>
+        /// <param name="swapId">The id to close</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexFundingContract> CloseMarginFunding(long swapId) => CloseMarginFundingAsync(swapId).Result;
+
+        /// <summary>
+        /// Close margin funding
+        /// </summary>
+        /// <param name="swapId">The id to close</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexFundingContract>> CloseMarginFundingAsync(long swapId)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "swap_id", swapId }
+            };
+            return await ExecuteRequest<BitfinexFundingContract>(GetUrl(CloseMarginFundingEndpoint, ApiVersion1), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Close a position
+        /// </summary>
+        /// <param name="positionId">The id to close</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexClosePositionResult> ClosePosition(long positionId) => ClosePositionAsync(positionId).Result;
+
+        /// <summary>
+        /// Close a position
+        /// </summary>
+        /// <param name="positionId">The id to close</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexClosePositionResult>> ClosePositionAsync(long positionId)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "position_id", positionId }
+            };
+            return await ExecuteRequest<BitfinexClosePositionResult>(GetUrl(ClosePositionEndpoint, ApiVersion1), Constants.PostMethod, parameters, true).ConfigureAwait(false);
+        }
         #endregion
 
         #region private methods

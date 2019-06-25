@@ -16,15 +16,27 @@ namespace Bitfinex.Net.Objects
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMarginBaseInfo
     {
+        /// <summary>
+        /// User profit and loss
+        /// </summary>
         [ArrayProperty(0)]
         public decimal UserProfitLoss { get; set; }
 
+        /// <summary>
+        /// Amount of swaps
+        /// </summary>
         [ArrayProperty(1)]
         public decimal UserSwapsAmount { get; set; }
 
+        /// <summary>
+        /// Balance in margin funding account
+        /// </summary>
         [ArrayProperty(2)]
         public decimal MarginBalance { get; set; }
 
+        /// <summary>
+        /// Balance after profit/loss
+        /// </summary>
         [ArrayProperty(3)]
         public decimal MarginNet { get; set; }
     }

@@ -4,18 +4,17 @@ using Newtonsoft.Json;
 namespace Bitfinex.Net.Objects
 {
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexMarketAveragePrice
+    public class BitfinexCurrency
     {
         /// <summary>
-        /// The average price
+        /// The shorthand name of the currency
         /// </summary>
         [ArrayProperty(0)]
-        public decimal AverageRate { get; set; }
-
+        public string Name { get; set; }
         /// <summary>
-        /// The amount
+        /// The full name of the currency
         /// </summary>
         [ArrayProperty(1)]
-        public decimal Amount { get; set; }
+        public string FullName { get; set; }
     }
 }
