@@ -6,7 +6,9 @@ namespace Bitfinex.Net.Objects
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMarginSymbol
     {
-
+        /// <summary>
+        /// The symbol
+        /// </summary>
         [ArrayProperty(0)]
         public string Symbol { get; set; }
 

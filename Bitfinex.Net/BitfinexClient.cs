@@ -1545,7 +1545,14 @@ namespace Bitfinex.Net
         protected override Error ParseErrorResponse(JToken data)
         {
             if (!(data is JArray))
-                return new ServerError(-1, data["message"].ToString());
+            {
+                if(data["error"] != null && data["code"] != null && data["error_description"] != null)
+                    return new ServerError((int)data["code"], data["error"] + ": " +data["error_description"]);
+                if(data["message"] != null)
+                    return new ServerError(-1, data["message"].ToString());
+                else
+                    return new ServerError(-1, data.ToString());
+            }
 
             var error = data.ToObject<BitfinexError>();
             return new ServerError(error.ErrorCode, error.ErrorMessage);
