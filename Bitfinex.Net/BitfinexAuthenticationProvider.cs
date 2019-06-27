@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using CryptoExchange.Net;
@@ -38,7 +39,7 @@ namespace Bitfinex.Net
             }
             else if (uri.Contains("v2"))
             {
-                var json = JsonConvert.SerializeObject(parameters);
+                var json = JsonConvert.SerializeObject(parameters.OrderBy(p => p.Key).ToDictionary(p => p.Key, p => p.Value));
                 var n = BitfinexSocketClient.Nonce;
                 var signature = $"/api{uri.Split(new[] { ".com" }, StringSplitOptions.None)[1]}{n}{json}";
                 var signedData = Sign(signature);
