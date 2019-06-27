@@ -87,6 +87,13 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 2.1.0 - 27 june 2019
+	* Added multiple missing REST calls
+	* Added property documentations
+	* Fixed parallel subscribing on websocket
+	* Fixed GetAvailableBalance call
+	* Fixed a bug in error parsing
+
 * Version 2.0.12 - 14 may 2019
 	* Added an order book implementation for easily keeping an updated order book
 	* Added additional constructor to ApiCredentials to be able to read from file
