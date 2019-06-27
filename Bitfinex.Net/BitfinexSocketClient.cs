@@ -852,11 +852,15 @@ namespace Bitfinex.Net
                 {
                     callResult = new CallResult<object>(null, subResponse.Error);
                     log.Write(LogVerbosity.Warning, $"Socket {s.Socket.Id} subscription failed: " + subResponse.Error);
-                    return true;
+                    return false;
                 }
 
+                var bRequest = (BitfinexSubscriptionRequest) request;
+                if (bRequest.Channel != subResponse.Data.Channel)
+                    return false;
+
                 log.Write(LogVerbosity.Debug, $"Socket {s.Socket.Id} subscription completed");
-                ((BitfinexSubscriptionRequest)request).ChannelId = subResponse.Data.ChannelId;
+                bRequest.ChannelId = subResponse.Data.ChannelId;
                 callResult = new CallResult<object>(subResponse.Data, subResponse.Error);
                 return true;
             }
@@ -867,7 +871,7 @@ namespace Bitfinex.Net
                 {
                     callResult = new CallResult<object>(null, subResponse.Error);
                     log.Write(LogVerbosity.Warning, $"Socket {s.Socket.Id} subscription failed: " + subResponse.Error);
-                    return true;
+                    return false;
                 }
 
                 var error = new ServerError(subResponse.Data.Code, subResponse.Data.Message);
