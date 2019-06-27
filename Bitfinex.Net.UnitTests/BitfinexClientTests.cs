@@ -480,7 +480,7 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var expected = new[]
             {
-                new BitfinexFundingLoan()
+                new BitfinexFunding()
                 {
                     Amount = 0.1m,
                     Symbol = "Test",
@@ -500,7 +500,7 @@ namespace Bitfinex.Net.UnitTests
                     TimestampLastPayout = new DateTime(2017,1,1),
                     TimestampOpened = new DateTime(2017,1,1)
                 },
-                new BitfinexFundingLoan()
+                new BitfinexFunding()
                 {
                     Amount = 0.5m,
                     Symbol = "Test",

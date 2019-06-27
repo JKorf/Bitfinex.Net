@@ -507,8 +507,8 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
             var rstEvent = new ManualResetEvent(false);
-            BitfinexSocketEvent<BitfinexFundingLoan[]> result = null;
-            var expected = new BitfinexSocketEvent<BitfinexFundingLoan[]>(eventType, new[] { new BitfinexFundingLoan() { StatusString = "ACTIVE" } });
+            BitfinexSocketEvent<BitfinexFunding[]> result = null;
+            var expected = new BitfinexSocketEvent<BitfinexFunding[]>(eventType, new[] { new BitfinexFunding() { StatusString = "ACTIVE" } });
             client.SubscribeToFundingUpdatesAsync(null, null, data =>
             {
                 result = data;
@@ -517,7 +517,7 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
-            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFundingLoan() { StatusString = "ACTIVE" } } : new object[] { 0, updateType, new[] { new BitfinexFundingLoan() { StatusString = "ACTIVE" } } });
+            socket.InvokeMessage(single ? new object[] { 0, updateType, new BitfinexFunding() { StatusString = "ACTIVE" } } : new object[] { 0, updateType, new[] { new BitfinexFunding() { StatusString = "ACTIVE" } } });
             rstEvent.WaitOne(1000);
 
             // assert
