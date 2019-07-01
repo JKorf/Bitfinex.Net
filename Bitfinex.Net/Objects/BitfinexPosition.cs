@@ -67,25 +67,26 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         [ArrayProperty(9)]
         public decimal Leverage { get; set; }
+
+        /// <summary>
+        /// The id of the position
+        /// </summary>
+        [ArrayProperty(11)]
+        public long Id { get; set; }
     }
 
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexPositionExtended: BitfinexPosition
     {
         /// <summary>
-        /// The id of the position
-        /// </summary>
-        [ArrayProperty(11)]
-        public long Id { get; set; }
-        /// <summary>
         /// The creation time
         /// </summary>
-        [ArrayProperty(12)]
+        [ArrayProperty(12), JsonConverter(typeof(TimestampConverter))]
         public DateTime CreateTime { get; set; }
         /// <summary>
         /// The update time
         /// </summary>
-        [ArrayProperty(13)]
+        [ArrayProperty(13), JsonConverter(typeof(TimestampConverter))]
         public DateTime UpdateTime { get; set; }
     }
 }
