@@ -1083,6 +1083,7 @@ namespace Bitfinex.Net
         /// <param name="hidden">If the order should be placed as hidden</param>
         /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
         /// <param name="useAllAvailable">If all available funds should be used</param>
+        /// <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
         /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
@@ -1096,9 +1097,10 @@ namespace Bitfinex.Net
             bool? hidden = null, 
             bool? postOnly = null, 
             bool? useAllAvailable = null,
+            decimal? stopLimitPrice = null,
             bool? ocoOrder = null, 
             decimal? ocoBuyPrice = null, 
-            decimal? ocoSellPrice = null) => PlaceOrderAsync(symbol, side, type, amount, price, hidden, postOnly, useAllAvailable, ocoOrder, ocoBuyPrice, ocoSellPrice).Result;
+            decimal? ocoSellPrice = null) => PlaceOrderAsync(symbol, side, type, amount, price, hidden, postOnly, useAllAvailable, stopLimitPrice, ocoOrder, ocoBuyPrice, ocoSellPrice).Result;
 
         /// <summary>
         /// Place a new order
@@ -1111,6 +1113,7 @@ namespace Bitfinex.Net
         /// <param name="hidden">If the order should be placed as hidden</param>
         /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
         /// <param name="useAllAvailable">If all available funds should be used</param>
+        /// <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
         /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
@@ -1124,6 +1127,7 @@ namespace Bitfinex.Net
             bool? hidden = null,
             bool? postOnly = null, 
             bool? useAllAvailable = null,
+            decimal? stopLimitPrice = null,
             bool? ocoOrder = null, 
             decimal? ocoBuyPrice = null,
             decimal? ocoSellPrice = null)
@@ -1140,6 +1144,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("is_hidden", hidden);
             parameters.AddOptionalParameter("is_postonly", postOnly);
             parameters.AddOptionalParameter("use_all_available", useAllAvailable == true ? "1": null);
+            parameters.AddOptionalParameter(side == OrderSide.Buy ? "buy_stoplimit_price" : "sell_stoplimit_price", stopLimitPrice?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("ocoorder", ocoOrder);
             parameters.AddOptionalParameter("buy_price_oco", ocoBuyPrice);
             parameters.AddOptionalParameter("sell_price_oco", ocoSellPrice);

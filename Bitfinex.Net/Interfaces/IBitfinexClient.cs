@@ -701,6 +701,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="hidden">If the order should be placed as hidden</param>
         /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
         /// <param name="useAllAvailable">If all available funds should be used</param>
+        /// <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
         /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
@@ -714,6 +715,7 @@ namespace Bitfinex.Net.Interfaces
             bool? hidden = null, 
             bool? postOnly = null, 
             bool? useAllAvailable = null,
+            decimal? stopLimitPrice = null,
             bool? ocoOrder = null, 
             decimal? ocoBuyPrice = null, 
             decimal? ocoSellPrice = null);
@@ -729,6 +731,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="hidden">If the order should be placed as hidden</param>
         /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
         /// <param name="useAllAvailable">If all available funds should be used</param>
+        /// <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
         /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
@@ -742,6 +745,7 @@ namespace Bitfinex.Net.Interfaces
             bool? hidden = null,
             bool? postOnly = null, 
             bool? useAllAvailable = null,
+            decimal? stopLimitPrice = null,
             bool? ocoOrder = null, 
             decimal? ocoBuyPrice = null,
             decimal? ocoSellPrice = null);
