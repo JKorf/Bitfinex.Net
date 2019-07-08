@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
@@ -13,14 +14,14 @@ namespace Bitfinex.Net
 {
     public class BitfinexSymbolOrderBook: SymbolOrderBook
     {
-        private readonly BitfinexSocketClient socketClient;
+        private readonly IBitfinexSocketClient socketClient;
         private bool initialSnapshotDone;
         private readonly Precision precision;
         private readonly int limit;
 
-        public BitfinexSymbolOrderBook(string symbol, Precision precisionLevel, int limit, LogVerbosity logVerbosity = LogVerbosity.Info, IEnumerable<TextWriter> logWriters = null) : base("Bitfinex", symbol, false, logVerbosity, logWriters)
+        public BitfinexSymbolOrderBook(string symbol, Precision precisionLevel, int limit, IBitfinexSocketClient client = null, LogVerbosity logVerbosity = LogVerbosity.Info, IEnumerable<TextWriter> logWriters = null) : base("Bitfinex", symbol, false, logVerbosity, logWriters)
         {
-            socketClient = new BitfinexSocketClient();
+            socketClient = client ?? new BitfinexSocketClient();
 
             this.limit = limit;
             precision = precisionLevel;
