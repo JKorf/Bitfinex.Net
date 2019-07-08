@@ -87,6 +87,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 2.1.2 - 08 jul 2019
+	* Added option to pass client to BitfinexSymbolOrderBook to combine subscriptions on sockets
+
 * Version 2.1.1 - 01 jul 2019
 	* Fixed position parsing
 	* Added stopLimitPrice parameter to PlaceOrder Rest call for StopLimitOrders	
