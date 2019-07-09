@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
-using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
@@ -19,9 +17,16 @@ namespace Bitfinex.Net
         private readonly Precision precision;
         private readonly int limit;
 
-        public BitfinexSymbolOrderBook(string symbol, Precision precisionLevel, int limit, IBitfinexSocketClient client = null, LogVerbosity logVerbosity = LogVerbosity.Info, IEnumerable<TextWriter> logWriters = null) : base("Bitfinex", symbol, false, logVerbosity, logWriters)
+        /// <summary>
+        /// Create a new order book instance
+        /// </summary>
+        /// <param name="symbol">The symbol the order book is for</param>
+        /// <param name="precisionLevel">The precision level of the order book</param>
+        /// <param name="limit">The limit of entries in the order book, either 25 or 100</param>
+        /// <param name="options">Options for the order book</param>
+        public BitfinexSymbolOrderBook(string symbol, Precision precisionLevel, int limit, BitfinexOrderBookOptions options = null) : base(symbol, options ?? new BitfinexOrderBookOptions())
         {
-            socketClient = client ?? new BitfinexSocketClient();
+            socketClient = options?.SocketClient ?? new BitfinexSocketClient();
 
             this.limit = limit;
             precision = precisionLevel;
