@@ -1452,8 +1452,8 @@ namespace Bitfinex.Net
             var parameters = new Dictionary<string, object>
             {
                 { "currency", currency },
-                { "amount", amount },
-                { "rate", rate },
+                { "amount", amount.ToString(CultureInfo.InvariantCulture) },
+                { "rate", rate.ToString(CultureInfo.InvariantCulture) },
                 { "period", period },
                 { "direction", JsonConvert.SerializeObject(direction, new FundingTypeConverter(false)) },
             };
