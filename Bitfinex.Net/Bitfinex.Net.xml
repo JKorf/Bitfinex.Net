@@ -1,0 +1,3753 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bitfinex.Net</name>
+    </assembly>
+    <members>
+        <member name="M:Bitfinex.Net.BitfinexClient.#ctor">
+            <summary>
+            Create a new instance of BitfinexClient using the default options
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.#ctor(Bitfinex.Net.Objects.BitfinexClientOptions)">
+            <summary>
+            Create a new instance of BitfinexClient using provided options
+            </summary>
+            <param name="options">The options to use for this client</param>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.SetDefaultOptions(Bitfinex.Net.Objects.BitfinexClientOptions)">
+            <summary>
+            Sets the default options to use for new clients
+            </summary>
+            <param name="options">The options to use for new clients</param>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.SetApiCredentials(System.String,System.String)">
+            <summary>
+            Set the API key and secret
+            </summary>
+            <param name="apiKey">The api key</param>
+            <param name="apiSecret">The api secret</param>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetPlatformStatus">
+            <summary>
+            Gets the platform status
+            </summary>
+            <returns>Whether Bitfinex platform is running normally or not</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetPlatformStatusAsync">
+            <summary>
+            Gets the platform status
+            </summary>
+            <returns>Whether Bitfinex platform is running normally or not</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetCurrencies">
+            <summary>
+            Gets a list of supported currencies
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetCurrenciesAsync(System.String[])">
+            <summary>
+            Gets a list of supported currencies
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetTicker(System.String[])">
+            <summary>
+            Returns basic market data for the provided symbols
+            </summary>
+            <param name="symbols">The symbols to get data for</param>
+            <returns>Market data</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetTickerAsync(System.String[])">
+            <summary>
+            Returns basic market data for the provided symbols
+            </summary>
+            <param name="symbols">The symbols to get data for</param>
+            <returns>Market data</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetTrades(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Get recent trades for a symbol
+            </summary>
+            <param name="symbol">The symbol to get trades for</param>
+            <param name="limit">The amount of results</param>
+            <param name="startTime">The start time to return trades for</param>
+            <param name="endTime">The end time to return trades for</param>
+            <param name="sorting">The way the result is sorted</param>
+            <returns>Trades for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetTradesAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Get recent trades for a symbol
+            </summary>
+            <param name="symbol">The symbol to get trades for</param>
+            <param name="limit">The amount of results</param>
+            <param name="startTime">The start time to return trades for</param>
+            <param name="endTime">The end time to return trades for</param>
+            <param name="sorting">The way the result is sorted</param>
+            <returns>Trades for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetOrderBook(System.String,Bitfinex.Net.Objects.Precision,System.Nullable{System.Int32})">
+            <summary>
+            Gets the order book for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the order book for</param>
+            <param name="precision">The precision of the data</param>
+            <param name="limit">The amount of results in the book</param>
+            <returns>The order book for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetOrderBookAsync(System.String,Bitfinex.Net.Objects.Precision,System.Nullable{System.Int32})">
+            <summary>
+            Gets the order book for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the order book for</param>
+            <param name="precision">The precision of the data</param>
+            <param name="limit">The amount of results in the book</param>
+            <returns>The order book for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetStats(System.String,Bitfinex.Net.Objects.StatKey,Bitfinex.Net.Objects.StatSide,Bitfinex.Net.Objects.StatSection,System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Get various stats for the symbol
+            </summary>
+            <param name="symbol">The symbol to request stats for</param>
+            <param name="key">The type of stats</param>
+            <param name="side">Side of the stats</param>
+            <param name="section">Section of the stats</param>
+            <param name="sorting">The way the result should be sorted</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetStatsAsync(System.String,Bitfinex.Net.Objects.StatKey,Bitfinex.Net.Objects.StatSide,Bitfinex.Net.Objects.StatSection,System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Get various stats for the symbol
+            </summary>
+            <param name="symbol">The symbol to request stats for</param>
+            <param name="key">The type of stats</param>
+            <param name="side">Side of the stats</param>
+            <param name="section">Section of the stats</param>
+            <param name="sorting">The way the result should be sorted</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLastCandle(Bitfinex.Net.Objects.TimeFrame,System.String)">
+            <summary>
+            Get the last candle for a symbol
+            </summary>
+            <param name="timeFrame">The time frame of the candle</param>
+            <param name="symbol">The symbol to get the candle for</param>
+            <returns>The last candle for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLastCandleAsync(Bitfinex.Net.Objects.TimeFrame,System.String)">
+            <summary>
+            Get the last candle for a symbol
+            </summary>
+            <param name="timeFrame">The time frame of the candle</param>
+            <param name="symbol">The symbol to get the candle for</param>
+            <returns>The last candle for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetCandles(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Gets candles for a symbol
+            </summary>
+            <param name="timeFrame">The time frame of the candles</param>
+            <param name="symbol">The symbol to get the candles for</param>
+            <param name="limit">The amount of results</param>
+            <param name="startTime">The start time of the candles</param>
+            <param name="endTime">The end time of the candles</param>
+            <param name="sorting">The way the result is sorted</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetCandlesAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Gets candles for a symbol
+            </summary>
+            <param name="timeFrame">The time frame of the candles</param>
+            <param name="symbol">The symbol to get the candles for</param>
+            <param name="limit">The amount of results</param>
+            <param name="startTime">The start time of the candles</param>
+            <param name="endTime">The end time of the candles</param>
+            <param name="sorting">The way the result is sorted</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetMarketAveragePrice(System.String,System.Decimal,System.Decimal,System.Nullable{System.Int32})">
+            <summary>
+            Calculate the average execution price
+            </summary>
+            <param name="symbol">The symbol to calculate for</param>
+            <param name="amount">The amount to execute</param>
+            <param name="rateLimit">Limit to price</param>
+            <param name="period">Maximum period for margin funding</param>
+            <returns>The average price at which the execution would happen</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetMarketAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32})">
+            <summary>
+            Calculate the average execution price
+            </summary>
+            <param name="symbol">The symbol to calculate for</param>
+            <param name="amount">The amount to execute</param>
+            <param name="rateLimit">Limit to price</param>
+            <param name="period">Maximum period for margin funding</param>
+            <returns>The average price at which the execution would happen</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetForeignExchangeRate(System.String,System.String)">
+            <summary>
+            Returns the exchange rate for the currencies
+            </summary>
+            <param name="currency1">The first currency</param>
+            <param name="currency2">The second currency</param>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetForeignExchangeRateAsync(System.String,System.String)">
+            <summary>
+            Returns the exchange rate for the currencies
+            </summary>
+            <param name="currency1">The first currency</param>
+            <param name="currency2">The second currency</param>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetWallets">
+            <summary>
+            Get all funds
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetWalletsAsync">
+            <summary>
+            Get all funds
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetActiveOrders">
+            <summary>
+            Get the active orders
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetActiveOrdersAsync">
+            <summary>
+            Get the active orders
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetOrderHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the order history for a symbol for this account
+            </summary>
+            <param name="symbol">The symbol to get the history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetOrderHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the order history for a symbol for this account
+            </summary>
+            <param name="symbol">The symbol to get the history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetTradesForOrder(System.String,System.Int64)">
+            <summary>
+            Get the individual trades for an order
+            </summary>
+            <param name="symbol">The symbol of the order</param>
+            <param name="orderId">The order Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetTradesForOrderAsync(System.String,System.Int64)">
+            <summary>
+            Get the individual trades for an order
+            </summary>
+            <param name="symbol">The symbol of the order</param>
+            <param name="orderId">The order Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetTradeHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the trade history for a symbol
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetTradeHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the trade history for a symbol
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetActivePositions">
+            <summary>
+            Get the active positions
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetActivePositionsAsync">
+            <summary>
+            Get the active positions
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetPositionHistory(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get a list of historical positions
+            </summary>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetPositionHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get a list of historical positions
+            </summary>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetPositionsById(System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get positions by id
+            </summary>
+            <param name="ids">The id's of positions to return</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetPositionsByIdAsync(System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get positions by id
+            </summary>
+            <param name="ids">The id's of positions to return</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetActiveFundingOffers(System.String)">
+            <summary>
+            Get the active funding offers
+            </summary>
+            <param name="symbol">The symbol to return the funding offer for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetActiveFundingOffersAsync(System.String)">
+            <summary>
+            Get the active funding offers
+            </summary>
+            <param name="symbol">The symbol to return the funding offer for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingOfferHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding offer history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingOfferHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding offer history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingLoans(System.String)">
+            <summary>
+            Get the funding loans
+            </summary>
+            <param name="symbol">The symbol to get the funding loans for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingLoansAsync(System.String)">
+            <summary>
+            Get the funding loans
+            </summary>
+            <param name="symbol">The symbol to get the funding loans for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingLoansHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding loan history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingLoansHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding loan history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingCredits(System.String)">
+            <summary>
+            Get the funding credits
+            </summary>
+            <param name="symbol">The symbol to get the funding credits for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingCreditsAsync(System.String)">
+            <summary>
+            Get the funding credits
+            </summary>
+            <param name="symbol">The symbol to get the funding credits for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingCreditsHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding credits history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingCreditsHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding credits history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingTradesHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding trades history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingTradesHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding trades history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetBaseMarginInfo">
+            <summary>
+            Get the base margin info
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetBaseMarginInfoAsync">
+            <summary>
+            Get the base margin info
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetSymbolMarginInfo(System.String)">
+            <summary>
+            Get the margin info for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the info for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetSymbolMarginInfoAsync(System.String)">
+            <summary>
+            Get the margin info for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the info for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingInfo(System.String)">
+            <summary>
+            Get funding info for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the info for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingInfoAsync(System.String)">
+            <summary>
+            Get funding info for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the info for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetMovements(System.String)">
+            <summary>
+            Get the withdrawal/deposit history
+            </summary>
+            <param name="symbol">Symbol to get history for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetMovementsAsync(System.String)">
+            <summary>
+            Get the withdrawal/deposit history
+            </summary>
+            <param name="symbol">Symbol to get history for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetAlertList">
+            <summary>
+            Get the list of alerts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetAlertListAsync">
+            <summary>
+            Get the list of alerts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.SetAlert(System.String,System.Decimal)">
+            <summary>
+            Set an alert
+            </summary>
+            <param name="symbol">The symbol to set the alert for</param>
+            <param name="price">The price to set the alert for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.SetAlertAsync(System.String,System.Decimal)">
+            <summary>
+            Set an alert
+            </summary>
+            <param name="symbol">The symbol to set the alert for</param>
+            <param name="price">The price to set the alert for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.DeleteAlert(System.String,System.Decimal)">
+            <summary>
+            Delete an existing alert
+            </summary>
+            <param name="symbol">The symbol of the alert to delete</param>
+            <param name="price">The price of the alert to delete</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.DeleteAlertAsync(System.String,System.Decimal)">
+            <summary>
+            Delete an existing alert
+            </summary>
+            <param name="symbol">The symbol of the alert to delete</param>
+            <param name="price">The price of the alert to delete</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetAvailableBalance(System.String,Bitfinex.Net.Objects.OrderSide,System.Decimal,Bitfinex.Net.Objects.WalletType)">
+            <summary>
+            Calculates the available balance for a symbol at a specific rate
+            </summary>
+            <param name="symbol">The symbol</param>
+            <param name="side">Buy or sell</param>
+            <param name="rate">The rate/price</param>
+            <param name="type">The wallet type</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetAvailableBalanceAsync(System.String,Bitfinex.Net.Objects.OrderSide,System.Decimal,Bitfinex.Net.Objects.WalletType)">
+            <summary>
+            Calculates the available balance for a symbol at a specific rate
+            </summary>
+            <param name="symbol">The symbol</param>
+            <param name="side">Buy or sell</param>
+            <param name="rate">The rate/price</param>
+            <param name="type">The wallet type</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLedgerEntries(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get changes in your balance for a currency
+            </summary>
+            <param name="currency">The currency to check the ledger for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get changes in your balance for a currency
+            </summary>
+            <param name="currency">The currency to check the ledger for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetUserInfo">
+            <summary>
+            Gets information about the user associated with the api key/secret
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetUserInfoAsync">
+            <summary>
+            Gets information about the user associated with the api key/secret
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingBook(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Gets the margin funding book
+            </summary>
+            <param name="currency">Currency to get the book for</param>
+            <param name="limit">Limit of the results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetFundingBookAsync(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Gets the margin funding book
+            </summary>
+            <param name="currency">Currency to get the book for</param>
+            <param name="limit">Limit of the results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLends(System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Gets the most recent lends
+            </summary>
+            <param name="currency">Currency to get the book for</param>
+            <param name="startTime">Return data after this time</param>
+            <param name="limit">Limit of the results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLendsAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Gets the most recent lends
+            </summary>
+            <param name="currency">Currency to get the book for</param>
+            <param name="startTime">Return data after this time</param>
+            <param name="limit">Limit of the results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetSymbols">
+            <summary>
+            Gets a list of all symbols
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetSymbolsAsync">
+            <summary>
+            Gets a list of all symbols
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetSymbolDetails">
+            <summary>
+            Gets details of all symbols
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetSymbolDetailsAsync">
+            <summary>
+            Gets details of all symbols
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetAccountInfo">
+            <summary>
+            Get information about your account
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetAccountInfoAsync">
+            <summary>
+            Get information about your account
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetWithdrawalFees">
+            <summary>
+            Get withdrawal fees for this account
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetWithdrawalFeesAsync">
+            <summary>
+            Get withdrawal fees for this account
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.Get30DaySummary">
+            <summary>
+            Get 30-day summary on trading volume and margin funding
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.Get30DaySummaryAsync">
+            <summary>
+            Get 30-day summary on trading volume and margin funding
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.PlaceOrder(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal})">
+            <summary>
+            Place a new order
+            </summary>
+            <param name="symbol">Symbol to place order for</param>
+            <param name="side">Side of the order</param>
+            <param name="type">Type of the order</param>
+            <param name="amount">The amount of the order</param>
+            <param name="price">The price for the order</param>
+            <param name="hidden">If the order should be placed as hidden</param>
+            <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
+            <param name="useAllAvailable">If all available funds should be used</param>
+            <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
+            <param name="ocoOrder">If the order is a one-cancels-other order</param>
+            <param name="ocoBuyPrice">The one-cancels-other buy price</param>
+            <param name="ocoSellPrice">The one-cancels-other sell price</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.PlaceOrderAsync(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal})">
+            <summary>
+            Place a new order
+            </summary>
+            <param name="symbol">Symbol to place order for</param>
+            <param name="side">Side of the order</param>
+            <param name="type">Type of the order</param>
+            <param name="amount">The amount of the order</param>
+            <param name="price">The price for the order</param>
+            <param name="hidden">If the order should be placed as hidden</param>
+            <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
+            <param name="useAllAvailable">If all available funds should be used</param>
+            <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
+            <param name="ocoOrder">If the order is a one-cancels-other order</param>
+            <param name="ocoBuyPrice">The one-cancels-other buy price</param>
+            <param name="ocoSellPrice">The one-cancels-other sell price</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.CancelOrder(System.Int64)">
+            <summary>
+            Cancel a specific order
+            </summary>
+            <param name="orderId">The id of the order to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.CancelOrderAsync(System.Int64)">
+            <summary>
+            Cancel a specific order
+            </summary>
+            <param name="orderId">The id of the order to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.CancelAllOrders">
+            <summary>
+            Cancels all open orders
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.CancelAllOrdersAsync">
+            <summary>
+            Cancels all open orders
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetOrder(System.Int64)">
+            <summary>
+            Get the status of a specific order
+            </summary>
+            <param name="orderId">The order id of the order to get</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetOrderAsync(System.Int64)">
+            <summary>
+            Get the status of a specific order
+            </summary>
+            <param name="orderId">The order id of the order to get</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetDepositAddress(System.String,Bitfinex.Net.Objects.WithdrawWallet,System.Nullable{System.Boolean})">
+            <summary>
+            Gets a deposit address for a currency
+            </summary>
+            <param name="currency">The currency to get address for</param>
+            <param name="toWallet">The type of wallet the deposit is for</param>
+            <param name="forceNew">If true a new address will be generated (previous addresses will still be valid)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetDepositAddressAsync(System.String,Bitfinex.Net.Objects.WithdrawWallet,System.Nullable{System.Boolean})">
+            <summary>
+            Gets a deposit address for a currency
+            </summary>
+            <param name="currency">The currency to get address for</param>
+            <param name="toWallet">The type of wallet the deposit is for</param>
+            <param name="forceNew">If true a new address will be generated (previous addresses will still be valid)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.WalletTransfer(System.String,System.Decimal,Bitfinex.Net.Objects.WithdrawWallet,Bitfinex.Net.Objects.WithdrawWallet)">
+            <summary>
+            Transfers funds from one wallet to another
+            </summary>
+            <param name="currency">The currency to transfer</param>
+            <param name="fromWallet">The wallet to remove funds from</param>
+            <param name="toWallet">The wallet to add funds to</param>
+            <param name="amount">The amount to transfer</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.WalletTransferAsync(System.String,System.Decimal,Bitfinex.Net.Objects.WithdrawWallet,Bitfinex.Net.Objects.WithdrawWallet)">
+            <summary>
+            Transfers funds from one wallet to another
+            </summary>
+            <param name="currency">The currency to transfer</param>
+            <param name="fromWallet">The wallet to remove funds from</param>
+            <param name="toWallet">The wallet to add funds to</param>
+            <param name="amount">The amount to transfer</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.Withdraw(System.String,Bitfinex.Net.Objects.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
+            All withdrawals need the withdrawType, wallet and amount parameters
+            CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
+            Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.
+            </summary>
+            <param name="withdrawType">The type of funds to withdraw</param>
+            <param name="wallet">The wallet to withdraw from</param>
+            <param name="amount">The amount to withdraw</param>
+            <param name="address">The destination of the withdrawal</param>
+            <param name="accountNumber">The account number</param>
+            <param name="bankSwift">The SWIFT code of the bank</param>
+            <param name="bankName">The bank name</param>
+            <param name="bankAddress">The bank address</param>
+            <param name="bankCity">The bank city</param>
+            <param name="bankCountry">The bank country</param>
+            <param name="paymentDetails">Message for the receiver</param>
+            <param name="expressWire">Whether it is an express wire withdrawal</param>
+            <param name="intermediaryBankName">Intermediary bank name</param>
+            <param name="intermediaryBankAddress">Intermediary bank address</param>
+            <param name="intermediaryBankCity">Intermediary bank city</param>
+            <param name="intermediaryBankCountry">Intermediary bank country</param>
+            <param name="intermediaryBankAccount">Intermediary bank account</param>
+            <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
+            <param name="accountName">The name of the account</param>
+            <param name="paymentId">Hex string for Monero transaction</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.WithdrawAsync(System.String,Bitfinex.Net.Objects.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
+            All withdrawals need the withdrawType, wallet and amount parameters
+            CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
+            Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.
+            </summary>
+            <param name="withdrawType">The type of funds to withdraw</param>
+            <param name="wallet">The wallet to withdraw from</param>
+            <param name="amount">The amount to withdraw</param>
+            <param name="address">The destination of the withdrawal</param>
+            <param name="accountNumber">The account number</param>
+            <param name="bankSwift">The SWIFT code of the bank</param>
+            <param name="bankName">The bank name</param>
+            <param name="bankAddress">The bank address</param>
+            <param name="bankCity">The bank city</param>
+            <param name="bankCountry">The bank country</param>
+            <param name="paymentDetails">Message for the receiver</param>
+            <param name="expressWire">Whether it is an express wire withdrawal</param>
+            <param name="intermediaryBankName">Intermediary bank name</param>
+            <param name="intermediaryBankAddress">Intermediary bank address</param>
+            <param name="intermediaryBankCity">Intermediary bank city</param>
+            <param name="intermediaryBankCountry">Intermediary bank country</param>
+            <param name="intermediaryBankAccount">Intermediary bank account</param>
+            <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
+            <param name="accountName">The name of the account</param>
+            <param name="paymentId">Hex string for Monero transaction</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.ClaimPosition(System.Int64,System.Decimal)">
+            <summary>
+            Claim a position
+            </summary>
+            <param name="id">The id of the position to claim</param>
+            <param name="amount">The (partial) amount to be claimed</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.ClaimPositionAsync(System.Int64,System.Decimal)">
+            <summary>
+            Claim a position
+            </summary>
+            <param name="id">The id of the position to claim</param>
+            <param name="amount">The (partial) amount to be claimed</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.NewOffer(System.String,System.Decimal,System.Decimal,System.Int32,Bitfinex.Net.Objects.FundingType)">
+            <summary>
+            Submit a new order
+            </summary>
+            <param name="currency">The currency</param>
+            <param name="amount">The amount</param>
+            <param name="rate">Rate to lend or borrow at in percent per 365 days (0 for FRR)</param>
+            <param name="period">Number of days</param>
+            <param name="direction">Direction of the offer</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.NewOfferAsync(System.String,System.Decimal,System.Decimal,System.Int32,Bitfinex.Net.Objects.FundingType)">
+            <summary>
+            Submit a new order
+            </summary>
+            <param name="currency">The currency</param>
+            <param name="amount">The amount</param>
+            <param name="rate">Rate to lend or borrow at in percent per 365 days (0 for FRR)</param>
+            <param name="period">Number of days</param>
+            <param name="direction">Direction of the offer</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.CancelOffer(System.Int64)">
+            <summary>
+            Cancel an offer
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.CancelOfferAsync(System.Int64)">
+            <summary>
+            Cancel an offer
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetOffer(System.Int64)">
+            <summary>
+            Cancel an offer
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetOfferAsync(System.Int64)">
+            <summary>
+            Cancel an offer
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.CloseMarginFunding(System.Int64)">
+            <summary>
+            Close margin funding
+            </summary>
+            <param name="swapId">The id to close</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.CloseMarginFundingAsync(System.Int64)">
+            <summary>
+            Close margin funding
+            </summary>
+            <param name="swapId">The id to close</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.ClosePosition(System.Int64)">
+            <summary>
+            Close a position
+            </summary>
+            <param name="positionId">The id to close</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.ClosePositionAsync(System.Int64)">
+            <summary>
+            Close a position
+            </summary>
+            <param name="positionId">The id to close</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.#ctor">
+            <summary>
+            Create a new instance of BitfinexSocketClient using the default options
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.#ctor(Bitfinex.Net.Objects.BitfinexSocketClientOptions)">
+            <summary>
+            Create a new instance of BitfinexSocketClient using provided options
+            </summary>
+            <param name="options">The options to use for this client</param>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SetDefaultOptions(Bitfinex.Net.Objects.BitfinexSocketClientOptions)">
+            <summary>
+            set the default options used when creating a client without specifying options
+            </summary>
+            <param name="newDefaultOptions"></param>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTickerUpdates(System.String,System.Action{Bitfinex.Net.Objects.BitfinexMarketOverview})">
+            <summary>
+            Subscribes to ticker updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTickerUpdatesAsync(System.String,System.Action{Bitfinex.Net.Objects.BitfinexMarketOverview})">
+            <summary>
+            Subscribes to ticker updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToBookUpdates(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{Bitfinex.Net.Objects.BitfinexOrderBookEntry[]})">
+            <summary>
+            Subscribes to order book updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="precision">The precision of the updates</param>
+            <param name="frequency">The frequency of updates</param>
+            <param name="length">The range for the order book updates</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToBookUpdatesAsync(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{Bitfinex.Net.Objects.BitfinexOrderBookEntry[]})">
+            <summary>
+            Subscribes to order book updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="precision">The precision of the updates</param>
+            <param name="frequency">The frequency of updates</param>
+            <param name="length">The range for the order book updates, either 25 or 100</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToRawBookUpdates(System.String,System.Int32,System.Action{Bitfinex.Net.Objects.BitfinexRawOrderBookEntry[]})">
+            <summary>
+            Subscribes to raw order book updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="limit">The range for the order book updates</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToRawBookUpdatesAsync(System.String,System.Int32,System.Action{Bitfinex.Net.Objects.BitfinexRawOrderBookEntry[]})">
+            <summary>
+            Subscribes to raw order book updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="limit">The range for the order book updates</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTradeUpdates(System.String,System.Action{Bitfinex.Net.Objects.BitfinexTradeSimple[]})">
+            <summary>
+            Subscribes to public trade updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTradeUpdatesAsync(System.String,System.Action{Bitfinex.Net.Objects.BitfinexTradeSimple[]})">
+            <summary>
+            Subscribes to public trade updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToCandleUpdates(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{Bitfinex.Net.Objects.BitfinexCandle[]})">
+            <summary>
+            Subscribes to candle updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="interval">The interval of the candles</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToCandleUpdatesAsync(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{Bitfinex.Net.Objects.BitfinexCandle[]})">
+            <summary>
+            Subscribes to candle updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="interval">The interval of the candles</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTradingUpdates(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexOrder[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexTradeDetails[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexPosition[]}})">
+            <summary>
+            Subscribe to trading information updates
+            </summary>
+            <param name="orderHandler">Data handler for order updates. Can be null if not interested</param>
+            <param name="tradeHandler">Data handler for trade execution updates. Can be null if not interested</param>
+            <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTradingUpdatesAsync(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexOrder[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexTradeDetails[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexPosition[]}})">
+            <summary>
+            Subscribe to trading information updates
+            </summary>
+            <param name="orderHandler">Data handler for order updates. Can be null if not interested</param>
+            <param name="tradeHandler">Data handler for trade execution updates. Can be null if not interested</param>
+            <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToWalletUpdates(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexWallet[]}})">
+            <summary>
+            Subscribe to wallet information updates
+            </summary>
+            <param name="walletHandler">Data handler for wallet updates</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToWalletUpdatesAsync(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexWallet[]}})">
+            <summary>
+            Subscribe to wallet information updates
+            </summary>
+            <param name="walletHandler">Data handler for wallet updates</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToFundingUpdates(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFundingOffer[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFundingCredit[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFunding[]}})">
+            <summary>
+            Subscribe to funding information updates
+            </summary>
+            <param name="fundingOfferHandler">Subscribe to funding offer updates. Can be null if not interested</param>
+            <param name="fundingCreditHandler">Subscribe to funding credit updates. Can be null if not interested</param>
+            <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToFundingUpdatesAsync(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFundingOffer[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFundingCredit[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFunding[]}})">
+            <summary>
+            Subscribe to funding information updates
+            </summary>
+            <param name="fundingOfferHandler">Subscribe to funding offer updates. Can be null if not interested</param>
+            <param name="fundingCreditHandler">Subscribe to funding credit updates. Can be null if not interested</param>
+            <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.PlaceOrder(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+            <summary>
+            Places a new order
+            </summary>
+            <param name="type">The type of the order</param>
+            <param name="symbol">The symbol the order is for</param>
+            <param name="amount">The amount of the order, positive for buying, negative for selling</param>
+            <param name="groupId">Group id to assign to the order</param>
+            <param name="clientOrderId">Client order id to assign to the order</param>
+            <param name="price">Price of the order</param>
+            <param name="priceTrailing">Trailing price of the order</param>
+            <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
+            <param name="priceOcoStop">Oco stop price of the order</param>
+            <param name="flags">Additional flags</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.PlaceOrderAsync(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+            <summary>
+            Places a new order
+            </summary>
+            <param name="type">The type of the order</param>
+            <param name="symbol">The symbol the order is for</param>
+            <param name="amount">The amount of the order, positive for buying, negative for selling</param>
+            <param name="groupId">Group id to assign to the order</param>
+            <param name="clientOrderId">Client order id to assign to the order</param>
+            <param name="price">Price of the order</param>
+            <param name="priceTrailing">Trailing price of the order</param>
+            <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
+            <param name="priceOcoStop">Oco stop price of the order</param>
+            <param name="flags">Additional flags</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.UpdateOrder(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+            <summary>
+            Updates an order
+            </summary>
+            <param name="orderId">The id of the order to update</param>
+            <param name="price">The new price of the order</param>
+            <param name="amount">The new amount of the order</param>
+            <param name="delta">The delta to change</param>
+            <param name="priceAuxiliaryLimit">the new aux limit price</param>
+            <param name="priceTrailing">The new trailing price</param>
+            <param name="flags">The new flags</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.UpdateOrderAsync(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+            <summary>
+            Updates an order
+            </summary>
+            <param name="orderId">The id of the order to update</param>
+            <param name="price">The new price of the order</param>
+            <param name="amount">The new amount of the order</param>
+            <param name="delta">The delta to change</param>
+            <param name="priceAuxiliaryLimit">the new aux limit price</param>
+            <param name="priceTrailing">The new trailing price</param>
+            <param name="flags">The new flags</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrder(System.Int64)">
+            <summary>
+            Cancels an order
+            </summary>
+            <param name="orderId">The id of the order to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrderAsync(System.Int64)">
+            <summary>
+            Cancels an order
+            </summary>
+            <param name="orderId">The id of the order to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersByGroupId(System.Int64)">
+            <summary>
+            Cancels multiple orders based on their groupId
+            </summary>
+            <param name="groupOrderId">The group id to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersByGroupIdAsync(System.Int64)">
+            <summary>
+            Cancels multiple orders based on their groupId
+            </summary>
+            <param name="groupOrderId">The group id to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersByGroupIds(System.Int64[])">
+            <summary>
+            Cancels multiple orders based on their groupIds
+            </summary>
+            <param name="groupOrderIds">The group ids to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersByGroupIdsAsync(System.Int64[])">
+            <summary>
+            Cancels multiple orders based on their groupIds
+            </summary>
+            <param name="groupOrderIds">The group ids to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrders(System.Int64[])">
+            <summary>
+            Cancels multiple orders based on their order ids
+            </summary>
+            <param name="orderIds">The order ids to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersAsync(System.Int64[])">
+            <summary>
+            Cancels multiple orders based on their order ids
+            </summary>
+            <param name="orderIds">The order ids to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersByClientOrderIds(System.Collections.Generic.Dictionary{System.Int64,System.DateTime})">
+            <summary>
+            Cancels multiple orders based on their clientOrderIds
+            </summary>
+            <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersByClientOrderIdsAsync(System.Collections.Generic.Dictionary{System.Int64,System.DateTime})">
+            <summary>
+            Cancels multiple orders based on their clientOrderIds
+            </summary>
+            <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.#ctor(System.String,Bitfinex.Net.Objects.Precision,System.Int32,Bitfinex.Net.Objects.BitfinexOrderBookOptions)">
+            <summary>
+            Create a new order book instance
+            </summary>
+            <param name="symbol">The symbol the order book is for</param>
+            <param name="precisionLevel">The precision level of the order book</param>
+            <param name="limit">The limit of entries in the order book, either 25 or 100</param>
+            <param name="options">Options for the order book</param>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.SetApiCredentials(System.String,System.String)">
+            <summary>
+            Set the API key and secret
+            </summary>
+            <param name="apiKey">The api key</param>
+            <param name="apiSecret">The api secret</param>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPlatformStatus">
+            <summary>
+            Gets the platform status
+            </summary>
+            <returns>Whether Bitfinex platform is running normally or not</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPlatformStatusAsync">
+            <summary>
+            Gets the platform status
+            </summary>
+            <returns>Whether Bitfinex platform is running normally or not</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetCurrencies">
+            <summary>
+            Gets a list of supported currencies
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetCurrenciesAsync(System.String[])">
+            <summary>
+            Gets a list of supported currencies
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTicker(System.String[])">
+            <summary>
+            Returns basic market data for the provided symbols
+            </summary>
+            <param name="symbols">The symbols to get data for</param>
+            <returns>Market data</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTickerAsync(System.String[])">
+            <summary>
+            Returns basic market data for the provided symbols
+            </summary>
+            <param name="symbols">The symbols to get data for</param>
+            <returns>Market data</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTrades(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Get recent trades for a symbol
+            </summary>
+            <param name="symbol">The symbol to get trades for</param>
+            <param name="limit">The amount of results</param>
+            <param name="startTime">The start time to return trades for</param>
+            <param name="endTime">The end time to return trades for</param>
+            <param name="sorting">The way the result is sorted</param>
+            <returns>Trades for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTradesAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Get recent trades for a symbol
+            </summary>
+            <param name="symbol">The symbol to get trades for</param>
+            <param name="limit">The amount of results</param>
+            <param name="startTime">The start time to return trades for</param>
+            <param name="endTime">The end time to return trades for</param>
+            <param name="sorting">The way the result is sorted</param>
+            <returns>Trades for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetOrderBook(System.String,Bitfinex.Net.Objects.Precision,System.Nullable{System.Int32})">
+            <summary>
+            Gets the order book for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the order book for</param>
+            <param name="precision">The precision of the data</param>
+            <param name="limit">The amount of results in the book</param>
+            <returns>The order book for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetOrderBookAsync(System.String,Bitfinex.Net.Objects.Precision,System.Nullable{System.Int32})">
+            <summary>
+            Gets the order book for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the order book for</param>
+            <param name="precision">The precision of the data</param>
+            <param name="limit">The amount of results in the book</param>
+            <returns>The order book for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetStats(System.String,Bitfinex.Net.Objects.StatKey,Bitfinex.Net.Objects.StatSide,Bitfinex.Net.Objects.StatSection,System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Get various stats for the symbol
+            </summary>
+            <param name="symbol">The symbol to request stats for</param>
+            <param name="key">The type of stats</param>
+            <param name="side">Side of the stats</param>
+            <param name="section">Section of the stats</param>
+            <param name="sorting">The way the result should be sorted</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetStatsAsync(System.String,Bitfinex.Net.Objects.StatKey,Bitfinex.Net.Objects.StatSide,Bitfinex.Net.Objects.StatSection,System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Get various stats for the symbol
+            </summary>
+            <param name="symbol">The symbol to request stats for</param>
+            <param name="key">The type of stats</param>
+            <param name="side">Side of the stats</param>
+            <param name="section">Section of the stats</param>
+            <param name="sorting">The way the result should be sorted</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLastCandle(Bitfinex.Net.Objects.TimeFrame,System.String)">
+            <summary>
+            Get the last candle for a symbol
+            </summary>
+            <param name="timeFrame">The time frame of the candle</param>
+            <param name="symbol">The symbol to get the candle for</param>
+            <returns>The last candle for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLastCandleAsync(Bitfinex.Net.Objects.TimeFrame,System.String)">
+            <summary>
+            Get the last candle for a symbol
+            </summary>
+            <param name="timeFrame">The time frame of the candle</param>
+            <param name="symbol">The symbol to get the candle for</param>
+            <returns>The last candle for the symbol</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetCandles(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Gets candles for a symbol
+            </summary>
+            <param name="timeFrame">The time frame of the candles</param>
+            <param name="symbol">The symbol to get the candles for</param>
+            <param name="limit">The amount of results</param>
+            <param name="startTime">The start time of the candles</param>
+            <param name="endTime">The end time of the candles</param>
+            <param name="sorting">The way the result is sorted</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetCandlesAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting})">
+            <summary>
+            Gets candles for a symbol
+            </summary>
+            <param name="timeFrame">The time frame of the candles</param>
+            <param name="symbol">The symbol to get the candles for</param>
+            <param name="limit">The amount of results</param>
+            <param name="startTime">The start time of the candles</param>
+            <param name="endTime">The end time of the candles</param>
+            <param name="sorting">The way the result is sorted</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetMarketAveragePrice(System.String,System.Decimal,System.Decimal,System.Nullable{System.Int32})">
+            <summary>
+            Calculate the average execution price
+            </summary>
+            <param name="symbol">The symbol to calculate for</param>
+            <param name="amount">The amount to execute</param>
+            <param name="rateLimit">Limit to price</param>
+            <param name="period">Maximum period for margin funding</param>
+            <returns>The average price at which the execution would happen</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetMarketAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32})">
+            <summary>
+            Calculate the average execution price
+            </summary>
+            <param name="symbol">The symbol to calculate for</param>
+            <param name="amount">The amount to execute</param>
+            <param name="rateLimit">Limit to price</param>
+            <param name="period">Maximum period for margin funding</param>
+            <returns>The average price at which the execution would happen</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetForeignExchangeRate(System.String,System.String)">
+            <summary>
+            Returns the exchange rate for the currencies
+            </summary>
+            <param name="currency1">The first currency</param>
+            <param name="currency2">The second currency</param>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetForeignExchangeRateAsync(System.String,System.String)">
+            <summary>
+            Returns the exchange rate for the currencies
+            </summary>
+            <param name="currency1">The first currency</param>
+            <param name="currency2">The second currency</param>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetWallets">
+            <summary>
+            Get all funds
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetWalletsAsync">
+            <summary>
+            Get all funds
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetActiveOrders">
+            <summary>
+            Get the active orders
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetActiveOrdersAsync">
+            <summary>
+            Get the active orders
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetOrderHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the order history for a symbol for this account
+            </summary>
+            <param name="symbol">The symbol to get the history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetOrderHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the order history for a symbol for this account
+            </summary>
+            <param name="symbol">The symbol to get the history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTradesForOrder(System.String,System.Int64)">
+            <summary>
+            Get the individual trades for an order
+            </summary>
+            <param name="symbol">The symbol of the order</param>
+            <param name="orderId">The order Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTradesForOrderAsync(System.String,System.Int64)">
+            <summary>
+            Get the individual trades for an order
+            </summary>
+            <param name="symbol">The symbol of the order</param>
+            <param name="orderId">The order Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTradeHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the trade history for a symbol
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTradeHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the trade history for a symbol
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetActivePositions">
+            <summary>
+            Get the active positions
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetActivePositionsAsync">
+            <summary>
+            Get the active positions
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPositionHistory(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get a list of historical positions
+            </summary>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPositionHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get a list of historical positions
+            </summary>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPositionsById(System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get positions by id
+            </summary>
+            <param name="ids">The id's of positions to return</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPositionsByIdAsync(System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get positions by id
+            </summary>
+            <param name="ids">The id's of positions to return</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetActiveFundingOffers(System.String)">
+            <summary>
+            Get the active funding offers
+            </summary>
+            <param name="symbol">The symbol to return the funding offer for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetActiveFundingOffersAsync(System.String)">
+            <summary>
+            Get the active funding offers
+            </summary>
+            <param name="symbol">The symbol to return the funding offer for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingOfferHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding offer history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingOfferHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding offer history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingLoans(System.String)">
+            <summary>
+            Get the funding loans
+            </summary>
+            <param name="symbol">The symbol to get the funding loans for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingLoansAsync(System.String)">
+            <summary>
+            Get the funding loans
+            </summary>
+            <param name="symbol">The symbol to get the funding loans for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingLoansHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding loan history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingLoansHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding loan history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingCredits(System.String)">
+            <summary>
+            Get the funding credits
+            </summary>
+            <param name="symbol">The symbol to get the funding credits for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingCreditsAsync(System.String)">
+            <summary>
+            Get the funding credits
+            </summary>
+            <param name="symbol">The symbol to get the funding credits for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingCreditsHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding credits history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingCreditsHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding credits history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingTradesHistory(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding trades history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingTradesHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get the funding trades history
+            </summary>
+            <param name="symbol">The symbol to get history for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetBaseMarginInfo">
+            <summary>
+            Get the base margin info
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetBaseMarginInfoAsync">
+            <summary>
+            Get the base margin info
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetSymbolMarginInfo(System.String)">
+            <summary>
+            Get the margin info for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the info for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetSymbolMarginInfoAsync(System.String)">
+            <summary>
+            Get the margin info for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the info for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingInfo(System.String)">
+            <summary>
+            Get funding info for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the info for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingInfoAsync(System.String)">
+            <summary>
+            Get funding info for a symbol
+            </summary>
+            <param name="symbol">The symbol to get the info for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetMovements(System.String)">
+            <summary>
+            Get the withdrawal/deposit history
+            </summary>
+            <param name="symbol">Symbol to get history for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetMovementsAsync(System.String)">
+            <summary>
+            Get the withdrawal/deposit history
+            </summary>
+            <param name="symbol">Symbol to get history for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetAlertList">
+            <summary>
+            Get the list of alerts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetAlertListAsync">
+            <summary>
+            Get the list of alerts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.SetAlert(System.String,System.Decimal)">
+            <summary>
+            Set an alert
+            </summary>
+            <param name="symbol">The symbol to set the alert for</param>
+            <param name="price">The price to set the alert for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.SetAlertAsync(System.String,System.Decimal)">
+            <summary>
+            Set an alert
+            </summary>
+            <param name="symbol">The symbol to set the alert for</param>
+            <param name="price">The price to set the alert for</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.DeleteAlert(System.String,System.Decimal)">
+            <summary>
+            Delete an existing alert
+            </summary>
+            <param name="symbol">The symbol of the alert to delete</param>
+            <param name="price">The price of the alert to delete</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.DeleteAlertAsync(System.String,System.Decimal)">
+            <summary>
+            Delete an existing alert
+            </summary>
+            <param name="symbol">The symbol of the alert to delete</param>
+            <param name="price">The price of the alert to delete</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetAvailableBalance(System.String,Bitfinex.Net.Objects.OrderSide,System.Decimal,Bitfinex.Net.Objects.WalletType)">
+            <summary>
+            Calculates the available balance for a symbol at a specific rate
+            </summary>
+            <param name="symbol">The symbol</param>
+            <param name="side">Buy or sell</param>
+            <param name="rate">The rate/price</param>
+            <param name="type">The wallet type</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetAvailableBalanceAsync(System.String,Bitfinex.Net.Objects.OrderSide,System.Decimal,Bitfinex.Net.Objects.WalletType)">
+            <summary>
+            Calculates the available balance for a symbol at a specific rate
+            </summary>
+            <param name="symbol">The symbol</param>
+            <param name="side">Buy or sell</param>
+            <param name="rate">The rate/price</param>
+            <param name="type">The wallet type</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLedgerEntries(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get changes in your balance for a currency
+            </summary>
+            <param name="currency">The currency to check the ledger for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Get changes in your balance for a currency
+            </summary>
+            <param name="currency">The currency to check the ledger for</param>
+            <param name="startTime">Start time of the data to return</param>
+            <param name="endTime">End time of the data to return</param>
+            <param name="limit">Max amount of results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetUserInfo">
+            <summary>
+            Gets information about the user associated with the api key/secret
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetUserInfoAsync">
+            <summary>
+            Gets information about the user associated with the api key/secret
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingBook(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Gets the margin funding book
+            </summary>
+            <param name="currency">Currency to get the book for</param>
+            <param name="limit">Limit of the results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetFundingBookAsync(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Gets the margin funding book
+            </summary>
+            <param name="currency">Currency to get the book for</param>
+            <param name="limit">Limit of the results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLends(System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Gets the most recent lends
+            </summary>
+            <param name="currency">Currency to get the book for</param>
+            <param name="startTime">Return data after this time</param>
+            <param name="limit">Limit of the results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLendsAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32})">
+            <summary>
+            Gets the most recent lends
+            </summary>
+            <param name="currency">Currency to get the book for</param>
+            <param name="startTime">Return data after this time</param>
+            <param name="limit">Limit of the results</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetSymbols">
+            <summary>
+            Gets a list of all symbols
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetSymbolsAsync">
+            <summary>
+            Gets a list of all symbols
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetSymbolDetails">
+            <summary>
+            Gets details of all symbols
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetSymbolDetailsAsync">
+            <summary>
+            Gets details of all symbols
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetAccountInfo">
+            <summary>
+            Get information about your account
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetAccountInfoAsync">
+            <summary>
+            Get information about your account
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetWithdrawalFees">
+            <summary>
+            Get withdrawal fees for this account
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetWithdrawalFeesAsync">
+            <summary>
+            Get withdrawal fees for this account
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.Get30DaySummary">
+            <summary>
+            Get 30-day summary on trading volume and margin funding
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.Get30DaySummaryAsync">
+            <summary>
+            Get 30-day summary on trading volume and margin funding
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.PlaceOrder(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal})">
+            <summary>
+            Place a new order
+            </summary>
+            <param name="symbol">Symbol to place order for</param>
+            <param name="side">Side of the order</param>
+            <param name="type">Type of the order</param>
+            <param name="amount">The amount of the order</param>
+            <param name="price">The price for the order</param>
+            <param name="hidden">If the order should be placed as hidden</param>
+            <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
+            <param name="useAllAvailable">If all available funds should be used</param>
+            <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
+            <param name="ocoOrder">If the order is a one-cancels-other order</param>
+            <param name="ocoBuyPrice">The one-cancels-other buy price</param>
+            <param name="ocoSellPrice">The one-cancels-other sell price</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.PlaceOrderAsync(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal})">
+            <summary>
+            Place a new order
+            </summary>
+            <param name="symbol">Symbol to place order for</param>
+            <param name="side">Side of the order</param>
+            <param name="type">Type of the order</param>
+            <param name="amount">The amount of the order</param>
+            <param name="price">The price for the order</param>
+            <param name="hidden">If the order should be placed as hidden</param>
+            <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
+            <param name="useAllAvailable">If all available funds should be used</param>
+            <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
+            <param name="ocoOrder">If the order is a one-cancels-other order</param>
+            <param name="ocoBuyPrice">The one-cancels-other buy price</param>
+            <param name="ocoSellPrice">The one-cancels-other sell price</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelOrder(System.Int64)">
+            <summary>
+            Cancel a specific order
+            </summary>
+            <param name="orderId">The id of the order to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelOrderAsync(System.Int64)">
+            <summary>
+            Cancel a specific order
+            </summary>
+            <param name="orderId">The id of the order to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelAllOrders">
+            <summary>
+            Cancels all open orders
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelAllOrdersAsync">
+            <summary>
+            Cancels all open orders
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetOrder(System.Int64)">
+            <summary>
+            Get the status of a specific order
+            </summary>
+            <param name="orderId">The order id of the order to get</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetOrderAsync(System.Int64)">
+            <summary>
+            Get the status of a specific order
+            </summary>
+            <param name="orderId">The order id of the order to get</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetDepositAddress(System.String,Bitfinex.Net.Objects.WithdrawWallet,System.Nullable{System.Boolean})">
+            <summary>
+            Gets a deposit address for a currency
+            </summary>
+            <param name="currency">The currency to get address for</param>
+            <param name="toWallet">The type of wallet the deposit is for</param>
+            <param name="forceNew">If true a new address will be generated (previous addresses will still be valid)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetDepositAddressAsync(System.String,Bitfinex.Net.Objects.WithdrawWallet,System.Nullable{System.Boolean})">
+            <summary>
+            Gets a deposit address for a currency
+            </summary>
+            <param name="currency">The currency to get address for</param>
+            <param name="toWallet">The type of wallet the deposit is for</param>
+            <param name="forceNew">If true a new address will be generated (previous addresses will still be valid)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.WalletTransfer(System.String,System.Decimal,Bitfinex.Net.Objects.WithdrawWallet,Bitfinex.Net.Objects.WithdrawWallet)">
+            <summary>
+            Transfers funds from one wallet to another
+            </summary>
+            <param name="currency">The currency to transfer</param>
+            <param name="fromWallet">The wallet to remove funds from</param>
+            <param name="toWallet">The wallet to add funds to</param>
+            <param name="amount">The amount to transfer</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.WalletTransferAsync(System.String,System.Decimal,Bitfinex.Net.Objects.WithdrawWallet,Bitfinex.Net.Objects.WithdrawWallet)">
+            <summary>
+            Transfers funds from one wallet to another
+            </summary>
+            <param name="currency">The currency to transfer</param>
+            <param name="fromWallet">The wallet to remove funds from</param>
+            <param name="toWallet">The wallet to add funds to</param>
+            <param name="amount">The amount to transfer</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.Withdraw(System.String,Bitfinex.Net.Objects.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
+            All withdrawals need the withdrawType, wallet and amount parameters
+            CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
+            Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.
+            </summary>
+            <param name="withdrawType">The type of funds to withdraw</param>
+            <param name="wallet">The wallet to withdraw from</param>
+            <param name="amount">The amount to withdraw</param>
+            <param name="address">The destination of the withdrawal</param>
+            <param name="accountNumber">The account number</param>
+            <param name="bankSwift">The SWIFT code of the bank</param>
+            <param name="bankName">The bank name</param>
+            <param name="bankAddress">The bank address</param>
+            <param name="bankCity">The bank city</param>
+            <param name="bankCountry">The bank country</param>
+            <param name="paymentDetails">Message for the receiver</param>
+            <param name="expressWire">Whether it is an express wire withdrawal</param>
+            <param name="intermediaryBankName">Intermediary bank name</param>
+            <param name="intermediaryBankAddress">Intermediary bank address</param>
+            <param name="intermediaryBankCity">Intermediary bank city</param>
+            <param name="intermediaryBankCountry">Intermediary bank country</param>
+            <param name="intermediaryBankAccount">Intermediary bank account</param>
+            <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
+            <param name="accountName">The name of the account</param>
+            <param name="paymentId">Hex string for Monero transaction</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.WithdrawAsync(System.String,Bitfinex.Net.Objects.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
+            All withdrawals need the withdrawType, wallet and amount parameters
+            CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
+            Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.
+            </summary>
+            <param name="withdrawType">The type of funds to withdraw</param>
+            <param name="wallet">The wallet to withdraw from</param>
+            <param name="amount">The amount to withdraw</param>
+            <param name="address">The destination of the withdrawal</param>
+            <param name="accountNumber">The account number</param>
+            <param name="bankSwift">The SWIFT code of the bank</param>
+            <param name="bankName">The bank name</param>
+            <param name="bankAddress">The bank address</param>
+            <param name="bankCity">The bank city</param>
+            <param name="bankCountry">The bank country</param>
+            <param name="paymentDetails">Message for the receiver</param>
+            <param name="expressWire">Whether it is an express wire withdrawal</param>
+            <param name="intermediaryBankName">Intermediary bank name</param>
+            <param name="intermediaryBankAddress">Intermediary bank address</param>
+            <param name="intermediaryBankCity">Intermediary bank city</param>
+            <param name="intermediaryBankCountry">Intermediary bank country</param>
+            <param name="intermediaryBankAccount">Intermediary bank account</param>
+            <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
+            <param name="accountName">The name of the account</param>
+            <param name="paymentId">Hex string for Monero transaction</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.ClaimPosition(System.Int64,System.Decimal)">
+            <summary>
+            Claim a position
+            </summary>
+            <param name="id">The id of the position to claim</param>
+            <param name="amount">The (partial) amount to be claimed</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.ClaimPositionAsync(System.Int64,System.Decimal)">
+            <summary>
+            Claim a position
+            </summary>
+            <param name="id">The id of the position to claim</param>
+            <param name="amount">The (partial) amount to be claimed</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.NewOffer(System.String,System.Decimal,System.Decimal,System.Int32,Bitfinex.Net.Objects.FundingType)">
+            <summary>
+            Submit a new order
+            </summary>
+            <param name="currency">The currency</param>
+            <param name="amount">The amount</param>
+            <param name="rate">Rate to lend or borrow at in percent per 365 days (0 for FRR)</param>
+            <param name="period">Number of days</param>
+            <param name="direction">Direction of the offer</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.NewOfferAsync(System.String,System.Decimal,System.Decimal,System.Int32,Bitfinex.Net.Objects.FundingType)">
+            <summary>
+            Submit a new order
+            </summary>
+            <param name="currency">The currency</param>
+            <param name="amount">The amount</param>
+            <param name="rate">Rate to lend or borrow at in percent per 365 days (0 for FRR)</param>
+            <param name="period">Number of days</param>
+            <param name="direction">Direction of the offer</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelOffer(System.Int64)">
+            <summary>
+            Cancel an offer
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelOfferAsync(System.Int64)">
+            <summary>
+            Cancel an offer
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetOffer(System.Int64)">
+            <summary>
+            Cancel an offer
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetOfferAsync(System.Int64)">
+            <summary>
+            Cancel an offer
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CloseMarginFunding(System.Int64)">
+            <summary>
+            Close margin funding
+            </summary>
+            <param name="swapId">The id to close</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CloseMarginFundingAsync(System.Int64)">
+            <summary>
+            Close margin funding
+            </summary>
+            <param name="swapId">The id to close</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.ClosePosition(System.Int64)">
+            <summary>
+            Close a position
+            </summary>
+            <param name="positionId">The id to close</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.ClosePositionAsync(System.Int64)">
+            <summary>
+            Close a position
+            </summary>
+            <param name="positionId">The id to close</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTickerUpdates(System.String,System.Action{Bitfinex.Net.Objects.BitfinexMarketOverview})">
+            <summary>
+            Subscribes to ticker updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTickerUpdatesAsync(System.String,System.Action{Bitfinex.Net.Objects.BitfinexMarketOverview})">
+            <summary>
+            Subscribes to ticker updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToBookUpdates(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{Bitfinex.Net.Objects.BitfinexOrderBookEntry[]})">
+            <summary>
+            Subscribes to order book updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="precision">The precision of the updates</param>
+            <param name="frequency">The frequency of updates</param>
+            <param name="length">The range for the order book updates</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToBookUpdatesAsync(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{Bitfinex.Net.Objects.BitfinexOrderBookEntry[]})">
+            <summary>
+            Subscribes to order book updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="precision">The precision of the updates</param>
+            <param name="frequency">The frequency of updates</param>
+            <param name="length">The range for the order book updates</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToRawBookUpdates(System.String,System.Int32,System.Action{Bitfinex.Net.Objects.BitfinexRawOrderBookEntry[]})">
+            <summary>
+            Subscribes to raw order book updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="limit">The range for the order book updates</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToRawBookUpdatesAsync(System.String,System.Int32,System.Action{Bitfinex.Net.Objects.BitfinexRawOrderBookEntry[]})">
+            <summary>
+            Subscribes to raw order book updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="limit">The range for the order book updates</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTradeUpdates(System.String,System.Action{Bitfinex.Net.Objects.BitfinexTradeSimple[]})">
+            <summary>
+            Subscribes to public trade updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTradeUpdatesAsync(System.String,System.Action{Bitfinex.Net.Objects.BitfinexTradeSimple[]})">
+            <summary>
+            Subscribes to public trade updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToCandleUpdates(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{Bitfinex.Net.Objects.BitfinexCandle[]})">
+            <summary>
+            Subscribes to candle updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="interval">The interval of the candles</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToCandleUpdatesAsync(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{Bitfinex.Net.Objects.BitfinexCandle[]})">
+            <summary>
+            Subscribes to candle updates for a symbol
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="interval">The interval of the candles</param>
+            <param name="handler">The handler for the data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTradingUpdates(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexOrder[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexTradeDetails[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexPosition[]}})">
+            <summary>
+            Subscribe to trading information updates
+            </summary>
+            <param name="orderHandler">Data handler for order updates. Can be null if not interested</param>
+            <param name="tradeHandler">Data handler for trade execution updates. Can be null if not interested</param>
+            <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTradingUpdatesAsync(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexOrder[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexTradeDetails[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexPosition[]}})">
+            <summary>
+            Subscribe to trading information updates
+            </summary>
+            <param name="orderHandler">Data handler for order updates. Can be null if not interested</param>
+            <param name="tradeHandler">Data handler for trade execution updates. Can be null if not interested</param>
+            <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToWalletUpdates(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexWallet[]}})">
+            <summary>
+            Subscribe to wallet information updates
+            </summary>
+            <param name="walletHandler">Data handler for wallet updates</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToWalletUpdatesAsync(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexWallet[]}})">
+            <summary>
+            Subscribe to wallet information updates
+            </summary>
+            <param name="walletHandler">Data handler for wallet updates</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToFundingUpdates(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFundingOffer[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFundingCredit[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFunding[]}})">
+            <summary>
+            Subscribe to funding information updates
+            </summary>
+            <param name="fundingOfferHandler">Subscribe to funding offer updates. Can be null if not interested</param>
+            <param name="fundingCreditHandler">Subscribe to funding credit updates. Can be null if not interested</param>
+            <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToFundingUpdatesAsync(System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFundingOffer[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFundingCredit[]}},System.Action{Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent{Bitfinex.Net.Objects.BitfinexFunding[]}})">
+            <summary>
+            Subscribe to funding information updates
+            </summary>
+            <param name="fundingOfferHandler">Subscribe to funding offer updates. Can be null if not interested</param>
+            <param name="fundingCreditHandler">Subscribe to funding credit updates. Can be null if not interested</param>
+            <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.PlaceOrder(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+            <summary>
+            Places a new order
+            </summary>
+            <param name="type">The type of the order</param>
+            <param name="symbol">The symbol the order is for</param>
+            <param name="amount">The amount of the order, positive for buying, negative for selling</param>
+            <param name="groupId">Group id to assign to the order</param>
+            <param name="clientOrderId">Client order id to assign to the order</param>
+            <param name="price">Price of the order</param>
+            <param name="priceTrailing">Trailing price of the order</param>
+            <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
+            <param name="priceOcoStop">Oco stop price of the order</param>
+            <param name="flags">Additional flags</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.PlaceOrderAsync(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+            <summary>
+            Places a new order
+            </summary>
+            <param name="type">The type of the order</param>
+            <param name="symbol">The symbol the order is for</param>
+            <param name="amount">The amount of the order, positive for buying, negative for selling</param>
+            <param name="groupId">Group id to assign to the order</param>
+            <param name="clientOrderId">Client order id to assign to the order</param>
+            <param name="price">Price of the order</param>
+            <param name="priceTrailing">Trailing price of the order</param>
+            <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
+            <param name="priceOcoStop">Oco stop price of the order</param>
+            <param name="flags">Additional flags</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.UpdateOrder(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+            <summary>
+            Updates an order
+            </summary>
+            <param name="orderId">The id of the order to update</param>
+            <param name="price">The new price of the order</param>
+            <param name="amount">The new amount of the order</param>
+            <param name="delta">The delta to change</param>
+            <param name="priceAuxiliaryLimit">the new aux limit price</param>
+            <param name="priceTrailing">The new trailing price</param>
+            <param name="flags">The new flags</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.UpdateOrderAsync(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+            <summary>
+            Updates an order
+            </summary>
+            <param name="orderId">The id of the order to update</param>
+            <param name="price">The new price of the order</param>
+            <param name="amount">The new amount of the order</param>
+            <param name="delta">The delta to change</param>
+            <param name="priceAuxiliaryLimit">the new aux limit price</param>
+            <param name="priceTrailing">The new trailing price</param>
+            <param name="flags">The new flags</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrder(System.Int64)">
+            <summary>
+            Cancels an order
+            </summary>
+            <param name="orderId">The id of the order to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrderAsync(System.Int64)">
+            <summary>
+            Cancels an order
+            </summary>
+            <param name="orderId">The id of the order to cancel</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersByGroupId(System.Int64)">
+            <summary>
+            Cancels multiple orders based on their groupId
+            </summary>
+            <param name="groupOrderId">The group id to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersByGroupIdAsync(System.Int64)">
+            <summary>
+            Cancels multiple orders based on their groupId
+            </summary>
+            <param name="groupOrderId">The group id to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersByGroupIds(System.Int64[])">
+            <summary>
+            Cancels multiple orders based on their groupIds
+            </summary>
+            <param name="groupOrderIds">The group ids to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersByGroupIdsAsync(System.Int64[])">
+            <summary>
+            Cancels multiple orders based on their groupIds
+            </summary>
+            <param name="groupOrderIds">The group ids to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrders(System.Int64[])">
+            <summary>
+            Cancels multiple orders based on their order ids
+            </summary>
+            <param name="orderIds">The order ids to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersAsync(System.Int64[])">
+            <summary>
+            Cancels multiple orders based on their order ids
+            </summary>
+            <param name="orderIds">The order ids to cancel</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersByClientOrderIds(System.Collections.Generic.Dictionary{System.Int64,System.DateTime})">
+            <summary>
+            Cancels multiple orders based on their clientOrderIds
+            </summary>
+            <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersByClientOrderIdsAsync(System.Collections.Generic.Dictionary{System.Int64,System.DateTime})">
+            <summary>
+            Cancels multiple orders based on their clientOrderIds
+            </summary>
+            <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
+            <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexAlert.AlertKey">
+            <summary>
+            The key of the alert
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexAlert.AlertType">
+            <summary>
+            The type of the alert
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexAlert.Symbol">
+            <summary>
+            The symbol the alert is for
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexAlert.Price">
+            <summary>
+            The price of the alert
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexAvailableBalance.AvailableBalance">
+            <summary>
+            The available balance
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Timestamp">
+            <summary>
+            The timestamp of the candle
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Open">
+            <summary>
+            The opening price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Close">
+            <summary>
+            The closing price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.High">
+            <summary>
+            The highest price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Low">
+            <summary>
+            The lowest price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Volume">
+            <summary>
+            The volume for this candle
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexCurrency.Name">
+            <summary>
+            The shorthand name of the currency
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexCurrency.FullName">
+            <summary>
+            The full name of the currency
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexForeignExchangeRate.CurrentRate">
+            <summary>
+            The current exchange rate
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Id">
+            <summary>
+            The offer id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Symbol">
+            <summary>
+            The currency of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Side">
+            <summary>
+            The side of the funding
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.TimestampCreated">
+            <summary>
+            The creation timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.TimestampUpdated">
+            <summary>
+            The last update timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Amount">
+            <summary>
+            The amount of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Status">
+            <summary>
+            The order status
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.StatusString">
+            <summary>
+            The raw order status string
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Rate">
+            <summary>
+            The rate of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Period">
+            <summary>
+            The period of the offer in days
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.TimestampOpened">
+            <summary>
+            The timestamp when the funding was opened
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.TimestampLastPayout">
+            <summary>
+            The timestamp of the last payout
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Notify">
+            <summary>
+            If notify
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Hidden">
+            <summary>
+            If hidden
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.RateReal">
+            <summary>
+            The calculated rate
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.NoClose">
+            <summary>
+            Whether the funding should be closed when position is closed
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingCredit.PositionPair">
+            <summary>
+            The pair the currency was used for
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingInfo.Symbol">
+            <summary>
+            The symbol
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingInfoDetails.YieldLoan">
+            <summary>
+            The weighted average rate for taken funding
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingInfoDetails.YieldLend">
+            <summary>
+            The weighted average rate for provided funding
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingInfoDetails.DurationLoan">
+            <summary>
+            The weighted average duration for taken funding
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingInfoDetails.DurationLend">
+            <summary>
+            The weighted average duration for provided funding
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Id">
+            <summary>
+            The offer id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Symbol">
+            <summary>
+            The currency of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.TimestampCreated">
+            <summary>
+            The creation timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.TimestampUpdated">
+            <summary>
+            The last update timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Amount">
+            <summary>
+            The amount of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.AmountOriginal">
+            <summary>
+            The original amount
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.FundingType">
+            <summary>
+            The funding type
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Status">
+            <summary>
+            The status
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.StatusString">
+            <summary>
+            The raw status string
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Rate">
+            <summary>
+            The rate of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Period">
+            <summary>
+            The period of the offer in days
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.RateReal">
+            <summary>
+            The calculated rate
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingTrade.Id">
+            <summary>
+            The id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingTrade.Currency">
+            <summary>
+            The currency
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingTrade.Timestamp">
+            <summary>
+            The timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingTrade.OfferId">
+            <summary>
+            The offer id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingTrade.Amount">
+            <summary>
+            The trade amount
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingTrade.Rate">
+            <summary>
+            The rate
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingTrade.Period">
+            <summary>
+            The period in days
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingTrade.Maker">
+            <summary>
+            Whether the offer took liquidity off the funding book
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexLedgerEntry.Id">
+            <summary>
+            The id of the entry
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexLedgerEntry.Currency">
+            <summary>
+            The currency
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexLedgerEntry.Timestamp">
+            <summary>
+            The timestamp of the event
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexLedgerEntry.Amount">
+            <summary>
+            The change amount
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexLedgerEntry.NewBalance">
+            <summary>
+            The new balance
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexLedgerEntry.Description">
+            <summary>
+            The description of the event
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginBaseInfo.UserProfitLoss">
+            <summary>
+            User profit and loss
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginBaseInfo.UserSwapsAmount">
+            <summary>
+            Amount of swaps
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginBaseInfo.MarginBalance">
+            <summary>
+            Balance in margin funding account
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginBaseInfo.MarginNet">
+            <summary>
+            Balance after profit/loss
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginSymbol.Symbol">
+            <summary>
+            The symbol
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketAveragePrice.AverageRate">
+            <summary>
+            The average price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketAveragePrice.Amount">
+            <summary>
+            The amount
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.Bid">
+            <summary>
+            Best bid price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.BidSize">
+            <summary>
+            Best bid size
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.Ask">
+            <summary>
+            Best ask price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.AskSize">
+            <summary>
+            Best ask size
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.DailyChange">
+            <summary>
+            Change versus 24 hours ago
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.DailyChangePercentage">
+            <summary>
+            Change percentage versus 24 hours ago
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.LastPrice">
+            <summary>
+            The last trade price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.Volume">
+            <summary>
+            The 24 hour volume
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.High">
+            <summary>
+            The 24 hour high price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.Low">
+            <summary>
+            The 24 hour low price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Symbol">
+            <summary>
+            The symbol
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Bid">
+            <summary>
+            The best bid price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.BidSize">
+            <summary>
+            The best bid size
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Ask">
+            <summary>
+            The best ask price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.AskSize">
+            <summary>
+            The best ask size
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.DailyChange">
+            <summary>
+            Change versus 24 hours ago
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.DailyChangePercentage">
+            <summary>
+            Change percentage versus 24 hours ago
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.LastPrice">
+            <summary>
+            The last trade price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Volume">
+            <summary>
+            The 24 hour volume
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.High">
+            <summary>
+            The 24 hour high price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Low">
+            <summary>
+            The 24 hour low price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMovement.Id">
+            <summary>
+            The id of the movement
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMovement.Currency">
+            <summary>
+            The currency of the movement
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMovement.CurrencyName">
+            <summary>
+            The full name of the currency
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMovement.Started">
+            <summary>
+            The initial creation time
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMovement.Updated">
+            <summary>
+            The last update time
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMovement.Status">
+            <summary>
+            The status of the movement
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMovement.Amount">
+            <summary>
+            The amount of the movement
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMovement.Fees">
+            <summary>
+            The fees of the movement
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMovement.Address">
+            <summary>
+            The address
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMovement.TransactionId">
+            <summary>
+            The transaction id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookOptions.SocketClient">
+            <summary>
+            The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Objects.BitfinexOrderBookOptions.#ctor(Bitfinex.Net.Interfaces.IBitfinexSocketClient)">
+            <summary>
+            </summary>
+            <param name="client">The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.</param>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Id">
+            <summary>
+            The id of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.GroupId">
+            <summary>
+            The group id of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.ClientOrderId">
+            <summary>
+            The client order id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Symbol">
+            <summary>
+            The symbol of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.TimestampCreated">
+            <summary>
+            The creation time of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.TimestampUpdated">
+            <summary>
+            The last update time
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Amount">
+            <summary>
+            The amount left
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.AmountOriginal">
+            <summary>
+            The original amount
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Type">
+            <summary>
+            The order type
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.TypePrevious">
+            <summary>
+            The previous order type
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Status">
+            <summary>
+            The status of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.StatusString">
+            <summary>
+            The raw status string
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Price">
+            <summary>
+            The price of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PriceAverage">
+            <summary>
+            The average price of the order (market orders)
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PriceTrailing">
+            <summary>
+            The trailing price of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PriceAuxilliaryLimit">
+            <summary>
+            The aux limit price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlacedId">
+            <summary>
+            If another order caused this order to be placed (OCO) this will be that other order's ID
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookEntry.Price">
+            <summary>
+            The price of this entry
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookEntry.Count">
+            <summary>
+            The amount of orders for this price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookEntry.Quantity">
+            <summary>
+            The total quantity for this price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexRawOrderBookEntry.OrderId">
+            <summary>
+            The id of this order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexRawOrderBookEntry.Price">
+            <summary>
+            The price for this order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexRawOrderBookEntry.Quantity">
+            <summary>
+            The quantity of this order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPerformance.Timestamp">
+            <summary>
+            The timestamp of the calculation
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPlatformStatus.Status">
+            <summary>
+            The current platform status
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.Symbol">
+            <summary>
+            The symbol
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.Status">
+            <summary>
+            The status of the position
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.Amount">
+            <summary>
+            The amount
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.BasePrice">
+            <summary>
+            The base price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.MarginFunding">
+            <summary>
+            The amount of funding being used
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.MarginFundingType">
+            <summary>
+            The funding type
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.ProfitLoss">
+            <summary>
+            Profit / loss
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.ProfitLossPercentage">
+            <summary>
+            Profit / loss percentage
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.LiquidationPrice">
+            <summary>
+            Liquidation price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.Leverage">
+            <summary>
+            Beta value
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPosition.Id">
+            <summary>
+            The id of the position
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPositionExtended.CreateTime">
+            <summary>
+            The creation time
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPositionExtended.UpdateTime">
+            <summary>
+            The update time
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStats.Timestamp">
+            <summary>
+            The timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStats.Value">
+            <summary>
+            The value
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.Id">
+            <summary>
+            The id of the trade
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.Pair">
+            <summary>
+            The pair the trade is for
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.TimestampCreated">
+            <summary>
+            The time the trade was created
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.OrderId">
+            <summary>
+            The id of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.ExecutedAmount">
+            <summary>
+            The executed amount
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.ExecutedPrice">
+            <summary>
+            The price of the trade
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.OrderType">
+            <summary>
+            The type of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.OrderPrice">
+            <summary>
+            The price of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.Maker">
+            <summary>
+            If was maker
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.Fee">
+            <summary>
+            The fee
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.FeeCurrency">
+            <summary>
+            The currency the fee is in
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeSimple.Id">
+            <summary>
+            The id of the trade
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeSimple.Timestamp">
+            <summary>
+            The timestamp of the trade
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeSimple.Amount">
+            <summary>
+            The amount of the trade
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeSimple.Price">
+            <summary>
+            The price of the trade
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexUserInfo.Id">
+            <summary>
+            The id of the user
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexUserInfo.Email">
+            <summary>
+            The email address of the user
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexUserInfo.UserName">
+            <summary>
+            The username of the user
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWallet.Type">
+            <summary>
+            The type of the wallet
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWallet.Currency">
+            <summary>
+            the currency
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWallet.Balance">
+            <summary>
+            The current balance
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWallet.UnsettledInterest">
+            <summary>
+            The unsettled interest
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWallet.BalanceAvailable">
+            <summary>
+            The available balance
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummary.Timestamp">
+            <summary>
+            The timestamp of the data
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummary.TradeVolume">
+            <summary>
+            Trade volume data
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummary.MakerFee">
+            <summary>
+            Current maker fee
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummary.TakerFee">
+            <summary>
+            Current taker fee
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummaryVolumeEntry.Currency">
+            <summary>
+            The currency
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummaryVolumeEntry.Volume">
+            <summary>
+            The volume
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummaryVolumeEntry.VolumeMaker">
+            <summary>
+            The maker volume
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummaryVolumeEntry.VolumeBFX">
+            <summary>
+            The volume on Bitfinex
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummaryVolumeEntry.VolumeBFXMaker">
+            <summary>
+            The maker volume on Bitfinex
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummaryVolumeEntry.VolumeETHFX">
+            <summary>
+            The volume on EthFinex
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummaryVolumeEntry.VolumeETHFXMaker">
+            <summary>
+            The maker volume on EthFinex
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexClosePositionResult.Message">
+            <summary>
+            Status message
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexClosePositionResult.Position">
+            <summary>
+            The position status
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexClosePositionResult.Order">
+            <summary>
+            The order used to close the position
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexDepositAddress.Result">
+            <summary>
+            Whether it was successful
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexDepositAddress.Method">
+            <summary>
+            The deposit method
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexDepositAddress.Currency">
+            <summary>
+            The currency the address is for
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexDepositAddress.Address">
+            <summary>
+            The deposit address
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBook.Bids">
+            <summary>
+            The bids in the book
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBook.Asks">
+            <summary>
+            The asks in the book
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBookEntry.Rate">
+            <summary>
+            The rate of the entry
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBookEntry.Amount">
+            <summary>
+            The amount of the entry
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBookEntry.Period">
+            <summary>
+            The period in days
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBookEntry.Timestamp">
+            <summary>
+            The timestamp of the entry
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBookEntry.FlashReturnRate">
+            <summary>
+            Whether the offer is at ffr
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingContract.Id">
+            <summary>
+            The id of the contract
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingContract.PositionId">
+            <summary>
+            The id of the position
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingContract.Currency">
+            <summary>
+            The currency of the contract
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingContract.Rate">
+            <summary>
+            The rate of the contract
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingContract.Period">
+            <summary>
+            The period in days
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingContract.Amount">
+            <summary>
+            The amount
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingContract.Timestamp">
+            <summary>
+            The timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingContract.AutoClose">
+            <summary>
+            If it is auto close
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexLend.Rate">
+            <summary>
+            The rate of the lend
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexLend.AmountLent">
+            <summary>
+            The amount that was lent
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexLend.AmountUsed">
+            <summary>
+            The amount that is used
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexLend.Timestamp">
+            <summary>
+            Timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.Id">
+            <summary>
+            The id of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.Currency">
+            <summary>
+            The currency of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.Rate">
+            <summary>
+            The rate of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.Period">
+            <summary>
+            The period in days
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.Direction">
+            <summary>
+            The direction of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.Timestamp">
+            <summary>
+            The timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.IsLive">
+            <summary>
+            If the offer is live
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.IsCanceled">
+            <summary>
+            If the offer is canceled
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.OriginalAmount">
+            <summary>
+            The original amount of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.RemainingAmount">
+            <summary>
+            The remaining amount on the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.ExecutedAmount">
+            <summary>
+            The executed amount of the offer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.OfferId">
+            <summary>
+            The offer id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Id">
+            <summary>
+            The id of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Symbol">
+            <summary>
+            The symbol the order is for
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Exchange">
+            <summary>
+            On what exchange
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Price">
+            <summary>
+            The price of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.AverageExecutionPrice">
+            <summary>
+            The average execution price (for market orders)
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Side">
+            <summary>
+            The side of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Type">
+            <summary>
+            The type of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Timestamp">
+            <summary>
+            The timestamp of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Live">
+            <summary>
+            If the order is live
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Canceled">
+            <summary>
+            If the order is canceled
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Hidden">
+            <summary>
+            If the order is hidden
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Forced">
+            <summary>
+            If order was forced (margin only)
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.OriginalAmount">
+            <summary>
+            The original amount of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.RemainingAmount">
+            <summary>
+            The remaining amount of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.ExecutedAmount">
+            <summary>
+            The executed amount of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.GroupId">
+            <summary>
+            The group id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.ClientOrderId">
+            <summary>
+            The client order id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.ClientOrderDate">
+            <summary>
+            The client order date
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Source">
+            <summary>
+            The source of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.OcoOrder">
+            <summary>
+            If this was an OneCancelsOther order this is the id of the other order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1.Id">
+            <summary>
+            The id of the position
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1.Symbol">
+            <summary>
+            The symbol of the position
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1.Status">
+            <summary>
+            The status of the position
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1.Base">
+            <summary>
+            The base 
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1.Amount">
+            <summary>
+            The amount of the position
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1.Timestamp">
+            <summary>
+            The timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1.Swap">
+            <summary>
+            Swap
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1.ProfitLoss">
+            <summary>
+            The profit loss
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexTransferResult.Success">
+            <summary>
+            The status of the transfer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexTransferResult.Message">
+            <summary>
+            Additional info
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails.Pair">
+            <summary>
+            The symbol pair
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails.PricePrecision">
+            <summary>
+            The price precision of the pair
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails.InitialMargin">
+            <summary>
+            The initial margin required to open a position
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails.MinimumMargin">
+            <summary>
+            The minimal margin to maintain
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails.MaximumOrderSize">
+            <summary>
+            The maximum order size
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails.MinimumOrderSize">
+            <summary>
+            The minimum order size
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails.Margin">
+            <summary>
+            If margin trading is enabled for the pair
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexWithdrawalFees.Withdraw">
+            <summary>
+            List of fees
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexWithdrawalResult.Success">
+            <summary>
+            The status of the transfer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexWithdrawalResult.Message">
+            <summary>
+            Additional info
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexWithdrawalResult.WithdrawalId">
+            <summary>
+            The id of the withdrawal
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexWithdrawalResult.Fees">
+            <summary>
+            The fees paid
+            </summary>
+        </member>
+    </members>
+</doc>
