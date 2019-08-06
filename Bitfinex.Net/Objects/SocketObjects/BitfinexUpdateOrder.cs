@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
-    public class BitfinexUpdateOrder
+    internal class BitfinexUpdateOrder
     {
         [JsonProperty("id")]
         public long OrderId { get; set; }

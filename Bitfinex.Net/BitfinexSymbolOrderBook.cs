@@ -10,6 +10,9 @@ using CryptoExchange.Net.Sockets;
 
 namespace Bitfinex.Net
 {
+    /// <summary>
+    /// Live order book implementation
+    /// </summary>
     public class BitfinexSymbolOrderBook: SymbolOrderBook
     {
         private readonly IBitfinexSocketClient socketClient;
@@ -32,6 +35,7 @@ namespace Bitfinex.Net
             precision = precisionLevel;
         }
 
+        /// <inheritdoc />
         protected override async Task<CallResult<UpdateSubscription>> DoStart()
         {
             if(precision == Precision.R0)
@@ -49,6 +53,7 @@ namespace Bitfinex.Net
             return result;
         }
 
+        /// <inheritdoc />
         protected override void DoReset()
         {
             initialSnapshotDone = false;
@@ -89,6 +94,7 @@ namespace Bitfinex.Net
             }
         }
 
+        /// <inheritdoc />
         protected override async Task<CallResult<bool>> DoResync()
         {
             while (!initialSnapshotDone)
@@ -97,6 +103,9 @@ namespace Bitfinex.Net
             return new CallResult<bool>(true, null);
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
         public override void Dispose()
         {
             processBuffer.Clear();

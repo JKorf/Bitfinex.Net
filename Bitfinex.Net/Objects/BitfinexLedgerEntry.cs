@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Ledger entry
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexLedgerEntry
     {

@@ -4,7 +4,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class TimeFrameConverter: BaseConverter<TimeFrame>
+    internal class TimeFrameConverter: BaseConverter<TimeFrame>
     {
         public TimeFrameConverter(): this(true) { }
         public TimeFrameConverter(bool quotes) : base(quotes) { }

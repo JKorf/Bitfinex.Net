@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
-    public class BitfinexMultiCancel
+    internal class BitfinexMultiCancel
     {
         [JsonProperty("all"), JsonConverter(typeof(BoolToIntConverter))]//, new [] { false, true })]
         public bool? All { get; set; }

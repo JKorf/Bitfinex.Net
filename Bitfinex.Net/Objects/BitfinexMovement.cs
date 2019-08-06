@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Wallet movement info (deposit/withdraw)
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMovement
     {

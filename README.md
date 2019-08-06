@@ -87,6 +87,10 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 2.1.5 - 06 Aug 2019
+    * Fixed missing events when placing orders via websocket
+    * Added code docs
+
 * Version 2.1.4 - 05 Aug 2019
     * Fix offer serialization
     * Added missing xml file for code docs

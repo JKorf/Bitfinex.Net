@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Converters
 {
-    public class BoolToIntConverter : JsonConverter
+    internal class BoolToIntConverter : JsonConverter
     {
         private readonly bool quotes;
         private readonly bool asInt;

@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Market overview
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMarketOverviewRest
     {

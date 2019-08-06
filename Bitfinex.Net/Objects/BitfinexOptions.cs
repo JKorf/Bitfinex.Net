@@ -4,16 +4,28 @@ using CryptoExchange.Net.Objects;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Options for the BitfinexClient
+    /// </summary>
     public class BitfinexClientOptions : RestClientOptions
     {
+        /// <summary>
+        /// Create new client options
+        /// </summary>
         public BitfinexClientOptions()
         {
             BaseAddress = "https://api.bitfinex.com";
         }
     }
 
+    /// <summary>
+    /// Options for the BitfinexSocketClient
+    /// </summary>
     public class BitfinexSocketClientOptions: SocketClientOptions
     {
+        /// <summary>
+        /// Create new socket options
+        /// </summary>
         public BitfinexSocketClientOptions()
         {
             SocketSubscriptionsCombineTarget = 10;
@@ -22,6 +34,9 @@ namespace Bitfinex.Net.Objects
         }
     }
 
+    /// <summary>
+    /// Options for the BitfinexSymbolOrderBook
+    /// </summary>
     public class BitfinexOrderBookOptions : OrderBookOptions
     {
         /// <summary>

@@ -4,6 +4,11 @@
         <name>Bitfinex.Net</name>
     </assembly>
     <members>
+        <member name="T:Bitfinex.Net.BitfinexClient">
+            <summary>
+            Client for the Bitfinex API
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexClient.#ctor">
             <summary>
             Create a new instance of BitfinexClient using the default options
@@ -508,6 +513,18 @@
             <param name="symbol">Symbol to get history for</param>
             <returns></returns>
         </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetDailyPerformance">
+            <summary>
+            Daily performance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetDailyPerformanceAsync">
+            <summary>
+            Daily performance
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexClient.GetAlertList">
             <summary>
             Get the list of alerts
@@ -964,6 +981,17 @@
             <param name="positionId">The id to close</param>
             <returns></returns>
         </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.ParseErrorResponse(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Bitfinex.Net.BitfinexSocketClient">
+            <summary>
+            Socket client for the Bitfinex API
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexSocketClient.#ctor">
             <summary>
             Create a new instance of BitfinexSocketClient using the default options
@@ -1249,6 +1277,29 @@
             <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
             <returns>True if successfully committed on server</returns>
         </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.Unsubscribe(CryptoExchange.Net.Sockets.SocketConnection,CryptoExchange.Net.Sockets.SocketSubscription)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.AuthenticateSocket(CryptoExchange.Net.Sockets.SocketConnection)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.HandleQueryResponse``1(CryptoExchange.Net.Sockets.SocketConnection,System.Object,Newtonsoft.Json.Linq.JToken,CryptoExchange.Net.Objects.CallResult{``0}@)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.HandleSubscriptionResponse(CryptoExchange.Net.Sockets.SocketConnection,CryptoExchange.Net.Sockets.SocketSubscription,System.Object,Newtonsoft.Json.Linq.JToken,CryptoExchange.Net.Objects.CallResult{System.Object}@)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.MessageMatchesHandler(Newtonsoft.Json.Linq.JToken,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.MessageMatchesHandler(Newtonsoft.Json.Linq.JToken,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:Bitfinex.Net.BitfinexSymbolOrderBook">
+            <summary>
+            Live order book implementation
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.#ctor(System.String,Bitfinex.Net.Objects.Precision,System.Int32,Bitfinex.Net.Objects.BitfinexOrderBookOptions)">
             <summary>
             Create a new order book instance
@@ -1257,6 +1308,25 @@
             <param name="precisionLevel">The precision level of the order book</param>
             <param name="limit">The limit of entries in the order book, either 25 or 100</param>
             <param name="options">Options for the order book</param>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.DoStart">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.DoReset">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.DoResync">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.Dispose">
+            <summary>
+            Dispose
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Interfaces.IBitfinexClient">
+            <summary>
+            Bitfinex client interface
+            </summary>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.SetApiCredentials(System.String,System.String)">
             <summary>
@@ -1745,6 +1815,18 @@
             <param name="symbol">Symbol to get history for</param>
             <returns></returns>
         </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetDailyPerformance">
+            <summary>
+            Daily performance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetDailyPerformanceAsync">
+            <summary>
+            Daily performance
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetAlertList">
             <summary>
             Get the list of alerts
@@ -2201,6 +2283,11 @@
             <param name="positionId">The id to close</param>
             <returns></returns>
         </member>
+        <member name="T:Bitfinex.Net.Interfaces.IBitfinexSocketClient">
+            <summary>
+            Bitfinex socket client interface
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTickerUpdates(System.String,System.Action{Bitfinex.Net.Objects.BitfinexMarketOverview})">
             <summary>
             Subscribes to ticker updates for a symbol
@@ -2469,6 +2556,11 @@
             <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
             <returns>True if successfully committed on server</returns>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexAlert">
+            <summary>
+            Alert
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexAlert.AlertKey">
             <summary>
             The key of the alert
@@ -2489,9 +2581,24 @@
             The price of the alert
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexAlert.T">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexAvailableBalance">
+            <summary>
+            Available balance
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexAvailableBalance.AvailableBalance">
             <summary>
             The available balance
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexCandle">
+            <summary>
+            Candle info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Timestamp">
@@ -2524,6 +2631,11 @@
             The volume for this candle
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexCurrency">
+            <summary>
+            Currency info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexCurrency.Name">
             <summary>
             The shorthand name of the currency
@@ -2534,9 +2646,19 @@
             The full name of the currency
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexForeignExchangeRate">
+            <summary>
+            Exchange rate in a foreign currency
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexForeignExchangeRate.CurrentRate">
             <summary>
             The current exchange rate
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexFunding">
+            <summary>
+            Funding info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Id">
@@ -2569,6 +2691,10 @@
             The amount of the offer
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Flags">
+            <summary>
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Status">
             <summary>
             The order status
@@ -2577,6 +2703,18 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexFunding.StatusString">
             <summary>
             The raw order status string
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.PlaceHolder1">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.PlaceHolder2">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.PlaceHolder3">
+            <summary>
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Rate">
@@ -2609,6 +2747,14 @@
             If hidden
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.PlaceHolder6">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFunding.Renew">
+            <summary>
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFunding.RateReal">
             <summary>
             The calculated rate
@@ -2619,14 +2765,39 @@
             Whether the funding should be closed when position is closed
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexFundingCredit">
+            <summary>
+            Funding credit info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFundingCredit.PositionPair">
             <summary>
             The pair the currency was used for
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexFundingInfo">
+            <summary>
+            Funding info
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingInfo.Type">
+            <summary>
+            Type
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFundingInfo.Symbol">
             <summary>
             The symbol
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingInfo.Data">
+            <summary>
+            Data
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexFundingInfoDetails">
+            <summary>
+            Funding info details
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFundingInfoDetails.YieldLoan">
@@ -2647,6 +2818,11 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexFundingInfoDetails.DurationLend">
             <summary>
             The weighted average duration for provided funding
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexFundingOffer">
+            <summary>
+            Funding offer info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Id">
@@ -2684,6 +2860,21 @@
             The funding type
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.PlaceHolder1">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.PlaceHolder2">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Flags">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Status">
             <summary>
             The status
@@ -2692,6 +2883,21 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.StatusString">
             <summary>
             The raw status string
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.PlaceHolder3">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.PlaceHolder4">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.PlaceHolder5">
+            <summary>
+            
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Rate">
@@ -2704,9 +2910,34 @@
             The period of the offer in days
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Notify">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Hidden">
+            <summary>
+            Whether the offer is hidden
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.PlaceHolder6">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.Renew">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFundingOffer.RateReal">
             <summary>
             The calculated rate
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexFundingTrade">
+            <summary>
+            Funding trade info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexFundingTrade.Id">
@@ -2749,6 +2980,11 @@
             Whether the offer took liquidity off the funding book
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexLedgerEntry">
+            <summary>
+            Ledger entry
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexLedgerEntry.Id">
             <summary>
             The id of the entry
@@ -2779,6 +3015,26 @@
             The description of the event
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexMarginBase">
+            <summary>
+            Margin base
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginBase.Type">
+            <summary>
+            Type
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginBase.Data">
+            <summary>
+            Data
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexMarginBaseInfo">
+            <summary>
+            Margin base info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexMarginBaseInfo.UserProfitLoss">
             <summary>
             User profit and loss
@@ -2799,9 +3055,49 @@
             Balance after profit/loss
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexMarginSymbol">
+            <summary>
+            Margin symbol info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexMarginSymbol.Symbol">
             <summary>
             The symbol
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginSymbol.Data">
+            <summary>
+            Data
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexMarginSymbolInfo">
+            <summary>
+            Margin symbol info
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginSymbolInfo.TradeableBalance">
+            <summary>
+            Trade-able balance
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginSymbolInfo.GrossBalance">
+            <summary>
+            Gross balance
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginSymbolInfo.Buy">
+            <summary>
+            Buy amount
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexMarginSymbolInfo.Sell">
+            <summary>
+            Sell amount
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexMarketAveragePrice">
+            <summary>
+            Average price info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexMarketAveragePrice.AverageRate">
@@ -2812,6 +3108,11 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexMarketAveragePrice.Amount">
             <summary>
             The amount
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexMarketOverview">
+            <summary>
+            Market overview
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.Bid">
@@ -2862,6 +3163,11 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.Low">
             <summary>
             The 24 hour low price
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexMarketOverviewRest">
+            <summary>
+            Market overview
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Symbol">
@@ -2919,6 +3225,11 @@
             The 24 hour low price
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexMovement">
+            <summary>
+            Wallet movement info (deposit/withdraw)
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexMovement.Id">
             <summary>
             The id of the movement
@@ -2969,6 +3280,31 @@
             The transaction id
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexClientOptions">
+            <summary>
+            Options for the BitfinexClient
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Objects.BitfinexClientOptions.#ctor">
+            <summary>
+            Create new client options
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexSocketClientOptions">
+            <summary>
+            Options for the BitfinexSocketClient
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Objects.BitfinexSocketClientOptions.#ctor">
+            <summary>
+            Create new socket options
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexOrderBookOptions">
+            <summary>
+            Options for the BitfinexSymbolOrderBook
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookOptions.SocketClient">
             <summary>
             The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.
@@ -2978,6 +3314,11 @@
             <summary>
             </summary>
             <param name="client">The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.</param>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexOrder">
+            <summary>
+            Order info
+            </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Id">
             <summary>
@@ -3029,6 +3370,21 @@
             The previous order type
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder1">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder2">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Flags">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Status">
             <summary>
             The status of the order
@@ -3037,6 +3393,16 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexOrder.StatusString">
             <summary>
             The raw status string
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder3">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder4">
+            <summary>
+            
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Price">
@@ -3059,9 +3425,44 @@
             The aux limit price
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder5">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder6">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder7">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Notify">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Hidden">
+            <summary>
+            Whether the order is hidden
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlacedId">
             <summary>
             If another order caused this order to be placed (OCO) this will be that other order's ID
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexOrderBookBase">
+            <summary>
+            Base for order book
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexOrderBookEntry">
+            <summary>
+            Order book entry
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookEntry.Price">
@@ -3079,6 +3480,11 @@
             The total quantity for this price
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexRawOrderBookEntry">
+            <summary>
+            Raw order book entry
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexRawOrderBookEntry.OrderId">
             <summary>
             The id of this order
@@ -3094,14 +3500,34 @@
             The quantity of this order
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexPerformance">
+            <summary>
+            Performance info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexPerformance.Timestamp">
             <summary>
             The timestamp of the calculation
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexPerformance.Performance">
+            <summary>
+            Performance rating
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexPlatformStatus">
+            <summary>
+            Platform status info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexPlatformStatus.Status">
             <summary>
             The current platform status
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexPosition">
+            <summary>
+            Position info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexPosition.Symbol">
@@ -3159,6 +3585,11 @@
             The id of the position
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexPositionExtended">
+            <summary>
+            Extended position info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexPositionExtended.CreateTime">
             <summary>
             The creation time
@@ -3169,6 +3600,11 @@
             The update time
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexStats">
+            <summary>
+            Stat info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexStats.Timestamp">
             <summary>
             The timestamp
@@ -3177,6 +3613,21 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexStats.Value">
             <summary>
             The value
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexSuccessResult">
+            <summary>
+            Result
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSuccessResult.Success">
+            <summary>
+            Whether the operation was successful
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexTradeDetails">
+            <summary>
+            Details of a trade
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexTradeDetails.Id">
@@ -3234,6 +3685,11 @@
             The currency the fee is in
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexTradeSimple">
+            <summary>
+            Trade info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexTradeSimple.Id">
             <summary>
             The id of the trade
@@ -3254,6 +3710,16 @@
             The price of the trade
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexTradeSimple.UpdateType">
+            <summary>
+            The type of update
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexUserInfo">
+            <summary>
+            User info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexUserInfo.Id">
             <summary>
             The id of the user
@@ -3267,6 +3733,11 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexUserInfo.UserName">
             <summary>
             The username of the user
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexWallet">
+            <summary>
+            Wallet info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexWallet.Type">
@@ -3294,6 +3765,11 @@
             The available balance
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummary">
+            <summary>
+            30 day summary info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummary.Timestamp">
             <summary>
             The timestamp of the data
@@ -3312,6 +3788,11 @@
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummary.TakerFee">
             <summary>
             Current taker fee
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummaryVolumeEntry">
+            <summary>
+            Summary entry
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummaryVolumeEntry.Currency">
@@ -3349,6 +3830,51 @@
             The maker volume on EthFinex
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexAccountInfo">
+            <summary>
+            Account info
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexAccountInfo.MakerFee">
+            <summary>
+            Maker trade fee
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexAccountInfo.TakerFee">
+            <summary>
+            Taker trade fee
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexAccountInfo.Fees">
+            <summary>
+            Symbol specific fees
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexFee">
+            <summary>
+            Fee info
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFee.Pairs">
+            <summary>
+            The fee pair
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFee.MakerFee">
+            <summary>
+            Maker trade fee
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFee.TakerFee">
+            <summary>
+            Taker trade fee
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexClosePositionResult">
+            <summary>
+            Close position result
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexClosePositionResult.Message">
             <summary>
             Status message
@@ -3362,6 +3888,11 @@
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexClosePositionResult.Order">
             <summary>
             The order used to close the position
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexDepositAddress">
+            <summary>
+            Deposit address info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexDepositAddress.Result">
@@ -3384,6 +3915,11 @@
             The deposit address
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBook">
+            <summary>
+            Funding order book
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBook.Bids">
             <summary>
             The bids in the book
@@ -3392,6 +3928,11 @@
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBook.Asks">
             <summary>
             The asks in the book
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBookEntry">
+            <summary>
+            Funding order book entry
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBookEntry.Rate">
@@ -3417,6 +3958,11 @@
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingBookEntry.FlashReturnRate">
             <summary>
             Whether the offer is at ffr
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingContract">
+            <summary>
+            Funding contract info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexFundingContract.Id">
@@ -3459,6 +4005,11 @@
             If it is auto close
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexLend">
+            <summary>
+            Lend info
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexLend.Rate">
             <summary>
             The rate of the lend
@@ -3477,6 +4028,11 @@
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexLend.Timestamp">
             <summary>
             Timestamp
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer">
+            <summary>
+            Offer info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.Id">
@@ -3537,6 +4093,11 @@
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexOffer.OfferId">
             <summary>
             The offer id
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder">
+            <summary>
+            Placed order info
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Id">
@@ -3639,6 +4200,11 @@
             If this was an OneCancelsOther order this is the id of the other order
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1">
+            <summary>
+            Position object of the V1 API
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1.Id">
             <summary>
             The id of the position
@@ -3679,6 +4245,21 @@
             The profit loss
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexResult">
+            <summary>
+            Result
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexResult.Result">
+            <summary>
+            Result string
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexTransferResult">
+            <summary>
+            Transfer results
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexTransferResult.Success">
             <summary>
             The status of the transfer
@@ -3687,6 +4268,11 @@
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexTransferResult.Message">
             <summary>
             Additional info
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails">
+            <summary>
+            Symbol details
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails.Pair">
@@ -3719,14 +4305,29 @@
             The minimum order size
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails.Expiration">
+            <summary>
+            Expiration
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexSymbolDetails.Margin">
             <summary>
             If margin trading is enabled for the pair
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexWithdrawalFees">
+            <summary>
+            Withdrawal fee dictionary
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexWithdrawalFees.Withdraw">
             <summary>
             List of fees
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexWithdrawalResult">
+            <summary>
+            Result of withdrawing
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexWithdrawalResult.Success">
@@ -3748,6 +4349,39 @@
             <summary>
             The fees paid
             </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent`1">
+            <summary>
+            Socket event wrapper
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent`1.ChannelId">
+            <summary>
+            The channel id of the event
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent`1.EventType">
+            <summary>
+            The type of the event
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent`1.Data">
+            <summary>
+            The data
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent`1.#ctor">
+            <summary>
+            ctor
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent`1.#ctor(Bitfinex.Net.Objects.BitfinexEventType,`0)">
+            <summary>
+            ctor
+            </summary>
+            <param name="type"></param>
+            <param name="data"></param>
         </member>
     </members>
 </doc>

@@ -3,16 +3,28 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Margin base
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMarginBase
     {
+        /// <summary>
+        /// Type
+        /// </summary>
         [ArrayProperty(0)]
         public string Type { get; set; }
 
+        /// <summary>
+        /// Data
+        /// </summary>
         [ArrayProperty(1), JsonConverter(typeof(ArrayConverter))]
         public BitfinexMarginBaseInfo Data { get; set; }
     }
     
+    /// <summary>
+    /// Margin base info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMarginBaseInfo
     {

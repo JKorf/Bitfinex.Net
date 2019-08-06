@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Bitfinex.Net.Converters
 {
-    public class WithdrawWalletConverter: BaseConverter<WithdrawWallet>
+    internal class WithdrawWalletConverter: BaseConverter<WithdrawWallet>
     {
         public WithdrawWalletConverter() : this(true) { }
         public WithdrawWalletConverter(bool quotes) : base(quotes) { }

@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 
 namespace Bitfinex.Net
 {
+    /// <summary>
+    /// Socket client for the Bitfinex API
+    /// </summary>
     public class BitfinexSocketClient : SocketClient, IBitfinexSocketClient
     {
         #region fields
@@ -58,6 +61,7 @@ namespace Bitfinex.Net
         {
             Configure(options);
 
+            ContinueOnQueryResponse = true;
             AddGenericHandler("HB", (wrapper, msg) => { });
             AddGenericHandler("Info", InfoHandler);
         }
@@ -116,8 +120,8 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<BitfinexOrderBookEntry[]> handler)
         {
-            if (length != 25 && length != 100)
-                return new CallResult<UpdateSubscription>(null, new ArgumentError("Limit should be either 25 or 100"));
+            //if (length != 25 && length != 100)
+            //    return new CallResult<UpdateSubscription>(null, new ArgumentError("Limit should be either 25 or 100"));
 
             var internalHandler = new Action<JToken>(data =>
             {
@@ -583,7 +587,7 @@ namespace Bitfinex.Net
 
             if (action == null)
             {
-                log.Write(LogVerbosity.Debug, $"Ignoring {evnt} event because not subscribed");
+                log.Write(LogVerbosity.Debug, $"Ignoring {evnt.EventType} event because not subscribed");
                 return;
             }
 
@@ -645,7 +649,7 @@ namespace Bitfinex.Net
             }
         }
 
-
+        /// <inheritdoc />
         protected override async Task<bool> Unsubscribe(SocketConnection connection, SocketSubscription subscription)
         {
             var channelId = ((BitfinexSubscriptionRequest) subscription.Request).ChannelId;
@@ -691,6 +695,7 @@ namespace Bitfinex.Net
         }
         #endregion
 
+        /// <inheritdoc />
         protected override async Task<CallResult<bool>> AuthenticateSocket(SocketConnection s)
         {
             if (authProvider == null)
@@ -730,6 +735,7 @@ namespace Bitfinex.Net
             return result;
         }
 
+        /// <inheritdoc />
         protected override bool HandleQueryResponse<T>(SocketConnection s, object request, JToken data, out CallResult<T> callResult)
         {
             callResult = null;
@@ -834,6 +840,7 @@ namespace Bitfinex.Net
             return false;
         }
 
+        /// <inheritdoc />
         protected override bool HandleSubscriptionResponse(SocketConnection s, SocketSubscription subscription, object request, JToken data, out CallResult<object> callResult)
         {
             callResult = null;
@@ -881,6 +888,7 @@ namespace Bitfinex.Net
             }
         }
 
+        /// <inheritdoc />
         protected override bool MessageMatchesHandler(JToken message, object request)
         {
             if (message.Type != JTokenType.Array)
@@ -900,6 +908,7 @@ namespace Bitfinex.Net
             return channelId == subId && array[1].ToString() != "hb";
         }
 
+        /// <inheritdoc />
         protected override bool MessageMatchesHandler(JToken message, string identifier)
         {
             if (message.Type == JTokenType.Object)

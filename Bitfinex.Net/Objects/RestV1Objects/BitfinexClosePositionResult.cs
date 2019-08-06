@@ -1,5 +1,8 @@
 ﻿namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Close position result
+    /// </summary>
     public class BitfinexClosePositionResult
     {
         /// <summary>

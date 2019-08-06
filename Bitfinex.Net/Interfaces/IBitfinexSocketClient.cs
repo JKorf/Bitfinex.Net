@@ -9,6 +9,9 @@ using CryptoExchange.Net.Sockets;
 
 namespace Bitfinex.Net.Interfaces
 {
+    /// <summary>
+    /// Bitfinex socket client interface
+    /// </summary>
     public interface IBitfinexSocketClient: ISocketClient
     {
         /// <summary>

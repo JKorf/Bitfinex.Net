@@ -15,6 +15,9 @@ using Bitfinex.Net.Interfaces;
 
 namespace Bitfinex.Net
 {
+    /// <summary>
+    /// Client for the Bitfinex API
+    /// </summary>
     public class BitfinexClient: RestClient, IBitfinexClient
     {
         #region fields
@@ -802,7 +805,15 @@ namespace Bitfinex.Net
             return await ExecuteRequest<BitfinexMovement[]>(GetUrl(FillPathParameter(MovementsEndpoint, symbol), ApiVersion2), Constants.PostMethod, null, true).ConfigureAwait(false);
         }
         
+        /// <summary>
+        /// Daily performance
+        /// </summary>
+        /// <returns></returns>
         public WebCallResult<BitfinexPerformance> GetDailyPerformance() => GetDailyPerformanceAsync().Result;
+        /// <summary>
+        /// Daily performance
+        /// </summary>
+        /// <returns></returns>
         public async Task<WebCallResult<BitfinexPerformance>> GetDailyPerformanceAsync()
         {
             // TODO doesn't work?
@@ -1546,7 +1557,10 @@ namespace Bitfinex.Net
         #endregion
 
         #region private methods
-
+        /// <summary>
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         protected override Error ParseErrorResponse(JToken data)
         {
             if (!(data is JArray))

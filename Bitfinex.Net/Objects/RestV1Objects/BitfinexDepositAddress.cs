@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Deposit address info
+    /// </summary>
     public class BitfinexDepositAddress
     {
         /// <summary>

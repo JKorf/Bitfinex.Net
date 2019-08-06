@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Converters
 {
-    public class OrderStatusConverter: JsonConverter
+    internal class OrderStatusConverter: JsonConverter
     {
         private readonly Dictionary<string, OrderStatus> mapping = new Dictionary<string, OrderStatus>
         {

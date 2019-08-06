@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Funding info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexFunding
     {
@@ -43,7 +46,8 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         [ArrayProperty(5)]
         public decimal Amount { get; set; }
-
+        /// <summary>
+        /// </summary>
         [ArrayProperty(6)]
         public int? Flags { get; set; }
 
@@ -57,13 +61,16 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         [ArrayProperty(7)]
         public string StatusString { get; set; }
-
+        /// <summary>
+        /// </summary>
         [ArrayProperty(8)]
         public string PlaceHolder1 { get; set; }
-
+        /// <summary>
+        /// </summary>
         [ArrayProperty(9)]
         public string PlaceHolder2 { get; set; }
-
+        /// <summary>
+        /// </summary>
         [ArrayProperty(10)]
         public string PlaceHolder3 { get; set; }
 
@@ -102,10 +109,12 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         [ArrayProperty(16), JsonConverter(typeof(BoolToIntConverter))]
         public bool Hidden { get; set; }
-
+        /// <summary>
+        /// </summary>
         [ArrayProperty(17)]
         public string PlaceHolder6 { get; set; }
-
+        /// <summary>
+        /// </summary>
         [ArrayProperty(18), JsonConverter(typeof(BoolToIntConverter))]
         public bool Renew { get; set; }
 
@@ -124,6 +133,9 @@ namespace Bitfinex.Net.Objects
         
     }
 
+    /// <summary>
+    /// Funding credit info
+    /// </summary>
     public class BitfinexFundingCredit: BitfinexFunding
     {
         /// <summary>

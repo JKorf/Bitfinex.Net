@@ -4,7 +4,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class OrderTypeConverter: BaseConverter<OrderType>
+    internal class OrderTypeConverter: BaseConverter<OrderType>
     {
         public OrderTypeConverter(): this(true) { }
         public OrderTypeConverter(bool quotes) : base(quotes) { }

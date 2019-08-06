@@ -3,7 +3,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class StringToBoolConverter : BaseConverter<bool>
+    internal class StringToBoolConverter : BaseConverter<bool>
     {
         public StringToBoolConverter() : this(true) { }
         public StringToBoolConverter(bool quotes) : base(quotes) { }

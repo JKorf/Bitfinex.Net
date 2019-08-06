@@ -2,6 +2,9 @@
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Symbol details
+    /// </summary>
     public class BitfinexSymbolDetails
     {
         /// <summary>
@@ -33,6 +36,10 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// </summary>
         [JsonProperty("minimum_order_size")]
         public decimal MinimumOrderSize { get; set; }
+
+        /// <summary>
+        /// Expiration
+        /// </summary>
         public string Expiration { get; set; }
         /// <summary>
         /// If margin trading is enabled for the pair

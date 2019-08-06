@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Candle info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexCandle
     {

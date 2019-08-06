@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Exchange rate in a foreign currency
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexForeignExchangeRate
     {

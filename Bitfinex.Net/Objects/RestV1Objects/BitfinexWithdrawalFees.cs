@@ -2,6 +2,9 @@
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Withdrawal fee dictionary
+    /// </summary>
     public class BitfinexWithdrawalFees
     {
         /// <summary>

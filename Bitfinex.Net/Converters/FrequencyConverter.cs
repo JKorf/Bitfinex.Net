@@ -4,7 +4,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class FrequencyConverter : BaseConverter<Frequency>
+    internal class FrequencyConverter : BaseConverter<Frequency>
     {
         public FrequencyConverter() : this(true) { }
         public FrequencyConverter(bool quotes) : base(quotes) { }

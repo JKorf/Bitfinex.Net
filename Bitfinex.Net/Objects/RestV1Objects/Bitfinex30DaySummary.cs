@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// 30 day summary info
+    /// </summary>
     public class Bitfinex30DaySummary
     {
         /// <summary>
@@ -27,6 +30,9 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         public decimal TakerFee { get; set; }
     }
 
+    /// <summary>
+    /// Summary entry
+    /// </summary>
     public class Bitfinex30DaySummaryVolumeEntry
     {
         /// <summary>

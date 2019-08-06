@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Lend info
+    /// </summary>
     public class BitfinexLend
     {
         /// <summary>

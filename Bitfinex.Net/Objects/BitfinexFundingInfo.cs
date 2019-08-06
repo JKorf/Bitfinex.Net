@@ -3,9 +3,15 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Funding info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexFundingInfo
     {
+        /// <summary>
+        /// Type
+        /// </summary>
         [ArrayProperty(0)]
         public string Type { get; set; }
 
@@ -15,10 +21,16 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(1)]
         public string Symbol { get; set; }
 
+        /// <summary>
+        /// Data
+        /// </summary>
         [ArrayProperty(2), JsonConverter(typeof(ArrayConverter))]
         public BitfinexFundingInfoDetails Data { get; set; }
     }
 
+    /// <summary>
+    /// Funding info details
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexFundingInfoDetails
     {

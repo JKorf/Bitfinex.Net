@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Order info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexOrder
     {
@@ -68,12 +71,21 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(9), JsonConverter(typeof(OrderTypeConverter))]
         public OrderType? TypePrevious { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ArrayProperty(10)]
         public string PlaceHolder1 { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ArrayProperty(11)]
         public string PlaceHolder2 { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ArrayProperty(12)]
         public int? Flags { get; set; }
 
@@ -88,9 +100,14 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         [ArrayProperty(13)]
         public string StatusString { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         [ArrayProperty(14)]
         public string PlaceHolder3 { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         [ArrayProperty(15)]
         public string PlaceHolder4 { get; set; }
 
@@ -117,15 +134,30 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         [ArrayProperty(19)]
         public decimal PriceAuxilliaryLimit { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         [ArrayProperty(20)]
         public string PlaceHolder5 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         [ArrayProperty(21)]
         public string PlaceHolder6 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         [ArrayProperty(22)]
         public string PlaceHolder7 { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ArrayProperty(23)]
         public bool Notify { get; set; }
+        /// <summary>
+        /// Whether the order is hidden
+        /// </summary>
         [ArrayProperty(24)]
         public bool Hidden { get; set; }
         /// <summary>

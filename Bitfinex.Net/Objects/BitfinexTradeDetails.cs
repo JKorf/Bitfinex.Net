@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Details of a trade
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexTradeDetails
     {

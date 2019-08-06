@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Alert
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexAlert
     {
@@ -30,8 +33,10 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(3)]
         public decimal Price { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ArrayProperty(4)]
-        // TODO what is this value?
         public decimal T { get; set; }
     }
 }

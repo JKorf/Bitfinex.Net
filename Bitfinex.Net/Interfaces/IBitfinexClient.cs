@@ -8,6 +8,9 @@ using CryptoExchange.Net.Objects;
 
 namespace Bitfinex.Net.Interfaces
 {
+    /// <summary>
+    /// Bitfinex client interface
+    /// </summary>
     public interface IBitfinexClient: IRestClient
     {
         /// <summary>
@@ -497,7 +500,15 @@ namespace Bitfinex.Net.Interfaces
         /// <returns></returns>
         Task<WebCallResult<BitfinexMovement[]>> GetMovementsAsync(string symbol);
 
+        /// <summary>
+        /// Daily performance
+        /// </summary>
+        /// <returns></returns>
         WebCallResult<BitfinexPerformance> GetDailyPerformance();
+        /// <summary>
+        /// Daily performance
+        /// </summary>
+        /// <returns></returns>
         Task<WebCallResult<BitfinexPerformance>> GetDailyPerformanceAsync();
 
         /// <summary>

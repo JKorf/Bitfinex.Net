@@ -4,9 +4,15 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Base for order book
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexOrderBookBase { }
 
+    /// <summary>
+    /// Order book entry
+    /// </summary>
     public class BitfinexOrderBookEntry: BitfinexOrderBookBase, ISymbolOrderBookEntry
     {
         /// <summary>
@@ -26,6 +32,9 @@ namespace Bitfinex.Net.Objects
         public decimal Quantity { get; set; }
     }
 
+    /// <summary>
+    /// Raw order book entry
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexRawOrderBookEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
     {

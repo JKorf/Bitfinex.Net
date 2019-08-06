@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Average price info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMarketAveragePrice
     {

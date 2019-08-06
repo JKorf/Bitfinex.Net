@@ -4,7 +4,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class WalletTypeConverter: BaseConverter<WalletType>
+    internal class WalletTypeConverter: BaseConverter<WalletType>
     {
         public WalletTypeConverter(): this(true) { }
         public WalletTypeConverter(bool quotes) : base(quotes) { }

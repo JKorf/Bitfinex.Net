@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Position info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexPosition
     {
@@ -75,6 +78,9 @@ namespace Bitfinex.Net.Objects
         public long Id { get; set; }
     }
 
+    /// <summary>
+    /// Extended position info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexPositionExtended: BitfinexPosition
     {

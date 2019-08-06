@@ -3,11 +3,20 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Result
+    /// </summary>
     public class BitfinexResult
     {
+        /// <summary>
+        /// Result string
+        /// </summary>
         public string Result { get; set; }
     }
 
+    /// <summary>
+    /// Transfer results
+    /// </summary>
     public class BitfinexTransferResult
     {
         /// <summary>

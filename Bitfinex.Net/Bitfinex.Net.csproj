@@ -5,7 +5,7 @@
   <PropertyGroup>
     <PackageId>Bitfinex.Net</PackageId>
     <Authors>JKorf</Authors>
-    <PackageVersion>2.1.4</PackageVersion>
+    <PackageVersion>2.1.5</PackageVersion>
     <Description>Bitfinex.Net is a .Net wrapper for the Bitfinex API. It includes all features the API provides, REST API and Websocket, using clear and readable objects including but not limited to Reading market info, Placing and managing orders and Reading balances and funds</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Bitfinex Bitfinex.Net C# .Net CryptoCurrency Exchange API wrapper</PackageTags>
@@ -14,13 +14,13 @@
     <PackageIconUrl>https://raw.githubusercontent.com/JKorf/Bitfinex.Net/master/Resources/icon.png</PackageIconUrl>
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>2.1.4 - Fix offer serialization, Added missing xml file for code docs</PackageReleaseNotes>
+    <PackageReleaseNotes>2.1.5 - Fixed missing events when placing orders via websocket, Added code docs</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
     <DocumentationFile>Bitfinex.Net.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CryptoExchange.Net" Version="2.1.5" />
+    <PackageReference Include="CryptoExchange.Net" Version="2.1.6" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
 </Project>

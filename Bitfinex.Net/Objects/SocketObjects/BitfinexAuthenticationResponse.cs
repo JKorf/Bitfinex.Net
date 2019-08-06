@@ -2,7 +2,7 @@
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
-    public class BitfinexAuthenticationResponse
+    internal class BitfinexAuthenticationResponse
     {
         [JsonProperty("event")]
         public string Event { get; set; }
@@ -24,7 +24,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public string ErrorMessage { get; set; }
     }
 
-    public class BitfinexApiKeyPermissions
+    internal class BitfinexApiKeyPermissions
     {
         public BitfinexReadWritePermission Account { get; set; }
         public BitfinexReadWritePermission History { get; set; }
@@ -35,7 +35,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public BitfinexReadWritePermission Withdraw { get; set; }
     }
 
-    public class BitfinexReadWritePermission
+    internal class BitfinexReadWritePermission
     {
         public bool Read { get; set; }
         public bool Write { get; set; }

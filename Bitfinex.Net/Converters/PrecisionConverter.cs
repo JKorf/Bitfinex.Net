@@ -4,7 +4,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class PrecisionConverter: BaseConverter<Precision>
+    internal class PrecisionConverter: BaseConverter<Precision>
     {
         public PrecisionConverter(): this(true) { }
         public PrecisionConverter(bool useQuotes) : base(useQuotes)

@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Trade info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexTradeSimple
     {
@@ -28,6 +31,9 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(3)]
         public decimal Price { get; set; }
 
+        /// <summary>
+        /// The type of update
+        /// </summary>
         [JsonIgnore]
         public BitfinexEventType UpdateType { get; set; } = BitfinexEventType.TradeSnapshot;
     }

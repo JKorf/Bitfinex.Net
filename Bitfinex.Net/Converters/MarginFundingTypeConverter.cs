@@ -4,7 +4,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class MarginFundingTypeConverter: BaseConverter<MarginFundingType>
+    internal class MarginFundingTypeConverter: BaseConverter<MarginFundingType>
     {
         public MarginFundingTypeConverter(): this(true) { }
         public MarginFundingTypeConverter(bool quotes) : base(quotes) { }

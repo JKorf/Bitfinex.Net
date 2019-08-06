@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Funding contract info
+    /// </summary>
     public class BitfinexFundingContract
     {
         /// <summary>

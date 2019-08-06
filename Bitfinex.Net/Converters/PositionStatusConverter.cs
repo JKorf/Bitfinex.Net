@@ -4,7 +4,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class PositionStatusConverter: BaseConverter<PositionStatus>
+    internal class PositionStatusConverter: BaseConverter<PositionStatus>
     {
         public PositionStatusConverter(): this(true) { }
         public PositionStatusConverter(bool quotes) : base(quotes) { }

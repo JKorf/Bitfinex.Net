@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Available balance
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexAvailableBalance
     {

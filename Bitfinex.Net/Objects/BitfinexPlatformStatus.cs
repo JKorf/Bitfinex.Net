@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Platform status info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexPlatformStatus
     {

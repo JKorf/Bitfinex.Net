@@ -4,7 +4,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class StatKeyConverter: BaseConverter<StatKey>
+    internal class StatKeyConverter: BaseConverter<StatKey>
     {
         public StatKeyConverter(): this(true) { }
         public StatKeyConverter(bool quotes) : base(quotes) { }

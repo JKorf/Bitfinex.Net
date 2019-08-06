@@ -4,7 +4,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class SortingConverter : BaseConverter<Sorting>
+    internal class SortingConverter : BaseConverter<Sorting>
     {
         public SortingConverter(): this(true) { }
         public SortingConverter(bool quotes) : base(quotes) { }

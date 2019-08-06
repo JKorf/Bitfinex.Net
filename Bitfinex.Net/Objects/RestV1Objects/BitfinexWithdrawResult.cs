@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Result of withdrawing
+    /// </summary>
     public class BitfinexWithdrawalResult
     {
         /// <summary>

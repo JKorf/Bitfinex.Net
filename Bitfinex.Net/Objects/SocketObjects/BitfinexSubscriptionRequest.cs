@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
-    public class BitfinexUnsubscribeRequest
+    internal class BitfinexUnsubscribeRequest
     {
         [JsonProperty("event")]
         public string Event { get; set; }
@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         }
     }
 
-    public class BitfinexSubscriptionRequest
+    internal class BitfinexSubscriptionRequest
     {
         [JsonIgnore]
         public int ChannelId { get; set; }
@@ -36,7 +36,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         }
     }
 
-    public class BitfinexRawBookSubscriptionRequest: BitfinexSubscriptionRequest
+    internal class BitfinexRawBookSubscriptionRequest: BitfinexSubscriptionRequest
     {
         [JsonProperty("prec")]
         public string Precision { get; set; }
@@ -50,7 +50,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         }
     }
 
-    public class BitfinexBookSubscriptionRequest : BitfinexRawBookSubscriptionRequest
+    internal class BitfinexBookSubscriptionRequest : BitfinexRawBookSubscriptionRequest
     {
         [JsonProperty("freq")]
         public string Frequency { get; set; }
@@ -61,7 +61,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         }
     }
 
-    public class BitfinexKlineSubscriptionRequest : BitfinexSubscriptionRequest
+    internal class BitfinexKlineSubscriptionRequest : BitfinexSubscriptionRequest
     {
         [JsonProperty("key")]
         public string Key { get; set; }

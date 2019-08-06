@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Placed order info
+    /// </summary>
     public class BitfinexPlacedOrder
     {
         /// <summary>

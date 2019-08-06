@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Funding order book
+    /// </summary>
     public class BitfinexFundingBook
     {
         /// <summary>
@@ -17,6 +20,9 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         public BitfinexFundingBookEntry[] Asks { get; set; }
     }
 
+    /// <summary>
+    /// Funding order book entry
+    /// </summary>
     public class BitfinexFundingBookEntry
     {
         /// <summary>

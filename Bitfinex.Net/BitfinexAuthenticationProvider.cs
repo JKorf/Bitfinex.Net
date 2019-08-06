@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net
 {
-    public class BitfinexAuthenticationProvider: AuthenticationProvider
+    internal class BitfinexAuthenticationProvider: AuthenticationProvider
     {
         private readonly HMACSHA384 encryptor;
         private readonly object locker;

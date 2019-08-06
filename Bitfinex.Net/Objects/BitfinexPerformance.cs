@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Performance info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexPerformance
     {
@@ -13,6 +16,9 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(0), JsonConverter(typeof(TimestampConverter))]
         public DateTime Timestamp { get; set; }
 
+        /// <summary>
+        /// Performance rating
+        /// </summary>
         [ArrayProperty(1)]
         public decimal Performance { get; set; }
     }

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Bitfinex.Net.Objects
 {
-    public class BitfinexEvent
+    internal class BitfinexEvent
     {
         public string Id { get; set; }
         public BitfinexEventType EventType { get; set; }
@@ -19,7 +19,7 @@ namespace Bitfinex.Net.Objects
         }
     }
 
-    public static class BitfinexEvents
+    internal static class BitfinexEvents
     {
         public static List<BitfinexEvent> Events = new List<BitfinexEvent>
         {

@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
+    /// <summary>
+    /// Position object of the V1 API
+    /// </summary>
     public class BitfinexPositionV1
     {
         /// <summary>
