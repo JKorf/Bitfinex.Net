@@ -32,7 +32,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){ LogVerbosity = LogVerbosity.Debug});
 
             BitfinexOrderBookEntry[] result;
-            var subTask = client.SubscribeToBookUpdatesAsync("Test", prec, freq, 25, data => result = data);
+            var subTask = client.SubscribeToBookUpdatesAsync("BTCUSD", prec, freq, 25, data => result = data);
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -41,9 +41,9 @@ namespace Bitfinex.Net.UnitTests
                 ChannelId = 1,
                 Frequency = JsonConvert.SerializeObject(freq, new FrequencyConverter(false)),
                 Length = 25,
-                Pair = "Test",
+                Pair = "BTCUSD",
                 Precision = JsonConvert.SerializeObject(prec, new PrecisionConverter(false)),
-                Symbol = "Test"
+                Symbol = "BTCUSD"
             };
 
             // act
@@ -71,7 +71,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){LogVerbosity =LogVerbosity.Debug});
 
             BitfinexOrderBookEntry[] result = null;
-            var subTask = client.SubscribeToBookUpdatesAsync("Test", prec, freq, 25, data => result = data);
+            var subTask = client.SubscribeToBookUpdatesAsync("BTCUSD", prec, freq, 25, data => result = data);
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -80,9 +80,9 @@ namespace Bitfinex.Net.UnitTests
                 ChannelId = 1,
                 Frequency = JsonConvert.SerializeObject(freq, new FrequencyConverter(false)),
                 Length = 25,
-                Pair = "Test",
+                Pair = "BTCUSD",
                 Precision = JsonConvert.SerializeObject(prec, new PrecisionConverter(false)),
-                Symbol = "Test"
+                Symbol = "BTCUSD"
             };
             socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
@@ -111,17 +111,20 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var socket = new TestSocket();
             socket.CanConnect = true;
-            var client = TestHelpers.CreateSocketClient(socket);
+            var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions()
+            {
+                LogVerbosity = LogVerbosity.Debug
+            });
 
-            var subTask = client.SubscribeToCandleUpdatesAsync("Test", timeframe, data => { });
+            var subTask = client.SubscribeToCandleUpdatesAsync("BTCUSD", timeframe, data => { });
 
             var subResponse = new CandleSubscriptionResponse()
             {
                 Channel = "candles",
                 Event = "subscribed",
                 ChannelId = 1,
-                Symbol = "Test",
-                Key = "trade:" + JsonConvert.SerializeObject(timeframe, new TimeFrameConverter(false)) + ":Test"
+                Symbol = "BTCUSD",
+                Key = "trade:" + JsonConvert.SerializeObject(timeframe, new TimeFrameConverter(false)) + ":tBTCUSD"
             };
 
             // act
@@ -152,15 +155,15 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexCandle[] result = null;
-            var subTask = client.SubscribeToCandleUpdatesAsync("Test", timeframe, data => result = data);
+            var subTask = client.SubscribeToCandleUpdatesAsync("BTCUSD", timeframe, data => result = data);
 
             var subResponse = new CandleSubscriptionResponse()
             {
                 Channel = "candles",
                 Event = "subscribed",
                 ChannelId = 1,
-                Symbol = "Test",
-                Key = "trade:" + JsonConvert.SerializeObject(timeframe, new TimeFrameConverter(false)) + ":Test"
+                Symbol = "BTCUSD",
+                Key = "trade:" + JsonConvert.SerializeObject(timeframe, new TimeFrameConverter(false)) + ":tBTCUSD"
             };
             socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
@@ -181,15 +184,15 @@ namespace Bitfinex.Net.UnitTests
             socket.CanConnect = true;
             var client = TestHelpers.CreateSocketClient(socket);
 
-            var subTask = client.SubscribeToTickerUpdatesAsync("Test", data => { });
+            var subTask = client.SubscribeToTickerUpdatesAsync("BTCUSD", data => { });
 
             var subResponse = new TickerSubscriptionResponse()
             {
                 Channel = "ticker",
                 Event = "subscribed",
                 ChannelId = 1,
-                Symbol = "Test",
-                Pair = "Test"
+                Symbol = "BTCUSD",
+                Pair = "BTCUSD"
             };
 
             // act
@@ -210,15 +213,15 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexMarketOverview result = null;
-            var subTask = client.SubscribeToTickerUpdatesAsync("Test", data => result = data);
+            var subTask = client.SubscribeToTickerUpdatesAsync("BTCUSD", data => result = data);
 
             var subResponse = new TickerSubscriptionResponse()
             {
                 Channel = "ticker",
                 Event = "subscribed",
                 ChannelId = 1,
-                Symbol = "Test",
-                Pair = "Test"
+                Symbol = "BTCUSD",
+                Pair = "BTCUSD"
             };
             socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
@@ -239,15 +242,15 @@ namespace Bitfinex.Net.UnitTests
             socket.CanConnect = true;
             var client = TestHelpers.CreateSocketClient(socket);
 
-            var subTask = client.SubscribeToRawBookUpdatesAsync("Test", 10, data => { });
+            var subTask = client.SubscribeToRawBookUpdatesAsync("BTCUSD", 10, data => { });
 
             var subResponse = new BookSubscriptionResponse()
             {
                 Channel = "book",
                 Event = "subscribed",
                 ChannelId = 1,
-                Symbol = "Test",
-                Pair = "Test",
+                Symbol = "BTCUSD",
+                Pair = "BTCUSD",
                 Frequency = "F0",
                 Precision = "R0",
                 Length = 10
@@ -271,15 +274,15 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexRawOrderBookEntry[] result = null;
-            var subTask = client.SubscribeToRawBookUpdatesAsync("Test", 10, data => result = data);
+            var subTask = client.SubscribeToRawBookUpdatesAsync("BTCUSD", 10, data => result = data);
 
             var subResponse = new BookSubscriptionResponse()
             {
                 Channel = "book",
                 Event = "subscribed",
                 ChannelId = 1,
-                Symbol = "Test",
-                Pair = "Test",
+                Symbol = "BTCUSD",
+                Pair = "BTCUSD",
                 Frequency = "F0",
                 Precision = "R0",
                 Length = 10
@@ -303,15 +306,15 @@ namespace Bitfinex.Net.UnitTests
             socket.CanConnect = true;
             var client = TestHelpers.CreateSocketClient(socket);
 
-            var subTask = client.SubscribeToTradeUpdatesAsync("Test", data => { });
+            var subTask = client.SubscribeToTradeUpdatesAsync("BTCUSD", data => { });
 
             var subResponse = new TradesSubscriptionResponse()
             {
                 Channel = "trades",
                 Event = "subscribed",
                 ChannelId = 1,
-                Symbol = "Test",
-                Pair = "Test"
+                Symbol = "BTCUSD",
+                Pair = "BTCUSD"
             };
 
             // act
@@ -332,15 +335,15 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexTradeSimple[] result = null;
-            var subTask = client.SubscribeToTradeUpdatesAsync("Test", data => result = data);
+            var subTask = client.SubscribeToTradeUpdatesAsync("BTCUSD", data => result = data);
 
             var subResponse = new TradesSubscriptionResponse()
             {
                 Channel = "trades",
                 Event = "subscribed",
                 ChannelId = 1,
-                Symbol = "Test",
-                Pair = "Test"
+                Symbol = "BTCUSD",
+                Pair = "BTCUSD"
             };
             socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
@@ -705,8 +708,8 @@ namespace Bitfinex.Net.UnitTests
                 Channel = "candles",
                 Event = "subscribed",
                 ChannelId = 1,
-                Symbol = "Test",
-                Key = "trade:" + JsonConvert.SerializeObject(TimeFrame.FiveMinute, new TimeFrameConverter(false)) + ":Test"
+                Symbol = "tBTCUSD",
+                Key = "trade:" + JsonConvert.SerializeObject(TimeFrame.FiveMinute, new TimeFrameConverter(false)) + ":tBTCUSD"
             });
             var subResult = subTask.Result;
 
@@ -720,8 +723,8 @@ namespace Bitfinex.Net.UnitTests
                 Channel = "candles",
                 Event = "subscribed",
                 ChannelId = 1,
-                Symbol = "Test",
-                Key = "trade:" + JsonConvert.SerializeObject(TimeFrame.FiveMinute, new TimeFrameConverter(false)) + ":Test"
+                Symbol = "tBTCUSD",
+                Key = "trade:" + JsonConvert.SerializeObject(TimeFrame.FiveMinute, new TimeFrameConverter(false)) + ":tBTCUSD"
             });
 
             var triggered = rstEvent.WaitOne(1000);
