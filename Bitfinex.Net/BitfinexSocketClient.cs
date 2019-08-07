@@ -222,6 +222,11 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<UpdateSubscription>> SubscribeToCandleUpdatesAsync(string symbol, TimeFrame interval, Action<BitfinexCandle[]> handler)
         {
+            if (symbol.Length == 6)
+                symbol = "t" + symbol.ToUpper();
+            else
+                symbol = symbol.Substring(0, 1) + symbol.Substring(1).ToUpper();
+
             var internalHandler = new Action<JToken>(data =>
             {
                 var dataArray = (JArray)data[1];
@@ -863,10 +868,10 @@ namespace Bitfinex.Net
                 }
 
                 var bRequest = (BitfinexSubscriptionRequest) request;
-                if (bRequest.Channel != subResponse.Data.Channel)
+                if (!bRequest.CheckResponse(data))
                     return false;
-
-                log.Write(LogVerbosity.Debug, $"Socket {s.Socket.Id} subscription completed");
+                
+                log.Write(LogVerbosity.Debug, $"Socket {s.Socket.Id} subscription completed, {bRequest.Symbol} - {subResponse.Data.ChannelId}");
                 bRequest.ChannelId = subResponse.Data.ChannelId;
                 callResult = new CallResult<object>(subResponse.Data, subResponse.Error);
                 return true;

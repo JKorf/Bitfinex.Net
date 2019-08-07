@@ -1,5 +1,7 @@
-﻿using CryptoExchange.Net.Sockets;
+﻿using System.Linq;
+using CryptoExchange.Net.Sockets;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
@@ -34,6 +36,30 @@ namespace Bitfinex.Net.Objects.SocketObjects
             Channel = channel;
             Symbol = symbol;
         }
+
+        public virtual bool CheckResponse(JToken responseMessage)
+        {
+            if (responseMessage["channel"] == null || (string) responseMessage["channel"] != Channel)
+                return false;
+
+            if (responseMessage["symbol"] == null)
+                return false;
+
+            var symbol = ((string) responseMessage["symbol"]).ToLower();
+            if (symbol != Symbol.ToLower())
+            {
+                if (symbol.StartsWith("t"))
+                {
+                    // Check if 
+                    if(symbol.Substring(1) != Symbol.ToLower())
+                        return false;
+                }
+                else
+                    return false;
+            }
+
+            return true;
+        }
     }
 
     internal class BitfinexRawBookSubscriptionRequest: BitfinexSubscriptionRequest
@@ -48,6 +74,20 @@ namespace Bitfinex.Net.Objects.SocketObjects
             Precision = precision;
             Length = length;
         }
+
+        public override bool CheckResponse(JToken responseMessage)
+        {
+            if (!base.CheckResponse(responseMessage))
+                return false;
+
+            if (responseMessage["prec"] == null || ((string)responseMessage["prec"]) != Precision)
+                return false;
+
+            if (responseMessage["len"] == null || (int)responseMessage["len"] != Length)
+                return false;
+
+            return true;
+        }
     }
 
     internal class BitfinexBookSubscriptionRequest : BitfinexRawBookSubscriptionRequest
@@ -59,6 +99,17 @@ namespace Bitfinex.Net.Objects.SocketObjects
         {
             Frequency = frequency;
         }
+
+        public override bool CheckResponse(JToken responseMessage)
+        {
+            if (!base.CheckResponse(responseMessage))
+                return false;
+
+            if (responseMessage["freq"] == null || (string)responseMessage["freq"] != Frequency)
+                return false;
+
+            return true;
+        }
     }
 
     internal class BitfinexKlineSubscriptionRequest : BitfinexSubscriptionRequest
@@ -69,6 +120,17 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public BitfinexKlineSubscriptionRequest(string symbol, string interval): base("candles", symbol)
         {
             Key = "trade:" + interval + ":" + symbol;
+        }
+
+        public override bool CheckResponse(JToken responseMessage)
+        {
+            if (responseMessage["channel"] == null || (string)responseMessage["channel"] != Channel)
+                return false;
+
+            if (responseMessage["key"] == null || (string)responseMessage["key"] != Key)
+                return false;
+
+            return true;
         }
     }
 }
