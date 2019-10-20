@@ -13,13 +13,13 @@ namespace Bitfinex.Net.Objects
         /// Type
         /// </summary>
         [ArrayProperty(0)]
-        public string Type { get; set; }
+        public string Type { get; set; } = "";
 
         /// <summary>
         /// Data
         /// </summary>
         [ArrayProperty(1), JsonConverter(typeof(ArrayConverter))]
-        public BitfinexMarginBaseInfo Data { get; set; }
+        public BitfinexMarginBaseInfo Data { get; set; } = default!;
     }
     
     /// <summary>

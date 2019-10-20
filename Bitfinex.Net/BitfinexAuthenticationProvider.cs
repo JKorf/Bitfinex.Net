@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using CryptoExchange.Net;
@@ -16,12 +17,18 @@ namespace Bitfinex.Net
 
         public BitfinexAuthenticationProvider(ApiCredentials credentials) : base(credentials)
         {
+            if (credentials.Secret == null)
+                throw new ArgumentException("ApiKey/Secret needed");
+
             locker = new object();
             encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(credentials.Secret.GetString()));
         }
 
-        public override Dictionary<string, string> AddAuthenticationToHeaders(string uri, string method, Dictionary<string, object> parameters, bool signed)
+        public override Dictionary<string, string> AddAuthenticationToHeaders(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed)
         {
+            if(Credentials.Key == null)
+                throw new ArgumentException("ApiKey/Secret needed");
+
             var result = new Dictionary<string, string>();
             if (!signed)
                 return result;
@@ -52,7 +59,7 @@ namespace Bitfinex.Net
             return result;
         }
 
-        public override Dictionary<string, object> AddAuthenticationToParameters(string uri, string method, Dictionary<string, object> parameters, bool signed)
+        public override Dictionary<string, object> AddAuthenticationToParameters(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed)
         {
             if (!signed)
                 return parameters;

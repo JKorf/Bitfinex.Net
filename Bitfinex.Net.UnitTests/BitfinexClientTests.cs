@@ -7,6 +7,7 @@ using CryptoExchange.Net;
 using NUnit.Framework;
 using System.Linq;
 using Bitfinex.Net.UnitTests.TestImplementations;
+using Moq;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -57,11 +58,11 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetTicker("Test");
+            var result = client.GetTicker(default, "Test");
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
         }
 
         [TestCase]
@@ -93,8 +94,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -124,8 +125,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -206,8 +207,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -261,8 +262,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -324,8 +325,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -370,8 +371,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -414,8 +415,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -468,10 +469,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            var a = result.Data[0].Status;
-            var ab = result.Data[1].Status;
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -528,8 +527,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -588,8 +587,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -628,8 +627,8 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
-            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data[1]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[1], result.Data.ToList()[1]));
         }
 
         [TestCase]
@@ -735,7 +734,7 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
         }
 
         [TestCase]
@@ -760,7 +759,7 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.AreEqual(true, result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected[0], result.Data.ToList()[0]));
         }
 
         [TestCase]
@@ -832,7 +831,7 @@ namespace Bitfinex.Net.UnitTests
             // assert
             Assert.AreEqual(true, result.Success);
             Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data, "Fees"));
-            Assert.IsTrue(TestHelpers.AreEqual(expected.Fees[0], result.Data.Fees[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(expected.Fees.ToList()[0], result.Data.Fees.ToList()[0]));
         }
 
         [TestCase]
@@ -895,9 +894,9 @@ namespace Bitfinex.Net.UnitTests
             client.GetActiveOrders();
 
             // assert
-            Assert.IsTrue(request.Headers.AllKeys.Contains("bfx-nonce"));
-            Assert.IsTrue(request.Headers.AllKeys.Contains("bfx-signature"));
-            Assert.IsTrue(request.Headers["bfx-apikey"] == "TestKey");
+            request.Verify(r => r.AddHeader("bfx-nonce", It.IsAny<string>()));
+            request.Verify(r => r.AddHeader("bfx-signature", It.IsAny<string>()));
+            request.Verify(r => r.AddHeader("bfx-apikey", "TestKey"));
         }
 
         [Test]
@@ -911,9 +910,9 @@ namespace Bitfinex.Net.UnitTests
             client.GetAccountInfo();
 
             // assert
-            Assert.IsTrue(request.Headers.AllKeys.Contains("X-BFX-SIGNATURE"));
-            Assert.IsTrue(request.Headers.AllKeys.Contains("X-BFX-PAYLOAD"));
-            Assert.IsTrue(request.Headers["X-BFX-APIKEY"] == "TestKey");
+            request.Verify(r => r.AddHeader("X-BFX-SIGNATURE", It.IsAny<string>()));
+            request.Verify(r => r.AddHeader("X-BFX-PAYLOAD", It.IsAny<string>()));
+            request.Verify(r => r.AddHeader("X-BFX-APIKEY", "TestKey"));
         }
     }
 }

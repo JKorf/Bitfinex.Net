@@ -16,14 +16,14 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// The deposit method
         /// </summary>
-        public string Method { get; set; }
+        public string Method { get; set; } = "";
         /// <summary>
         /// The currency the address is for
         /// </summary>
-        public string Currency { get; set; }
+        public string Currency { get; set; } = "";
         /// <summary>
         /// The deposit address
         /// </summary>
-        public string Address { get; set; }
+        public string Address { get; set; } = "";
     }
 }

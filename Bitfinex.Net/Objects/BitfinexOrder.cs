@@ -33,7 +33,7 @@ namespace Bitfinex.Net.Objects
         /// The symbol of the order
         /// </summary>
         [ArrayProperty(3)]
-        public string Symbol { get; set; }
+        public string Symbol { get; set; } = "";
 
         /// <summary>
         /// The creation time of the order
@@ -75,13 +75,13 @@ namespace Bitfinex.Net.Objects
         /// 
         /// </summary>
         [ArrayProperty(10)]
-        public string PlaceHolder1 { get; set; }
+        public string PlaceHolder1 { get; set; } = "";
 
         /// <summary>
         /// 
         /// </summary>
         [ArrayProperty(11)]
-        public string PlaceHolder2 { get; set; }
+        public string PlaceHolder2 { get; set; } = "";
 
         /// <summary>
         /// 
@@ -99,17 +99,17 @@ namespace Bitfinex.Net.Objects
         /// The raw status string
         /// </summary>
         [ArrayProperty(13)]
-        public string StatusString { get; set; }
+        public string StatusString { get; set; } = "";
         /// <summary>
         /// 
         /// </summary>
         [ArrayProperty(14)]
-        public string PlaceHolder3 { get; set; }
+        public string PlaceHolder3 { get; set; } = "";
         /// <summary>
         /// 
         /// </summary>
         [ArrayProperty(15)]
-        public string PlaceHolder4 { get; set; }
+        public string PlaceHolder4 { get; set; } = "";
 
         /// <summary>
         /// The price of the order
@@ -138,17 +138,17 @@ namespace Bitfinex.Net.Objects
         /// 
         /// </summary>
         [ArrayProperty(20)]
-        public string PlaceHolder5 { get; set; }
+        public string PlaceHolder5 { get; set; } = "";
         /// <summary>
         /// 
         /// </summary>
         [ArrayProperty(21)]
-        public string PlaceHolder6 { get; set; }
+        public string PlaceHolder6 { get; set; } = "";
         /// <summary>
         /// 
         /// </summary>
         [ArrayProperty(22)]
-        public string PlaceHolder7 { get; set; }
+        public string PlaceHolder7 { get; set; } = "";
 
         /// <summary>
         /// 

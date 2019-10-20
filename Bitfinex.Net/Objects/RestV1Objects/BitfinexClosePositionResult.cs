@@ -8,14 +8,15 @@
         /// <summary>
         /// Status message
         /// </summary>
-        public string Message { get; set; }
+        public string Message { get; set; } = "";
         /// <summary>
         /// The position status
         /// </summary>
-        public BitfinexPositionV1 Position { get; set; }
+        public BitfinexPositionV1 Position { get; set; } = default!;
+
         /// <summary>
         /// The order used to close the position
         /// </summary>
-        public BitfinexPlacedOrder Order { get; set; }
+        public BitfinexPlacedOrder Order { get; set; } = default!;
     }
 }

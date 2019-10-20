@@ -13,19 +13,19 @@ namespace Bitfinex.Net.Objects
         /// Type
         /// </summary>
         [ArrayProperty(0)]
-        public string Type { get; set; }
+        public string Type { get; set; } = "";
 
         /// <summary>
         /// The symbol
         /// </summary>
         [ArrayProperty(1)]
-        public string Symbol { get; set; }
+        public string Symbol { get; set; } = "";
 
         /// <summary>
         /// Data
         /// </summary>
         [ArrayProperty(2), JsonConverter(typeof(ArrayConverter))]
-        public BitfinexFundingInfoDetails Data { get; set; }
+        public BitfinexFundingInfoDetails Data { get; set; } = default!;
     }
 
     /// <summary>

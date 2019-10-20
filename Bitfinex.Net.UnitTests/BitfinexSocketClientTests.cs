@@ -4,6 +4,8 @@ using Bitfinex.Net.Objects.SocketObjects;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Binance.Net.UnitTests.TestImplementations;
@@ -32,7 +34,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){ LogVerbosity = LogVerbosity.Debug});
 
             BitfinexOrderBookEntry[] result;
-            var subTask = client.SubscribeToBookUpdatesAsync("BTCUSD", prec, freq, 25, data => result = data);
+            var subTask = client.SubscribeToBookUpdatesAsync("BTCUSD", prec, freq, 25, data => result = data.ToArray());
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -71,7 +73,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){LogVerbosity =LogVerbosity.Debug});
 
             BitfinexOrderBookEntry[] result = null;
-            var subTask = client.SubscribeToBookUpdatesAsync("BTCUSD", prec, freq, 25, data => result = data);
+            var subTask = client.SubscribeToBookUpdatesAsync("BTCUSD", prec, freq, 25, data => result = data.ToArray());
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -97,7 +99,7 @@ namespace Bitfinex.Net.UnitTests
 
         [TestCase(TimeFrame.OneMinute)]
         [TestCase(TimeFrame.FiveMinute)]
-        [TestCase(TimeFrame.FiveteenMinute)]
+        [TestCase(TimeFrame.FifteenMinute)]
         [TestCase(TimeFrame.ThirtyMinute)]
         [TestCase(TimeFrame.OneHour)]
         [TestCase(TimeFrame.ThreeHour)]
@@ -138,7 +140,7 @@ namespace Bitfinex.Net.UnitTests
 
         [TestCase(TimeFrame.OneMinute)]
         [TestCase(TimeFrame.FiveMinute)]
-        [TestCase(TimeFrame.FiveteenMinute)]
+        [TestCase(TimeFrame.FifteenMinute)]
         [TestCase(TimeFrame.ThirtyMinute)]
         [TestCase(TimeFrame.OneHour)]
         [TestCase(TimeFrame.ThreeHour)]
@@ -155,7 +157,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexCandle[] result = null;
-            var subTask = client.SubscribeToCandleUpdatesAsync("BTCUSD", timeframe, data => result = data);
+            var subTask = client.SubscribeToCandleUpdatesAsync("BTCUSD", timeframe, data => result = data.ToArray());
 
             var subResponse = new CandleSubscriptionResponse()
             {
@@ -274,7 +276,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexRawOrderBookEntry[] result = null;
-            var subTask = client.SubscribeToRawBookUpdatesAsync("BTCUSD", 10, data => result = data);
+            var subTask = client.SubscribeToRawBookUpdatesAsync("BTCUSD", 10, data => result = data.ToArray());
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -335,7 +337,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexTradeSimple[] result = null;
-            var subTask = client.SubscribeToTradeUpdatesAsync("BTCUSD", data => result = data);
+            var subTask = client.SubscribeToTradeUpdatesAsync("BTCUSD", data => result = data.ToArray());
 
             var subResponse = new TradesSubscriptionResponse()
             {
@@ -368,7 +370,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
             var rstEvent = new ManualResetEvent(false);
-            BitfinexSocketEvent<BitfinexOrder[]> result = null;
+            BitfinexSocketEvent<IEnumerable<BitfinexOrder>> result = null;
             var expected = new BitfinexSocketEvent<BitfinexOrder[]>(eventType, new [] { new BitfinexOrder() { StatusString = "ACTIVE" }});
             client.SubscribeToTradingUpdatesAsync(data =>
             {
@@ -382,7 +384,7 @@ namespace Bitfinex.Net.UnitTests
             rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
         }
 
         [TestCase("te", BitfinexEventType.TradeExecuted)]
@@ -395,7 +397,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
             var rstEvent = new ManualResetEvent(false);
-            BitfinexSocketEvent<BitfinexTradeDetails[]> result = null;
+            BitfinexSocketEvent<IEnumerable<BitfinexTradeDetails>> result = null;
             var expected = new BitfinexSocketEvent<BitfinexTradeDetails[]>(eventType, new[] { new BitfinexTradeDetails() { } });
             client.SubscribeToTradingUpdatesAsync(null,
                 data =>
@@ -410,7 +412,7 @@ namespace Bitfinex.Net.UnitTests
             rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
         }
 
         [TestCase("ws", BitfinexEventType.WalletSnapshot, false)]
@@ -423,8 +425,8 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
             var rstEvent = new ManualResetEvent(false);
-            BitfinexSocketEvent<BitfinexWallet[]> result = null;
-            var expected = new BitfinexSocketEvent<BitfinexWallet[]>(eventType, new[] { new BitfinexWallet() { } });
+            BitfinexSocketEvent<IEnumerable<BitfinexWallet>> result = null;
+            var expected = new BitfinexSocketEvent<IEnumerable<BitfinexWallet>>(eventType, new[] { new BitfinexWallet() { } });
             client.SubscribeToWalletUpdatesAsync(data =>
                 {
                     result = data;
@@ -437,7 +439,7 @@ namespace Bitfinex.Net.UnitTests
             rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data.First()));
         }
 
         [TestCase("pn", BitfinexEventType.PositionNew)]
@@ -452,8 +454,8 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
             var rstEvent = new ManualResetEvent(false);
-            BitfinexSocketEvent<BitfinexPosition[]> result = null;
-            var expected = new BitfinexSocketEvent<BitfinexPosition[]>(eventType, new[] { new BitfinexPosition() { } });
+            BitfinexSocketEvent<IEnumerable<BitfinexPosition>> result = null;
+            var expected = new BitfinexSocketEvent<IEnumerable<BitfinexPosition>>(eventType, new[] { new BitfinexPosition() { } });
             client.SubscribeToTradingUpdatesAsync(null, null, data =>
             {
                 result = data;
@@ -466,7 +468,7 @@ namespace Bitfinex.Net.UnitTests
             rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data.First()));
         }
 
         [TestCase("fcn", BitfinexEventType.FundingCreditsNew)]
@@ -481,7 +483,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
             var rstEvent = new ManualResetEvent(false);
-            BitfinexSocketEvent<BitfinexFundingCredit[]> result = null;
+            BitfinexSocketEvent<IEnumerable<BitfinexFundingCredit>> result = null;
             var expected = new BitfinexSocketEvent<BitfinexFundingCredit[]>(eventType, new[] { new BitfinexFundingCredit() { StatusString="ACTIVE" } });
             client.SubscribeToFundingUpdatesAsync(null,data =>
             {
@@ -495,7 +497,7 @@ namespace Bitfinex.Net.UnitTests
             rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
         }
 
         [TestCase("fln", BitfinexEventType.FundingLoanNew)]
@@ -510,7 +512,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
             var rstEvent = new ManualResetEvent(false);
-            BitfinexSocketEvent<BitfinexFunding[]> result = null;
+            BitfinexSocketEvent<IEnumerable<BitfinexFunding>> result = null;
             var expected = new BitfinexSocketEvent<BitfinexFunding[]>(eventType, new[] { new BitfinexFunding() { StatusString = "ACTIVE" } });
             client.SubscribeToFundingUpdatesAsync(null, null, data =>
             {
@@ -524,7 +526,7 @@ namespace Bitfinex.Net.UnitTests
             rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
         }
 
         [TestCase("fon", BitfinexEventType.FundingOfferNew)]
@@ -539,7 +541,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
 
             var rstEvent = new ManualResetEvent(false);
-            BitfinexSocketEvent<BitfinexFundingOffer[]> result = null;
+            BitfinexSocketEvent<IEnumerable<BitfinexFundingOffer>> result = null;
             var expected = new BitfinexSocketEvent<BitfinexFundingOffer[]>(eventType, new[] { new BitfinexFundingOffer() { StatusString = "ACTIVE" } });
             client.SubscribeToFundingUpdatesAsync(data =>
             {
@@ -553,7 +555,7 @@ namespace Bitfinex.Net.UnitTests
             rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result.Data[0], expected.Data[0]));
+            Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
         }
 
         [Test]

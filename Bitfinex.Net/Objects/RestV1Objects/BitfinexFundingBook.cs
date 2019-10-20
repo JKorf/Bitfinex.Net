@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
@@ -13,11 +14,11 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// The bids in the book
         /// </summary>
-        public BitfinexFundingBookEntry[] Bids { get; set; }
+        public IEnumerable<BitfinexFundingBookEntry> Bids { get; set; } = new List<BitfinexFundingBookEntry>();
         /// <summary>
         /// The asks in the book
         /// </summary>
-        public BitfinexFundingBookEntry[] Asks { get; set; }
+        public IEnumerable<BitfinexFundingBookEntry> Asks { get; set; } = new List<BitfinexFundingBookEntry>();
     }
 
     /// <summary>

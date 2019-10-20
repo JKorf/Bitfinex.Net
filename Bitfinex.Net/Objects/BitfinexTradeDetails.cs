@@ -21,7 +21,7 @@ namespace Bitfinex.Net.Objects
         /// The pair the trade is for
         /// </summary>
         [ArrayProperty(1)]
-        public string Pair { get; set; }
+        public string Pair { get; set; } = "";
 
         /// <summary>
         /// The time the trade was created
@@ -75,6 +75,6 @@ namespace Bitfinex.Net.Objects
         /// The currency the fee is in
         /// </summary>
         [ArrayProperty(10)]
-        public string FeeCurrency { get; set; }
+        public string FeeCurrency { get; set; } = "";
     }
 }

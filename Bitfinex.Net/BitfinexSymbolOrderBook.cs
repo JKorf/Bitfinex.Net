@@ -27,7 +27,7 @@ namespace Bitfinex.Net
         /// <param name="precisionLevel">The precision level of the order book</param>
         /// <param name="limit">The limit of entries in the order book, either 25 or 100</param>
         /// <param name="options">Options for the order book</param>
-        public BitfinexSymbolOrderBook(string symbol, Precision precisionLevel, int limit, BitfinexOrderBookOptions options = null) : base(symbol, options ?? new BitfinexOrderBookOptions())
+        public BitfinexSymbolOrderBook(string symbol, Precision precisionLevel, int limit, BitfinexOrderBookOptions? options = null) : base(symbol, options ?? new BitfinexOrderBookOptions())
         {
             socketClient = options?.SocketClient ?? new BitfinexSocketClient();
 
@@ -42,7 +42,7 @@ namespace Bitfinex.Net
                 return new CallResult<UpdateSubscription>(null, new ArgumentError("Invalid precision: R0"));
 
             var result = await socketClient.SubscribeToBookUpdatesAsync(Symbol, precision, Frequency.Realtime, limit, ProcessUpdate).ConfigureAwait(false);
-            if (!result.Success)
+            if (!result)
                 return result;
 
             Status = OrderBookStatus.Syncing;
@@ -59,16 +59,16 @@ namespace Bitfinex.Net
             initialSnapshotDone = false;
         }
 
-        private void ProcessUpdate(BitfinexOrderBookEntry[] entries)
+        private void ProcessUpdate(IEnumerable<BitfinexOrderBookEntry> entries)
         {
             if (!initialSnapshotDone)
             {
-                var asks = entries.Where(e => e.Quantity < 0).ToList();
-                var bids = entries.Where(e => e.Quantity > 0).ToList();
-                foreach (var entry in asks)
+                var askEntries = entries.Where(e => e.Quantity < 0).ToList();
+                var bidEntries = entries.Where(e => e.Quantity > 0).ToList();
+                foreach (var entry in askEntries)
                     entry.Quantity = -entry.Quantity; // Bitfinex sends the asks as negative numbers, invert them
                 
-                SetInitialOrderBook(DateTime.UtcNow.Ticks, asks, bids);
+                SetInitialOrderBook(DateTime.UtcNow.Ticks, askEntries, bidEntries);
                 initialSnapshotDone = true;
             }
             else

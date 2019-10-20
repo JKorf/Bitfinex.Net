@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
@@ -20,7 +21,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// Symbol specific fees
         /// </summary>
-        public BitfinexFee[] Fees { get; set; }
+        public IEnumerable<BitfinexFee> Fees { get; set; } = new List<BitfinexFee>();
     }
 
     /// <summary>
@@ -31,7 +32,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// The fee pair
         /// </summary>
-        public string Pairs { get; set; }
+        public string Pairs { get; set; } = "";
         /// <summary>
         /// Maker trade fee
         /// </summary>

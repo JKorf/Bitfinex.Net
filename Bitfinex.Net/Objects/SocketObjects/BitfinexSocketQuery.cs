@@ -1,5 +1,4 @@
 ﻿using CryptoExchange.Net.Converters;
-using CryptoExchange.Net.Sockets;
 using Newtonsoft.Json;
 using System.Linq;
 
@@ -9,7 +8,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
     internal class BitfinexSocketQuery
     {
         [JsonIgnore]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         [JsonIgnore]
         public BitfinexEventType QueryType { get; set; }
 
@@ -18,11 +17,11 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [ArrayProperty(1)]
         public string Event { get; set; }
         [ArrayProperty(2)]
-        public object Object { get; set; }
+        public object? Object { get; set; }
         [ArrayProperty(3)]
         public object Request { get; set; }
 
-        public BitfinexSocketQuery(string id, BitfinexEventType type, object request)
+        public BitfinexSocketQuery(string? id, BitfinexEventType type, object request)
         {
             Id = id;
             QueryType = type;
