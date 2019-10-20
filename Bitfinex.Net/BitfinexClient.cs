@@ -219,10 +219,7 @@ namespace Bitfinex.Net
         /// <returns>Trades for the symbol</returns>
         public async Task<WebCallResult<IEnumerable<BitfinexTradeSimple>>> GetTradesAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            // Only accepts tBTCUSD format
-            if (symbol.Length == 6)
-                symbol = "t" + symbol.ToUpper();
-
+            symbol.ValidateBitfinexSymbol();
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -252,6 +249,8 @@ namespace Bitfinex.Net
         /// <returns>The order book for the symbol</returns>
         public async Task<WebCallResult<IEnumerable<BitfinexOrderBookEntry>>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             if (limit != null && limit != 25 && limit != 100)
                 return WebCallResult<IEnumerable<BitfinexOrderBookEntry>>.CreateErrorResult(new ArgumentError("Limit should be either 25 or 100"));
 
@@ -286,6 +285,8 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexStats>> GetStatsAsync(string symbol, StatKey key, StatSide side, StatSection section, Sorting? sorting, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
 
@@ -317,6 +318,8 @@ namespace Bitfinex.Net
         /// <returns>The last candle for the symbol</returns>
         public async Task<WebCallResult<BitfinexCandle>> GetLastCandleAsync(TimeFrame timeFrame, string symbol, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             var endpoint = FillPathParameter(LastCandleEndpoint, JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)), symbol);
 
             return await SendRequest<BitfinexCandle>(GetUrl(endpoint, ApiVersion2), HttpMethod.Get, ct).ConfigureAwait(false);
@@ -349,6 +352,8 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexCandle>>> GetCandlesAsync(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -385,6 +390,8 @@ namespace Bitfinex.Net
         /// <returns>The average price at which the execution would happen</returns>
         public async Task<WebCallResult<BitfinexMarketAveragePrice>> GetMarketAveragePriceAsync(string symbol, decimal amount, decimal? rateLimit = null, int? period = null, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },
@@ -481,6 +488,8 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOrderHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -507,6 +516,8 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetTradesForOrderAsync(string symbol, long orderId, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             return await SendRequest<IEnumerable<BitfinexTradeDetails>>(GetUrl(FillPathParameter(OrderTradesEndpoint, symbol, orderId.ToString()), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
@@ -533,6 +544,8 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetTradeHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -595,7 +608,7 @@ namespace Bitfinex.Net
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexPositionExtended>> GetPositionsById(string[] ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) => GetPositionsByIdAsync(ids, startTime, endTime, limit, ct).Result;
+        public WebCallResult<IEnumerable<BitfinexPositionExtended>> GetPositionsById(IEnumerable<string> ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) => GetPositionsByIdAsync(ids, startTime, endTime, limit, ct).Result;
 
         /// <summary>
         /// Get positions by id
@@ -606,7 +619,7 @@ namespace Bitfinex.Net
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionsByIdAsync(string[] ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionsByIdAsync(IEnumerable<string> ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -833,6 +846,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexMarginSymbol>> GetSymbolMarginInfoAsync(string symbol, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
             return await SendRequest<BitfinexMarginSymbol>(GetUrl(FillPathParameter(MarginInfoSymbolEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
@@ -931,6 +945,8 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexAlert>> SetAlertAsync(string symbol, decimal price, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             var parameters = new Dictionary<string, object>
             {
                 { "type", "price" },
@@ -959,6 +975,8 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexSuccessResult>> DeleteAlertAsync(string symbol, decimal price, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             return await SendRequest<BitfinexSuccessResult>(GetUrl(FillPathParameter(DeleteAlertEndpoint, symbol, price.ToString(CultureInfo.InvariantCulture)), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
@@ -1248,6 +1266,8 @@ namespace Bitfinex.Net
             decimal? ocoSellPrice = null,
             CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
+
             var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },

@@ -352,7 +352,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetPositionsById(System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetPositionsById(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get positions by id
             </summary>
@@ -363,7 +363,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetPositionsByIdAsync(System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetPositionsByIdAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get positions by id
             </summary>
@@ -1099,6 +1099,17 @@
             <param name="data"></param>
             <returns></returns>
         </member>
+        <member name="T:Bitfinex.Net.BitfinexHelpers">
+            <summary>
+            Helper functions
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexHelpers.ValidateBitfinexSymbol(System.String)">
+            <summary>
+            Validate the string is a valid Bitfinex symbol.
+            </summary>
+            <param name="symbolString">string to validate</param>
+        </member>
         <member name="T:Bitfinex.Net.BitfinexSocketClient">
             <summary>
             Socket client for the Bitfinex API
@@ -1766,7 +1777,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPositionsById(System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPositionsById(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get positions by id
             </summary>
@@ -1777,7 +1788,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPositionsByIdAsync(System.String[],System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPositionsByIdAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get positions by id
             </summary>

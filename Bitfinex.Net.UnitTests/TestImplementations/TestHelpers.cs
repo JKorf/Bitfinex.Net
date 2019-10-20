@@ -84,10 +84,10 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             return client;
         }
 
-        public static IBitfinexClient CreateResponseClient(string response, BitfinexClientOptions options = null)
+        public static IBitfinexClient CreateResponseClient(string response, BitfinexClientOptions options = null, HttpStatusCode code = HttpStatusCode.OK)
         {
             var client = (BitfinexClient)CreateClient(options);
-            SetResponse(client, response);
+            SetResponse(client, response, code);
             return client;
         }
 
@@ -105,7 +105,7 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             return client;
         }
 
-        public static Mock<IRequest> SetResponse(RestClient client, string responseData)
+        public static Mock<IRequest> SetResponse(RestClient client, string responseData, HttpStatusCode code = HttpStatusCode.OK)
         {
             var expectedBytes = Encoding.UTF8.GetBytes(responseData);
             var responseStream = new MemoryStream();
@@ -113,7 +113,8 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             responseStream.Seek(0, SeekOrigin.Begin);
 
             var response = new Mock<IResponse>();
-            response.Setup(c => c.IsSuccessStatusCode).Returns(true);
+            response.Setup(c => c.IsSuccessStatusCode).Returns(code == HttpStatusCode.OK);
+            response.Setup(c => c.StatusCode).Returns(code);
             response.Setup(c => c.GetResponseStream()).Returns(Task.FromResult((Stream)responseStream));
 
             var request = new Mock<IRequest>();

@@ -8,6 +8,7 @@ using NUnit.Framework;
 using System.Linq;
 using Bitfinex.Net.UnitTests.TestImplementations;
 using Moq;
+using System.Net;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -90,7 +91,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetTrades("Test");
+            var result = client.GetTrades("tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -121,7 +122,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetOrderBook("Test", Precision.PrecisionLevel0);
+            var result = client.GetOrderBook("tETHBTC", Precision.PrecisionLevel0);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -143,7 +144,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetStats("test", StatKey.ActiveFundingInPositions, StatSide.Long, StatSection.History);
+            var result = client.GetStats("tETHBTC", StatKey.ActiveFundingInPositions, StatSide.Long, StatSection.History);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -168,7 +169,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetLastCandle(TimeFrame.FiveMinute, "test");
+            var result = client.GetLastCandle(TimeFrame.FiveMinute, "tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -203,7 +204,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetCandles(TimeFrame.FiveMinute, "test");
+            var result = client.GetCandles(TimeFrame.FiveMinute, "tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -225,7 +226,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetMarketAveragePrice("test", 0.1m, 0.2m);
+            var result = client.GetMarketAveragePrice("tETHBTC", 0.1m, 0.2m);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -367,7 +368,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetTradesForOrder("TEST", 1);
+            var result = client.GetTradesForOrder("tETHBTC", 1);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -674,7 +675,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetSymbolMarginInfo("test");
+            var result = client.GetSymbolMarginInfo("tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -778,7 +779,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.SetAlert("symbol", 0.1m);
+            var result = client.SetAlert("tETHBTC", 0.1m);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -797,7 +798,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.DeleteAlert("symbol", 0.1m);
+            var result = client.DeleteAlert("tETHBTC", 0.1m);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -858,6 +859,23 @@ namespace Bitfinex.Net.UnitTests
             Assert.AreEqual(expected.Withdraw["ETH"], result.Data.Withdraw["ETH"]);
         }
 
+
+        [TestCase]
+        public void ReceivingHttpError_Should_ResultInErrorResult()
+        {
+            // arrange
+            var client = TestHelpers.CreateResponseClient("Error message", null, System.Net.HttpStatusCode.BadRequest);
+
+            // act
+            var result = client.GetCurrencies();
+
+            // assert
+            Assert.AreEqual(false, result.Success);
+            Assert.IsTrue(result.Error.ToString().Contains("Error message"));
+            Assert.AreEqual(HttpStatusCode.BadRequest, result.ResponseStatusCode);
+        }
+
+
         [Test]
         public void ProvidingApiCredentials_Should_SaveApiCredentials()
         {
@@ -913,6 +931,31 @@ namespace Bitfinex.Net.UnitTests
             request.Verify(r => r.AddHeader("X-BFX-SIGNATURE", It.IsAny<string>()));
             request.Verify(r => r.AddHeader("X-BFX-PAYLOAD", It.IsAny<string>()));
             request.Verify(r => r.AddHeader("X-BFX-APIKEY", "TestKey"));
+        }
+
+        [TestCase("tBTCUSD", true)]
+        [TestCase("tNANOUSD", true)]
+        [TestCase("tNANOBTC", true)]
+        [TestCase("tETHBTC", true)]
+        [TestCase("dETHBTC", false)]
+        [TestCase("fETHBTC", false)]
+        [TestCase("tBEETC", false)]
+        [TestCase("tNANOUSDTD", false)]
+        [TestCase("fNANOUSDTD", false)]
+        [TestCase("BTC-USDT", false)]
+        [TestCase("BTC-USD", false)]
+        [TestCase("tBTC-USD", false)]
+        [TestCase("fBTC-USD", false)]
+        [TestCase("fBTC", true)]
+        [TestCase("fNANO", true)]
+        [TestCase("fNANOD", false)]
+        [TestCase("fNA", false)]
+        public void CheckValidBitfinexSymbol(string symbol, bool isValid)
+        {
+            if (isValid)
+                Assert.DoesNotThrow(() => symbol.ValidateBitfinexSymbol());
+            else
+                Assert.Throws(typeof(ArgumentException), () => symbol.ValidateBitfinexSymbol());
         }
     }
 }

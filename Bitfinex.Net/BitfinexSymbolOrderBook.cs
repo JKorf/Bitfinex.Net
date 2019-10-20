@@ -29,6 +29,7 @@ namespace Bitfinex.Net
         /// <param name="options">Options for the order book</param>
         public BitfinexSymbolOrderBook(string symbol, Precision precisionLevel, int limit, BitfinexOrderBookOptions? options = null) : base(symbol, options ?? new BitfinexOrderBookOptions())
         {
+            symbol.ValidateBitfinexSymbol();
             socketClient = options?.SocketClient ?? new BitfinexSocketClient();
 
             this.limit = limit;
