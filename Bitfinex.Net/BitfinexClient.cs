@@ -220,6 +220,7 @@ namespace Bitfinex.Net
         public async Task<WebCallResult<IEnumerable<BitfinexTradeSimple>>> GetTradesAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
+            limit?.ValidateIntBetween(nameof(limit), 1, 5000);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -250,9 +251,7 @@ namespace Bitfinex.Net
         public async Task<WebCallResult<IEnumerable<BitfinexOrderBookEntry>>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
-
-            if (limit != null && limit != 25 && limit != 100)
-                return WebCallResult<IEnumerable<BitfinexOrderBookEntry>>.CreateErrorResult(new ArgumentError("Limit should be either 25 or 100"));
+            limit?.ValidateIntValues("limit", 25, 100);
 
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("len", limit?.ToString());
@@ -353,6 +352,7 @@ namespace Bitfinex.Net
         public async Task<WebCallResult<IEnumerable<BitfinexCandle>>> GetCandlesAsync(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
+            limit?.ValidateIntBetween(nameof(limit), 1, 5000);
 
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
@@ -422,6 +422,9 @@ namespace Bitfinex.Net
         /// <returns>Exchange rate</returns>
         public async Task<WebCallResult<BitfinexForeignExchangeRate>> GetForeignExchangeRateAsync(string currency1, string currency2, CancellationToken ct = default)
         {
+            currency1.ValidateNotNull(nameof(currency1));
+            currency2.ValidateNotNull(nameof(currency2));
+
             var parameters = new Dictionary<string, object>
             {
                 { "ccy1", currency1 },
@@ -489,6 +492,7 @@ namespace Bitfinex.Net
         public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOrderHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
+            limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
@@ -545,6 +549,7 @@ namespace Bitfinex.Net
         public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetTradeHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
+            limit?.ValidateIntBetween(nameof(limit), 1, 1000);
 
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
@@ -591,6 +596,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            limit?.ValidateIntBetween(nameof(limit), 1, 50);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -621,6 +627,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionsByIdAsync(IEnumerable<string> ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            limit?.ValidateIntBetween(nameof(limit), 1, 250);
             var parameters = new Dictionary<string, object>
             {
                 { "id", ids }
@@ -674,6 +681,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingOffer>>> GetFundingOfferHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -724,6 +732,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFunding>>> GetFundingLoansHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -774,6 +783,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingCredit>>> GetFundingCreditsHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -805,6 +815,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingTrade>>> GetFundingTradesHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -1037,6 +1048,9 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(string currency, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            currency.ValidateNotNull(nameof(currency));
+            limit?.ValidateIntBetween(nameof(limit), 1, 500);
+
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
@@ -1083,6 +1097,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexFundingBook>> GetFundingBookAsync(string currency, int? limit = null, CancellationToken ct = default)
         {
+            currency.ValidateNotNull(nameof(currency));
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit_bids", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("limit_asks", limit?.ToString(CultureInfo.InvariantCulture));
@@ -1110,6 +1125,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexLend>>> GetLendsAsync(string currency, DateTime? startTime = null, int? limit = null, CancellationToken ct = default)
         {
+            currency.ValidateNotNull(nameof(currency));
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit_lends", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("timestamp", startTime == null ? null: JsonConvert.SerializeObject(startTime, new TimestampSecondsConverter()));
@@ -1372,6 +1388,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexDepositAddress>> GetDepositAddressAsync(string currency, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default)
         {
+            currency.ValidateNotNull(nameof(currency));
             var parameters = new Dictionary<string, object>
             {
                 { "method", currency },
@@ -1404,6 +1421,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexTransferResult>> WalletTransferAsync(string currency, decimal amount, WithdrawWallet fromWallet, WithdrawWallet toWallet, CancellationToken ct = default)
         {
+            currency.ValidateNotNull(nameof(currency));
             var parameters = new Dictionary<string, object>
             {
                 { "currency", currency },
@@ -1519,6 +1537,7 @@ namespace Bitfinex.Net
                                                                          string? paymentId = null,
                                                                          CancellationToken ct = default)
         {
+            withdrawType.ValidateNotNull(nameof(withdrawType));
             var parameters = new Dictionary<string, object>
             {
                 { "withdraw_type", withdrawType },
@@ -1604,6 +1623,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexOffer>> NewOfferAsync(string currency, decimal amount, decimal rate, int period, FundingType direction, CancellationToken ct = default)
         {
+            currency.ValidateNotNull(nameof(currency));
             var parameters = new Dictionary<string, object>
             {
                 { "currency", currency },

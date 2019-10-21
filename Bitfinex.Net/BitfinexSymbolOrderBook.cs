@@ -40,7 +40,7 @@ namespace Bitfinex.Net
         protected override async Task<CallResult<UpdateSubscription>> DoStart()
         {
             if(precision == Precision.R0)
-                return new CallResult<UpdateSubscription>(null, new ArgumentError("Invalid precision: R0"));
+                throw new ArgumentException("Invalid precision: R0");
 
             var result = await socketClient.SubscribeToBookUpdatesAsync(Symbol, precision, Frequency.Realtime, limit, ProcessUpdate).ConfigureAwait(false);
             if (!result)

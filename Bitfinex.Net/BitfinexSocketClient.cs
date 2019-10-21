@@ -118,9 +118,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler)
         {
-            //if (length != 25 && length != 100)
-            //    return new CallResult<UpdateSubscription>(null, new ArgumentError("Limit should be either 25 or 100"));
-
+            length.ValidateIntValues(nameof(length), 25, 100);
             var internalHandler = new Action<JToken>(data =>
             {
                 var dataArray = (JArray)data[1];
@@ -558,7 +556,7 @@ namespace Bitfinex.Net
         private async Task<CallResult<bool>> CancelOrdersAsync(long[]? orderIds = null, Dictionary<long, DateTime>? clientOrderIds = null, Dictionary<long, long?>? groupOrderIds = null)
         {
             if (orderIds == null && clientOrderIds == null && groupOrderIds == null)
-                return new CallResult<bool>(false, new ArgumentError("Either orderIds, clientOrderIds or groupOrderIds should be provided"));
+                throw new ArgumentException("Either orderIds, clientOrderIds or groupOrderIds should be provided");
 
             log.Write(LogVerbosity.Info, "Going to cancel multiple orders");
             var cancelObject = new BitfinexMultiCancel { OrderIds = orderIds };
