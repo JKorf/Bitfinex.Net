@@ -466,7 +466,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetActiveFundingOffers("Test");
+            var result = client.GetActiveFundingOffers("tBTCUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -524,7 +524,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetFundingLoans("Test");
+            var result = client.GetFundingLoans("fUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -584,7 +584,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetFundingCredits("Test");
+            var result = client.GetFundingCredits("tBTCUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -624,7 +624,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetFundingTradesHistory("Test");
+            var result = client.GetFundingTradesHistory("fUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -701,7 +701,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetFundingInfo("test");
+            var result = client.GetFundingInfo("tBTCUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -731,7 +731,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetMovements("test");
+            var result = client.GetMovements("fUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);

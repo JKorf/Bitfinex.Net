@@ -90,6 +90,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<BitfinexMarketOverview> handler)
         {
+            symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<JToken>(data =>
             {
                 HandleData("Ticker", (JArray) data[1], handler);
@@ -118,6 +119,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler)
         {
+            symbol.ValidateBitfinexSymbol();
             length.ValidateIntValues(nameof(length), 25, 100);
             var internalHandler = new Action<JToken>(data =>
             {
@@ -153,6 +155,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<UpdateSubscription>> SubscribeToRawBookUpdatesAsync(string symbol, int limit, Action<IEnumerable<BitfinexRawOrderBookEntry>> handler)
         {
+            symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<JToken>(data =>
             {
                 var dataArray = (JArray)data[1];
@@ -218,11 +221,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<UpdateSubscription>> SubscribeToCandleUpdatesAsync(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexCandle>> handler)
         {
-            if (symbol.Length == 6)
-                symbol = "t" + symbol.ToUpper();
-            else
-                symbol = symbol.Substring(0, 1) + symbol.Substring(1).ToUpper();
-
+            symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<JToken>(data =>
             {
                 var dataArray = (JArray)data[1];
@@ -359,6 +358,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null)
         {
+            symbol.ValidateBitfinexSymbol();
             log.Write(LogVerbosity.Info, "Going to place order");
             if (clientOrderId == null)
                 clientOrderId = GenerateClientOrderId();
@@ -481,15 +481,16 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="groupOrderIds">The group ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        public CallResult<bool> CancelOrdersByGroupIds(long[] groupOrderIds) => CancelOrdersByGroupIdsAsync(groupOrderIds).Result;
+        public CallResult<bool> CancelOrdersByGroupIds(IEnumerable<long> groupOrderIds) => CancelOrdersByGroupIdsAsync(groupOrderIds).Result;
 
         /// <summary>
         /// Cancels multiple orders based on their groupIds
         /// </summary>
         /// <param name="groupOrderIds">The group ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        public async Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(long[] groupOrderIds)
+        public async Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderIds)
         {
+            groupOrderIds.ValidateNotNull(nameof(groupOrderIds));
             return await CancelOrdersAsync(null, null, groupOrderIds.ToDictionary(v => v, k => (long?)null)).ConfigureAwait(false);
         }
 
@@ -498,15 +499,16 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="orderIds">The order ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        public CallResult<bool> CancelOrders(long[] orderIds) => CancelOrdersAsync(orderIds).Result;
+        public CallResult<bool> CancelOrders(IEnumerable<long> orderIds) => CancelOrdersAsync(orderIds).Result;
 
         /// <summary>
         /// Cancels multiple orders based on their order ids
         /// </summary>
         /// <param name="orderIds">The order ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        public async Task<CallResult<bool>> CancelOrdersAsync(long[] orderIds)
+        public async Task<CallResult<bool>> CancelOrdersAsync(IEnumerable<long> orderIds)
         {
+            orderIds.ValidateNotNull(nameof(orderIds));
             return await CancelOrdersAsync(orderIds, null).ConfigureAwait(false);
         }
 
@@ -553,7 +555,7 @@ namespace Bitfinex.Net
             handler(new[] { desResult.Data });
         }
 
-        private async Task<CallResult<bool>> CancelOrdersAsync(long[]? orderIds = null, Dictionary<long, DateTime>? clientOrderIds = null, Dictionary<long, long?>? groupOrderIds = null)
+        private async Task<CallResult<bool>> CancelOrdersAsync(IEnumerable<long>? orderIds = null, Dictionary<long, DateTime>? clientOrderIds = null, Dictionary<long, long?>? groupOrderIds = null)
         {
             if (orderIds == null && clientOrderIds == null && groupOrderIds == null)
                 throw new ArgumentException("Either orderIds, clientOrderIds or groupOrderIds should be provided");

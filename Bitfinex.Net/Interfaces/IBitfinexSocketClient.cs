@@ -257,28 +257,28 @@ namespace Bitfinex.Net.Interfaces
         /// </summary>
         /// <param name="groupOrderIds">The group ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        CallResult<bool> CancelOrdersByGroupIds(long[] groupOrderIds);
+        CallResult<bool> CancelOrdersByGroupIds(IEnumerable<long> groupOrderIds);
 
         /// <summary>
         /// Cancels multiple orders based on their groupIds
         /// </summary>
         /// <param name="groupOrderIds">The group ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(long[] groupOrderIds);
+        Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderIds);
 
         /// <summary>
         /// Cancels multiple orders based on their order ids
         /// </summary>
         /// <param name="orderIds">The order ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        CallResult<bool> CancelOrders(long[] orderIds);
+        CallResult<bool> CancelOrders(IEnumerable<long> orderIds);
 
         /// <summary>
         /// Cancels multiple orders based on their order ids
         /// </summary>
         /// <param name="orderIds">The order ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        Task<CallResult<bool>> CancelOrdersAsync(long[] orderIds);
+        Task<CallResult<bool>> CancelOrdersAsync(IEnumerable<long> orderIds);
 
         /// <summary>
         /// Cancels multiple orders based on their clientOrderIds

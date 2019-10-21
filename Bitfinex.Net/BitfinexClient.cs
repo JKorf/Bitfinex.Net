@@ -627,6 +627,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionsByIdAsync(IEnumerable<string> ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            ids.ValidateNotNull(nameof(ids));
             limit?.ValidateIntBetween(nameof(limit), 1, 250);
             var parameters = new Dictionary<string, object>
             {
@@ -655,6 +656,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingOffer>>> GetActiveFundingOffersAsync(string symbol, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
             return await SendRequest<IEnumerable<BitfinexFundingOffer>>(GetUrl(FillPathParameter(ActiveFundingOffersEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
@@ -681,6 +683,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingOffer>>> GetFundingOfferHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
@@ -706,6 +709,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFunding>>> GetFundingLoansAsync(string symbol, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
             return await SendRequest<IEnumerable<BitfinexFunding>>(GetUrl(FillPathParameter(FundingLoansEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
@@ -732,6 +736,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFunding>>> GetFundingLoansHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
@@ -757,6 +762,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingCredit>>> GetFundingCreditsAsync(string symbol, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
             return await SendRequest<IEnumerable<BitfinexFundingCredit>>(GetUrl(FillPathParameter(FundingCreditsEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
@@ -783,6 +789,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingCredit>>> GetFundingCreditsHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
@@ -815,6 +822,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingTrade>>> GetFundingTradesHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString());
@@ -877,6 +885,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexFundingInfo>> GetFundingInfoAsync(string symbol, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
             return await SendRequest<BitfinexFundingInfo>(GetUrl(FillPathParameter(FundingInfoEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
@@ -896,6 +905,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string symbol, CancellationToken ct = default)
         {
+            symbol.ValidateNotNull(nameof(symbol));
             return await SendRequest<IEnumerable<BitfinexMovement>>(GetUrl(FillPathParameter(MovementsEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
@@ -1014,6 +1024,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal rate, WalletType type, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexSymbol();
             var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },

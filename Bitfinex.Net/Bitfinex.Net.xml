@@ -1358,28 +1358,28 @@
             <param name="groupOrderId">The group id to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersByGroupIds(System.Int64[])">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersByGroupIds(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Cancels multiple orders based on their groupIds
             </summary>
             <param name="groupOrderIds">The group ids to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersByGroupIdsAsync(System.Int64[])">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersByGroupIdsAsync(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Cancels multiple orders based on their groupIds
             </summary>
             <param name="groupOrderIds">The group ids to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrders(System.Int64[])">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrders(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Cancels multiple orders based on their order ids
             </summary>
             <param name="orderIds">The order ids to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersAsync(System.Int64[])">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.CancelOrdersAsync(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Cancels multiple orders based on their order ids
             </summary>
@@ -2749,28 +2749,28 @@
             <param name="groupOrderId">The group id to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersByGroupIds(System.Int64[])">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersByGroupIds(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Cancels multiple orders based on their groupIds
             </summary>
             <param name="groupOrderIds">The group ids to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersByGroupIdsAsync(System.Int64[])">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersByGroupIdsAsync(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Cancels multiple orders based on their groupIds
             </summary>
             <param name="groupOrderIds">The group ids to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrders(System.Int64[])">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrders(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Cancels multiple orders based on their order ids
             </summary>
             <param name="orderIds">The order ids to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersAsync(System.Int64[])">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.CancelOrdersAsync(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Cancels multiple orders based on their order ids
             </summary>

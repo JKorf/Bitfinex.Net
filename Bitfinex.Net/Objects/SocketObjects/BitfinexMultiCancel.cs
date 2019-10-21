@@ -1,5 +1,6 @@
 ﻿using Bitfinex.Net.Converters;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
@@ -8,7 +9,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("all"), JsonConverter(typeof(BoolToIntConverter))]
         public bool? All { get; set; }
         [JsonProperty("id")]
-        public long[]? OrderIds { get; set; }
+        public IEnumerable<long>? OrderIds { get; set; }
         [JsonProperty("cid")]
         public object[][]? ClientIds { get; set; }
         [JsonProperty("gid")]

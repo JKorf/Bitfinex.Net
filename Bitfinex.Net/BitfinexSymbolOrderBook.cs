@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
@@ -74,24 +75,28 @@ namespace Bitfinex.Net
             }
             else
             {
-                var processEntries = new List<ProcessEntry>();
+                var askEntries = new List<ISymbolOrderBookEntry>();
+                var bidEntries = new List<ISymbolOrderBookEntry>();
                 foreach (var entry in entries)
                 {
                     if (entry.Count == 0)
                     {
-                        processEntries.Add(entry.Quantity == -1
-                            ? new ProcessEntry(OrderBookEntryType.Ask, new OrderBookEntry(entry.Price, 0))
-                            : new ProcessEntry(OrderBookEntryType.Bid, new OrderBookEntry(entry.Price, 0)));
+                        var bookEntry = new BitfinexOrderBookEntry() { Price = entry.Price, Quantity = 0 };
+                        if (entry.Quantity == -1)
+                            askEntries.Add(bookEntry);
+                        else
+                            bidEntries.Add(bookEntry);
                     }
                     else
                     {
-                        processEntries.Add(entry.Quantity < 0
-                            ? new ProcessEntry(OrderBookEntryType.Ask, new OrderBookEntry(entry.Price, -entry.Quantity))
-                            : new ProcessEntry(OrderBookEntryType.Bid, entry));
+                        if (entry.Quantity < 0)
+                            askEntries.Add(new BitfinexOrderBookEntry() { Price = entry.Price, Quantity = -entry.Quantity });
+                        else
+                            bidEntries.Add(entry);
                     }
                 }
 
-                UpdateOrderBook(DateTime.UtcNow.Ticks, DateTime.UtcNow.Ticks, processEntries);
+                UpdateOrderBook(DateTime.UtcNow.Ticks, DateTime.UtcNow.Ticks, bidEntries, askEntries);
             }
         }
 
