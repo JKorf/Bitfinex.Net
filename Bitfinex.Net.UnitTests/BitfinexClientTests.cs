@@ -40,7 +40,7 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var expected = new[]
             {
-                new BitfinexMarketOverviewRest()
+                new BitfinexSymbolOverview()
                 {
                     Ask = 0.1m,
                     AskSize = 0.2m,
@@ -156,7 +156,7 @@ namespace Bitfinex.Net.UnitTests
         {
             // arrange
             var expected =
-                new BitfinexCandle()
+                new BitfinexKline()
                 {
                     Timestamp = new DateTime(2017, 1, 1),
                     Volume = 0.1m,
@@ -169,7 +169,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetLastCandle(TimeFrame.FiveMinute, "tETHBTC");
+            var result = client.GetLastKline(TimeFrame.FiveMinute, "tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -182,7 +182,7 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var expected = new[]
             {
-                new BitfinexCandle()
+                new BitfinexKline()
                 {
                     Timestamp = new DateTime(2017, 1, 1),
                     Volume = 0.1m,
@@ -191,7 +191,7 @@ namespace Bitfinex.Net.UnitTests
                     Close = 0.4m,
                     Open = 0.5m
                 },
-                new BitfinexCandle()
+                new BitfinexKline()
                 {
                     Timestamp = new DateTime(2016, 1, 1),
                     Volume = 0.6m,
@@ -204,7 +204,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetCandles(TimeFrame.FiveMinute, "tETHBTC");
+            var result = client.GetKlines(TimeFrame.FiveMinute, "tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -217,7 +217,7 @@ namespace Bitfinex.Net.UnitTests
         {
             // arrange
             var expected =
-                new BitfinexMarketAveragePrice()
+                new BitfinexAveragePrice()
                 {
                     Amount = 0.1m,
                     AverageRate = 0.2m
@@ -226,7 +226,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetMarketAveragePrice("tETHBTC", 0.1m, 0.2m);
+            var result = client.GetAveragePrice("tETHBTC", 0.1m, 0.2m);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -259,7 +259,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetWallets();
+            var result = client.GetBalances();
 
             // assert
             Assert.AreEqual(true, result.Success);

@@ -62,11 +62,11 @@
         </member>
         <member name="M:Bitfinex.Net.BitfinexClient.GetTicker(System.Threading.CancellationToken,System.String[])">
             <summary>
-            Returns basic market data for the provided symbols
+            Returns basic symbol data for the provided symbols
             </summary>
             <param name="symbols">The symbols to get data for</param>
             <param name="ct">Cancellation token</param>
-            <returns>Market data</returns>
+            <returns>Symbol data</returns>
         </member>
         <member name="M:Bitfinex.Net.BitfinexClient.GetTickerAsync(System.Threading.CancellationToken,System.String[])">
             <summary>
@@ -74,7 +74,7 @@
             </summary>
             <param name="symbols">The symbols to get data for</param>
             <param name="ct">Cancellation token</param>
-            <returns>Market data</returns>
+            <returns>Symbol data</returns>
         </member>
         <member name="M:Bitfinex.Net.BitfinexClient.GetTrades(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
             <summary>
@@ -144,51 +144,51 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetLastCandle(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLastKline(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
             <summary>
-            Get the last candle for a symbol
+            Get the last kline for a symbol
             </summary>
-            <param name="timeFrame">The time frame of the candle</param>
-            <param name="symbol">The symbol to get the candle for</param>
+            <param name="timeFrame">The time frame of the kline</param>
+            <param name="symbol">The symbol to get the kline for</param>
             <param name="ct">Cancellation token</param>
-            <returns>The last candle for the symbol</returns>
+            <returns>The last kline for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetLastCandleAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLastKlineAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
             <summary>
-            Get the last candle for a symbol
+            Get the last kline for a symbol
             </summary>
-            <param name="timeFrame">The time frame of the candle</param>
-            <param name="symbol">The symbol to get the candle for</param>
+            <param name="timeFrame">The time frame of the kline</param>
+            <param name="symbol">The symbol to get the kline for</param>
             <param name="ct">Cancellation token</param>
-            <returns>The last candle for the symbol</returns>
+            <returns>The last kline for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetCandles(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetKlines(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
             <summary>
-            Gets candles for a symbol
+            Gets klines for a symbol
             </summary>
-            <param name="timeFrame">The time frame of the candles</param>
-            <param name="symbol">The symbol to get the candles for</param>
+            <param name="timeFrame">The time frame of the klines</param>
+            <param name="symbol">The symbol to get the klines for</param>
             <param name="limit">The amount of results</param>
-            <param name="startTime">The start time of the candles</param>
-            <param name="endTime">The end time of the candles</param>
+            <param name="startTime">The start time of the klines</param>
+            <param name="endTime">The end time of the klines</param>
             <param name="sorting">The way the result is sorted</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetCandlesAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetKlinesAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
             <summary>
-            Gets candles for a symbol
+            Gets klines for a symbol
             </summary>
-            <param name="timeFrame">The time frame of the candles</param>
-            <param name="symbol">The symbol to get the candles for</param>
+            <param name="timeFrame">The time frame of the klines</param>
+            <param name="symbol">The symbol to get the klines for</param>
             <param name="limit">The amount of results</param>
-            <param name="startTime">The start time of the candles</param>
-            <param name="endTime">The end time of the candles</param>
+            <param name="startTime">The start time of the klines</param>
+            <param name="endTime">The end time of the klines</param>
             <param name="sorting">The way the result is sorted</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetMarketAveragePrice(System.String,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetAveragePrice(System.String,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Calculate the average execution price
             </summary>
@@ -199,7 +199,7 @@
             <param name="ct">Cancellation token</param>
             <returns>The average price at which the execution would happen</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetMarketAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Calculate the average execution price
             </summary>
@@ -228,14 +228,14 @@
             <param name="ct">Cancellation token</param>
             <returns>Exchange rate</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetWallets(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetBalances(System.Threading.CancellationToken)">
             <summary>
             Get all funds
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetWalletsAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetBalancesAsync(System.Threading.CancellationToken)">
             <summary>
             Get all funds
             </summary>
@@ -1132,7 +1132,7 @@
             </summary>
             <param name="newDefaultOptions"></param>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTickerUpdates(System.String,System.Action{Bitfinex.Net.Objects.BitfinexMarketOverview})">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTickerUpdates(System.String,System.Action{Bitfinex.Net.Objects.BitfinexStreamSymbolOverview})">
             <summary>
             Subscribes to ticker updates for a symbol
             </summary>
@@ -1140,7 +1140,7 @@
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTickerUpdatesAsync(System.String,System.Action{Bitfinex.Net.Objects.BitfinexMarketOverview})">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTickerUpdatesAsync(System.String,System.Action{Bitfinex.Net.Objects.BitfinexStreamSymbolOverview})">
             <summary>
             Subscribes to ticker updates for a symbol
             </summary>
@@ -1204,21 +1204,21 @@
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToCandleUpdates(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexCandle}})">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToKlineUpdates(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexKline}})">
             <summary>
-            Subscribes to candle updates for a symbol
+            Subscribes to kline updates for a symbol
             </summary>
             <param name="symbol">The symbol to subscribe to</param>
-            <param name="interval">The interval of the candles</param>
+            <param name="interval">The interval of the klines</param>
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToCandleUpdatesAsync(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexCandle}})">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexKline}})">
             <summary>
-            Subscribes to candle updates for a symbol
+            Subscribes to kline updates for a symbol
             </summary>
             <param name="symbol">The symbol to subscribe to</param>
-            <param name="interval">The interval of the candles</param>
+            <param name="interval">The interval of the klines</param>
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
@@ -1487,11 +1487,11 @@
         </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTicker(System.Threading.CancellationToken,System.String[])">
             <summary>
-            Returns basic market data for the provided symbols
+            Returns basic symbol data for the provided symbols
             </summary>
             <param name="symbols">The symbols to get data for</param>
             <param name="ct">Cancellation token</param>
-            <returns>Market data</returns>
+            <returns>Symbol data</returns>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTickerAsync(System.Threading.CancellationToken,System.String[])">
             <summary>
@@ -1499,7 +1499,7 @@
             </summary>
             <param name="symbols">The symbols to get data for</param>
             <param name="ct">Cancellation token</param>
-            <returns>Market data</returns>
+            <returns>Symbol data</returns>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetTrades(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
             <summary>
@@ -1569,51 +1569,51 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLastCandle(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLastKline(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
             <summary>
-            Get the last candle for a symbol
+            Get the last kline for a symbol
             </summary>
-            <param name="timeFrame">The time frame of the candle</param>
-            <param name="symbol">The symbol to get the candle for</param>
+            <param name="timeFrame">The time frame of the kline</param>
+            <param name="symbol">The symbol to get the kline for</param>
             <param name="ct">Cancellation token</param>
-            <returns>The last candle for the symbol</returns>
+            <returns>The last kline for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLastCandleAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLastKlineAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
             <summary>
-            Get the last candle for a symbol
+            Get the last kline for a symbol
             </summary>
-            <param name="timeFrame">The time frame of the candle</param>
-            <param name="symbol">The symbol to get the candle for</param>
+            <param name="timeFrame">The time frame of the kline</param>
+            <param name="symbol">The symbol to get the kline for</param>
             <param name="ct">Cancellation token</param>
-            <returns>The last candle for the symbol</returns>
+            <returns>The last kline for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetCandles(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetKlines(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
             <summary>
-            Gets candles for a symbol
+            Gets klines for a symbol
             </summary>
-            <param name="timeFrame">The time frame of the candles</param>
-            <param name="symbol">The symbol to get the candles for</param>
+            <param name="timeFrame">The time frame of the klines</param>
+            <param name="symbol">The symbol to get the klines for</param>
             <param name="limit">The amount of results</param>
-            <param name="startTime">The start time of the candles</param>
-            <param name="endTime">The end time of the candles</param>
+            <param name="startTime">The start time of the klines</param>
+            <param name="endTime">The end time of the klines</param>
             <param name="sorting">The way the result is sorted</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetCandlesAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetKlinesAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
             <summary>
-            Gets candles for a symbol
+            Gets klines for a symbol
             </summary>
-            <param name="timeFrame">The time frame of the candles</param>
-            <param name="symbol">The symbol to get the candles for</param>
+            <param name="timeFrame">The time frame of the klines</param>
+            <param name="symbol">The symbol to get the klines for</param>
             <param name="limit">The amount of results</param>
-            <param name="startTime">The start time of the candles</param>
-            <param name="endTime">The end time of the candles</param>
+            <param name="startTime">The start time of the klines</param>
+            <param name="endTime">The end time of the klines</param>
             <param name="sorting">The way the result is sorted</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetMarketAveragePrice(System.String,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetAveragePrice(System.String,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Calculate the average execution price
             </summary>
@@ -1624,7 +1624,7 @@
             <param name="ct">Cancellation token</param>
             <returns>The average price at which the execution would happen</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetMarketAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Calculate the average execution price
             </summary>
@@ -1653,14 +1653,14 @@
             <param name="ct">Cancellation token</param>
             <returns>Exchange rate</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetWallets(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetBalances(System.Threading.CancellationToken)">
             <summary>
             Get all funds
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetWalletsAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetBalancesAsync(System.Threading.CancellationToken)">
             <summary>
             Get all funds
             </summary>
@@ -2523,7 +2523,7 @@
             Interface for the Bitfinex socket client
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTickerUpdates(System.String,System.Action{Bitfinex.Net.Objects.BitfinexMarketOverview})">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTickerUpdates(System.String,System.Action{Bitfinex.Net.Objects.BitfinexStreamSymbolOverview})">
             <summary>
             Subscribes to ticker updates for a symbol
             </summary>
@@ -2531,7 +2531,7 @@
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTickerUpdatesAsync(System.String,System.Action{Bitfinex.Net.Objects.BitfinexMarketOverview})">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTickerUpdatesAsync(System.String,System.Action{Bitfinex.Net.Objects.BitfinexStreamSymbolOverview})">
             <summary>
             Subscribes to ticker updates for a symbol
             </summary>
@@ -2595,21 +2595,21 @@
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToCandleUpdates(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexCandle}})">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToKlineUpdates(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexKline}})">
             <summary>
-            Subscribes to candle updates for a symbol
+            Subscribes to kline updates for a symbol
             </summary>
             <param name="symbol">The symbol to subscribe to</param>
-            <param name="interval">The interval of the candles</param>
+            <param name="interval">The interval of the klines</param>
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToCandleUpdatesAsync(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexCandle}})">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Objects.TimeFrame,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexKline}})">
             <summary>
-            Subscribes to candle updates for a symbol
+            Subscribes to kline updates for a symbol
             </summary>
             <param name="symbol">The symbol to subscribe to</param>
-            <param name="interval">The interval of the candles</param>
+            <param name="interval">The interval of the klines</param>
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
@@ -2831,39 +2831,19 @@
             The available balance
             </summary>
         </member>
-        <member name="T:Bitfinex.Net.Objects.BitfinexCandle">
+        <member name="T:Bitfinex.Net.Objects.BitfinexAveragePrice">
             <summary>
-            Candle info
+            Average price info
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Timestamp">
+        <member name="P:Bitfinex.Net.Objects.BitfinexAveragePrice.AverageRate">
             <summary>
-            The timestamp of the candle
+            The average price
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Open">
+        <member name="P:Bitfinex.Net.Objects.BitfinexAveragePrice.Amount">
             <summary>
-            The opening price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Close">
-            <summary>
-            The closing price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.High">
-            <summary>
-            The highest price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Low">
-            <summary>
-            The lowest price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexCandle.Volume">
-            <summary>
-            The volume for this candle
+            The amount
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexCurrency">
@@ -3915,6 +3895,41 @@
             Whether the offer took liquidity off the funding book
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexKline">
+            <summary>
+            Kline info
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexKline.Timestamp">
+            <summary>
+            The timestamp of the kline
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexKline.Open">
+            <summary>
+            The opening price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexKline.Close">
+            <summary>
+            The closing price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexKline.High">
+            <summary>
+            The highest price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexKline.Low">
+            <summary>
+            The lowest price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexKline.Volume">
+            <summary>
+            The volume for this kline
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexLedgerEntry">
             <summary>
             Ledger entry
@@ -4028,136 +4043,6 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexMarginSymbolInfo.Sell">
             <summary>
             Sell amount
-            </summary>
-        </member>
-        <member name="T:Bitfinex.Net.Objects.BitfinexMarketAveragePrice">
-            <summary>
-            Average price info
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketAveragePrice.AverageRate">
-            <summary>
-            The average price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketAveragePrice.Amount">
-            <summary>
-            The amount
-            </summary>
-        </member>
-        <member name="T:Bitfinex.Net.Objects.BitfinexMarketOverview">
-            <summary>
-            Market overview
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.Bid">
-            <summary>
-            Best bid price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.BidSize">
-            <summary>
-            Best bid size
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.Ask">
-            <summary>
-            Best ask price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.AskSize">
-            <summary>
-            Best ask size
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.DailyChange">
-            <summary>
-            Change versus 24 hours ago
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.DailyChangePercentage">
-            <summary>
-            Change percentage versus 24 hours ago
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.LastPrice">
-            <summary>
-            The last trade price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.Volume">
-            <summary>
-            The 24 hour volume
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.High">
-            <summary>
-            The 24 hour high price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverview.Low">
-            <summary>
-            The 24 hour low price
-            </summary>
-        </member>
-        <member name="T:Bitfinex.Net.Objects.BitfinexMarketOverviewRest">
-            <summary>
-            Market overview
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Symbol">
-            <summary>
-            The symbol
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Bid">
-            <summary>
-            The best bid price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.BidSize">
-            <summary>
-            The best bid size
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Ask">
-            <summary>
-            The best ask price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.AskSize">
-            <summary>
-            The best ask size
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.DailyChange">
-            <summary>
-            Change versus 24 hours ago
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.DailyChangePercentage">
-            <summary>
-            Change percentage versus 24 hours ago
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.LastPrice">
-            <summary>
-            The last trade price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Volume">
-            <summary>
-            The 24 hour volume
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.High">
-            <summary>
-            The 24 hour high price
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexMarketOverviewRest.Low">
-            <summary>
-            The 24 hour low price
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexMovement">
@@ -4550,6 +4435,61 @@
             The value
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview">
+            <summary>
+            Market overview
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.Bid">
+            <summary>
+            Best bid price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.BidSize">
+            <summary>
+            Best bid size
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.Ask">
+            <summary>
+            Best ask price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.AskSize">
+            <summary>
+            Best ask size
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.DailyChange">
+            <summary>
+            Change versus 24 hours ago
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.DailyChangePercentage">
+            <summary>
+            Change percentage versus 24 hours ago
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.LastPrice">
+            <summary>
+            The last trade price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.Volume">
+            <summary>
+            The 24 hour volume
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.High">
+            <summary>
+            The 24 hour high price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.Low">
+            <summary>
+            The 24 hour low price
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexSuccessResult">
             <summary>
             Result
@@ -4558,6 +4498,66 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexSuccessResult.Success">
             <summary>
             Whether the operation was successful
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexSymbolOverview">
+            <summary>
+            Market overview
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.Symbol">
+            <summary>
+            The symbol
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.Bid">
+            <summary>
+            The best bid price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.BidSize">
+            <summary>
+            The best bid size
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.Ask">
+            <summary>
+            The best ask price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.AskSize">
+            <summary>
+            The best ask size
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.DailyChange">
+            <summary>
+            Change versus 24 hours ago
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.DailyChangePercentage">
+            <summary>
+            Change percentage versus 24 hours ago
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.LastPrice">
+            <summary>
+            The last trade price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.Volume">
+            <summary>
+            The 24 hour volume
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.High">
+            <summary>
+            The 24 hour high price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSymbolOverview.Low">
+            <summary>
+            The 24 hour low price
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexTradeDetails">

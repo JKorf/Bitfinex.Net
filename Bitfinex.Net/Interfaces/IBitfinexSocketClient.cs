@@ -20,7 +20,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        CallResult<UpdateSubscription> SubscribeToTickerUpdates(string symbol, Action<BitfinexMarketOverview> handler);
+        CallResult<UpdateSubscription> SubscribeToTickerUpdates(string symbol, Action<BitfinexStreamSymbolOverview> handler);
 
         /// <summary>
         /// Subscribes to ticker updates for a symbol
@@ -28,7 +28,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<BitfinexMarketOverview> handler);
+        Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<BitfinexStreamSymbolOverview> handler);
 
         /// <summary>
         /// Subscribes to order book updates for a symbol
@@ -87,22 +87,22 @@ namespace Bitfinex.Net.Interfaces
         Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<IEnumerable<BitfinexTradeSimple>> handler);
 
         /// <summary>
-        /// Subscribes to candle updates for a symbol
+        /// Subscribes to kline updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
-        /// <param name="interval">The interval of the candles</param>
+        /// <param name="interval">The interval of the klines</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        CallResult<UpdateSubscription> SubscribeToCandleUpdates(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexCandle>> handler);
+        CallResult<UpdateSubscription> SubscribeToKlineUpdates(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexKline>> handler);
 
         /// <summary>
-        /// Subscribes to candle updates for a symbol
+        /// Subscribes to kline updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
-        /// <param name="interval">The interval of the candles</param>
+        /// <param name="interval">The interval of the klines</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToCandleUpdatesAsync(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexCandle>> handler);
+        Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexKline>> handler);
 
         /// <summary>
         /// Subscribe to trading information updates

@@ -439,14 +439,14 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexWallet>> GetWallets(CancellationToken ct = default) => GetWalletsAsync(ct).Result;
+        public WebCallResult<IEnumerable<BitfinexWallet>> GetBalances(CancellationToken ct = default) => GetBalancesAsync(ct).Result;
 
         /// <summary>
         /// Get all funds
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexWallet>>> GetWalletsAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexWallet>>> GetBalancesAsync(CancellationToken ct = default)
         {
             return await SendRequest<IEnumerable<BitfinexWallet>>(GetUrl(WalletsEndpoint, ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }

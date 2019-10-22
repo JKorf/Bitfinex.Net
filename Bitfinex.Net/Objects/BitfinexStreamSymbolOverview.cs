@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects
     /// Market overview
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexMarketOverview
+    public class BitfinexStreamSymbolOverview
     {
         /// <summary>
         /// Best bid price

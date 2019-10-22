@@ -118,7 +118,7 @@ namespace Bitfinex.Net.UnitTests
                 LogVerbosity = LogVerbosity.Debug
             });
 
-            var subTask = client.SubscribeToCandleUpdatesAsync("tBTCUSD", timeframe, data => { });
+            var subTask = client.SubscribeToKlineUpdatesAsync("tBTCUSD", timeframe, data => { });
 
             var subResponse = new CandleSubscriptionResponse()
             {
@@ -156,8 +156,8 @@ namespace Bitfinex.Net.UnitTests
             socket.CanConnect = true;
             var client = TestHelpers.CreateSocketClient(socket);
 
-            BitfinexCandle[] result = null;
-            var subTask = client.SubscribeToCandleUpdatesAsync("tBTCUSD", timeframe, data => result = data.ToArray());
+            BitfinexKline[] result = null;
+            var subTask = client.SubscribeToKlineUpdatesAsync("tBTCUSD", timeframe, data => result = data.ToArray());
 
             var subResponse = new CandleSubscriptionResponse()
             {
@@ -169,7 +169,7 @@ namespace Bitfinex.Net.UnitTests
             };
             socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
-            BitfinexCandle[] expected = new[] { new BitfinexCandle() };
+            BitfinexKline[] expected = new[] { new BitfinexKline() };
 
             // act
             socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
@@ -214,7 +214,7 @@ namespace Bitfinex.Net.UnitTests
             socket.CanConnect = true;
             var client = TestHelpers.CreateSocketClient(socket);
 
-            BitfinexMarketOverview result = null;
+            BitfinexStreamSymbolOverview result = null;
             var subTask = client.SubscribeToTickerUpdatesAsync("tBTCUSD", data => result = data);
 
             var subResponse = new TickerSubscriptionResponse()
@@ -227,7 +227,7 @@ namespace Bitfinex.Net.UnitTests
             };
             socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
-            BitfinexMarketOverview expected = new BitfinexMarketOverview();
+            BitfinexStreamSymbolOverview expected = new BitfinexStreamSymbolOverview();
 
             // act
             socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
@@ -704,7 +704,7 @@ namespace Bitfinex.Net.UnitTests
             });
 
             var rstEvent = new ManualResetEvent(false);
-            var subTask = client.SubscribeToCandleUpdatesAsync("tBTCUSD", TimeFrame.FiveMinute, data => { });
+            var subTask = client.SubscribeToKlineUpdatesAsync("tBTCUSD", TimeFrame.FiveMinute, data => { });
             socket.InvokeMessage(new CandleSubscriptionResponse()
             {
                 Channel = "candles",

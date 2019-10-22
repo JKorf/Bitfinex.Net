@@ -1,5 +1,4 @@
 ﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects;
 using CryptoExchange.Net;
@@ -13,6 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Bitfinex.Net.Interfaces;
 
 namespace Bitfinex.Net
 {
