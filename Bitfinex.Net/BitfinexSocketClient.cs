@@ -81,14 +81,14 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToTickerUpdates(string symbol, Action<BitfinexMarketOverview> handler) => SubscribeToTickerUpdatesAsync(symbol, handler).Result;
+        public CallResult<UpdateSubscription> SubscribeToTickerUpdates(string symbol, Action<BitfinexStreamSymbolOverview> handler) => SubscribeToTickerUpdatesAsync(symbol, handler).Result;
         /// <summary>
         /// Subscribes to ticker updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<BitfinexMarketOverview> handler)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<BitfinexStreamSymbolOverview> handler)
         {
             symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<JToken>(data =>
@@ -205,21 +205,21 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Subscribes to candle updates for a symbol
+        /// Subscribes to kline updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
-        /// <param name="interval">The interval of the candles</param>
+        /// <param name="interval">The interval of the klines</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToCandleUpdates(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexCandle>> handler) => SubscribeToCandleUpdatesAsync(symbol, interval, handler).Result;
+        public CallResult<UpdateSubscription> SubscribeToKlineUpdates(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexKline>> handler) => SubscribeToKlineUpdatesAsync(symbol, interval, handler).Result;
         /// <summary>
-        /// Subscribes to candle updates for a symbol
+        /// Subscribes to kline updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
-        /// <param name="interval">The interval of the candles</param>
+        /// <param name="interval">The interval of the klines</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToCandleUpdatesAsync(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexCandle>> handler)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexKline>> handler)
         {
             symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<JToken>(data =>

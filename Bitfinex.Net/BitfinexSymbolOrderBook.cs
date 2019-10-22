@@ -17,7 +17,6 @@ namespace Bitfinex.Net
     public class BitfinexSymbolOrderBook: SymbolOrderBook
     {
         private readonly IBitfinexSocketClient socketClient;
-        private bool initialSnapshotDone;
         private readonly Precision precision;
         private readonly int limit;
 
@@ -49,29 +48,25 @@ namespace Bitfinex.Net
 
             Status = OrderBookStatus.Syncing;
 
-            while (!initialSnapshotDone)
-                await Task.Delay(10).ConfigureAwait(false); // Wait for first update to fill the order book
-
-            return result;
+            var setResult = await WaitForSetOrderBook(10000).ConfigureAwait(false);
+            return setResult ? result : new CallResult<UpdateSubscription>(null, setResult.Error);
         }
 
         /// <inheritdoc />
         protected override void DoReset()
         {
-            initialSnapshotDone = false;
         }
 
         private void ProcessUpdate(IEnumerable<BitfinexOrderBookEntry> entries)
         {
-            if (!initialSnapshotDone)
+            if (!bookSet)
             {
                 var askEntries = entries.Where(e => e.Quantity < 0).ToList();
                 var bidEntries = entries.Where(e => e.Quantity > 0).ToList();
                 foreach (var entry in askEntries)
                     entry.Quantity = -entry.Quantity; // Bitfinex sends the asks as negative numbers, invert them
                 
-                SetInitialOrderBook(DateTime.UtcNow.Ticks, askEntries, bidEntries);
-                initialSnapshotDone = true;
+                SetInitialOrderBook(DateTime.UtcNow.Ticks, bidEntries, askEntries);
             }
             else
             {
@@ -96,17 +91,14 @@ namespace Bitfinex.Net
                     }
                 }
 
-                UpdateOrderBook(DateTime.UtcNow.Ticks, DateTime.UtcNow.Ticks, bidEntries, askEntries);
+                UpdateOrderBook(DateTime.UtcNow.Ticks, bidEntries, askEntries);
             }
         }
 
         /// <inheritdoc />
         protected override async Task<CallResult<bool>> DoResync()
         {
-            while (!initialSnapshotDone)
-                await Task.Delay(10).ConfigureAwait(false); // Wait for first update to fill the order book
-
-            return new CallResult<bool>(true, null);
+            return await WaitForSetOrderBook(10000).ConfigureAwait(false);
         }
 
         /// <summary>

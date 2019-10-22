@@ -172,27 +172,27 @@ namespace Bitfinex.Net
 
 
         /// <summary>
-        /// Returns basic market data for the provided symbols
+        /// Returns basic symbol data for the provided symbols
         /// </summary>
         /// <param name="symbols">The symbols to get data for</param>
         /// <param name="ct">Cancellation token</param>
-        /// <returns>Market data</returns>
-        public WebCallResult<IEnumerable<BitfinexMarketOverviewRest>> GetTicker(CancellationToken ct = default, params string[] symbols) => GetTickerAsync(ct, symbols).Result;
+        /// <returns>Symbol data</returns>
+        public WebCallResult<IEnumerable<BitfinexSymbolOverview>> GetTicker(CancellationToken ct = default, params string[] symbols) => GetTickerAsync(ct, symbols).Result;
 
         /// <summary>
         /// Returns basic market data for the provided symbols
         /// </summary>
         /// <param name="symbols">The symbols to get data for</param>
         /// <param name="ct">Cancellation token</param>
-        /// <returns>Market data</returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexMarketOverviewRest>>> GetTickerAsync(CancellationToken ct = default, params string[] symbols)
+        /// <returns>Symbol data</returns>
+        public async Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickerAsync(CancellationToken ct = default, params string[] symbols)
         {
             var parameters = new Dictionary<string, object>
             {
                 {"symbols", string.Join(",", symbols)}
             };
 
-            return await SendRequest<IEnumerable<BitfinexMarketOverviewRest>>(GetUrl(TickersEndpoint, ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            return await SendRequest<IEnumerable<BitfinexSymbolOverview>>(GetUrl(TickersEndpoint, ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -299,57 +299,57 @@ namespace Bitfinex.Net
         }
 
         /// <summary>
-        /// Get the last candle for a symbol
+        /// Get the last kline for a symbol
         /// </summary>
-        /// <param name="timeFrame">The time frame of the candle</param>
-        /// <param name="symbol">The symbol to get the candle for</param>
+        /// <param name="timeFrame">The time frame of the kline</param>
+        /// <param name="symbol">The symbol to get the kline for</param>
         /// <param name="ct">Cancellation token</param>
-        /// <returns>The last candle for the symbol</returns>
-        public WebCallResult<BitfinexCandle> GetLastCandle(TimeFrame timeFrame, string symbol, CancellationToken ct = default)
-            => GetLastCandleAsync(timeFrame, symbol, ct).Result;
+        /// <returns>The last kline for the symbol</returns>
+        public WebCallResult<BitfinexKline> GetLastKline(TimeFrame timeFrame, string symbol, CancellationToken ct = default)
+            => GetLastKlineAsync(timeFrame, symbol, ct).Result;
 
         /// <summary>
-        /// Get the last candle for a symbol
+        /// Get the last kline for a symbol
         /// </summary>
-        /// <param name="timeFrame">The time frame of the candle</param>
-        /// <param name="symbol">The symbol to get the candle for</param>
+        /// <param name="timeFrame">The time frame of the kline</param>
+        /// <param name="symbol">The symbol to get the kline for</param>
         /// <param name="ct">Cancellation token</param>
-        /// <returns>The last candle for the symbol</returns>
-        public async Task<WebCallResult<BitfinexCandle>> GetLastCandleAsync(TimeFrame timeFrame, string symbol, CancellationToken ct = default)
+        /// <returns>The last kline for the symbol</returns>
+        public async Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(TimeFrame timeFrame, string symbol, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
 
             var endpoint = FillPathParameter(LastCandleEndpoint, JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)), symbol);
 
-            return await SendRequest<BitfinexCandle>(GetUrl(endpoint, ApiVersion2), HttpMethod.Get, ct).ConfigureAwait(false);
+            return await SendRequest<BitfinexKline>(GetUrl(endpoint, ApiVersion2), HttpMethod.Get, ct).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Gets candles for a symbol
+        /// Gets klines for a symbol
         /// </summary>
-        /// <param name="timeFrame">The time frame of the candles</param>
-        /// <param name="symbol">The symbol to get the candles for</param>
+        /// <param name="timeFrame">The time frame of the klines</param>
+        /// <param name="symbol">The symbol to get the klines for</param>
         /// <param name="limit">The amount of results</param>
-        /// <param name="startTime">The start time of the candles</param>
-        /// <param name="endTime">The end time of the candles</param>
+        /// <param name="startTime">The start time of the klines</param>
+        /// <param name="endTime">The end time of the klines</param>
         /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexCandle>> GetCandles(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
-            => GetCandlesAsync(timeFrame, symbol, limit, startTime, endTime, sorting, ct).Result;
+        public WebCallResult<IEnumerable<BitfinexKline>> GetKlines(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
+            => GetKlinesAsync(timeFrame, symbol, limit, startTime, endTime, sorting, ct).Result;
 
         /// <summary>
-        /// Gets candles for a symbol
+        /// Gets klines for a symbol
         /// </summary>
-        /// <param name="timeFrame">The time frame of the candles</param>
-        /// <param name="symbol">The symbol to get the candles for</param>
+        /// <param name="timeFrame">The time frame of the klines</param>
+        /// <param name="symbol">The symbol to get the klines for</param>
         /// <param name="limit">The amount of results</param>
-        /// <param name="startTime">The start time of the candles</param>
-        /// <param name="endTime">The end time of the candles</param>
+        /// <param name="startTime">The start time of the klines</param>
+        /// <param name="endTime">The end time of the klines</param>
         /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexCandle>>> GetCandlesAsync(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexKline>>> GetKlinesAsync(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 5000);
@@ -364,7 +364,7 @@ namespace Bitfinex.Net
                 JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)),
                 symbol);
 
-            return await SendRequest<IEnumerable<BitfinexCandle>>(GetUrl(endpoint, ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            return await SendRequest<IEnumerable<BitfinexKline>>(GetUrl(endpoint, ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -376,8 +376,8 @@ namespace Bitfinex.Net
         /// <param name="period">Maximum period for margin funding</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The average price at which the execution would happen</returns>
-        public WebCallResult<BitfinexMarketAveragePrice> GetMarketAveragePrice(string symbol, decimal amount, decimal rateLimit, int? period = null, CancellationToken ct = default)
-            => GetMarketAveragePriceAsync(symbol, amount, rateLimit, period, ct).Result;
+        public WebCallResult<BitfinexAveragePrice> GetAveragePrice(string symbol, decimal amount, decimal rateLimit, int? period = null, CancellationToken ct = default)
+            => GetAveragePriceAsync(symbol, amount, rateLimit, period, ct).Result;
 
         /// <summary>
         /// Calculate the average execution price
@@ -388,7 +388,7 @@ namespace Bitfinex.Net
         /// <param name="period">Maximum period for margin funding</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The average price at which the execution would happen</returns>
-        public async Task<WebCallResult<BitfinexMarketAveragePrice>> GetMarketAveragePriceAsync(string symbol, decimal amount, decimal? rateLimit = null, int? period = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexAveragePrice>> GetAveragePriceAsync(string symbol, decimal amount, decimal? rateLimit = null, int? period = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
 
@@ -400,7 +400,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("period", period?.ToString());
             parameters.AddOptionalParameter("rate_limit", rateLimit?.ToString(CultureInfo.InvariantCulture));
 
-            return await SendRequest<BitfinexMarketAveragePrice>(GetUrl(MarketAverageEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters).ConfigureAwait(false);
+            return await SendRequest<BitfinexAveragePrice>(GetUrl(MarketAverageEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
