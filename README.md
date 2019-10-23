@@ -91,6 +91,15 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.0.0 - 23 Oct 2019
+	* See CryptoExchange.Net 3.0 release notes
+	* Added input validation
+	* Added CancellationToken support to all requests
+	* Now using IEnumerable<> for collections
+	* Renamed Candle -> Kline
+	* Renamed Market -> Symbol
+	* Renamed GetWallets -> GetBalances
+
 * Version 2.1.6 - 07 Aug 2019
     * Fixed threadsafety in subscription response mapping
 
