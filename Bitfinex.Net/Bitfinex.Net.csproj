@@ -20,7 +20,7 @@
 	* See CryptoExchange.Net 3.0 release notes
 	* Added input validation
 	* Added CancellationToken support to all requests
-	* Now using IEnumerable<> for collections
+	* Now using IEnumerable for collections
 	* Renamed Candle -> Kline
 	* Renamed Market -> Symbol
 	* Renamed GetWallets -> GetBalances</PackageReleaseNotes>
