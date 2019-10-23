@@ -1,4 +1,4 @@
-# ![Icon](https://github.com/JKorf/Bitfinex.Net/blob/master/Resources/icon.png?raw=true) Bitfinex.Net 
+# ![Icon](https://github.com/JKorf/Bitfinex.Net/blob/master/Bitfinex.Net/Icon/icon.png?raw=true) Bitfinex.Net 
 
 ![Build status](https://travis-ci.org/JKorf/Bitfinex.Net.svg?branch=master)
 
