@@ -19,11 +19,12 @@ namespace Bitfinex.Net.Objects.SocketObjects
         /// The type of the event
         /// </summary>
         public BitfinexEventType EventType { get; set; }
+
         /// <summary>
         /// The data
         /// </summary>
         [ArrayProperty(2), JsonConverter(typeof(ArrayConverter))]
-        public T Data { get; set; }
+        public T Data { get; set; } = default!;
 
         /// <summary>
         /// ctor

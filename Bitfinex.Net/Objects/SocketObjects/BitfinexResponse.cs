@@ -4,8 +4,8 @@ namespace Bitfinex.Net.Objects.SocketObjects
 {
     internal class BitfinexResponse
     {
-        public string Event { get; set; }
-        public string Channel { get; set; }
+        public string Event { get; set; } = "";
+        public string Channel { get; set; } = "";
     }
 
     internal class BitfinexSubscribeResponse: BitfinexResponse
@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
     internal class BitfinexErrorResponse: BitfinexResponse
     {
         [JsonProperty("msg")]
-        public string Message { get; set; }
+        public string Message { get; set; } = "";
         [JsonProperty("code")]
         public int Code { get; set; }
     }

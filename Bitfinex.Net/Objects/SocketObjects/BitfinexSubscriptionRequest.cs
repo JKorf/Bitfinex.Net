@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using CryptoExchange.Net.Sockets;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Bitfinex.Net.Objects.SocketObjects
@@ -55,7 +53,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
                         return false;
                 }
                 else
+                {
                     return false;
+                }
             }
 
             return true;

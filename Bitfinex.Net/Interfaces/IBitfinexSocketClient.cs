@@ -10,7 +10,7 @@ using CryptoExchange.Net.Sockets;
 namespace Bitfinex.Net.Interfaces
 {
     /// <summary>
-    /// Bitfinex socket client interface
+    /// Interface for the Bitfinex socket client
     /// </summary>
     public interface IBitfinexSocketClient: ISocketClient
     {
@@ -20,7 +20,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        CallResult<UpdateSubscription> SubscribeToTickerUpdates(string symbol, Action<BitfinexMarketOverview> handler);
+        CallResult<UpdateSubscription> SubscribeToTickerUpdates(string symbol, Action<BitfinexStreamSymbolOverview> handler);
 
         /// <summary>
         /// Subscribes to ticker updates for a symbol
@@ -28,7 +28,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<BitfinexMarketOverview> handler);
+        Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<BitfinexStreamSymbolOverview> handler);
 
         /// <summary>
         /// Subscribes to order book updates for a symbol
@@ -39,7 +39,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="length">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<BitfinexOrderBookEntry[]> handler);
+        CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler);
 
         /// <summary>
         /// Subscribes to order book updates for a symbol
@@ -47,10 +47,10 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="precision">The precision of the updates</param>
         /// <param name="frequency">The frequency of updates</param>
-        /// <param name="length">The range for the order book updates</param>
+        /// <param name="length">The range for the order book updates, either 25 or 100</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<BitfinexOrderBookEntry[]> handler);
+        Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler);
 
         /// <summary>
         /// Subscribes to raw order book updates for a symbol
@@ -59,7 +59,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="limit">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        CallResult<UpdateSubscription> SubscribeToRawBookUpdates(string symbol, int limit, Action<BitfinexRawOrderBookEntry[]> handler);
+        CallResult<UpdateSubscription> SubscribeToRawBookUpdates(string symbol, int limit, Action<IEnumerable<BitfinexRawOrderBookEntry>> handler);
 
         /// <summary>
         /// Subscribes to raw order book updates for a symbol
@@ -68,7 +68,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="limit">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToRawBookUpdatesAsync(string symbol, int limit, Action<BitfinexRawOrderBookEntry[]> handler);
+        Task<CallResult<UpdateSubscription>> SubscribeToRawBookUpdatesAsync(string symbol, int limit, Action<IEnumerable<BitfinexRawOrderBookEntry>> handler);
 
         /// <summary>
         /// Subscribes to public trade updates for a symbol
@@ -76,7 +76,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        CallResult<UpdateSubscription> SubscribeToTradeUpdates(string symbol, Action<BitfinexTradeSimple[]> handler);
+        CallResult<UpdateSubscription> SubscribeToTradeUpdates(string symbol, Action<IEnumerable<BitfinexTradeSimple>> handler);
 
         /// <summary>
         /// Subscribes to public trade updates for a symbol
@@ -84,25 +84,25 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<BitfinexTradeSimple[]> handler);
+        Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<IEnumerable<BitfinexTradeSimple>> handler);
 
         /// <summary>
-        /// Subscribes to candle updates for a symbol
+        /// Subscribes to kline updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
-        /// <param name="interval">The interval of the candles</param>
+        /// <param name="interval">The interval of the klines</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        CallResult<UpdateSubscription> SubscribeToCandleUpdates(string symbol, TimeFrame interval, Action<BitfinexCandle[]> handler);
+        CallResult<UpdateSubscription> SubscribeToKlineUpdates(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexKline>> handler);
 
         /// <summary>
-        /// Subscribes to candle updates for a symbol
+        /// Subscribes to kline updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
-        /// <param name="interval">The interval of the candles</param>
+        /// <param name="interval">The interval of the klines</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToCandleUpdatesAsync(string symbol, TimeFrame interval, Action<BitfinexCandle[]> handler);
+        Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexKline>> handler);
 
         /// <summary>
         /// Subscribe to trading information updates
@@ -112,9 +112,9 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
         /// <returns></returns>
         CallResult<UpdateSubscription> SubscribeToTradingUpdates(
-            Action<BitfinexSocketEvent<BitfinexOrder[]>> orderHandler,
-            Action<BitfinexSocketEvent<BitfinexTradeDetails[]>> tradeHandler,
-            Action<BitfinexSocketEvent<BitfinexPosition[]>> positionHandler);
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexOrder>>> orderHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexTradeDetails>>> tradeHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexPosition>>> positionHandler);
 
         /// <summary>
         /// Subscribe to trading information updates
@@ -124,23 +124,23 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
         /// <returns></returns>
         Task<CallResult<UpdateSubscription>> SubscribeToTradingUpdatesAsync(
-            Action<BitfinexSocketEvent<BitfinexOrder[]>> orderHandler,
-            Action<BitfinexSocketEvent<BitfinexTradeDetails[]>> tradeHandler,
-            Action<BitfinexSocketEvent<BitfinexPosition[]>> positionHandler);
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexOrder>>> orderHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexTradeDetails>>> tradeHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexPosition>>> positionHandler);
 
         /// <summary>
         /// Subscribe to wallet information updates
         /// </summary>
         /// <param name="walletHandler">Data handler for wallet updates</param>
         /// <returns></returns>
-        CallResult<UpdateSubscription> SubscribeToWalletUpdates(Action<BitfinexSocketEvent<BitfinexWallet[]>> walletHandler);
+        CallResult<UpdateSubscription> SubscribeToWalletUpdates(Action<BitfinexSocketEvent<IEnumerable<BitfinexWallet>>> walletHandler);
 
         /// <summary>
         /// Subscribe to wallet information updates
         /// </summary>
         /// <param name="walletHandler">Data handler for wallet updates</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToWalletUpdatesAsync(Action<BitfinexSocketEvent<BitfinexWallet[]>> walletHandler);
+        Task<CallResult<UpdateSubscription>> SubscribeToWalletUpdatesAsync(Action<BitfinexSocketEvent<IEnumerable<BitfinexWallet>>> walletHandler);
 
         /// <summary>
         /// Subscribe to funding information updates
@@ -150,9 +150,9 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
         /// <returns></returns>
         CallResult<UpdateSubscription> SubscribeToFundingUpdates(
-            Action<BitfinexSocketEvent<BitfinexFundingOffer[]>> fundingOfferHandler,
-            Action<BitfinexSocketEvent<BitfinexFundingCredit[]>> fundingCreditHandler,
-            Action<BitfinexSocketEvent<BitfinexFunding[]>> fundingLoanHandler);
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFundingOffer>>> fundingOfferHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFundingCredit>>> fundingCreditHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFunding>>> fundingLoanHandler);
 
         /// <summary>
         /// Subscribe to funding information updates
@@ -162,9 +162,9 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
         /// <returns></returns>
         Task<CallResult<UpdateSubscription>> SubscribeToFundingUpdatesAsync(
-            Action<BitfinexSocketEvent<BitfinexFundingOffer[]>> fundingOfferHandler,
-            Action<BitfinexSocketEvent<BitfinexFundingCredit[]>> fundingCreditHandler,
-            Action<BitfinexSocketEvent<BitfinexFunding[]>> fundingLoanHandler);
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFundingOffer>>> fundingOfferHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFundingCredit>>> fundingCreditHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFunding>>> fundingLoanHandler);
 
         /// <summary>
         /// Places a new order
@@ -257,28 +257,28 @@ namespace Bitfinex.Net.Interfaces
         /// </summary>
         /// <param name="groupOrderIds">The group ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        CallResult<bool> CancelOrdersByGroupIds(long[] groupOrderIds);
+        CallResult<bool> CancelOrdersByGroupIds(IEnumerable<long> groupOrderIds);
 
         /// <summary>
         /// Cancels multiple orders based on their groupIds
         /// </summary>
         /// <param name="groupOrderIds">The group ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(long[] groupOrderIds);
+        Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderIds);
 
         /// <summary>
         /// Cancels multiple orders based on their order ids
         /// </summary>
         /// <param name="orderIds">The order ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        CallResult<bool> CancelOrders(long[] orderIds);
+        CallResult<bool> CancelOrders(IEnumerable<long> orderIds);
 
         /// <summary>
         /// Cancels multiple orders based on their order ids
         /// </summary>
         /// <param name="orderIds">The order ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        Task<CallResult<bool>> CancelOrdersAsync(long[] orderIds);
+        Task<CallResult<bool>> CancelOrdersAsync(IEnumerable<long> orderIds);
 
         /// <summary>
         /// Cancels multiple orders based on their clientOrderIds

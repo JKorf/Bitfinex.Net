@@ -12,9 +12,8 @@ namespace Bitfinex.Net.Objects
         /// <summary>
         /// Create new client options
         /// </summary>
-        public BitfinexClientOptions()
+        public BitfinexClientOptions(): base("https://api.bitfinex.com")
         {
-            BaseAddress = "https://api.bitfinex.com";
         }
     }
 
@@ -26,10 +25,9 @@ namespace Bitfinex.Net.Objects
         /// <summary>
         /// Create new socket options
         /// </summary>
-        public BitfinexSocketClientOptions()
+        public BitfinexSocketClientOptions(): base("wss://api.bitfinex.com/ws/2")
         {
             SocketSubscriptionsCombineTarget = 10;
-            BaseAddress = "wss://api.bitfinex.com/ws/2";
             SocketNoDataTimeout = TimeSpan.FromSeconds(30);
         }
     }
@@ -42,12 +40,12 @@ namespace Bitfinex.Net.Objects
         /// <summary>
         /// The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.
         /// </summary>
-        public IBitfinexSocketClient SocketClient { get; }
+        public IBitfinexSocketClient? SocketClient { get; }
 
         /// <summary>
         /// </summary>
         /// <param name="client">The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.</param>
-        public BitfinexOrderBookOptions(IBitfinexSocketClient client = null) : base("Bitfinex", false)
+        public BitfinexOrderBookOptions(IBitfinexSocketClient? client = null) : base("Bitfinex", false)
         {
             SocketClient = client;
         }

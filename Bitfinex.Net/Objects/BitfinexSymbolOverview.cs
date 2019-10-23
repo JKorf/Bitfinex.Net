@@ -7,13 +7,13 @@ namespace Bitfinex.Net.Objects
     /// Market overview
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexMarketOverviewRest
+    public class BitfinexSymbolOverview
     {
         /// <summary>
         /// The symbol
         /// </summary>
         [ArrayProperty(0)]
-        public string Symbol { get; set; }
+        public string Symbol { get; set; } = "";
         /// <summary>
         /// The best bid price
         /// </summary>

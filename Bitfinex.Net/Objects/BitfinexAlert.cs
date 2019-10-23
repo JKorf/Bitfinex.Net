@@ -13,19 +13,19 @@ namespace Bitfinex.Net.Objects
         /// The key of the alert
         /// </summary>
         [ArrayProperty(0)]
-        public string AlertKey { get; set; }
+        public string AlertKey { get; set; } = "";
 
         /// <summary>
         /// The type of the alert
         /// </summary>
         [ArrayProperty(1)]
-        public string AlertType { get; set; }
+        public string AlertType { get; set; } = "";
 
         /// <summary>
         /// The symbol the alert is for
         /// </summary>
         [ArrayProperty(2)]
-        public string Symbol { get; set; }
+        public string Symbol { get; set; } = "";
 
         /// <summary>
         /// The price of the alert

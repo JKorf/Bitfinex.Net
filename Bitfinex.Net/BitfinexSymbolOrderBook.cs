@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
@@ -16,7 +17,6 @@ namespace Bitfinex.Net
     public class BitfinexSymbolOrderBook: SymbolOrderBook
     {
         private readonly IBitfinexSocketClient socketClient;
-        private bool initialSnapshotDone;
         private readonly Precision precision;
         private readonly int limit;
 
@@ -27,8 +27,9 @@ namespace Bitfinex.Net
         /// <param name="precisionLevel">The precision level of the order book</param>
         /// <param name="limit">The limit of entries in the order book, either 25 or 100</param>
         /// <param name="options">Options for the order book</param>
-        public BitfinexSymbolOrderBook(string symbol, Precision precisionLevel, int limit, BitfinexOrderBookOptions options = null) : base(symbol, options ?? new BitfinexOrderBookOptions())
+        public BitfinexSymbolOrderBook(string symbol, Precision precisionLevel, int limit, BitfinexOrderBookOptions? options = null) : base(symbol, options ?? new BitfinexOrderBookOptions())
         {
+            symbol.ValidateBitfinexSymbol();
             socketClient = options?.SocketClient ?? new BitfinexSocketClient();
 
             this.limit = limit;
@@ -39,68 +40,65 @@ namespace Bitfinex.Net
         protected override async Task<CallResult<UpdateSubscription>> DoStart()
         {
             if(precision == Precision.R0)
-                return new CallResult<UpdateSubscription>(null, new ArgumentError("Invalid precision: R0"));
+                throw new ArgumentException("Invalid precision: R0");
 
             var result = await socketClient.SubscribeToBookUpdatesAsync(Symbol, precision, Frequency.Realtime, limit, ProcessUpdate).ConfigureAwait(false);
-            if (!result.Success)
+            if (!result)
                 return result;
 
             Status = OrderBookStatus.Syncing;
 
-            while (!initialSnapshotDone)
-                await Task.Delay(10).ConfigureAwait(false); // Wait for first update to fill the order book
-
-            return result;
+            var setResult = await WaitForSetOrderBook(10000).ConfigureAwait(false);
+            return setResult ? result : new CallResult<UpdateSubscription>(null, setResult.Error);
         }
 
         /// <inheritdoc />
         protected override void DoReset()
         {
-            initialSnapshotDone = false;
         }
 
-        private void ProcessUpdate(BitfinexOrderBookEntry[] entries)
+        private void ProcessUpdate(IEnumerable<BitfinexOrderBookEntry> entries)
         {
-            if (!initialSnapshotDone)
+            if (!bookSet)
             {
-                var asks = entries.Where(e => e.Quantity < 0).ToList();
-                var bids = entries.Where(e => e.Quantity > 0).ToList();
-                foreach (var entry in asks)
+                var askEntries = entries.Where(e => e.Quantity < 0).ToList();
+                var bidEntries = entries.Where(e => e.Quantity > 0).ToList();
+                foreach (var entry in askEntries)
                     entry.Quantity = -entry.Quantity; // Bitfinex sends the asks as negative numbers, invert them
                 
-                SetInitialOrderBook(DateTime.UtcNow.Ticks, asks, bids);
-                initialSnapshotDone = true;
+                SetInitialOrderBook(DateTime.UtcNow.Ticks, bidEntries, askEntries);
             }
             else
             {
-                var processEntries = new List<ProcessEntry>();
+                var askEntries = new List<ISymbolOrderBookEntry>();
+                var bidEntries = new List<ISymbolOrderBookEntry>();
                 foreach (var entry in entries)
                 {
                     if (entry.Count == 0)
                     {
-                        processEntries.Add(entry.Quantity == -1
-                            ? new ProcessEntry(OrderBookEntryType.Ask, new OrderBookEntry(entry.Price, 0))
-                            : new ProcessEntry(OrderBookEntryType.Bid, new OrderBookEntry(entry.Price, 0)));
+                        var bookEntry = new BitfinexOrderBookEntry() { Price = entry.Price, Quantity = 0 };
+                        if (entry.Quantity == -1)
+                            askEntries.Add(bookEntry);
+                        else
+                            bidEntries.Add(bookEntry);
                     }
                     else
                     {
-                        processEntries.Add(entry.Quantity < 0
-                            ? new ProcessEntry(OrderBookEntryType.Ask, new OrderBookEntry(entry.Price, -entry.Quantity))
-                            : new ProcessEntry(OrderBookEntryType.Bid, entry));
+                        if (entry.Quantity < 0)
+                            askEntries.Add(new BitfinexOrderBookEntry() { Price = entry.Price, Quantity = -entry.Quantity });
+                        else
+                            bidEntries.Add(entry);
                     }
                 }
 
-                UpdateOrderBook(DateTime.UtcNow.Ticks, DateTime.UtcNow.Ticks, processEntries);
+                UpdateOrderBook(DateTime.UtcNow.Ticks, bidEntries, askEntries);
             }
         }
 
         /// <inheritdoc />
         protected override async Task<CallResult<bool>> DoResync()
         {
-            while (!initialSnapshotDone)
-                await Task.Delay(10).ConfigureAwait(false); // Wait for first update to fill the order book
-
-            return new CallResult<bool>(true, null);
+            return await WaitForSetOrderBook(10000).ConfigureAwait(false);
         }
 
         /// <summary>

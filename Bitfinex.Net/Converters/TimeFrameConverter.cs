@@ -13,7 +13,7 @@ namespace Bitfinex.Net.Converters
         {
             new KeyValuePair<TimeFrame, string>(TimeFrame.OneMinute, "1m"),
             new KeyValuePair<TimeFrame, string>(TimeFrame.FiveMinute, "5m"),
-            new KeyValuePair<TimeFrame, string>(TimeFrame.FiveteenMinute, "15m"),
+            new KeyValuePair<TimeFrame, string>(TimeFrame.FifteenMinute, "15m"),
             new KeyValuePair<TimeFrame, string>(TimeFrame.ThirtyMinute, "30m"),
             new KeyValuePair<TimeFrame, string>(TimeFrame.OneHour, "1h"),
             new KeyValuePair<TimeFrame, string>(TimeFrame.ThreeHour, "3h"),

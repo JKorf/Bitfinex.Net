@@ -20,7 +20,7 @@ namespace Bitfinex.Net.Objects
         /// the currency
         /// </summary>
         [ArrayProperty(1)]
-        public string Currency { get; set; }
+        public string Currency { get; set; } = "";
 
         /// <summary>
         /// The current balance

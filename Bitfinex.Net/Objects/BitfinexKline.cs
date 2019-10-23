@@ -5,13 +5,13 @@ using Newtonsoft.Json;
 namespace Bitfinex.Net.Objects
 {
     /// <summary>
-    /// Candle info
+    /// Kline info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexCandle
+    public class BitfinexKline
     {
         /// <summary>
-        /// The timestamp of the candle
+        /// The timestamp of the kline
         /// </summary>
         [ArrayProperty(0), JsonConverter(typeof(TimestampConverter))]
         public DateTime Timestamp { get; set; }
@@ -36,7 +36,7 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(4)]
         public decimal Low { get; set; }
         /// <summary>
-        /// The volume for this candle
+        /// The volume for this kline
         /// </summary>
         [ArrayProperty(5)]
         public decimal Volume { get; set; }

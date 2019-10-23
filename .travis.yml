@@ -1,8 +1,7 @@
 language: csharp
 mono: none
 solution: Bitfinex.Net.sln
-dotnet: 2.0.0
-dist: xenial
+dotnet: 3.0
 script:
- - dotnet build Bitfinex.Net/Bitfinex.Net.csproj --framework "netstandard2.0"
+ - dotnet build Bitfinex.Net/Bitfinex.Net.csproj --framework "netstandard2.1"
  - dotnet test Bitfinex.Net.UnitTests/Bitfinex.Net.UnitTests.csproj

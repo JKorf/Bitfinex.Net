@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
@@ -17,7 +18,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// Trade volume data
         /// </summary>
         [JsonProperty("trade_vol_30d")]
-        public Bitfinex30DaySummaryVolumeEntry[] TradeVolume { get; set; }
+        public IEnumerable<Bitfinex30DaySummaryVolumeEntry> TradeVolume { get; set; } = new List<Bitfinex30DaySummaryVolumeEntry>();
         /// <summary>
         /// Current maker fee
         /// </summary>
@@ -39,37 +40,37 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// The currency
         /// </summary>
         [JsonProperty("curr")]
-        public string Currency { get; set; }
+        public string Currency { get; set; } = "";
 
         /// <summary>
         /// The volume
         /// </summary>
         [JsonProperty("vol")]
-        public string Volume { get; set; }
+        public string Volume { get; set; } = "";
         /// <summary>
         /// The maker volume
         /// </summary>
         [JsonProperty("vol_maker")]
-        public string VolumeMaker { get; set; }
+        public string VolumeMaker { get; set; } = "";
         /// <summary>
         /// The volume on Bitfinex
         /// </summary>
         [JsonProperty("vol_BFX")]
-        public string VolumeBFX { get; set; }
+        public string VolumeBFX { get; set; } = "";
         /// <summary>
         /// The maker volume on Bitfinex
         /// </summary>
         [JsonProperty("vol_BFX_maker")]
-        public string VolumeBFXMaker { get; set; }
+        public string VolumeBFXMaker { get; set; } = "";
         /// <summary>
         /// The volume on EthFinex
         /// </summary>
         [JsonProperty("vol_ETHFX")]
-        public string VolumeETHFX { get; set; }
+        public string VolumeETHFX { get; set; } = "";
         /// <summary>
         /// The maker volume on EthFinex
         /// </summary>
         [JsonProperty("vol_ETHFX_maker")]
-        public string VolumeETHFXMaker { get; set; }
+        public string VolumeETHFXMaker { get; set; } = "";
     }
 }

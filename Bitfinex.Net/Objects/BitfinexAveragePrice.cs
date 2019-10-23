@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects
     /// Average price info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexMarketAveragePrice
+    public class BitfinexAveragePrice
     {
         /// <summary>
         /// The average price

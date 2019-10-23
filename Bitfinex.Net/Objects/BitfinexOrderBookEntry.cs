@@ -1,5 +1,5 @@
 ﻿using CryptoExchange.Net.Converters;
-using CryptoExchange.Net.OrderBook;
+using CryptoExchange.Net.Interfaces;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects

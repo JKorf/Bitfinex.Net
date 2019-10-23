@@ -11,7 +11,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// Result string
         /// </summary>
-        public string Result { get; set; }
+        public string Result { get; set; } = "";
     }
 
     /// <summary>
@@ -27,6 +27,6 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// Additional info
         /// </summary>
-        public string Message { get; set; }
+        public string Message { get; set; } = "";
     }
 }

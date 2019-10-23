@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// The currency of the offer
         /// </summary>
-        public string Currency { get; set; }
+        public string Currency { get; set; } = "";
         /// <summary>
         /// The rate of the offer
         /// </summary>
