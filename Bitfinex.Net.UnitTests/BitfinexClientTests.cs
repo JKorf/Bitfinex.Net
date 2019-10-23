@@ -864,7 +864,7 @@ namespace Bitfinex.Net.UnitTests
         public void ReceivingHttpError_Should_ResultInErrorResult()
         {
             // arrange
-            var client = TestHelpers.CreateResponseClient("Error message", null, System.Net.HttpStatusCode.BadRequest);
+            var client = TestHelpers.CreateResponseClient("Error message", null, HttpStatusCode.BadRequest);
 
             // act
             var result = client.GetCurrencies();
@@ -953,9 +953,9 @@ namespace Bitfinex.Net.UnitTests
         public void CheckValidBitfinexSymbol(string symbol, bool isValid)
         {
             if (isValid)
-                Assert.DoesNotThrow(() => symbol.ValidateBitfinexSymbol());
+                Assert.DoesNotThrow(symbol.ValidateBitfinexSymbol);
             else
-                Assert.Throws(typeof(ArgumentException), () => symbol.ValidateBitfinexSymbol());
+                Assert.Throws(typeof(ArgumentException), symbol.ValidateBitfinexSymbol);
         }
     }
 }

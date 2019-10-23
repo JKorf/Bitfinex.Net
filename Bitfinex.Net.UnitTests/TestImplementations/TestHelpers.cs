@@ -14,7 +14,6 @@ using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
-using CryptoExchange.Net.Requests;
 using Moq;
 using Newtonsoft.Json;
 
@@ -64,7 +63,7 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
 
         public static BitfinexSocketClient CreateAuthenticatedSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
         {
-            return (BitfinexSocketClient)CreateSocketClient(socket, options ?? new BitfinexSocketClientOptions() { ApiCredentials = new ApiCredentials("Test", "Test"), LogVerbosity = LogVerbosity.Debug});
+            return CreateSocketClient(socket, options ?? new BitfinexSocketClientOptions() { ApiCredentials = new ApiCredentials("Test", "Test"), LogVerbosity = LogVerbosity.Debug});
         }
 
         public static BitfinexSocketClient CreateSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
