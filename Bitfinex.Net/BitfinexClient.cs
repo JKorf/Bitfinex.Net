@@ -1293,8 +1293,7 @@ namespace Bitfinex.Net
             decimal? ocoSellPrice = null,
             CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
-
+            symbol.ValidateNotNull(nameof(symbol));
             var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },
