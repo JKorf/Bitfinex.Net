@@ -91,6 +91,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.0.1 - 24 Oct 2019
+	* Fixed validation in PlaceOrder
+
 * Version 3.0.0 - 23 Oct 2019
 	* See CryptoExchange.Net 3.0 release notes
 	* Added input validation
