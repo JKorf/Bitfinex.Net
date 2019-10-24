@@ -25,7 +25,7 @@
 	* Renamed Market -> Symbol
 	* Renamed GetWallets -> GetBalances</PackageReleaseNotes>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+  <PropertyGroup>
     <DocumentationFile>Bitfinex.Net.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
