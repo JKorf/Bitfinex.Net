@@ -1603,7 +1603,7 @@ namespace Bitfinex.Net
             var parameters = new Dictionary<string, object>
             {
                 { "position_id", id },
-                { "amount", amount }
+                { "amount", amount.ToString(CultureInfo.InvariantCulture) }
             };
             return await SendRequest<BitfinexDepositAddress>(GetUrl(ClaimPositionEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
