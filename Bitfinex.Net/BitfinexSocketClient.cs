@@ -764,7 +764,8 @@ namespace Bitfinex.Net
                     return false;
                 }
 
-                if (((string) notificationData[6]).ToLower() == "error")
+                var statusString = ((string)notificationData[6]).ToLower();
+                if (statusString == "error")
                 {
                     if (bfRequest.QueryType == BitfinexEventType.OrderNew && notificationType == BitfinexEventType.OrderNewRequest)
                     {
@@ -802,6 +803,32 @@ namespace Bitfinex.Net
                     }
                 }
 
+                if (notificationType == BitfinexEventType.OrderNewRequest
+                || notificationType == BitfinexEventType.OrderUpdateRequest
+                || notificationType == BitfinexEventType.OrderCancelRequest)
+                {
+                    if (bfRequest.QueryType == BitfinexEventType.OrderNew
+                    || bfRequest.QueryType == BitfinexEventType.OrderUpdate
+                    || bfRequest.QueryType == BitfinexEventType.OrderCancel)
+                    {
+                        var orderData = notificationData[4];
+                        var dataOrderId = orderData[0].ToString();
+                        var dataOrderClientId = orderData[2].ToString();
+                        if (dataOrderId == bfRequest.Id || dataOrderClientId == bfRequest.Id)
+                        {
+                            var desResult = Deserialize<T>(orderData);
+                            if (!desResult)
+                            {
+                                callResult = new CallResult<T>(default, desResult.Error);
+                                return true;
+                            }
+
+                            callResult = new CallResult<T>(desResult.Data, null);
+                            return true;
+                        }
+                    }
+                }
+
                 if (notificationType == BitfinexEventType.OrderCancelMultiRequest)
                 {
                     callResult = new CallResult<T>(Deserialize<T>(JToken.Parse("true")).Data, null);
@@ -813,33 +840,6 @@ namespace Bitfinex.Net
             {
                 callResult = new CallResult<T>(Deserialize<T>(JToken.Parse("true")).Data, null);
                 return true;
-            }
-
-
-            if (eventType == BitfinexEventType.OrderNew
-                || eventType == BitfinexEventType.OrderUpdate
-                || eventType == BitfinexEventType.OrderCancel)
-            {
-                if (bfRequest.QueryType == BitfinexEventType.OrderNew
-                || bfRequest.QueryType == BitfinexEventType.OrderUpdate
-                || bfRequest.QueryType == BitfinexEventType.OrderCancel)
-                {
-                    var orderData = array[2];
-                    var dataOrderId = orderData[0].ToString();
-                    var dataOrderClientId = orderData[2].ToString();
-                    if (dataOrderId == bfRequest.Id || dataOrderClientId == bfRequest.Id)
-                    {
-                        var desResult = Deserialize<T>(orderData);
-                        if (!desResult)
-                        {
-                            callResult = new CallResult<T>(default, desResult.Error);
-                            return true;
-                        }
-
-                        callResult = new CallResult<T>(desResult.Data, null);
-                        return true;
-                    }
-                }
             }
 
             return false;

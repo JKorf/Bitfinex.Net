@@ -1305,7 +1305,7 @@ namespace Bitfinex.Net
             };
             parameters.AddOptionalParameter("is_hidden", hidden);
             parameters.AddOptionalParameter("is_postonly", postOnly);
-            parameters.AddOptionalParameter("use_all_available", useAllAvailable == true ? "1" : null);
+            parameters.AddOptionalParameter("use_all_available", useAllAvailable == true ? 1 : (int?)null);
             parameters.AddOptionalParameter(side == OrderSide.Buy ? "buy_stoplimit_price" : "sell_stoplimit_price", stopLimitPrice?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("ocoorder", ocoOrder);
             parameters.AddOptionalParameter("buy_price_oco", ocoBuyPrice);
