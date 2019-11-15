@@ -580,7 +580,7 @@ namespace Bitfinex.Net.UnitTests
             var placeTask = client.PlaceOrderAsync(OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
-            socket.InvokeMessage($"[0, \"on\", {JsonConvert.SerializeObject(expected)}]");
+            socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
             var result = placeTask.Result;
 
             // assert
@@ -653,7 +653,7 @@ namespace Bitfinex.Net.UnitTests
             var placeTask = client.PlaceOrderAsync(OrderType.ExchangeMarket, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
-            socket.InvokeMessage($"[0, \"oc\", {JsonConvert.SerializeObject(expected)}]");
+            socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
             var result = placeTask.Result;
 
             // assert
@@ -662,7 +662,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public void PlacingAnFOKOrder_Should_SucceedIfCanceledResponse()
+        public void PlacingAnFOKOrder_Should_SucceedIfSuccessResponse()
         {
             // arrange
             var socket = new TestSocket();
@@ -683,7 +683,7 @@ namespace Bitfinex.Net.UnitTests
             var placeTask = client.PlaceOrderAsync(OrderType.ExchangeFillOrKill, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
-            socket.InvokeMessage($"[0, \"oc\", {JsonConvert.SerializeObject(expected)}]");
+            socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
             var result = placeTask.Result;
 
             // assert
