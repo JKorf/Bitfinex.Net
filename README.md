@@ -91,6 +91,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.0.3 - 15 Nov 2019
+    * Fixed confirmations websocket order placing/updating/cancelation
+	
 * Version 3.0.2 - 12 Nov 2019
     * Fixed Trailing-Stop order type, fixed ClaimPosition parameter
 
