@@ -15,6 +15,6 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("authNonce")]
         public string Nonce { get; set; } = "";
         [JsonProperty("filter")]
-        public string[] Filter { get; set; } = new string[0];
+        public string[]? Filter { get; set; }
     }
 }
