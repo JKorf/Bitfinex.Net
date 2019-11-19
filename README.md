@@ -91,6 +91,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.0.5 - 19 Nov 2019
+    * Fixed symbol validation for dusk
+
 * Version 3.0.4 - 19 Nov 2019
     * Fixed authenticated websocket subscriptions
 
