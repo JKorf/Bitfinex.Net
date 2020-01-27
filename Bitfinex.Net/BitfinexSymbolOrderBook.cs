@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
+using CryptoExchange.Net;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
@@ -41,7 +42,7 @@ namespace Bitfinex.Net
         {
             if(precision == Precision.R0)
                 throw new ArgumentException("Invalid precision: R0");
-
+            
             var result = await socketClient.SubscribeToBookUpdatesAsync(Symbol, precision, Frequency.Realtime, limit, ProcessUpdate).ConfigureAwait(false);
             if (!result)
                 return result;

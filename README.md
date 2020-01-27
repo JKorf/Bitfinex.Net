@@ -57,6 +57,10 @@ Implementations from third parties:
 <br />
 <a href="https://github.com/ridicoulous/LiquidQuoine.Net">Liquid</a>
 </td>
+<td><a href="https://github.com/burakoner/OKEx.Net"><img src="https://github.com/rburakoner/OKEx.Net/blob/master/Icon/icon.png?raw=true"></a>
+<br />
+<a href="https://github.com/burakoner/OKEx.Net">OKEx</a>
+</td>
 </tr>
 </table>
 
@@ -91,6 +95,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.0.6 - 27 Jan 2020
+    * Updated CryptoExchange.Net
+
 * Version 3.0.5 - 19 Nov 2019
     * Fixed symbol validation for dusk
 
