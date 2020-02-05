@@ -635,7 +635,8 @@ namespace Bitfinex.Net
             {
                 case 20051:
                     log.Write(LogVerbosity.Info, $"Code {code} received, reconnecting socket");
-                    connection.Socket.Close(); // Closing it via socket will automatically reconnect
+                    connection.PausedActivity = true; // Prevent new operations to be send
+                    var closeTask = connection.Socket.Close(); // Closing it via socket will automatically reconnect
                     break;
                 case 20060:
                     log.Write(LogVerbosity.Info, $"Code {code} received, entering maintenance mode");
@@ -643,7 +644,6 @@ namespace Bitfinex.Net
                     break;
                 case 20061:
                     log.Write(LogVerbosity.Info, $"Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
-                    connection.PausedActivity = false;
                     connection.Socket.Close(); // Closing it via socket will automatically reconnect
                     break;
                 default:

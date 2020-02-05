@@ -22,7 +22,7 @@ namespace Binance.Net.UnitTests.TestImplementations
         public Func<string, string> DataInterpreterString { get; set; }
         public Func<byte[], string> DataInterpreterBytes { get; set; }
         public DateTime? DisconnectTime { get; set; }
-        public string Url { get; }
+        public string Url { get; set; }
         public WebSocketState SocketState { get; }
         public bool IsClosed => !Connected;
         public bool IsOpen => Connected;
@@ -33,11 +33,15 @@ namespace Binance.Net.UnitTests.TestImplementations
         public string Origin { get; set; }
         public bool Reconnecting { get; set; }
 
-        public Task<bool> Connect()
+        public TimeSpan CloseTime { get; set; }
+        public TimeSpan OpenTime { get; set; }
+
+        public async Task<bool> Connect()
         {
+            await Task.Delay(OpenTime);
             Connected = CanConnect;
             OnOpen?.Invoke();
-            return Task.FromResult(CanConnect);
+            return true;
         }
 
         public void Send(string data)
@@ -51,12 +55,13 @@ namespace Binance.Net.UnitTests.TestImplementations
             
         }
 
-        public Task Close()
+        public async Task Close()
         {
+            await Task.Delay(CloseTime);
+
             Connected = false;
             DisconnectTime = DateTime.UtcNow;
             OnClose?.Invoke();
-            return Task.FromResult(0);
         }
 
         public void SetProxy(string host, int port)

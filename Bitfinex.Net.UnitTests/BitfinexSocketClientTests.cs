@@ -12,6 +12,8 @@ using Binance.Net.UnitTests.TestImplementations;
 using Bitfinex.Net.UnitTests.TestImplementations;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Logging;
+using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Sockets;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -733,6 +735,54 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.IsTrue(triggered);
+        }
+
+        [Test]
+        public async Task ReceivingAReconnectMessage_Should_PreventOperationsBeforeReconnect()
+        {
+            // arrange
+            CallResult<UpdateSubscription> subResultWhenPaused = null;
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            socket.CloseTime = TimeSpan.FromMilliseconds(1000);
+            socket.OpenTime = TimeSpan.FromMilliseconds(100);
+            socket.Url = "wss://api.bitfinex.com/ws/2";
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket, new BitfinexSocketClientOptions()
+            {
+                LogVerbosity = LogVerbosity.Debug,
+                ReconnectInterval = TimeSpan.FromMilliseconds(10)
+            });
+
+            var rstEvent = new ManualResetEvent(false);
+            var subTask = client.SubscribeToKlineUpdatesAsync("tBTCUSD", TimeFrame.FiveMinute, data => { });
+            socket.OnOpen += async () =>
+            {
+                await Task.Delay(10);
+                socket.InvokeMessage(new CandleSubscriptionResponse()
+                {
+                    Channel = "candles",
+                    Event = "subscribed",
+                    ChannelId = 1,
+                    Symbol = "tBTCUSD",
+                    Key = "trade:" + JsonConvert.SerializeObject(TimeFrame.FiveMinute, new TimeFrameConverter(false)) +
+                          ":tBTCUSD"
+                });
+            };
+            var subResult = await subTask;
+
+            subResult.Data.ActivityPaused += async () =>
+            {
+                subResultWhenPaused = await client.SubscribeToKlineUpdatesAsync("tBTCUSD", TimeFrame.FiveMinute, data => { });
+                rstEvent.Set();
+            };
+
+            // act
+            socket.InvokeMessage("{\"event\":\"info\", \"code\": 20051}");
+
+            rstEvent.WaitOne(1000);
+
+            // assert
+            Assert.IsTrue(subResultWhenPaused?.Error?.Message.Contains("Socket is paused"));
         }
     }
 }
