@@ -17,7 +17,7 @@ namespace Bitfinex.Net
             if (string.IsNullOrEmpty(symbolString))
                 throw new ArgumentException("Symbol is not provided");
 
-            if (!Regex.IsMatch(symbolString, "^([t]([A-Z|:]{6,8}))$") && !Regex.IsMatch(symbolString, "^([f]([A-Z]{3,4}))$"))
+            if (!Regex.IsMatch(symbolString, "^([t]([A-Z|:]{6,}))$") && !Regex.IsMatch(symbolString, "^([f]([A-Z]{3,}))$"))
                 throw new ArgumentException($"{symbolString} is not a valid Bitfinex symbol. Should be [t][QuoteCurrency][BaseCurrency] for trading pairs " +
                      "or [f][Currency] for margin symbols, e.g. tBTCUSD or fUSD");
         }
