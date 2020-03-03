@@ -95,6 +95,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.0.9 - 03 Mar 2020
+    * Fixed symbol regex allowing numbers
+
 * Version 3.0.8 - 03 Mar 2020
     * Updated CryptoExchange
 
