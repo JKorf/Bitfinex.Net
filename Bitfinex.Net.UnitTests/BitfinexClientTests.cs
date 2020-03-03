@@ -938,17 +938,13 @@ namespace Bitfinex.Net.UnitTests
         [TestCase("tNANOBTC", true)]
         [TestCase("tETHBTC", true)]
         [TestCase("dETHBTC", false)]
-        [TestCase("fETHBTC", false)]
         [TestCase("tBEETC", false)]
-        [TestCase("tNANOUSDTD", false)]
-        [TestCase("fNANOUSDTD", false)]
         [TestCase("BTC-USDT", false)]
         [TestCase("BTC-USD", false)]
         [TestCase("tBTC-USD", false)]
         [TestCase("fBTC-USD", false)]
         [TestCase("fBTC", true)]
         [TestCase("fNANO", true)]
-        [TestCase("fNANOD", false)]
         [TestCase("fNA", false)]
         public void CheckValidBitfinexSymbol(string symbol, bool isValid)
         {
