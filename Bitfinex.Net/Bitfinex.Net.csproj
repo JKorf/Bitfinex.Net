@@ -20,7 +20,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <DocumentationFile>Bitfinex.Net.xml</DocumentationFile>
-    <UserSecretsId>c0aa3626-9c50-4132-9c16-d01805a879b5</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <None Include="icon\icon.png" Pack="true" PackagePath="\" />
