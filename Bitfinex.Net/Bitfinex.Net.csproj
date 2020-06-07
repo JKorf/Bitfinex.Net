@@ -7,7 +7,7 @@
   <PropertyGroup>
     <PackageId>Bitfinex.Net</PackageId>
     <Authors>JKorf</Authors>
-    <PackageVersion>3.0.9</PackageVersion>
+    <PackageVersion>3.0.10</PackageVersion>
     <Description>Bitfinex.Net is a .Net wrapper for the Bitfinex API. It includes all features the API provides, REST API and Websocket, using clear and readable objects including but not limited to Reading market info, Placing and managing orders and Reading balances and funds</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Bitfinex Bitfinex.Net C# .Net CryptoCurrency Exchange API wrapper</PackageTags>
@@ -16,15 +16,16 @@
     <PackageIcon>icon.png</PackageIcon>
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>3.0.9 - Fixed symbol regex allowing numbers</PackageReleaseNotes>
+    <PackageReleaseNotes>3.0.10 - Fixed issue where the BitfinexSymbolOrderBook desynced </PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup>
     <DocumentationFile>Bitfinex.Net.xml</DocumentationFile>
+    <UserSecretsId>c0aa3626-9c50-4132-9c16-d01805a879b5</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <None Include="icon\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CryptoExchange.Net" Version="3.0.6" />
+    <PackageReference Include="CryptoExchange.Net" Version="3.0.9" />
   </ItemGroup>
 </Project>
