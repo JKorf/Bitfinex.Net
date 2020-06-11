@@ -363,7 +363,7 @@ namespace Bitfinex.Net
             if (clientOrderId == null)
                 clientOrderId = GenerateClientOrderId();
 
-            var query = new BitfinexSocketQuery(clientOrderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderNew, new BitfinexNewOrder
+            var query = new BitfinexSocketQuery(clientOrderId.ToString(), BitfinexEventType.OrderNew, new BitfinexNewOrder
             {
                 Amount = amount,
                 OrderType = type,
