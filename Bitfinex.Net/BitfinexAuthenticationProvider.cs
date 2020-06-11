@@ -43,7 +43,7 @@ namespace Bitfinex.Net
 
                 result.Add("X-BFX-APIKEY", Credentials.Key.GetString());
                 result.Add("X-BFX-PAYLOAD", payload);
-                result.Add("X-BFX-SIGNATURE", signedData.ToLower());
+                result.Add("X-BFX-SIGNATURE", signedData.ToLower(CultureInfo.InvariantCulture));
             }
             else if (uri.Contains("v2"))
             {
@@ -54,7 +54,7 @@ namespace Bitfinex.Net
 
                 result.Add("bfx-apikey", Credentials.Key.GetString());
                 result.Add("bfx-nonce", n);
-                result.Add("bfx-signature", signedData.ToLower());
+                result.Add("bfx-signature", signedData.ToLower(CultureInfo.InvariantCulture));
             }
 
             return result;

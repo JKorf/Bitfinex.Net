@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
@@ -43,13 +44,13 @@ namespace Bitfinex.Net.Objects.SocketObjects
             if (responseMessage["symbol"] == null)
                 return false;
 
-            var symbol = ((string) responseMessage["symbol"]).ToLower();
-            if (symbol != Symbol.ToLower())
+            var symbol = ((string) responseMessage["symbol"]).ToLower(CultureInfo.InvariantCulture);
+            if (symbol != Symbol.ToLower(CultureInfo.InvariantCulture))
             {
                 if (symbol.StartsWith("t"))
                 {
                     // Check if 
-                    if(symbol.Substring(1) != Symbol.ToLower())
+                    if(symbol.Substring(1) != Symbol.ToLower(CultureInfo.InvariantCulture))
                         return false;
                 }
                 else

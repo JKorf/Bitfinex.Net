@@ -222,7 +222,7 @@ namespace Bitfinex.Net
             symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 5000);
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
@@ -254,7 +254,7 @@ namespace Bitfinex.Net
             limit?.ValidateIntValues("limit", 25, 100);
 
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("len", limit?.ToString());
+            parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
             var prec = JsonConvert.SerializeObject(precision, new PrecisionConverter(false));
 
             return await SendRequest<IEnumerable<BitfinexOrderBookEntry>>(GetUrl(FillPathParameter(OrderBookEndpoint, symbol, prec), ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
@@ -355,7 +355,7 @@ namespace Bitfinex.Net
             limit?.ValidateIntBetween(nameof(limit), 1, 5000);
 
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
@@ -397,7 +397,7 @@ namespace Bitfinex.Net
                 { "symbol", symbol },
                 { "amount", amount.ToString(CultureInfo.InvariantCulture) }
             };
-            parameters.AddOptionalParameter("period", period?.ToString());
+            parameters.AddOptionalParameter("period", period?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("rate_limit", rateLimit?.ToString(CultureInfo.InvariantCulture));
 
             return await SendRequest<BitfinexAveragePrice>(GetUrl(MarketAverageEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters).ConfigureAwait(false);
@@ -495,7 +495,7 @@ namespace Bitfinex.Net
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -522,7 +522,7 @@ namespace Bitfinex.Net
         {
             symbol.ValidateBitfinexSymbol();
 
-            return await SendRequest<IEnumerable<BitfinexTradeDetails>>(GetUrl(FillPathParameter(OrderTradesEndpoint, symbol, orderId.ToString()), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await SendRequest<IEnumerable<BitfinexTradeDetails>>(GetUrl(FillPathParameter(OrderTradesEndpoint, symbol, orderId.ToString(CultureInfo.InvariantCulture)), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -552,7 +552,7 @@ namespace Bitfinex.Net
             limit?.ValidateIntBetween(nameof(limit), 1, 1000);
 
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -598,7 +598,7 @@ namespace Bitfinex.Net
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 50);
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -633,7 +633,7 @@ namespace Bitfinex.Net
             {
                 { "id", ids }
             };
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -686,7 +686,7 @@ namespace Bitfinex.Net
             symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -739,7 +739,7 @@ namespace Bitfinex.Net
             symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -792,7 +792,7 @@ namespace Bitfinex.Net
             symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -825,7 +825,7 @@ namespace Bitfinex.Net
             symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
@@ -1063,7 +1063,7 @@ namespace Bitfinex.Net
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("limit", limit?.ToString());
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
