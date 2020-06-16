@@ -19,7 +19,6 @@ namespace Bitfinex.Net
     {
         private readonly IBitfinexSocketClient socketClient;
         private readonly Precision precision;
-        private readonly int limit;
 
         /// <summary>
         /// Create a new order book instance
@@ -33,7 +32,7 @@ namespace Bitfinex.Net
             symbol.ValidateBitfinexSymbol();
             socketClient = options?.SocketClient ?? new BitfinexSocketClient();
 
-            this.limit = limit;
+            Levels = limit;
             precision = precisionLevel;
         }
 
@@ -43,7 +42,7 @@ namespace Bitfinex.Net
             if(precision == Precision.R0)
                 throw new ArgumentException("Invalid precision: R0");
             
-            var result = await socketClient.SubscribeToBookUpdatesAsync(Symbol, precision, Frequency.Realtime, limit, ProcessUpdate).ConfigureAwait(false);
+            var result = await socketClient.SubscribeToBookUpdatesAsync(Symbol, precision, Frequency.Realtime, Levels.Value, ProcessUpdate).ConfigureAwait(false);
             if (!result)
                 return result;
 
