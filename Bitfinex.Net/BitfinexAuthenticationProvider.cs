@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Objects;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net
@@ -24,7 +26,7 @@ namespace Bitfinex.Net
             encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(credentials.Secret.GetString()));
         }
 
-        public override Dictionary<string, string> AddAuthenticationToHeaders(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed)
+        public override Dictionary<string, string> AddAuthenticationToHeaders(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, PostParameters postParameterPosition, ArrayParametersSerialization arraySerialization)
         {
             if(Credentials.Key == null)
                 throw new ArgumentException("ApiKey/Secret needed");
@@ -42,7 +44,7 @@ namespace Bitfinex.Net
 
                 result.Add("X-BFX-APIKEY", Credentials.Key.GetString());
                 result.Add("X-BFX-PAYLOAD", payload);
-                result.Add("X-BFX-SIGNATURE", signedData.ToLower());
+                result.Add("X-BFX-SIGNATURE", signedData.ToLower(CultureInfo.InvariantCulture));
             }
             else if (uri.Contains("v2"))
             {
@@ -53,13 +55,13 @@ namespace Bitfinex.Net
 
                 result.Add("bfx-apikey", Credentials.Key.GetString());
                 result.Add("bfx-nonce", n);
-                result.Add("bfx-signature", signedData.ToLower());
+                result.Add("bfx-signature", signedData.ToLower(CultureInfo.InvariantCulture));
             }
 
             return result;
         }
 
-        public override Dictionary<string, object> AddAuthenticationToParameters(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed)
+        public override Dictionary<string, object> AddAuthenticationToParameters(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, PostParameters postParameterPosition, ArrayParametersSerialization arraySerialization)
         {
             if (!signed)
                 return parameters;

@@ -408,7 +408,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexOrder>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? amount = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null)
         {
             log.Write(LogVerbosity.Info, "Going to update order " + orderId);
-            var query = new BitfinexSocketQuery(orderId.ToString(), BitfinexEventType.OrderUpdate, new BitfinexUpdateOrder
+            var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderUpdate, new BitfinexUpdateOrder
             {
                 OrderId = orderId,
                 Amount = amount,
@@ -454,7 +454,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexOrder>> CancelOrderAsync(long orderId)
         {
             log.Write(LogVerbosity.Info, "Going to cancel order " + orderId);
-            var query = new BitfinexSocketQuery(orderId.ToString(), BitfinexEventType.OrderCancel, new JObject { ["id"] = orderId });
+            var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderCancel, new JObject { ["id"] = orderId });
 
             return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);
         }
@@ -686,7 +686,7 @@ namespace Bitfinex.Net
             };
             if (filter.Any())
                 authentication.Filter = filter;
-            authentication.Signature = authProvider.Sign(authentication.Payload).ToLower();
+            authentication.Signature = authProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
             return authentication;
         }
 
@@ -764,7 +764,7 @@ namespace Bitfinex.Net
                     return false;
                 }
 
-                var statusString = ((string)notificationData[6]).ToLower();
+                var statusString = ((string)notificationData[6]).ToLower(CultureInfo.InvariantCulture);
                 if (statusString == "error")
                 {
                     if (bfRequest.QueryType == BitfinexEventType.OrderNew && notificationType == BitfinexEventType.OrderNewRequest)
