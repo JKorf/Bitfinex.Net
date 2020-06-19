@@ -94,6 +94,13 @@ namespace Bitfinex.Net
 
                 UpdateOrderBook(DateTime.UtcNow.Ticks, bidEntries, askEntries);
             }
+
+            CheckChecksum();
+        }
+
+        protected bool CheckChecksum()
+        {
+            return true;
         }
 
         /// <inheritdoc />

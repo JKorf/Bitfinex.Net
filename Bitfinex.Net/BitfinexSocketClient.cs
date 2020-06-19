@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Bitfinex.Net.Interfaces;
+using System.Diagnostics;
 
 namespace Bitfinex.Net
 {
@@ -107,7 +108,7 @@ namespace Bitfinex.Net
         /// <param name="length">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler) => SubscribeToBookUpdatesAsync(symbol, precision, frequency, length, handler).Result;
+        public CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<string> checksumHandler = null) => SubscribeToBookUpdatesAsync(symbol, precision, frequency, length, handler, checksumHandler).Result;
         /// <summary>
         /// Subscribes to order book updates for a symbol
         /// </summary>
@@ -117,17 +118,25 @@ namespace Bitfinex.Net
         /// <param name="length">The range for the order book updates, either 25 or 100</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<string> checksumHandler = null)
         {
             symbol.ValidateBitfinexSymbol();
             length.ValidateIntValues(nameof(length), 25, 100);
             var internalHandler = new Action<JToken>(data =>
             {
-                var dataArray = (JArray)data[1];
-                if (dataArray[0].Type == JTokenType.Array)
-                    HandleData("Book snapshot", dataArray, handler);
+                if (data[1].ToString() == "cs")
+                {
+                    // Process
+                    checksumHandler?.Invoke(data[1].ToString());
+                }
                 else
-                    HandleSingleToArrayData("Book update", dataArray, handler);
+                {
+                    var dataArray = (JArray)data[1];
+                    if (dataArray[0].Type == JTokenType.Array)
+                        HandleData("Book snapshot", dataArray, handler);
+                    else
+                        HandleSingleToArrayData("Book update", dataArray, handler);
+                }
             });
 
             var sub = new BitfinexBookSubscriptionRequest(
@@ -628,7 +637,11 @@ namespace Bitfinex.Net
 
             log.Write(LogVerbosity.Debug, $"Info event received: {data}");
             if (data["code"] == null)
+            {
+                // welcome event
+                connection.Send(new BitfinexSocketConfig { Event = "conf", Flags = 131072 });
                 return;
+            }
 
             var code = (int)data["code"];
             switch (code)
