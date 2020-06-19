@@ -95,6 +95,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.0.11 - 16 Jun 2020
+    * Fix for BitfinexSymbolOrderBook
+
 * Version 3.0.10 - 07 Jun 2020
     * Fixed issue where the BitfinexSymbolOrderBook desynced 
 

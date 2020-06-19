@@ -45,7 +45,7 @@ namespace Bitfinex.Net.Objects
         /// <summary>
         /// </summary>
         /// <param name="client">The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.</param>
-        public BitfinexOrderBookOptions(IBitfinexSocketClient? client = null) : base("Bitfinex", false)
+        public BitfinexOrderBookOptions(IBitfinexSocketClient? client = null) : base("Bitfinex", false, true)
         {
             SocketClient = client;
         }
