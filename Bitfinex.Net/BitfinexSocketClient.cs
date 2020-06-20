@@ -44,6 +44,8 @@ namespace Bitfinex.Net
                 }
             }
         }
+
+        private JsonSerializer _bookSerializer = new JsonSerializer();
         #endregion
 
         #region ctor
@@ -61,8 +63,11 @@ namespace Bitfinex.Net
         public BitfinexSocketClient(BitfinexSocketClientOptions options) : base(options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
         {
             ContinueOnQueryResponse = true;
+            _bookSerializer.Converters.Add(new OrderBookEntryConverter());
+
             AddGenericHandler("HB", (wrapper, msg) => { });
             AddGenericHandler("Info", InfoHandler);
+            AddGenericHandler("Conf", ConfHandler);
         }
         #endregion
 
@@ -107,8 +112,9 @@ namespace Bitfinex.Net
         /// <param name="frequency">The frequency of updates</param>
         /// <param name="length">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
+        /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<string> checksumHandler = null) => SubscribeToBookUpdatesAsync(symbol, precision, frequency, length, handler, checksumHandler).Result;
+        public CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<int> checksumHandler = null) => SubscribeToBookUpdatesAsync(symbol, precision, frequency, length, handler, checksumHandler).Result;
         /// <summary>
         /// Subscribes to order book updates for a symbol
         /// </summary>
@@ -117,8 +123,9 @@ namespace Bitfinex.Net
         /// <param name="frequency">The frequency of updates</param>
         /// <param name="length">The range for the order book updates, either 25 or 100</param>
         /// <param name="handler">The handler for the data</param>
+        /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<string> checksumHandler = null)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<int> checksumHandler = null)
         {
             symbol.ValidateBitfinexSymbol();
             length.ValidateIntValues(nameof(length), 25, 100);
@@ -127,15 +134,19 @@ namespace Bitfinex.Net
                 if (data[1].ToString() == "cs")
                 {
                     // Process
-                    checksumHandler?.Invoke(data[1].ToString());
+                    checksumHandler?.Invoke((int)data[2]);
                 }
                 else
                 {
                     var dataArray = (JArray)data[1];
                     if (dataArray[0].Type == JTokenType.Array)
-                        HandleData("Book snapshot", dataArray, handler);
+                    {
+                        HandleData("Book snapshot", dataArray, handler, _bookSerializer);
+                    }
                     else
-                        HandleSingleToArrayData("Book update", dataArray, handler);
+                    {
+                        HandleSingleToArrayData("Book update", dataArray, handler, _bookSerializer);
+                    }
                 }
             });
 
@@ -540,9 +551,9 @@ namespace Bitfinex.Net
         #endregion
 
         #region private methods
-        private void HandleData<T>(string name, JArray dataArray, Action<T> handler)
+        private void HandleData<T>(string name, JArray dataArray, Action<T> handler, JsonSerializer? serializer = null)
         {
-            var desResult = Deserialize<T>(dataArray);
+            var desResult = Deserialize<T>(dataArray, serializer: serializer);
             if (!desResult)
             {
                 log.Write(LogVerbosity.Warning, $"Failed to deserialize {name} object: " + desResult.Error);
@@ -552,16 +563,19 @@ namespace Bitfinex.Net
             handler(desResult.Data);
         }
 
-        private void HandleSingleToArrayData<T>(string name, JArray dataArray, Action<IEnumerable<T>> handler)
+        private void HandleSingleToArrayData<T>(string name, JArray dataArray, Action<IEnumerable<T>> handler, JsonSerializer? serializer = null)
         {
-            var desResult = Deserialize<T>(dataArray);
+            var wrapperArray = new JArray();
+            wrapperArray.Add(dataArray);
+
+            var desResult = Deserialize<IEnumerable<T>>(wrapperArray, serializer: serializer);
             if (!desResult)
             {
                 log.Write(LogVerbosity.Warning, $"Failed to deserialize  {name} object: " + desResult.Error);
                 return;
             }
 
-            handler(new[] { desResult.Data });
+            handler(desResult.Data);
         }
 
         private async Task<CallResult<bool>> CancelOrdersAsync(IEnumerable<long>? orderIds = null, Dictionary<long, DateTime>? clientOrderIds = null, Dictionary<long, long?>? groupOrderIds = null)
@@ -628,6 +642,14 @@ namespace Bitfinex.Net
             action(new BitfinexSocketEvent<IEnumerable<T>>(evntType, data));
         }
 
+        private void ConfHandler(SocketConnection connection, JToken data)
+        {
+            var confEvent = data.Type == JTokenType.Object && (string)data["event"] == "conf";
+            if (!confEvent)
+                return;
+
+            // Could check conf result;
+        }
 
         private void InfoHandler(SocketConnection connection, JToken data)
         {
@@ -933,6 +955,8 @@ namespace Bitfinex.Net
             {
                 if (identifier == "Info")
                     return (string)message["event"] == "info";
+                if (identifier == "Conf")
+                    return (string)message["event"] == "conf";
             }
 
             else if (message.Type == JTokenType.Array)

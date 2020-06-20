@@ -1148,7 +1148,7 @@
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToBookUpdates(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexOrderBookEntry}},System.Action{System.String})">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToBookUpdates(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexOrderBookEntry}},System.Action{System.Int32})">
             <summary>
             Subscribes to order book updates for a symbol
             </summary>
@@ -1159,7 +1159,7 @@
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToBookUpdatesAsync(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexOrderBookEntry}},System.Action{System.String})">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToBookUpdatesAsync(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexOrderBookEntry}},System.Action{System.Int32})">
             <summary>
             Subscribes to order book updates for a symbol
             </summary>
@@ -2539,7 +2539,7 @@
             <param name="handler">The handler for the data</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToBookUpdates(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexOrderBookEntry}},System.Action{System.String})">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToBookUpdates(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexOrderBookEntry}},System.Action{System.Int32})">
             <summary>
             Subscribes to order book updates for a symbol
             </summary>
@@ -2551,7 +2551,7 @@
             <param name="checksumHandler">The handler for the checksum (not necessary for working)</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToBookUpdatesAsync(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexOrderBookEntry}},System.Action{System.String})">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToBookUpdatesAsync(System.String,Bitfinex.Net.Objects.Precision,Bitfinex.Net.Objects.Frequency,System.Int32,System.Action{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexOrderBookEntry}},System.Action{System.Int32})">
             <summary>
             Subscribes to order book updates for a symbol
             </summary>

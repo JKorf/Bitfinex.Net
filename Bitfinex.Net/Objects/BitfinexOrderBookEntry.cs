@@ -30,6 +30,9 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         [ArrayProperty(2)]
         public decimal Quantity { get; set; }
+
+        internal string RawPrice { get; set; }
+        internal string RawQuantity { get; set; }
     }
 
     /// <summary>

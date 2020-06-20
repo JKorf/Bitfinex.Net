@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Bitfinex.Net.Interfaces;
-using Bitfinex.Net.Objects;
-using CryptoExchange.Net;
+using Bitfinex.Net.Objects
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
+using Force.Crc32;
 
 namespace Bitfinex.Net
 {
@@ -41,13 +43,14 @@ namespace Bitfinex.Net
         {
             if(precision == Precision.R0)
                 throw new ArgumentException("Invalid precision: R0");
-            
-            var result = await socketClient.SubscribeToBookUpdatesAsync(Symbol, precision, Frequency.Realtime, Levels.Value, ProcessUpdate).ConfigureAwait(false);
+
+
+            var result = await socketClient.SubscribeToBookUpdatesAsync(Symbol, precision, Frequency.Realtime, Levels.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
             if (!result)
                 return result;
 
             Status = OrderBookStatus.Syncing;
-
+            
             var setResult = await WaitForSetOrderBook(10000).ConfigureAwait(false);
             return setResult ? result : new CallResult<UpdateSubscription>(null, setResult.Error);
         }
@@ -76,16 +79,24 @@ namespace Bitfinex.Net
                 {
                     if (entry.Count == 0)
                     {
-                        var bookEntry = new BitfinexOrderBookEntry() { Price = entry.Price, Quantity = 0 };
                         if (entry.Quantity == -1)
-                            askEntries.Add(bookEntry);
+                        {
+                            entry.Quantity = 0;
+                            askEntries.Add(entry);
+                        }
                         else
-                            bidEntries.Add(bookEntry);
+                        {
+                            entry.Quantity = 0;
+                            bidEntries.Add(entry);
+                        }
                     }
                     else
                     {
                         if (entry.Quantity < 0)
-                            askEntries.Add(new BitfinexOrderBookEntry() { Price = entry.Price, Quantity = -entry.Quantity });
+                        {
+                            entry.Quantity *= -1;
+                            askEntries.Add(entry);
+                        }
                         else
                             bidEntries.Add(entry);
                     }
@@ -93,13 +104,50 @@ namespace Bitfinex.Net
 
                 UpdateOrderBook(DateTime.UtcNow.Ticks, bidEntries, askEntries);
             }
-
-            CheckChecksum();
         }
 
-        protected bool CheckChecksum()
+        /// <summary>
+        /// Process a received checksum
+        /// </summary>
+        /// <param name="checksum"></param>
+        protected void ProcessChecksum(int checksum)
         {
-            return true;
+            AddChecksum(checksum);            
+        }
+
+        /// <summary>
+        /// Process a checksum
+        /// </summary>
+        /// <param name="checksum"></param>
+        /// <returns></returns>
+        protected override bool DoChecksum(int checksum)
+        {
+            var checksumValues = new List<string>();
+            for (var i = 0; i < 25; i++)
+            {
+                if (bids.Count >= i)
+                {
+                    var bid = (BitfinexOrderBookEntry)bids.ElementAt(i).Value;
+                    checksumValues.Add(bid.RawPrice);
+                    checksumValues.Add(bid.RawQuantity);
+                }
+                if (asks.Count >= i)
+                {
+                    var ask = (BitfinexOrderBookEntry)asks.ElementAt(i).Value;
+                    checksumValues.Add(ask.RawPrice);
+                    checksumValues.Add(ask.RawQuantity);
+                }
+            }
+            var checksumString = string.Join(":", checksumValues);
+            var ourChecksumUtf = (int)Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(checksumString));
+
+            if (ourChecksumUtf != checksum)
+            {
+                log.Write(CryptoExchange.Net.Logging.LogVerbosity.Warning, $"Invalid checksum. Received from server: {checksum}, calculated local: {ourChecksumUtf}");
+                return false;
+            }
+            else
+                return true;            
         }
 
         /// <inheritdoc />
@@ -118,6 +166,25 @@ namespace Bitfinex.Net
             bids.Clear();
 
             socketClient?.Dispose();
+        }
+
+        // Format the value with the indicated number of significant digits.
+        private string ToSignificantDigits(decimal value)
+        {
+            var stringValue = value.ToString(CultureInfo.InvariantCulture);
+            var stringLength = stringValue.Length;
+            if (stringValue.Contains('.'))
+                stringLength -= 1;
+
+            for (var i = 0;i < 5 - stringLength; i++)
+            {
+                if (!stringValue.Contains('.'))
+                    stringValue += ".0";
+                else
+                    stringValue += "0";
+            }
+
+            return stringValue;
         }
     }
 }
