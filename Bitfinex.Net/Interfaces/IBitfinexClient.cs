@@ -805,6 +805,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
         /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         WebCallResult<BitfinexPlacedOrder> PlaceOrder(
@@ -820,6 +821,7 @@ namespace Bitfinex.Net.Interfaces
             bool? ocoOrder = null,
             decimal? ocoBuyPrice = null,
             decimal? ocoSellPrice = null,
+            string? affiliateCode = null,
             CancellationToken ct = default);
 
         /// <summary>
@@ -837,6 +839,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
         /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<BitfinexPlacedOrder>> PlaceOrderAsync(
@@ -852,6 +855,7 @@ namespace Bitfinex.Net.Interfaces
             bool? ocoOrder = null,
             decimal? ocoBuyPrice = null,
             decimal? ocoSellPrice = null,
+            string? affiliateCode = null,
             CancellationToken ct = default);
 
         /// <summary>

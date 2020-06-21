@@ -252,6 +252,8 @@ namespace Bitfinex.Net
         {
             symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntValues("limit", 25, 100);
+            if (precision == Precision.R0)
+                throw new ArgumentException("Precision can not be R0. Use PrecisionLevel0 to get aggregated trades for each price point or GetRawOrderBook to get the raw order book instead");
 
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
@@ -259,6 +261,35 @@ namespace Bitfinex.Net
 
             return await SendRequest<IEnumerable<BitfinexOrderBookEntry>>(GetUrl(FillPathParameter(OrderBookEndpoint, symbol, prec), ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
+
+        /// <summary>
+        /// Gets the raw order book for a symbol
+        /// </summary>
+        /// <param name="symbol">The symbol to get the order book for</param>
+        /// <param name="limit">The amount of results in the book</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The order book for the symbol</returns>
+        public WebCallResult<IEnumerable<BitfinexRawOrderBookEntry>> GetRawOrderBook(string symbol, int? limit = null, CancellationToken ct = default) => GetRawOrderBookAsync(symbol, limit, ct).Result;
+
+        /// <summary>
+        /// Gets the raw order book for a symbol
+        /// </summary>
+        /// <param name="symbol">The symbol to get the order book for</param>
+        /// <param name="limit">The amount of results in the book</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The order book for the symbol</returns>
+        public async Task<WebCallResult<IEnumerable<BitfinexRawOrderBookEntry>>> GetRawOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexSymbol();
+            limit?.ValidateIntValues("limit", 25, 100);
+
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
+            var prec = JsonConvert.SerializeObject(Precision.R0, new PrecisionConverter(false));
+
+            return await SendRequest<IEnumerable<BitfinexRawOrderBookEntry>>(GetUrl(FillPathParameter(OrderBookEndpoint, symbol, prec), ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+        }
+
 
         /// <summary>
         /// Get various stats for the symbol
@@ -1244,6 +1275,7 @@ namespace Bitfinex.Net
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
         /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         public WebCallResult<BitfinexPlacedOrder> PlaceOrder(
@@ -1259,7 +1291,8 @@ namespace Bitfinex.Net
             bool? ocoOrder = null,
             decimal? ocoBuyPrice = null,
             decimal? ocoSellPrice = null,
-            CancellationToken ct = default) => PlaceOrderAsync(symbol, side, type, amount, price, hidden, postOnly, useAllAvailable, stopLimitPrice, ocoOrder, ocoBuyPrice, ocoSellPrice, ct).Result;
+            string? affiliateCode = null,
+            CancellationToken ct = default) => PlaceOrderAsync(symbol, side, type, amount, price, hidden, postOnly, useAllAvailable, stopLimitPrice, ocoOrder, ocoBuyPrice, ocoSellPrice, affiliateCode, ct).Result;
 
         /// <summary>
         /// Place a new order
@@ -1276,6 +1309,7 @@ namespace Bitfinex.Net
         /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
         /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
         /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         public async Task<WebCallResult<BitfinexPlacedOrder>> PlaceOrderAsync(
@@ -1291,6 +1325,7 @@ namespace Bitfinex.Net
             bool? ocoOrder = null,
             decimal? ocoBuyPrice = null,
             decimal? ocoSellPrice = null,
+            string? affiliateCode = null,
             CancellationToken ct = default)
         {
             symbol.ValidateNotNull(nameof(symbol));
@@ -1310,6 +1345,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("ocoorder", ocoOrder);
             parameters.AddOptionalParameter("buy_price_oco", ocoBuyPrice);
             parameters.AddOptionalParameter("sell_price_oco", ocoSellPrice);
+            parameters.AddOptionalParameter("aff_code", affiliateCode);
 
             return await SendRequest<BitfinexPlacedOrder>(GetUrl(PlaceOrderEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }

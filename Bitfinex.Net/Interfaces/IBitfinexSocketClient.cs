@@ -37,8 +37,8 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="precision">The precision of the updates</param>
         /// <param name="frequency">The frequency of updates</param>
         /// <param name="length">The range for the order book updates</param>
-        /// <param name="handler">The handler for the data</param>
-        /// <param name="checksumHandler">The handler for the checksum (not necessary for working)</param>
+        /// <param name="handler">The handler for the data</param>        
+        /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
         /// <returns></returns>
         CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<int> checksumHandler = null);
 
@@ -50,7 +50,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="frequency">The frequency of updates</param>
         /// <param name="length">The range for the order book updates, either 25 or 100</param>
         /// <param name="handler">The handler for the data</param>
-        /// <param name="checksumHandler">The handler for the checksum (not necessary for working)</param>
+        /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
         /// <returns></returns>
         Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<int> checksumHandler = null);
 
