@@ -820,7 +820,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.PlaceOrder(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.PlaceOrder(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Threading.CancellationToken)">
             <summary>
             Place a new order
             </summary>
@@ -836,10 +836,11 @@
             <param name="ocoOrder">If the order is a one-cancels-other order</param>
             <param name="ocoBuyPrice">The one-cancels-other buy price</param>
             <param name="ocoSellPrice">The one-cancels-other sell price</param>
+            <param name="affiliateCode">Affiliate code for the order</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.PlaceOrderAsync(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.PlaceOrderAsync(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Threading.CancellationToken)">
             <summary>
             Place a new order
             </summary>
@@ -855,6 +856,7 @@
             <param name="ocoOrder">If the order is a one-cancels-other order</param>
             <param name="ocoBuyPrice">The one-cancels-other buy price</param>
             <param name="ocoSellPrice">The one-cancels-other sell price</param>
+            <param name="affiliateCode">Affiliate code for the order</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
@@ -2260,7 +2262,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.PlaceOrder(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.PlaceOrder(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Threading.CancellationToken)">
             <summary>
             Place a new order
             </summary>
@@ -2276,10 +2278,11 @@
             <param name="ocoOrder">If the order is a one-cancels-other order</param>
             <param name="ocoBuyPrice">The one-cancels-other buy price</param>
             <param name="ocoSellPrice">The one-cancels-other sell price</param>
+            <param name="affiliateCode">Affiliate code for the order</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.PlaceOrderAsync(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.PlaceOrderAsync(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Threading.CancellationToken)">
             <summary>
             Place a new order
             </summary>
@@ -2295,6 +2298,7 @@
             <param name="ocoOrder">If the order is a one-cancels-other order</param>
             <param name="ocoBuyPrice">The one-cancels-other buy price</param>
             <param name="ocoSellPrice">The one-cancels-other sell price</param>
+            <param name="affiliateCode">Affiliate code for the order</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>

@@ -95,6 +95,11 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.0.12 - 20 Jun 2020
+	* Added GetRawOrderBook
+	* Fix for FillOrKill parsing
+	* Added affiliate code support on placing order
+
 * Version 3.0.11 - 16 Jun 2020
     * Fix for BitfinexSymbolOrderBook
 
