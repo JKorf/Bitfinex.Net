@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// User info
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexUserInfo
     {
@@ -15,11 +18,11 @@ namespace Bitfinex.Net.Objects
         /// The email address of the user
         /// </summary>
         [ArrayProperty(1)]
-        public string Email { get; set; }
+        public string Email { get; set; } = "";
         /// <summary>
         /// The username of the user
         /// </summary>
         [ArrayProperty(2)]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = "";
     }
 }

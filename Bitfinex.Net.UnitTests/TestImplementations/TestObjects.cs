@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Binance.Net.UnitTests.TestImplementations
 {
@@ -17,6 +14,7 @@ namespace Binance.Net.UnitTests.TestImplementations
 
     public class BookSubscriptionResponse : SubscriptionResponse
     {
+        [JsonProperty("symbol")]
         public string Symbol { get; set; }
         public string Pair { get; set; }
         [JsonProperty("prec")]
@@ -29,18 +27,22 @@ namespace Binance.Net.UnitTests.TestImplementations
 
     public class CandleSubscriptionResponse : SubscriptionResponse
     {
+        [JsonProperty("symbol")]
         public string Symbol { get; set; }
+        [JsonProperty("key")]
         public string Key { get; set; }
     }
 
     public class TickerSubscriptionResponse : SubscriptionResponse
     {
         public string Pair { get; set; }
+        [JsonProperty("symbol")]
         public string Symbol { get; set; }
     }
 
     public class TradesSubscriptionResponse : SubscriptionResponse
     {
+        [JsonProperty("symbol")]
         public string Symbol { get; set; }
         public string Pair { get; set; }
     }

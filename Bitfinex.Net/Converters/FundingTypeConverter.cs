@@ -4,15 +4,15 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class FundingTypeConverter: BaseConverter<FundingType>
+    internal class FundingTypeConverter: BaseConverter<FundingType>
     {
         public FundingTypeConverter(): this(true) { }
         public FundingTypeConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<FundingType, string> Mapping => new Dictionary<FundingType, string>
+        protected override List<KeyValuePair<FundingType, string>> Mapping => new List<KeyValuePair<FundingType, string>>
         {
-            { FundingType.Lend, "lend" },
-            { FundingType.Loan, "loan" }
+            new KeyValuePair<FundingType, string>(FundingType.Lend, "lend"),
+            new KeyValuePair<FundingType, string>(FundingType.Loan, "loan")
         };
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects;
 using CryptoExchange.Net;
@@ -13,14 +12,19 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Bitfinex.Net.Interfaces;
+using System.Diagnostics;
 
 namespace Bitfinex.Net
 {
+    /// <summary>
+    /// Socket client for the Bitfinex API
+    /// </summary>
     public class BitfinexSocketClient : SocketClient, IBitfinexSocketClient
     {
         #region fields
         private static BitfinexSocketClientOptions defaultOptions = new BitfinexSocketClientOptions();
-        private static BitfinexSocketClientOptions DefaultOptions => defaultOptions.Copy();
+        private static BitfinexSocketClientOptions DefaultOptions => defaultOptions.Copy<BitfinexSocketClientOptions>();
 
         private readonly Random random = new Random();
         private static readonly object nonceLock = new object();
@@ -31,20 +35,17 @@ namespace Bitfinex.Net
             {
                 lock (nonceLock)
                 {
-                    if (lastNonce == 0)
-                        lastNonce = (long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000);
+                    var nonce = (long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000);
+                    if (nonce == lastNonce)
+                        nonce += 1;
 
-                    lastNonce += 1;
+                    lastNonce = nonce;
                     return lastNonce.ToString(CultureInfo.InvariantCulture);
                 }
             }
         }
 
-        private TimeSpan socketResponseTimeout;
-        private TimeSpan socketNoDataTimeout;
-
-        private const string HeartbeatHandlerName = "HeartbeatHandler";
-        private const string InfoHandlerName = "InfoHandlerName";
+        private JsonSerializer _bookSerializer = new JsonSerializer();
         #endregion
 
         #region ctor
@@ -61,7 +62,12 @@ namespace Bitfinex.Net
         /// <param name="options">The options to use for this client</param>
         public BitfinexSocketClient(BitfinexSocketClientOptions options) : base(options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
         {
-            Configure(options);
+            ContinueOnQueryResponse = true;
+            _bookSerializer.Converters.Add(new OrderBookEntryConverter());
+
+            AddGenericHandler("HB", (wrapper, msg) => { });
+            AddGenericHandler("Info", InfoHandler);
+            AddGenericHandler("Conf", ConfHandler);
         }
         #endregion
 
@@ -81,17 +87,21 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToTickerUpdates(string symbol, Action<BitfinexMarketOverview> handler) => SubscribeToTickerUpdatesAsync(symbol, handler).Result;
+        public CallResult<UpdateSubscription> SubscribeToTickerUpdates(string symbol, Action<BitfinexStreamSymbolOverview> handler) => SubscribeToTickerUpdatesAsync(symbol, handler).Result;
         /// <summary>
         /// Subscribes to ticker updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<BitfinexMarketOverview> handler)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<BitfinexStreamSymbolOverview> handler)
         {
-            var internalHandler = new Action<JToken>(data => HandleData("Ticker", (JArray)data[1], handler));
-            return await Subscribe(new BitfinexSubscriptionRequest("ticker", symbol), internalHandler).ConfigureAwait(false);
+            symbol.ValidateBitfinexSymbol();
+            var internalHandler = new Action<JToken>(data =>
+            {
+                HandleData("Ticker", (JArray) data[1], handler);
+            });
+            return await Subscribe(new BitfinexSubscriptionRequest("ticker", symbol), null, false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -102,62 +112,79 @@ namespace Bitfinex.Net
         /// <param name="frequency">The frequency of updates</param>
         /// <param name="length">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
+        /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<BitfinexOrderBookEntry[]> handler) => SubscribeToBookUpdatesAsync(symbol, precision, frequency, length, handler).Result;
+        public CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<int> checksumHandler = null) => SubscribeToBookUpdatesAsync(symbol, precision, frequency, length, handler, checksumHandler).Result;
         /// <summary>
         /// Subscribes to order book updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="precision">The precision of the updates</param>
         /// <param name="frequency">The frequency of updates</param>
-        /// <param name="length">The range for the order book updates</param>
+        /// <param name="length">The range for the order book updates, either 25 or 100</param>
+        /// <param name="handler">The handler for the data</param>
+        /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
+        /// <returns></returns>
+        public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<int> checksumHandler = null)
+        {
+            symbol.ValidateBitfinexSymbol();
+            length.ValidateIntValues(nameof(length), 25, 100);
+            var internalHandler = new Action<JToken>(data =>
+            {
+                if (data[1].ToString() == "cs")
+                {
+                    // Process
+                    checksumHandler?.Invoke((int)data[2]);
+                }
+                else
+                {
+                    var dataArray = (JArray)data[1];
+                    if (dataArray[0].Type == JTokenType.Array)
+                    {
+                        HandleData("Book snapshot", dataArray, handler, _bookSerializer);
+                    }
+                    else
+                    {
+                        HandleSingleToArrayData("Book update", dataArray, handler, _bookSerializer);
+                    }
+                }
+            });
+
+            var sub = new BitfinexBookSubscriptionRequest(
+                symbol,
+                JsonConvert.SerializeObject(precision, new PrecisionConverter(false)),
+                JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)),
+                length);
+            return await Subscribe(sub, null, false, internalHandler).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Subscribes to raw order book updates for a symbol
+        /// </summary>
+        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="limit">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<BitfinexOrderBookEntry[]> handler)
+        public CallResult<UpdateSubscription> SubscribeToRawBookUpdates(string symbol, int limit, Action<IEnumerable<BitfinexRawOrderBookEntry>> handler) => SubscribeToRawBookUpdatesAsync(symbol, limit, handler).Result;
+        /// <summary>
+        /// Subscribes to raw order book updates for a symbol
+        /// </summary>
+        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="limit">The range for the order book updates</param>
+        /// <param name="handler">The handler for the data</param>
+        /// <returns></returns>
+        public async Task<CallResult<UpdateSubscription>> SubscribeToRawBookUpdatesAsync(string symbol, int limit, Action<IEnumerable<BitfinexRawOrderBookEntry>> handler)
         {
+            symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<JToken>(data =>
             {
                 var dataArray = (JArray)data[1];
                 if (dataArray[0].Type == JTokenType.Array)
-                    HandleData("Book snapshot", dataArray, handler);
+                    HandleData("Raw book snapshot", dataArray, handler);
                 else
-                    HandleSingleToArrayData("Book update", dataArray, handler);
+                    HandleSingleToArrayData("Raw book update", dataArray, handler);
             });
-
-            var sub = new BitfinexBookSubscriptionRequest(
-                symbol, 
-                JsonConvert.SerializeObject(precision, new PrecisionConverter(false)), 
-                JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)), 
-                length);
-            return await Subscribe(sub, internalHandler).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Subscribes to raw order book updates for a symbol
-        /// </summary>
-        /// <param name="symbol">The symbol to subscribe to</param>
-        /// <param name="limit">The range for the order book updates</param>
-        /// <param name="handler">The handler for the data</param>
-        /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToRawBookUpdates(string symbol, int limit, Action<BitfinexRawOrderBookEntry[]> handler) => SubscribeToRawBookUpdatesAsync(symbol, limit, handler).Result;
-        /// <summary>
-        /// Subscribes to raw order book updates for a symbol
-        /// </summary>
-        /// <param name="symbol">The symbol to subscribe to</param>
-        /// <param name="limit">The range for the order book updates</param>
-        /// <param name="handler">The handler for the data</param>
-        /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToRawBookUpdatesAsync(string symbol, int limit, Action<BitfinexRawOrderBookEntry[]> handler)
-        {
-            var internalHandler = new Action<JToken>(data =>
-            {
-                var dataArray = (JArray)data[1];
-                if(dataArray[0].Type == JTokenType.Array)
-                    HandleData("Raw book snapshot", dataArray, handler);                
-                else
-                    HandleSingleToArrayData("Raw book update", dataArray, handler);           
-            });
-            return await Subscribe(new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), internalHandler).ConfigureAwait(false);
+            return await Subscribe(new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), null, false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -166,14 +193,14 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToTradeUpdates(string symbol, Action<BitfinexTradeSimple[]> handler) => SubscribeToTradeUpdatesAsync(symbol, handler).Result;
+        public CallResult<UpdateSubscription> SubscribeToTradeUpdates(string symbol, Action<IEnumerable<BitfinexTradeSimple>> handler) => SubscribeToTradeUpdatesAsync(symbol, handler).Result;
         /// <summary>
         /// Subscribes to public trade updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<BitfinexTradeSimple[]> handler)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<IEnumerable<BitfinexTradeSimple>> handler)
         {
             var internalHandler = new Action<JToken>(data =>
             {
@@ -185,7 +212,7 @@ namespace Bitfinex.Net
                 else
                 {
                     var desResult = Deserialize<BitfinexTradeSimple>(arr[2]);
-                    if (!desResult.Success)
+                    if (!desResult)
                     {
                         log.Write(LogVerbosity.Warning, "Failed to deserialize trade object: " + desResult.Error);
                         return;
@@ -194,26 +221,27 @@ namespace Bitfinex.Net
                     handler(new[] { desResult.Data });
                 }
             });
-            return await Subscribe(new BitfinexSubscriptionRequest("trades", symbol), internalHandler).ConfigureAwait(false);
+            return await Subscribe(new BitfinexSubscriptionRequest("trades", symbol), null, false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Subscribes to candle updates for a symbol
+        /// Subscribes to kline updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
-        /// <param name="interval">The interval of the candles</param>
+        /// <param name="interval">The interval of the klines</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToCandleUpdates(string symbol, TimeFrame interval, Action<BitfinexCandle[]> handler) => SubscribeToCandleUpdatesAsync(symbol, interval, handler).Result;
+        public CallResult<UpdateSubscription> SubscribeToKlineUpdates(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexKline>> handler) => SubscribeToKlineUpdatesAsync(symbol, interval, handler).Result;
         /// <summary>
-        /// Subscribes to candle updates for a symbol
+        /// Subscribes to kline updates for a symbol
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to</param>
-        /// <param name="interval">The interval of the candles</param>
+        /// <param name="interval">The interval of the klines</param>
         /// <param name="handler">The handler for the data</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToCandleUpdatesAsync(string symbol, TimeFrame interval, Action<BitfinexCandle[]> handler)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, TimeFrame interval, Action<IEnumerable<BitfinexKline>> handler)
         {
+            symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<JToken>(data =>
             {
                 var dataArray = (JArray)data[1];
@@ -228,7 +256,7 @@ namespace Bitfinex.Net
                 else
                     HandleSingleToArrayData("Kline update", dataArray, handler);
             });
-            return await Subscribe(new BitfinexKlineSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false))), internalHandler).ConfigureAwait(false);
+            return await Subscribe(new BitfinexKlineSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false))), null, false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -239,9 +267,9 @@ namespace Bitfinex.Net
         /// <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
         /// <returns></returns>
         public CallResult<UpdateSubscription> SubscribeToTradingUpdates(
-            Action<BitfinexSocketEvent<BitfinexOrder[]>> orderHandler, 
-            Action<BitfinexSocketEvent<BitfinexTradeDetails[]>> tradeHandler,
-            Action<BitfinexSocketEvent<BitfinexPosition[]>> positionHandler) => SubscribeToTradingUpdatesAsync(orderHandler, tradeHandler, positionHandler).Result;
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexOrder>>> orderHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexTradeDetails>>> tradeHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexPosition>>> positionHandler) => SubscribeToTradingUpdatesAsync(orderHandler, tradeHandler, positionHandler).Result;
         /// <summary>
         /// Subscribe to trading information updates
         /// </summary>
@@ -250,18 +278,18 @@ namespace Bitfinex.Net
         /// <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
         /// <returns></returns>
         public async Task<CallResult<UpdateSubscription>> SubscribeToTradingUpdatesAsync(
-            Action<BitfinexSocketEvent<BitfinexOrder[]>> orderHandler, 
-            Action<BitfinexSocketEvent<BitfinexTradeDetails[]>> tradeHandler,
-             Action<BitfinexSocketEvent<BitfinexPosition[]>> positionHandler)
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexOrder>>> orderHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexTradeDetails>>> tradeHandler,
+             Action<BitfinexSocketEvent<IEnumerable<BitfinexPosition>>> positionHandler)
         {
-            var tokenHandler = new Action<BitfinexSocketEvent<JToken>>(tokenData =>
+            var tokenHandler = new Action<JToken>(tokenData =>
             {
-                HandleAuthUpdate(tokenData, orderHandler, BitfinexEvents.GetEventsForCategory("Orders"));
-                HandleAuthUpdate(tokenData, tradeHandler, BitfinexEvents.GetEventsForCategory("Trades"));
-                HandleAuthUpdate(tokenData, positionHandler, BitfinexEvents.GetEventsForCategory("Positions"));
+                HandleAuthUpdate(tokenData, orderHandler, "Orders");
+                HandleAuthUpdate(tokenData, tradeHandler, "Trades");
+                HandleAuthUpdate(tokenData, positionHandler, "Positions");
             });
 
-            return await SubscribeAuth("trading", tokenHandler).ConfigureAwait(false);
+            return await Subscribe(null, "Orders|Trades|Positions", true, tokenHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -269,20 +297,20 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="walletHandler">Data handler for wallet updates</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToWalletUpdates(Action<BitfinexSocketEvent<BitfinexWallet[]>> walletHandler) => SubscribeToWalletUpdatesAsync(walletHandler).Result;
+        public CallResult<UpdateSubscription> SubscribeToWalletUpdates(Action<BitfinexSocketEvent<IEnumerable<BitfinexWallet>>> walletHandler) => SubscribeToWalletUpdatesAsync(walletHandler).Result;
         /// <summary>
         /// Subscribe to wallet information updates
         /// </summary>
         /// <param name="walletHandler">Data handler for wallet updates</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToWalletUpdatesAsync( Action<BitfinexSocketEvent<BitfinexWallet[]>> walletHandler)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToWalletUpdatesAsync(Action<BitfinexSocketEvent<IEnumerable<BitfinexWallet>>> walletHandler)
         {
-            var tokenHandler = new Action<BitfinexSocketEvent<JToken>>(tokenData =>
+            var tokenHandler = new Action<JToken>(tokenData =>
             {
-                HandleAuthUpdate(tokenData, walletHandler, BitfinexEvents.GetEventsForCategory("Wallet"));
+                HandleAuthUpdate(tokenData, walletHandler, "Wallet");
             });
 
-            return await SubscribeAuth("wallet", tokenHandler).ConfigureAwait(false);
+            return await Subscribe(null, "Wallet", true, tokenHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -293,9 +321,9 @@ namespace Bitfinex.Net
         /// <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
         /// <returns></returns>
         public CallResult<UpdateSubscription> SubscribeToFundingUpdates(
-            Action<BitfinexSocketEvent<BitfinexFundingOffer[]>> fundingOfferHandler,
-            Action<BitfinexSocketEvent<BitfinexFundingCredit[]>> fundingCreditHandler,
-            Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> fundingLoanHandler) => SubscribeToFundingUpdatesAsync(fundingOfferHandler, fundingCreditHandler, fundingLoanHandler).Result;
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFundingOffer>>> fundingOfferHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFundingCredit>>> fundingCreditHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFunding>>> fundingLoanHandler) => SubscribeToFundingUpdatesAsync(fundingOfferHandler, fundingCreditHandler, fundingLoanHandler).Result;
         /// <summary>
         /// Subscribe to funding information updates
         /// </summary>
@@ -304,18 +332,18 @@ namespace Bitfinex.Net
         /// <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
         /// <returns></returns>
         public async Task<CallResult<UpdateSubscription>> SubscribeToFundingUpdatesAsync(
-            Action<BitfinexSocketEvent<BitfinexFundingOffer[]>> fundingOfferHandler,
-            Action<BitfinexSocketEvent<BitfinexFundingCredit[]>> fundingCreditHandler,
-            Action<BitfinexSocketEvent<BitfinexFundingLoan[]>> fundingLoanHandler)
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFundingOffer>>> fundingOfferHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFundingCredit>>> fundingCreditHandler,
+            Action<BitfinexSocketEvent<IEnumerable<BitfinexFunding>>> fundingLoanHandler)
         {
-            var tokenHandler = new Action<BitfinexSocketEvent<JToken>>(tokenData =>
+            var tokenHandler = new Action<JToken>(tokenData =>
             {
-                HandleAuthUpdate(tokenData, fundingOfferHandler, BitfinexEvents.GetEventsForCategory("FundingOffers"));
-                HandleAuthUpdate(tokenData, fundingCreditHandler, BitfinexEvents.GetEventsForCategory("FundingCredits"));
-                HandleAuthUpdate(tokenData, fundingLoanHandler, BitfinexEvents.GetEventsForCategory("FundingLoans"));
+                HandleAuthUpdate(tokenData, fundingOfferHandler, "FundingOffers");
+                HandleAuthUpdate(tokenData, fundingCreditHandler, "FundingCredits");
+                HandleAuthUpdate(tokenData, fundingLoanHandler, "FundingLoans");
             });
 
-            return await SubscribeAuth("funding", tokenHandler).ConfigureAwait(false);
+            return await Subscribe(null, "FundingOffers|FundingCredits|FundingLoans", true, tokenHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -332,7 +360,7 @@ namespace Bitfinex.Net
         /// <param name="priceOcoStop">Oco stop price of the order</param>
         /// <param name="flags">Additional flags</param>
         /// <returns></returns>
-        public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null) => 
+        public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null) =>
             PlaceOrderAsync(type, symbol, amount, groupId, clientOrderId, price, priceTrailing, priceAuxiliaryLimit, priceOcoStop, flags).Result;
         /// <summary>
         /// Places a new order
@@ -350,6 +378,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null)
         {
+            symbol.ValidateBitfinexSymbol();
             log.Write(LogVerbosity.Info, "Going to place order");
             if (clientOrderId == null)
                 clientOrderId = GenerateClientOrderId();
@@ -399,36 +428,36 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexOrder>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? amount = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null)
         {
             log.Write(LogVerbosity.Info, "Going to update order " + orderId);
-            var query = new BitfinexSocketQuery(orderId.ToString(), BitfinexEventType.OrderUpdate, new BitfinexUpdateOrder
+            var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderUpdate, new BitfinexUpdateOrder
             {
                 OrderId = orderId,
                 Amount = amount,
                 Price = price,
                 Flags = flags,
-                PriceAuxiliaryLimit = priceAuxiliaryLimit.HasValue ? priceAuxiliaryLimit.Value.ToString(CultureInfo.InvariantCulture) : null,
-                PriceTrailing = priceTrailing.HasValue ? priceTrailing.Value.ToString(CultureInfo.InvariantCulture): null
+                PriceAuxiliaryLimit = priceAuxiliaryLimit?.ToString(CultureInfo.InvariantCulture),
+                PriceTrailing = priceTrailing?.ToString(CultureInfo.InvariantCulture)
             });
 
             return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Cancel all open orders
-        /// </summary>
-        /// <returns></returns>
-        public CallResult<bool> CancelAllOrders() => CancelAllOrdersAsync().Result;
-        /// <summary>
-        /// Cancel all open orders
-        /// </summary>
-        /// <returns></returns>
-        public async Task<CallResult<bool>> CancelAllOrdersAsync()
-        {
-            // Doesn't seem to work even though it is implemented as described at https://docs.bitfinex.com/v2/reference#ws-input-order-cancel-multi 
-            log.Write(LogVerbosity.Info, "Going to cancel all orders");
-            var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, new BitfinexMultiCancel { All = true });
+        ///// <summary>
+        ///// Cancel all open orders
+        ///// </summary>
+        ///// <returns></returns>
+        //public CallResult<bool> CancelAllOrders() => CancelAllOrdersAsync().Result;
+        ///// <summary>
+        ///// Cancel all open orders
+        ///// </summary>
+        ///// <returns></returns>
+        //public async Task<CallResult<bool>> CancelAllOrdersAsync()
+        //{
+        //    // Doesn't seem to work even though it is implemented as described at https://docs.bitfinex.com/v2/reference#ws-input-order-cancel-multi 
+        //    log.Write(LogVerbosity.Info, "Going to cancel all orders");
+        //    var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, new BitfinexMultiCancel { All = true });
 
-            return await Query<bool>(query, true).ConfigureAwait(false);
-        }
+        //    return await Query<bool>(query, true).ConfigureAwait(false);
+        //}
 
         /// <summary>
         /// Cancels an order
@@ -445,7 +474,7 @@ namespace Bitfinex.Net
         public async Task<CallResult<BitfinexOrder>> CancelOrderAsync(long orderId)
         {
             log.Write(LogVerbosity.Info, "Going to cancel order " + orderId);
-            var query = new BitfinexSocketQuery(orderId.ToString(), BitfinexEventType.OrderCancel, new JObject { ["id"] = orderId });
+            var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderCancel, new JObject { ["id"] = orderId });
 
             return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);
         }
@@ -472,15 +501,16 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="groupOrderIds">The group ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        public CallResult<bool> CancelOrdersByGroupIds(long[] groupOrderIds) => CancelOrdersByGroupIdsAsync(groupOrderIds).Result;
+        public CallResult<bool> CancelOrdersByGroupIds(IEnumerable<long> groupOrderIds) => CancelOrdersByGroupIdsAsync(groupOrderIds).Result;
 
         /// <summary>
         /// Cancels multiple orders based on their groupIds
         /// </summary>
         /// <param name="groupOrderIds">The group ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        public async Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(long[] groupOrderIds)
+        public async Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderIds)
         {
+            groupOrderIds.ValidateNotNull(nameof(groupOrderIds));
             return await CancelOrdersAsync(null, null, groupOrderIds.ToDictionary(v => v, k => (long?)null)).ConfigureAwait(false);
         }
 
@@ -489,15 +519,16 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="orderIds">The order ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        public CallResult<bool> CancelOrders(long[] orderIds) => CancelOrdersAsync(orderIds).Result;
+        public CallResult<bool> CancelOrders(IEnumerable<long> orderIds) => CancelOrdersAsync(orderIds).Result;
 
         /// <summary>
         /// Cancels multiple orders based on their order ids
         /// </summary>
         /// <param name="orderIds">The order ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        public async Task<CallResult<bool>> CancelOrdersAsync(long[] orderIds)
+        public async Task<CallResult<bool>> CancelOrdersAsync(IEnumerable<long> orderIds)
         {
+            orderIds.ValidateNotNull(nameof(orderIds));
             return await CancelOrdersAsync(orderIds, null).ConfigureAwait(false);
         }
 
@@ -520,10 +551,10 @@ namespace Bitfinex.Net
         #endregion
 
         #region private methods
-        private void HandleData<T>(string name, JArray dataArray, Action<T> handler)
+        private void HandleData<T>(string name, JArray dataArray, Action<T> handler, JsonSerializer? serializer = null)
         {
-            var desResult = Deserialize<T>(dataArray);
-            if (!desResult.Success)
+            var desResult = Deserialize<T>(dataArray, serializer: serializer);
+            if (!desResult)
             {
                 log.Write(LogVerbosity.Warning, $"Failed to deserialize {name} object: " + desResult.Error);
                 return;
@@ -532,29 +563,32 @@ namespace Bitfinex.Net
             handler(desResult.Data);
         }
 
-        private void HandleSingleToArrayData<T>(string name, JArray dataArray, Action<T[]> handler)
+        private void HandleSingleToArrayData<T>(string name, JArray dataArray, Action<IEnumerable<T>> handler, JsonSerializer? serializer = null)
         {
-            var desResult = Deserialize<T>(dataArray);
-            if (!desResult.Success)
+            var wrapperArray = new JArray();
+            wrapperArray.Add(dataArray);
+
+            var desResult = Deserialize<IEnumerable<T>>(wrapperArray, serializer: serializer);
+            if (!desResult)
             {
                 log.Write(LogVerbosity.Warning, $"Failed to deserialize  {name} object: " + desResult.Error);
                 return;
             }
 
-            handler(new[] { desResult.Data });
+            handler(desResult.Data);
         }
 
-        private async Task<CallResult<bool>> CancelOrdersAsync(long[] orderIds = null, Dictionary<long, DateTime> clientOrderIds = null, Dictionary<long, long?> groupOrderIds = null)
+        private async Task<CallResult<bool>> CancelOrdersAsync(IEnumerable<long>? orderIds = null, Dictionary<long, DateTime>? clientOrderIds = null, Dictionary<long, long?>? groupOrderIds = null)
         {
             if (orderIds == null && clientOrderIds == null && groupOrderIds == null)
-                return new CallResult<bool>(false, new ArgumentError("Either orderIds, clientOrderIds or groupOrderIds should be provided"));
+                throw new ArgumentException("Either orderIds, clientOrderIds or groupOrderIds should be provided");
 
             log.Write(LogVerbosity.Info, "Going to cancel multiple orders");
-            var cancelObject = new BitfinexMultiCancel {OrderIds = orderIds};
+            var cancelObject = new BitfinexMultiCancel { OrderIds = orderIds };
             if (clientOrderIds != null)
             {
                 cancelObject.ClientIds = new object[clientOrderIds.Count][];
-                for(var i = 0; i < cancelObject.ClientIds.Length; i++)
+                for (var i = 0; i < cancelObject.ClientIds.Length; i++)
                 {
                     cancelObject.ClientIds[i] = new object[]
                     {
@@ -563,137 +597,31 @@ namespace Bitfinex.Net
                     };
                 }
             }
-            if(groupOrderIds != null)
+            if (groupOrderIds != null)
                 cancelObject.GroupIds = new[] { groupOrderIds.Select(g => g.Key).ToArray() };
 
             var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, cancelObject);
             return await Query<bool>(query, true).ConfigureAwait(false);
         }
-
-        private async Task<CallResult<T>> Query<T>(BitfinexSocketQuery request, bool signed)
+        
+        private void HandleAuthUpdate<T>(JToken token, Action<BitfinexSocketEvent<IEnumerable<T>>> action, string category)
         {
-            CallResult<T> result = null;
-            var internalHandler = new Action<BitfinexSocketEvent<JToken>>(data => result = Deserialize<T>(data.Data));
-
-            var subscription = GetBackgroundSocket(signed);
-            if (subscription == null)
-            {
-                // We don't have a background socket to query, create a new one
-                var connectResult = await CreateAndConnectSocketAuth(internalHandler, false).ConfigureAwait(false);
-                if (!connectResult.Success)
-                    return new CallResult<T>(default(T), connectResult.Error);
-
-                subscription = connectResult.Data;
-                subscription.Type = signed ? SocketType.BackgroundAuthenticated : SocketType.Background;
-
-                if (signed)
-                {
-                    var authResult = await Authenticate(subscription, "trading", "notify").ConfigureAwait(false);
-                    if (!authResult.Success)
-                    {
-                        await subscription.Close().ConfigureAwait(false);
-                        return new CallResult<T>(default(T), authResult.Error);
-                    }
-                }
-            }
-            else
-            {
-                // Use earlier created background socket to query without having to connect again
-                subscription.Events.Single(s => s.Name == DataEvent).Reset();
-                subscription.MessageHandlers[DataHandlerName] = (subs, data) => DataHandlerQuery((BitfinexSocketSubscription)subs, data, internalHandler);
-            }
-
-            var bitfinexSubscription = (BitfinexSocketSubscription) subscription;
-            if (bitfinexSubscription.MaintenanceMode)
-            {
-                log.Write(LogVerbosity.Info, "Socket in maintenance mode, canceling query");
-                return new CallResult<T>(default(T), new ServerError("Socket in maintenance mode, try again after the socket is reconnected"));
-            }
-
-            subscription.Request = request;
-            var waitTask = subscription.WaitForEvent(DataEvent, request.Id, socketResponseTimeout);
-            Send(subscription.Socket, request);
-            var dataResult = await waitTask.ConfigureAwait(false);
-            if(!dataResult.Success)
-                subscription.SetEventById(request.Id, false, dataResult.Error);
-
-            return !dataResult.Success ? new CallResult<T>(default(T), dataResult.Error) : result;
-        }
-
-        private async Task<CallResult<UpdateSubscription>> Subscribe(BitfinexSubscriptionRequest request, Action<JToken> onData)
-        {
-            var connectResult = await CreateAndConnectSocket(onData).ConfigureAwait(false);
-            if (!connectResult.Success)
-                return new CallResult<UpdateSubscription>(null, connectResult.Error);
-
-            return await Subscribe(connectResult.Data, request).ConfigureAwait(false);
-        }
-
-        private async Task<CallResult<UpdateSubscription>> Subscribe(SocketSubscription subscription, BitfinexSubscriptionRequest request)
-        {
-            var waitTask = subscription.WaitForEvent(SubscriptionEvent, socketResponseTimeout);
-            Send(subscription.Socket, request);
-
-            subscription.Request = request;
-            var subResult = await waitTask.ConfigureAwait(false);
-            if (!subResult.Success)
-            {
-                await subscription.Close().ConfigureAwait(false);
-                return new CallResult<UpdateSubscription>(null, subResult.Error);
-            }
-
-            subscription.Socket.ShouldReconnect = true;
-            return new CallResult<UpdateSubscription>(new UpdateSubscription(subscription), null);
-        }
-
-        private async Task<CallResult<UpdateSubscription>> SubscribeAuth(string filter, Action<BitfinexSocketEvent<JToken>> onData)
-        {
-            var connectResult = await CreateAndConnectSocketAuth(onData, true).ConfigureAwait(false);
-            if (!connectResult.Success)
-                return new CallResult<UpdateSubscription>(null, connectResult.Error);
-
-            var result = await Authenticate(connectResult.Data, filter).ConfigureAwait(false);
-            if(!result.Success)            
-                await connectResult.Data.Close().ConfigureAwait(false);
-            else
-                connectResult.Data.Socket.ShouldReconnect = true;
-            return result;
-        }
-
-        private async Task<CallResult<UpdateSubscription>> Authenticate(SocketSubscription subscription, params string[] filter)
-        {
-            if(authProvider == null)
-                return new CallResult<UpdateSubscription>(null, new NoApiCredentialsError());
-
-            var authObject = GetAuthObject(filter);
-            var waitTask = subscription.WaitForEvent(AuthenticationEvent, socketResponseTimeout);
-            Send(subscription.Socket, authObject);
-
-            subscription.Request = authObject;            
-            var subResult = await waitTask.ConfigureAwait(false);
-            if (!subResult.Success)
-                return new CallResult<UpdateSubscription>(null, subResult.Error);            
-
-            return new CallResult<UpdateSubscription>(new UpdateSubscription(subscription), null);
-        }
-
-        private void HandleAuthUpdate<T>(BitfinexSocketEvent<JToken> token, Action<BitfinexSocketEvent<T[]>> action, IEnumerable<BitfinexEvent> events)
-        {
-            var evnt = events.SingleOrDefault(e => e.EventType == token.EventType);
-            if (evnt == null)
+            var evntType = BitfinexEvents.EventMapping[(string)token[1]];
+            var evnt = BitfinexEvents.Events.Single(e => e.EventType == evntType);
+            if (evnt.Category != category)
                 return;
 
             if (action == null)
             {
-                log.Write(LogVerbosity.Debug, $"Ignoring {token.EventType} event because not subscribed");
+                log.Write(LogVerbosity.Debug, $"Ignoring {evnt.EventType} event because not subscribed");
                 return;
             }
 
-            T[] data;
+            IEnumerable<T> data;
             if (evnt.Single)
             {
-                var result = Deserialize<T>(token.Data);
-                if (!result.Success)
+                var result = Deserialize<T>(token[2]);
+                if (!result)
                 {
                     log.Write(LogVerbosity.Warning, "Failed to deserialize data: " + result.Error);
                     return;
@@ -702,8 +630,8 @@ namespace Bitfinex.Net
             }
             else
             {
-                var result = Deserialize<T[]>(token.Data);
-                if (!result.Success)
+                var result = Deserialize<IEnumerable<T>>(token[2]);
+                if (!result)
                 {
                     log.Write(LogVerbosity.Warning, "Failed to deserialize data: " + result.Error);
                     return;
@@ -711,282 +639,74 @@ namespace Bitfinex.Net
                 data = result.Data;
             }
 
-            action(new BitfinexSocketEvent<T[]>(token.EventType, data));
+            action(new BitfinexSocketEvent<IEnumerable<T>>(evntType, data));
         }
 
-        private async Task<CallResult<BitfinexSocketSubscription>> CreateAndConnectSocket(Action<JToken> onMessage)
+        private void ConfHandler(SocketConnection connection, JToken data)
         {
-            var socket = CreateSocket(BaseAddress);
-            socket.Timeout = socketNoDataTimeout;
-            var subscription = new BitfinexSocketSubscription(socket);
-            subscription.MessageHandlers.Add(HeartbeatHandlerName, HeartbeatHandler);
-            subscription.MessageHandlers.Add(DataHandlerName, (subs, data) => DataHandler(subs, data, onMessage));
+            var confEvent = data.Type == JTokenType.Object && (string)data["event"] == "conf";
+            if (!confEvent)
+                return;
 
-            subscription.MessageHandlers.Add(SubscriptionHandlerName, SubscriptionHandler);
-            subscription.MessageHandlers.Add(InfoHandlerName, InfoHandler);
-            subscription.AddEvent(SubscriptionEvent);
-
-            var connectResult = await ConnectSocket(subscription).ConfigureAwait(false);
-            if (!connectResult.Success)
-                return new CallResult<BitfinexSocketSubscription>(null, connectResult.Error);
-
-            return new CallResult<BitfinexSocketSubscription>(subscription, null);
+            // Could check conf result;
         }
 
-        private async Task<CallResult<BitfinexSocketSubscription>> CreateAndConnectSocketAuth(Action<BitfinexSocketEvent<JToken>> onMessage, bool subscribing)
-        {
-            var socket = CreateSocket(BaseAddress);
-            socket.Timeout = socketNoDataTimeout;
-            var subscription = new BitfinexSocketSubscription(socket);
-            subscription.MessageHandlers.Add(HeartbeatHandlerName, HeartbeatHandler);
-            if (subscribing)
-                subscription.MessageHandlers.Add(DataHandlerName, (subs, data) => DataHandlerAuth(data, onMessage));
-            else
-            {
-                subscription.MessageHandlers.Add(DataHandlerName, (subs, data) => DataHandlerQuery((BitfinexSocketSubscription)subs, data, onMessage));
-                subscription.AddEvent(DataEvent);
-            }
-
-            subscription.MessageHandlers.Add(AuthenticationHandlerName, AuthenticationHandler);
-            subscription.AddEvent(AuthenticationEvent);
-            subscription.MessageHandlers.Add(InfoHandlerName, InfoHandler);
-
-            var connectResult = await ConnectSocket(subscription).ConfigureAwait(false);
-            if (!connectResult.Success)
-                return new CallResult<BitfinexSocketSubscription>(null, connectResult.Error);
-
-            return new CallResult<BitfinexSocketSubscription>(subscription, null);
-        }
-
-
-        private bool InfoHandler(SocketSubscription subscription, JToken data)
+        private void InfoHandler(SocketConnection connection, JToken data)
         {
             var infoEvent = data.Type == JTokenType.Object && (string)data["event"] == "info";
             if (!infoEvent)
-                return false;
+                return;
 
             log.Write(LogVerbosity.Debug, $"Info event received: {data}");
             if (data["code"] == null)
-                return true;
+            {
+                // welcome event
+                connection.Send(new BitfinexSocketConfig { Event = "conf", Flags = 131072 });
+                return;
+            }
 
-            var code = (int) data["code"];
+            var code = (int)data["code"];
             switch (code)
             {
                 case 20051:
                     log.Write(LogVerbosity.Info, $"Code {code} received, reconnecting socket");
-                    subscription.Socket.Close(); // Closing it via socket will automatically reconnect
+                    connection.PausedActivity = true; // Prevent new operations to be send
+                    var closeTask = connection.Socket.Close(); // Closing it via socket will automatically reconnect
                     break;
                 case 20060:
                     log.Write(LogVerbosity.Info, $"Code {code} received, entering maintenance mode");
-                    ((BitfinexSocketSubscription) subscription).MaintenanceMode = true;
+                    connection.PausedActivity = true;
                     break;
                 case 20061:
                     log.Write(LogVerbosity.Info, $"Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
-                    ((BitfinexSocketSubscription)subscription).MaintenanceMode = false;
-                    subscription.Socket.Close(); // Closing it via socket will automatically reconnect
+                    connection.Socket.Close(); // Closing it via socket will automatically reconnect
                     break;
                 default:
                     log.Write(LogVerbosity.Warning, $"Unknown info code received: {code}");
                     break;
             }
-
-            return true;
         }
 
-        private bool HeartbeatHandler(SocketSubscription subscription, JToken data)
+        /// <inheritdoc />
+        protected override async Task<bool> Unsubscribe(SocketConnection connection, SocketSubscription subscription)
         {
-            return data.Type == JTokenType.Array && data[1].Type == JTokenType.String && (string)data[1] == "hb";
-        }
-
-        private bool AuthenticationHandler(SocketSubscription subscription, JToken data)
-        {
-            if (data.Type != JTokenType.Object)
-                return false;
-
-            var authEvent = (string)data["event"] == "auth";
-            if (!authEvent)
-                return false;
-
-            var authResponse = Deserialize<BitfinexAuthenticationResponse>(data, false);
-            if (!authResponse.Success)
+            var channelId = ((BitfinexSubscriptionRequest) subscription.Request!).ChannelId;
+            var unsub = new BitfinexUnsubscribeRequest(channelId);
+            var result = false;
+            await connection.SendAndWait(unsub, ResponseTimeout, data =>
             {
-                log.Write(LogVerbosity.Warning, $"Socket {subscription.Socket.Id} authentication failed: " + authResponse.Error);
-                subscription.SetEventByName(AuthenticationEvent, false, authResponse.Error);
-                return true;
-            }
-
-            if (authResponse.Data.Status != "OK")
-            {
-                var error = new ServerError(authResponse.Data.ErrorCode, authResponse.Data.ErrorMessage);
-                log.Write(LogVerbosity.Debug, $"Socket {subscription.Socket.Id} authentication failed: " + error);
-                subscription.SetEventByName(AuthenticationEvent, false, error);
-                return true;
-            }
-
-            log.Write(LogVerbosity.Debug, $"Socket {subscription.Socket.Id} authentication completed");
-            subscription.SetEventByName(AuthenticationEvent, true, null);
-            return true;
-        }
-
-        private bool SubscriptionHandler(SocketSubscription subscription, JToken data)
-        {
-            if (data.Type != JTokenType.Object)
-                return false;
-
-            var infoEvent = (string)data["event"] == "subscribed";
-            var errorEvent = (string)data["event"] == "error";
-            if (!infoEvent && !errorEvent)
-                return false;
-
-            var evnt = subscription.GetWaitingEvent(SubscriptionEvent);
-            if (evnt == null)
-                return false;
-
-            if (infoEvent)
-            {
-                var subResponse = Deserialize<BitfinexSubscribeResponse>(data, false);
-                if (!subResponse.Success)
-                {
-                    log.Write(LogVerbosity.Warning, $"Socket {subscription.Socket.Id} subscription failed: " + subResponse.Error);
-                    subscription.SetEventByName(SubscriptionEvent, false, subResponse.Error);
-                    return true;
-                }
-
-                log.Write(LogVerbosity.Debug, $"Socket {subscription.Socket.Id} subscription completed");
-                ((BitfinexSubscriptionRequest)subscription.Request).ChannelId = subResponse.Data.ChannelId;
-                subscription.SetEventByName(SubscriptionEvent, true, null);
-                return true;
-            }
-            else
-            {
-                var subResponse = Deserialize<BitfinexErrorResponse>(data, false);
-                if (!subResponse.Success)
-                {
-                    log.Write(LogVerbosity.Warning, $"Socket {subscription.Socket.Id} subscription failed: " + subResponse.Error);
-                    subscription.SetEventByName(SubscriptionEvent, false, subResponse.Error);
-                    return true;
-                }
-
-                var error = new ServerError(subResponse.Data.Code, subResponse.Data.Message);
-                log.Write(LogVerbosity.Debug, $"Socket {subscription.Socket.Id} subscription failed: " + error);
-                subscription.SetEventByName(SubscriptionEvent, false, error);
-                return true;
-            }
-        }
-
-        private bool DataHandler(SocketSubscription subscription, JToken data, Action<JToken> handler)
-        {
-            var dataObject = data.Type == JTokenType.Array;
-            if (!dataObject)
-                return false;
-
-            var channelId = (int)((JArray)data)[0];
-            var subId = ((BitfinexSubscriptionRequest)subscription.Request).ChannelId;
-            if (channelId != subId)
-                return false;
-
-            handler(data);
-            return true;          
-        }
-
-        private bool DataHandlerAuth(JToken data, Action<BitfinexSocketEvent<JToken>> handler)
-        {
-            var dataObject = data.Type == JTokenType.Array;
-            if (!dataObject)
-                return false;
-
-            var eventTypeString = (string)data[1];
-            var eventType = BitfinexEvents.EventMapping[eventTypeString];
-            var result = new BitfinexSocketEvent<JToken> {EventType = eventType, Data = data[2]};
-            handler(result);
-            return true;
-        }
-
-        private bool DataHandlerQuery(BitfinexSocketSubscription subscription, JToken data, Action<BitfinexSocketEvent<JToken>> handler)
-        {
-            var dataObject = data.Type == JTokenType.Array;
-            if (!dataObject)
-                return false;
-
-            var evnt = subscription.GetWaitingEvent(DataEvent);
-            if (evnt == null)
-                return false;
-
-            var request = (BitfinexSocketQuery)subscription.Request;
-            var eventType = BitfinexEvents.EventMapping[(string)data[1]];
-            if (eventType == BitfinexEventType.Notification)
-            {
-                var notificationData = (JArray)data[2];
-                var notificationType = BitfinexEvents.EventMapping[(string)notificationData[1]];
-                if (notificationType != BitfinexEventType.OrderNewRequest 
-                 && notificationType != BitfinexEventType.OrderCancelRequest
-                 && notificationType != BitfinexEventType.OrderUpdateRequest
-                 && notificationType != BitfinexEventType.OrderCancelMultiRequest)
+                if (data.Type != JTokenType.Object)
                     return false;
 
-                if (((string)notificationData[6]).ToLower() == "error")
-                {
-                    if(request.QueryType == BitfinexEventType.OrderNew && notificationType == BitfinexEventType.OrderNewRequest)
-                    {
-                        var orderData = notificationData[4];
-                        if ((string)orderData[2] != request.Id)
-                            return false;
-
-                        subscription.SetEventByName(DataEvent, false, new ServerError((string)notificationData[7]));
-                        return true;
-                    }
-                    if(request.QueryType == BitfinexEventType.OrderCancel && notificationType == BitfinexEventType.OrderCancelRequest)
-                    {
-                        var orderData = notificationData[4];
-                        if ((string)orderData[0] != request.Id)
-                            return false;
-
-                        subscription.SetEventByName(DataEvent, false, new ServerError((string)notificationData[7]));
-                        return true;
-                    }                    
-                    if(request.QueryType == BitfinexEventType.OrderUpdate && notificationType == BitfinexEventType.OrderUpdateRequest)
-                    {
-                        // OrderUpdateRequest not found notification doesn't carry the order id, where as OrderCancelRequest not found notification does..
-                        // Anyway, can't check for ids, so just assume its for this one
-
-                        subscription.SetEventByName(DataEvent, false, new ServerError((string)notificationData[7]));
-                        return true;
-                    }
-                    if(request.QueryType == BitfinexEventType.OrderCancelMulti && notificationType == BitfinexEventType.OrderCancelMultiRequest)
-                    {
-                        subscription.SetEventByName(DataEvent, false, new ServerError((string)notificationData[7]));
-                        return true;
-                    }
-                }
-
-                if(notificationType == BitfinexEventType.OrderCancelMultiRequest)
-                {
-                    handler(new BitfinexSocketEvent<JToken>
-                    {
-                        EventType = BitfinexEventType.OrderCancelMulti,
-                        Data = JToken.Parse("true")
-                    });
-                    subscription.SetEventByName(DataEvent, true, null);
-                    return true;
-                }
-
-                return false;
-            }
-
-            if (eventType == BitfinexEventType.OrderNew
-                || eventType == BitfinexEventType.OrderUpdate
-                || eventType == BitfinexEventType.OrderCancel)
-            {
-                var orderData = (JArray)data[2];
-                if ((string)orderData[2] != request.Id && (string)orderData[0] != request.Id)
+                var evnt = (string)data["event"];
+                var channel = (string)data["chanId"];
+                if (!int.TryParse(channel, out var chan))
                     return false;
 
-                var resultEvnt = new BitfinexSocketEvent<JToken> { EventType = eventType, Data = orderData };
-                handler(resultEvnt);
-                subscription.SetEventByName(DataEvent, true, null);
-            }
-
-            return true;
+                result = evnt == "unsubscribed" && channelId == chan;
+                return result;
+            }).ConfigureAwait(false);
+            return result;
         }
 
         private BitfinexAuthentication GetAuthObject(params string[] filter)
@@ -995,31 +715,14 @@ namespace Bitfinex.Net
             var authentication = new BitfinexAuthentication
             {
                 Event = "auth",
-                ApiKey = authProvider.Credentials.Key.GetString(),
+                ApiKey = authProvider!.Credentials.Key!.GetString(),
                 Nonce = n,
                 Payload = "AUTH" + n
             };
             if (filter.Any())
                 authentication.Filter = filter;
-            authentication.Signature = authProvider.Sign(authentication.Payload).ToLower();
+            authentication.Signature = authProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
             return authentication;
-        }
-
-        protected override bool SocketReconnect(SocketSubscription subscription, TimeSpan disconnectedTime)
-        {
-            if (subscription.Request is BitfinexAuthentication request)
-            {
-                var resubResult = Authenticate(subscription, request.Filter).Result;
-                if (!resubResult.Success)
-                    return false;
-            }
-            else
-            {
-                var resubResult = Subscribe(subscription, (BitfinexSubscriptionRequest)subscription.Request).Result;
-                if (!resubResult.Success)
-                    return false;
-            }
-            return true;
         }
 
         private long GenerateClientOrderId()
@@ -1028,12 +731,262 @@ namespace Bitfinex.Net
             random.NextBytes(buffer);
             return (long)Math.Round(Math.Abs(BitConverter.ToInt32(buffer, 0)) / 1000m);
         }
-
-        private void Configure(BitfinexSocketClientOptions options)
-        {
-            socketResponseTimeout = options.SocketResponseTimeout;
-            socketNoDataTimeout = options.SocketNoDataTimeout;
-        }
         #endregion
+
+        /// <inheritdoc />
+        protected override async Task<CallResult<bool>> AuthenticateSocket(SocketConnection s)
+        {
+            if (authProvider == null)
+                return new CallResult<bool>(false, new NoApiCredentialsError());
+
+            var authObject = GetAuthObject();
+            var result = new CallResult<bool>(false, new ServerError("No response from server"));
+            await s.SendAndWait(authObject, ResponseTimeout, tokenData =>
+            {
+                if (tokenData.Type != JTokenType.Object)
+                    return false;
+
+                if ((string) tokenData["event"] != "auth")
+                    return false;
+
+                var authResponse = Deserialize<BitfinexAuthenticationResponse>(tokenData, false);
+                if (!authResponse)
+                {
+                    log.Write(LogVerbosity.Warning, $"Socket {s.Socket.Id} authentication failed: " + authResponse.Error);
+                    result = new CallResult<bool>(false, authResponse.Error);
+                    return false;
+                }
+
+                if (authResponse.Data.Status != "OK")
+                {
+                    var error = new ServerError(authResponse.Data.ErrorCode, authResponse.Data.ErrorMessage ?? "-");
+                    result = new CallResult<bool>(false, error);
+                    log.Write(LogVerbosity.Debug, $"Socket {s.Socket.Id} authentication failed: " + error);
+                    return false;
+                }
+
+                log.Write(LogVerbosity.Debug, $"Socket {s.Socket.Id} authentication completed");
+                result = new CallResult<bool>(true, null);
+                return true;
+            }).ConfigureAwait(false);
+
+            return result;
+        }
+
+        /// <inheritdoc />
+        protected override bool HandleQueryResponse<T>(SocketConnection s, object request, JToken data, out CallResult<T>? callResult)
+        {
+            callResult = null;
+            if (data.Type != JTokenType.Array)
+                return false;
+
+            var array = (JArray) data;
+            if (array.Count < 3)
+                return false;
+
+            var bfRequest = (BitfinexSocketQuery)request;
+            var eventType = BitfinexEvents.EventMapping[(string)data[1]];
+
+            if (eventType == BitfinexEventType.Notification)
+            {
+                var notificationData = (JArray) data[2];
+                var notificationType = BitfinexEvents.EventMapping[(string) notificationData[1]];
+                if (notificationType != BitfinexEventType.OrderNewRequest
+                    && notificationType != BitfinexEventType.OrderCancelRequest
+                    && notificationType != BitfinexEventType.OrderUpdateRequest
+                    && notificationType != BitfinexEventType.OrderCancelMultiRequest)
+                {
+                    return false;
+                }
+
+                var statusString = ((string)notificationData[6]).ToLower(CultureInfo.InvariantCulture);
+                if (statusString == "error")
+                {
+                    if (bfRequest.QueryType == BitfinexEventType.OrderNew && notificationType == BitfinexEventType.OrderNewRequest)
+                    {
+                        var orderData = notificationData[4];
+                        if ((string) orderData[2] != bfRequest.Id)
+                            return false;
+
+                        callResult = new CallResult<T>(default, new ServerError((string)notificationData[7]));
+                        return true;
+                    }
+
+                    if (bfRequest.QueryType == BitfinexEventType.OrderCancel && notificationType == BitfinexEventType.OrderCancelRequest)
+                    {
+                        var orderData = notificationData[4];
+                        if ((string) orderData[0] != bfRequest.Id)
+                            return false;
+
+                        callResult = new CallResult<T>(default, new ServerError((string)notificationData[7]));
+                        return true;
+                    }
+
+                    if (bfRequest.QueryType == BitfinexEventType.OrderUpdate && notificationType == BitfinexEventType.OrderUpdateRequest)
+                    {
+                        // OrderUpdateRequest not found notification doesn't carry the order id, where as OrderCancelRequest not found notification does..
+                        // Anyway, can't check for ids, so just assume its for this one
+
+                        callResult = new CallResult<T>(default, new ServerError((string)notificationData[7]));
+                        return true;
+                    }
+
+                    if (bfRequest.QueryType == BitfinexEventType.OrderCancelMulti && notificationType == BitfinexEventType.OrderCancelMultiRequest)
+                    {
+                        callResult = new CallResult<T>(default, new ServerError((string)notificationData[7]));
+                        return true;
+                    }
+                }
+
+                if (notificationType == BitfinexEventType.OrderNewRequest
+                || notificationType == BitfinexEventType.OrderUpdateRequest
+                || notificationType == BitfinexEventType.OrderCancelRequest)
+                {
+                    if (bfRequest.QueryType == BitfinexEventType.OrderNew
+                    || bfRequest.QueryType == BitfinexEventType.OrderUpdate
+                    || bfRequest.QueryType == BitfinexEventType.OrderCancel)
+                    {
+                        var orderData = notificationData[4];
+                        var dataOrderId = orderData[0].ToString();
+                        var dataOrderClientId = orderData[2].ToString();
+                        if (dataOrderId == bfRequest.Id || dataOrderClientId == bfRequest.Id)
+                        {
+                            var desResult = Deserialize<T>(orderData);
+                            if (!desResult)
+                            {
+                                callResult = new CallResult<T>(default, desResult.Error);
+                                return true;
+                            }
+
+                            callResult = new CallResult<T>(desResult.Data, null);
+                            return true;
+                        }
+                    }
+                }
+
+                if (notificationType == BitfinexEventType.OrderCancelMultiRequest)
+                {
+                    callResult = new CallResult<T>(Deserialize<T>(JToken.Parse("true")).Data, null);
+                    return true;
+                }
+            }
+
+            if (bfRequest.QueryType == BitfinexEventType.OrderCancelMulti && eventType == BitfinexEventType.OrderCancel)
+            {
+                callResult = new CallResult<T>(Deserialize<T>(JToken.Parse("true")).Data, null);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc />
+        protected override bool HandleSubscriptionResponse(SocketConnection s, SocketSubscription subscription, object request, JToken data, out CallResult<object>? callResult)
+        {
+            callResult = null;
+            if (data.Type != JTokenType.Object)
+                return false;
+
+            var infoEvent = (string)data["event"] == "subscribed";
+            var errorEvent = (string)data["event"] == "error";
+            if (!infoEvent && !errorEvent)
+                return false;
+
+            if (infoEvent)
+            {
+                var subResponse = Deserialize<BitfinexSubscribeResponse>(data, false);
+                if (!subResponse)
+                {
+                    callResult = new CallResult<object>(null, subResponse.Error);
+                    log.Write(LogVerbosity.Warning, $"Socket {s.Socket.Id} subscription failed: " + subResponse.Error);
+                    return false;
+                }
+
+                var bRequest = (BitfinexSubscriptionRequest) request;
+                if (!bRequest.CheckResponse(data))
+                    return false;
+                
+                log.Write(LogVerbosity.Debug, $"Socket {s.Socket.Id} subscription completed, {bRequest.Symbol} - {subResponse.Data.ChannelId}");
+                bRequest.ChannelId = subResponse.Data.ChannelId;
+                callResult = new CallResult<object>(subResponse.Data, subResponse.Error);
+                return true;
+            }
+            else
+            {
+                var subResponse = Deserialize<BitfinexErrorResponse>(data, false);
+                if (!subResponse)
+                {
+                    callResult = new CallResult<object>(null, subResponse.Error);
+                    log.Write(LogVerbosity.Warning, $"Socket {s.Socket.Id} subscription failed: " + subResponse.Error);
+                    return false;
+                }
+
+                var error = new ServerError(subResponse.Data.Code, subResponse.Data.Message);
+                callResult = new CallResult<object>(null, error);
+                log.Write(LogVerbosity.Debug, $"Socket {s.Socket.Id} subscription failed: " + error);
+                return true;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override bool MessageMatchesHandler(JToken message, object request)
+        {
+            if (message.Type != JTokenType.Array)
+                return false;
+
+            var array = (JArray) message;
+            if (array.Count < 2)
+                return false;
+
+            if (!int.TryParse(array[0].ToString(), out var channelId))
+                return false;
+
+            if (channelId == 0)
+                return false;
+
+            var subId = ((BitfinexSubscriptionRequest)request).ChannelId;
+            return channelId == subId && array[1].ToString() != "hb";
+        }
+
+        /// <inheritdoc />
+        protected override bool MessageMatchesHandler(JToken message, string identifier)
+        {
+            if (message.Type == JTokenType.Object)
+            {
+                if (identifier == "Info")
+                    return (string)message["event"] == "info";
+                if (identifier == "Conf")
+                    return (string)message["event"] == "conf";
+            }
+
+            else if (message.Type == JTokenType.Array)
+            {
+                var array = (JArray) message;
+                if (array.Count < 2)
+                    return false;
+
+                if (identifier == "HB")
+                    return array[1].ToString() == "hb";
+
+                if (!int.TryParse(array[0].ToString(), out var channelId))
+                    return false;
+
+                if (channelId != 0)
+                    return false;
+
+                var split = identifier.Split(new[] {"|"}, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var id in split)
+                {
+                    var events = BitfinexEvents.GetEventsForCategory(id);
+                    var eventTypeString = (string) array[1];
+                    var eventType = BitfinexEvents.EventMapping[eventTypeString];
+                    var evnt = events.SingleOrDefault(e => e.EventType == eventType);
+                    if (evnt != null)
+                        return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

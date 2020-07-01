@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
-    public class BitfinexUpdateOrder
+    internal class BitfinexUpdateOrder
     {
         [JsonProperty("id")]
         public long OrderId { get; set; }
@@ -14,9 +14,9 @@ namespace Bitfinex.Net.Objects.SocketObjects
         [JsonProperty("price"), JsonConverter(typeof(DecimalAsStringConverter))]
         public decimal? Price { get; set; }
         [JsonProperty("price_trailing")]
-        public string PriceTrailing { get; set; }
+        public string? PriceTrailing { get; set; }
         [JsonProperty("price_aux_limit"), JsonConverter(typeof(DecimalAsStringConverter))]
-        public string PriceAuxiliaryLimit { get; set; }        
+        public string? PriceAuxiliaryLimit { get; set; }        
         [JsonProperty("flags")]
         public OrderFlags? Flags { get; set; }
     }

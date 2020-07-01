@@ -4,12 +4,12 @@ using Newtonsoft.Json;
 namespace Bitfinex.Net.Objects
 {
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexError
+    internal class BitfinexError
     {
         [ArrayProperty(1)]
         public int ErrorCode { get; set; }
         [ArrayProperty(2)]
-        public string ErrorMessage { get; set; }
+        public string ErrorMessage { get; set; } = "";
 
         public BitfinexError(int errorCode, string errorMessage)
         {

@@ -4,28 +4,61 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
 {
+    /// <summary>
+    /// Wallet movement info (deposit/withdraw)
+    /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexMovement
     {
+        /// <summary>
+        /// The id of the movement
+        /// </summary>
         [ArrayProperty(0)]
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
+        /// <summary>
+        /// The currency of the movement
+        /// </summary>
         [ArrayProperty(1)]
-        public string Currency { get; set; }
+        public string Currency { get; set; } = "";
+        /// <summary>
+        /// The full name of the currency
+        /// </summary>
         [ArrayProperty(2)]
-        public string CurrencyName { get; set; }
+        public string CurrencyName { get; set; } = "";
+        /// <summary>
+        /// The initial creation time
+        /// </summary>
         [ArrayProperty(5), JsonConverter(typeof(TimestampConverter))]
         public DateTime Started { get; set; }
+        /// <summary>
+        /// The last update time
+        /// </summary>
         [ArrayProperty(6), JsonConverter(typeof(TimestampConverter))]
         public DateTime Updated { get; set; }
+        /// <summary>
+        /// The status of the movement
+        /// </summary>
         [ArrayProperty(9)]
-        public string Status { get; set; }
+        public string Status { get; set; } = "";
+        /// <summary>
+        /// The amount of the movement
+        /// </summary>
         [ArrayProperty(12)]
         public decimal Amount { get; set; }
+        /// <summary>
+        /// The fees of the movement
+        /// </summary>
         [ArrayProperty(13)]
         public decimal Fees { get; set; }
+        /// <summary>
+        /// The address
+        /// </summary>
         [ArrayProperty(16)]
-        public string Address { get; set; }
+        public string Address { get; set; } = "";
+        /// <summary>
+        /// The transaction id
+        /// </summary>
         [ArrayProperty(20)]
-        public string TransactionId { get; set; }
+        public string TransactionId { get; set; } = "";
     }
 }

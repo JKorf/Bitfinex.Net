@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Converters
 {
-    public class BoolToIntConverter : JsonConverter
+    internal class BoolToIntConverter : JsonConverter
     {
         private readonly bool quotes;
         private readonly bool asInt;
@@ -24,18 +24,18 @@ namespace Bitfinex.Net.Converters
         {
             if (asInt)
             {
-                writer.WriteValue((bool)value ? 1 : 0);
+                writer.WriteValue((bool?)value == true ? 1 : 0);
             }
             else
             {
                 if (quotes)
-                    writer.WriteValue((bool)value ? "1" : "0");
+                    writer.WriteValue((bool?)value == true ? "1" : "0");
                 else
-                    writer.WriteRawValue((bool)value ? "1" : "0");
+                    writer.WriteRawValue((bool?)value == true ? "1" : "0");
             }
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.Value == null)
                 return null;

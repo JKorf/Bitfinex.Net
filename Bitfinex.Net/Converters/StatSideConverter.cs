@@ -4,15 +4,15 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class StatSideConverter: BaseConverter<StatSide>
+    internal class StatSideConverter: BaseConverter<StatSide>
     {
         public StatSideConverter(): this(true) { }
         public StatSideConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<StatSide, string> Mapping => new Dictionary<StatSide, string>
+        protected override List<KeyValuePair<StatSide, string>> Mapping => new List<KeyValuePair<StatSide, string>>
         {
-            { StatSide.Long, "long" },
-            { StatSide.Short, "short" }
+            new KeyValuePair<StatSide, string>(StatSide.Long, "long"),
+            new KeyValuePair<StatSide, string>(StatSide.Short, "short")
         };
     }
 }

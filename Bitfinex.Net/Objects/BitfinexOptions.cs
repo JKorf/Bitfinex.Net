@@ -1,39 +1,53 @@
 ﻿using System;
+using Bitfinex.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 
 namespace Bitfinex.Net.Objects
 {
-    public class BitfinexClientOptions : ClientOptions
+    /// <summary>
+    /// Options for the BitfinexClient
+    /// </summary>
+    public class BitfinexClientOptions : RestClientOptions
     {
-        public BitfinexClientOptions()
+        /// <summary>
+        /// Create new client options
+        /// </summary>
+        public BitfinexClientOptions(): base("https://api.bitfinex.com")
         {
-            BaseAddress = "https://api.bitfinex.com";
         }
     }
 
+    /// <summary>
+    /// Options for the BitfinexSocketClient
+    /// </summary>
     public class BitfinexSocketClientOptions: SocketClientOptions
     {
         /// <summary>
-        /// The time to wait for a socket response
+        /// Create new socket options
         /// </summary>
-        public TimeSpan SocketResponseTimeout { get; set; } = TimeSpan.FromSeconds(10);
+        public BitfinexSocketClientOptions(): base("wss://api.bitfinex.com/ws/2")
+        {
+            SocketSubscriptionsCombineTarget = 10;
+            SocketNoDataTimeout = TimeSpan.FromSeconds(30);
+        }
+    }
+
+    /// <summary>
+    /// Options for the BitfinexSymbolOrderBook
+    /// </summary>
+    public class BitfinexOrderBookOptions : OrderBookOptions
+    {
         /// <summary>
-        /// The time after which the connection is assumed to be dropped
+        /// The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.
         /// </summary>
-        public TimeSpan SocketNoDataTimeout { get; set; } = TimeSpan.FromSeconds(30);
+        public IBitfinexSocketClient? SocketClient { get; }
 
-
-        public BitfinexSocketClientOptions()
+        /// <summary>
+        /// </summary>
+        /// <param name="client">The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.</param>
+        public BitfinexOrderBookOptions(IBitfinexSocketClient? client = null) : base("Bitfinex", false, true)
         {
-            BaseAddress = "wss://api.bitfinex.com/ws/2";
-        }        
-
-        public BitfinexSocketClientOptions Copy()
-        {
-            var copy = Copy<BitfinexSocketClientOptions>();
-            copy.SocketResponseTimeout = SocketResponseTimeout;
-            copy.SocketNoDataTimeout = SocketNoDataTimeout;
-            return copy;
+            SocketClient = client;
         }
     }
 }

@@ -3,12 +3,13 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.SocketObjects
 {
-    public class BitfinexNewOrder
+    internal class BitfinexNewOrder
     {
         [JsonConverter(typeof(OrderTypeConverter)), JsonProperty("type")]
         public OrderType OrderType { get; set; }
-        [JsonProperty("symbol")]
-        public string Symbol { get; set; }
+
+        [JsonProperty("symbol")] 
+        public string Symbol { get; set; } = "";
         [JsonProperty("amount"), JsonConverter(typeof(DecimalAsStringConverter))]
         public decimal? Amount { get; set; }
         [JsonProperty("price"), JsonConverter(typeof(DecimalAsStringConverter))]

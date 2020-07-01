@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Converters
 {
-    public class DecimalAsStringConverter: JsonConverter
+    internal class DecimalAsStringConverter: JsonConverter
     {
         private readonly bool quotes;
 

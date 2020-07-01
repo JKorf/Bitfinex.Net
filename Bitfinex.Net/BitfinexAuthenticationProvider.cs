@@ -1,26 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Objects;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net
 {
-    public class BitfinexAuthenticationProvider: AuthenticationProvider
+    internal class BitfinexAuthenticationProvider: AuthenticationProvider
     {
         private readonly HMACSHA384 encryptor;
         private readonly object locker;
 
         public BitfinexAuthenticationProvider(ApiCredentials credentials) : base(credentials)
         {
+            if (credentials.Secret == null)
+                throw new ArgumentException("ApiKey/Secret needed");
+
             locker = new object();
             encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(credentials.Secret.GetString()));
         }
 
-        public override Dictionary<string, string> AddAuthenticationToHeaders(string uri, string method, Dictionary<string, object> parameters, bool signed)
+        public override Dictionary<string, string> AddAuthenticationToHeaders(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, PostParameters postParameterPosition, ArrayParametersSerialization arraySerialization)
         {
+            if(Credentials.Key == null)
+                throw new ArgumentException("ApiKey/Secret needed");
+
             var result = new Dictionary<string, string>();
             if (!signed)
                 return result;
@@ -34,24 +44,24 @@ namespace Bitfinex.Net
 
                 result.Add("X-BFX-APIKEY", Credentials.Key.GetString());
                 result.Add("X-BFX-PAYLOAD", payload);
-                result.Add("X-BFX-SIGNATURE", signedData.ToLower());
+                result.Add("X-BFX-SIGNATURE", signedData.ToLower(CultureInfo.InvariantCulture));
             }
             else if (uri.Contains("v2"))
             {
-                var json = JsonConvert.SerializeObject(parameters);
+                var json = JsonConvert.SerializeObject(parameters.OrderBy(p => p.Key).ToDictionary(p => p.Key, p => p.Value));
                 var n = BitfinexSocketClient.Nonce;
                 var signature = $"/api{uri.Split(new[] { ".com" }, StringSplitOptions.None)[1]}{n}{json}";
                 var signedData = Sign(signature);
 
                 result.Add("bfx-apikey", Credentials.Key.GetString());
                 result.Add("bfx-nonce", n);
-                result.Add("bfx-signature", signedData.ToLower());
+                result.Add("bfx-signature", signedData.ToLower(CultureInfo.InvariantCulture));
             }
 
             return result;
         }
 
-        public override Dictionary<string, object> AddAuthenticationToParameters(string uri, string method, Dictionary<string, object> parameters, bool signed)
+        public override Dictionary<string, object> AddAuthenticationToParameters(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, PostParameters postParameterPosition, ArrayParametersSerialization arraySerialization)
         {
             if (!signed)
                 return parameters;

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using Bitfinex.Net.Objects;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Converters
 {
-    public class OrderStatusConverter: JsonConverter
+    internal class OrderStatusConverter: JsonConverter
     {
         private readonly Dictionary<string, OrderStatus> mapping = new Dictionary<string, OrderStatus>
         {
@@ -19,7 +20,7 @@ namespace Bitfinex.Net.Converters
         
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteValue(value.ToString().ToUpper());
+            writer.WriteValue(value.ToString().ToUpper(CultureInfo.InvariantCulture));
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -38,19 +39,33 @@ namespace Bitfinex.Net.Converters
 
         private OrderStatus ParseString(string status)
         {
-            var split = status.Split(new[] { " @ " }, StringSplitOptions.RemoveEmptyEntries);
-            var result = mapping.SingleOrDefault(m => m.Key == split[0]);
+            var wasSplit = status.Split(new[] { " was: " }, StringSplitOptions.RemoveEmptyEntries);
+            var split = wasSplit[0].Split(new[] { " @ " }, StringSplitOptions.RemoveEmptyEntries);
+
+            if(TryParseSubstring(split[0], out var result))
+               return result;
+
+            split = wasSplit[1].Split(new[] { " @ " }, StringSplitOptions.RemoveEmptyEntries);
+            if (TryParseSubstring(split[0], out result))
+                return result;
+
+            Debug.WriteLine($"Couldn't deserialize order status: {status}");
+            return OrderStatus.Unknown;
+        }
+
+        private bool TryParseSubstring(string data, out OrderStatus status)
+        {
+            status = OrderStatus.Unknown;
+            var result = mapping.SingleOrDefault(m => m.Key == data);
             if (result.Equals(default(KeyValuePair<string, OrderStatus>)))
             {
-                result = mapping.FirstOrDefault(m => split[0].Contains(m.Key));
+                result = mapping.FirstOrDefault(m => data.Contains(m.Key));
                 if (result.Equals(default(KeyValuePair<string, OrderStatus>)))
-                {
-                    Debug.WriteLine($"Couldn't deserialize order status: {status}");
-                    return OrderStatus.Unknown;
-                }
+                    return false;
             }
 
-            return result.Value;
+            status = result.Value;
+            return true;
         }
 
         public override bool CanConvert(Type objectType)

@@ -4,17 +4,17 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class StatKeyConverter: BaseConverter<StatKey>
+    internal class StatKeyConverter: BaseConverter<StatKey>
     {
         public StatKeyConverter(): this(true) { }
         public StatKeyConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<StatKey, string> Mapping => new Dictionary<StatKey, string>
+        protected override List<KeyValuePair<StatKey, string>> Mapping => new List<KeyValuePair<StatKey, string>>
         {
-            { StatKey.ActiveFundingInPositions, "credits.size" },
-            { StatKey.ActiveFundingInPositionsPerTradingSymbol, "credits.size.sym" },
-            { StatKey.TotalActiveFunding , "funding.size" },
-            { StatKey.TotalOpenPosition , "pos.size" }
+            new KeyValuePair<StatKey, string>(StatKey.ActiveFundingInPositions, "credits.size"),
+            new KeyValuePair<StatKey, string>(StatKey.ActiveFundingInPositionsPerTradingSymbol, "credits.size.sym"),
+            new KeyValuePair<StatKey, string>(StatKey.TotalActiveFunding , "funding.size"),
+            new KeyValuePair<StatKey, string>(StatKey.TotalOpenPosition , "pos.size")
         };
     }
 }

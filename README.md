@@ -1,4 +1,4 @@
-# ![Icon](https://github.com/JKorf/Bitfinex.Net/blob/master/Resources/icon.png?raw=true) Bitfinex.Net 
+# ![Icon](https://github.com/JKorf/Bitfinex.Net/blob/master/Bitfinex.Net/Icon/icon.png?raw=true) Bitfinex.Net 
 
 ![Build status](https://travis-ci.org/JKorf/Bitfinex.Net.svg?branch=master)
 
@@ -14,30 +14,39 @@ Additionally it adds some convenience features like:
 
 **If you think something is broken, something is missing or have any questions, please open an [Issue](https://github.com/JKorf/Bitfinex.Net/issues)**
 
----
-Also check out my other exchange API wrappers:
+## CryptoExchange.Net
+Implementation is build upon the CryptoExchange.Net library, make sure to also check out the documentation on that: [docs](https://github.com/JKorf/CryptoExchange.Net)
+
+Other CryptoExchange.Net implementations:
 <table>
 <tr>
-<td><a href="https://github.com/JKorf/Binance.Net"><img src="https://github.com/JKorf/Binance.Net/blob/master/Resources/binance-coin.png?raw=true"></a>
-<br />
-<a href="https://github.com/JKorf/Binance.Net">Binance</a>
-</td>
-<td><a href="https://github.com/JKorf/Bittrex.Net"><img src="https://github.com/JKorf/Bittrex.Net/blob/master/Resources/icon.png?raw=true"></a>
+<td><a href="https://github.com/JKorf/Bittrex.Net"><img src="https://github.com/JKorf/Bittrex.Net/blob/master/Bittrex.Net/Icon/icon.png?raw=true"></a>
 <br />
 <a href="https://github.com/JKorf/Bittrex.Net">Bittrex</a>
 </td>
-<td><a href="https://github.com/JKorf/CoinEx.Net"><img src="https://github.com/JKorf/CoinEx.Net/blob/master/Resources/icon.png?raw=true"></a>
+<td><a href="https://github.com/JKorf/Binance.Net"><img src="https://github.com/JKorf/Binance.Net/blob/master/Binance.Net/Icon/icon.png?raw=true"></a>
+<br />
+<a href="https://github.com/JKorf/Binance.Net">Binance</a>
+</td>
+<td><a href="https://github.com/JKorf/CoinEx.Net"><img src="https://github.com/JKorf/CoinEx.Net/blob/master/CoinEx.Net/Icon/icon.png?raw=true"></a>
 <br />
 <a href="https://github.com/JKorf/CoinEx.Net">CoinEx</a>
 </td>
-<td><a href="https://github.com/JKorf/Huobi.Net"><img src="https://github.com/JKorf/Huobi.Net/blob/master/Resources/icon.png?raw=true"></a>
+<td><a href="https://github.com/JKorf/Huobi.Net"><img src="https://github.com/JKorf/Huobi.Net/blob/master/Huobi.Net/Icon/icon.png?raw=true"></a>
 <br />
 <a href="https://github.com/JKorf/Huobi.Net">Huobi</a>
 </td>
+<td><a href="https://github.com/JKorf/Kucoin.Net"><img src="https://github.com/JKorf/Kucoin.Net/blob/master/Kucoin.Net/Icon/icon.png?raw=true"></a>
+<br />
+<a href="https://github.com/JKorf/Kucoin.Net">Kucoin</a>
+</td>
+<td><a href="https://github.com/JKorf/Kraken.Net"><img src="https://github.com/JKorf/Kraken.Net/blob/master/Kraken.Net/Icon/icon.png?raw=true"></a>
+<br />
+<a href="https://github.com/JKorf/Kraken.Net">Kraken</a>
+</td>
 </tr>
 </table>
-
-And other API wrappers based on CryptoExchange.Net:
+Implementations from third parties:
 <table>
 <tr>
 <td><a href="https://github.com/Zaliro/Switcheo.Net"><img src="https://github.com/Zaliro/Switcheo.Net/blob/master/Resources/switcheo-coin.png?raw=true"></a>
@@ -47,6 +56,10 @@ And other API wrappers based on CryptoExchange.Net:
 <td><a href="https://github.com/ridicoulous/LiquidQuoine.Net"><img src="https://github.com/ridicoulous/LiquidQuoine.Net/blob/master/Resources/icon.png?raw=true"></a>
 <br />
 <a href="https://github.com/ridicoulous/LiquidQuoine.Net">Liquid</a>
+</td>
+<td><a href="https://github.com/burakoner/OKEx.Net"><img src="https://raw.githubusercontent.com/burakoner/OKEx.Net/master/Okex.Net/Icon/icon.png"></a>
+<br />
+<a href="https://github.com/burakoner/OKEx.Net">OKEx</a>
 </td>
 </tr>
 </table>
@@ -80,119 +93,113 @@ After  it's time to actually use it. To get started we have to add the Bitfinex.
 
 Bitfinex.Net provides two clients to interact with the Bitfinex API. The `BitfinexClient` provides all rest API calls. The `BitfinexSocketClient` provides functions to interact with the websocket provided by the Bitfinex API.
 
-Most API methods are available in two flavors, sync and async:
-````C#
-public void NonAsyncMethod()
-{
-    using(var client = new BitfinexClient())
-    {
-        var result = client.GetPlatformStatus();
-    }
-}
-
-public async Task AsyncMethod()
-{
-    using(var client = new BitfinexClient())
-    {
-        var result2 = await client.GetPlatformStatusAsync();
-    }
-}
-````
-
-## Response handling
-All API requests will respond with an CallResult object. This object contains whether the call was successful, the data returned from the call and an error if the call wasn't successful. As such, one should always check the Success flag when processing a response.
-For example:
-````C#
-using(var client = new BitfinexClient())
-{
-	var priceResult = client.GetTicker("tBTCETH");
-	if (priceResult.Success)
-		Console.WriteLine($"BTC-ETH price: {priceResult.Data.Last}");
-	else
-		Console.WriteLine($"Error: {priceResult.Error}");
-}
-````
-
-## Options & Authentication
-The default behavior of the clients can be changed by providing options to the constructor, or using the `SetDefaultOptions` before creating a new client to set options for all new clients. Api credentials can be provided in the options.
-
-## Websockets
-The Bitfinex.Net socket client provides several socket endpoint to which can be subscribed and follow this function structure
-
-```C#
-var client = new BitfinexSocketClient();
-
-var subscribeResult = client.SubscribeToTickerUpdates("tBTCETH", data =>
-{
-	// handle data
-});
-```
-
-**Handling socket events**
-
-Subscribing to a socket stream returns a UpdateSubscription object. This object can be used to be notified when a socket is disconnected or reconnected:
-````C#
-var subscriptionResult = client.SubscribeToTickerUpdates("tBTCETH", data =>
-{
-	Console.WriteLine("Received ticker update");
-});
-
-if(subscriptionResult.Success){
-	sub.Data.Disconnected += () =>
-	{
-		Console.WriteLine("Socket disconnected");
-	};
-
-	sub.Data.Reconnected += (e) =>
-	{
-		Console.WriteLine("Socket reconnected after " + e);
-	};
-}
-````
-
-**Unsubscribing from socket endpoints:**
-
-Sockets streams can be unsubscribed by using the `client.Unsubscribe` method in combination with the stream subscription received from subscribing:
-```C#
-var client = new BitfinexSocketClient();
-
-var successTicker = client.SubscribeToTickerUpdates("tBTCETH", (data) =>
-{
-	// handle data
-});
-
-client.Unsubscribe(successTicker.Data);
-```
-
-Additionaly, all sockets can be closed with the `UnsubscribeAll` method. Beware that when a client is disposed the sockets are automatically disposed. This means that if the code is no longer in the using statement the eventhandler won't fire anymore. To prevent this from happening make sure the code doesn't leave the using statement or don't use the socket client in a using statement:
-```C#
-// Doesn't leave the using block
-using(var client = new BitfinexSocketClient())
-{
-	var successTicker = client.SubscribeToTickerUpdates("tBTCETH", (data) =>
-	{
-		// handle data
-	});
-
-	Console.ReadLine();
-}
-
-// Without using block
-var client = new BitfinexSocketClient();
-client.SubscribeToTickerUpdates("tBTCETH", (data) =>
-{
-	// handle data
-});
-```
-
 
 ## Release notes
-* Version 2.0.6 - 01 feb 2018
+* Version 3.0.12 - 20 Jun 2020
+	* Added GetRawOrderBook
+	* Fix for FillOrKill parsing
+	* Added affiliate code support on placing order
+
+* Version 3.0.11 - 16 Jun 2020
+    * Fix for BitfinexSymbolOrderBook
+
+* Version 3.0.10 - 07 Jun 2020
+    * Fixed issue where the BitfinexSymbolOrderBook desynced 
+
+* Version 3.0.9 - 03 Mar 2020
+    * Fixed symbol regex allowing numbers
+
+* Version 3.0.8 - 03 Mar 2020
+    * Updated CryptoExchange
+
+* Version 3.0.7 - 05 Feb 2020
+    * Fixed reconnection on 20051 status sometimes losing operations
+
+* Version 3.0.6 - 27 Jan 2020
+    * Updated CryptoExchange.Net
+
+* Version 3.0.5 - 19 Nov 2019
+    * Fixed symbol validation for dusk
+
+* Version 3.0.4 - 19 Nov 2019
+    * Fixed authenticated websocket subscriptions
+
+* Version 3.0.3 - 15 Nov 2019
+    * Fixed confirmations websocket order placing/updating/cancelation
+	
+* Version 3.0.2 - 12 Nov 2019
+    * Fixed Trailing-Stop order type, fixed ClaimPosition parameter
+
+* Version 3.0.1 - 24 Oct 2019
+	* Fixed validation in PlaceOrder
+
+* Version 3.0.0 - 23 Oct 2019
+	* See CryptoExchange.Net 3.0 release notes
+	* Added input validation
+	* Added CancellationToken support to all requests
+	* Now using IEnumerable<> for collections
+	* Renamed Candle -> Kline
+	* Renamed Market -> Symbol
+	* Renamed GetWallets -> GetBalances
+
+* Version 2.1.6 - 07 Aug 2019
+    * Fixed threadsafety in subscription response mapping
+
+* Version 2.1.5 - 06 Aug 2019
+    * Fixed missing events when placing orders via websocket
+    * Added code docs
+
+* Version 2.1.4 - 05 Aug 2019
+    * Fix offer serialization
+    * Added missing xml file for code docs
+
+* Version 2.1.3 - 09 jul 2019
+	* Updated BitfinexSymbolOrderBook
+
+* Version 2.1.2 - 08 jul 2019
+	* Added option to pass client to BitfinexSymbolOrderBook to combine subscriptions on sockets
+
+* Version 2.1.1 - 01 jul 2019
+	* Fixed position parsing
+	* Added stopLimitPrice parameter to PlaceOrder Rest call for StopLimitOrders	
+
+* Version 2.1.0 - 27 jun 2019
+	* Added multiple missing REST calls
+	* Added property documentations
+	* Fixed parallel subscribing on websocket
+	* Fixed GetAvailableBalance call
+	* Fixed a bug in error parsing
+
+* Version 2.0.12 - 14 may 2019
+	* Added an order book implementation for easily keeping an updated order book
+	* Added additional constructor to ApiCredentials to be able to read from file
+
+* Version 2.0.11 - 01 may 2019
+	* Updated to latest CryptoExchange.Net
+		* Adds response header to REST call result
+		* Added rate limiter per API key
+		* Unified socket client workings	
+
+* Version 2.0.10 - 18 mar 2019
+	* Fix for order status parsing
+
+* Version 2.0.9 - 08 mar 2019
+	* Changed rest client returns from CallResult to WebCallResult
+	* Revert checkin of experimental code resulting in api key invalid errors
+
+* Version 2.0.8 - 07 mar 2019
+	* Updated CryptoExchange.Net
+
+* Version 2.0.7 - 18 feb 2019
+	* Updated CryptoExchange.Net
+	* Adjusted Nonce calculation
+
+* Version 2.0.6 - 01 feb 2019
 	* Fixed result parsing of placed trailing stop orders
 	* Fixed invalid cid when placing order with socket client
 	* Fixed parameters in update order
 
-* Version 2.0.5 - 09 jan 2018
+* Version 2.0.5 - 09 jan 2019
 	* Changed withdraw type from enum to string
 	* Updated CryptoExchange.net
 

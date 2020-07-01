@@ -4,25 +4,25 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters
 {
-    public class OrderTypeConverter: BaseConverter<OrderType>
+    internal class OrderTypeConverter: BaseConverter<OrderType>
     {
         public OrderTypeConverter(): this(true) { }
         public OrderTypeConverter(bool quotes) : base(quotes) { }
 
-        protected override Dictionary<OrderType, string> Mapping => new Dictionary<OrderType, string>
+        protected override List<KeyValuePair<OrderType, string>> Mapping => new List<KeyValuePair<OrderType, string>>
         {
-            { OrderType.Limit, "LIMIT" },
-            { OrderType.Market, "MARKET" },
-            { OrderType.Stop, "STOP" },
-            { OrderType.StopLimit, "STOP LIMIT" },
-            { OrderType.TrailingStop, "TRAILING STOP" },
-            { OrderType.ExchangeMarket, "EXCHANGE MARKET" },
-            { OrderType.ExchangeLimit, "EXCHANGE LIMIT" },
-            { OrderType.ExchangeStop, "EXCHANGE STOP" },
-            { OrderType.ExchangeStopLimit, "EXCHANGE STOP LIMIT" },
-            { OrderType.ExchangeTrailingStop, "EXCHANGE TRAILING STOP" },
-            { OrderType.FillOrKill, "FOK" },
-            { OrderType.ExchangeFillOrKill, "EXCHANGE FOK" }
+            new KeyValuePair<OrderType, string>(OrderType.Limit, "LIMIT"),
+            new KeyValuePair<OrderType, string>(OrderType.Market, "MARKET"),
+            new KeyValuePair<OrderType, string>(OrderType.Stop, "STOP"),
+            new KeyValuePair<OrderType, string>(OrderType.StopLimit, "STOP LIMIT"),
+            new KeyValuePair<OrderType, string>(OrderType.TrailingStop, "TRAILING STOP"),
+            new KeyValuePair<OrderType, string>(OrderType.ExchangeMarket, "EXCHANGE MARKET"),
+            new KeyValuePair<OrderType, string>(OrderType.ExchangeLimit, "EXCHANGE LIMIT"),
+            new KeyValuePair<OrderType, string>(OrderType.ExchangeStop, "EXCHANGE STOP"),
+            new KeyValuePair<OrderType, string>(OrderType.ExchangeStopLimit, "EXCHANGE STOP LIMIT"),
+            new KeyValuePair<OrderType, string>(OrderType.ExchangeTrailingStop, "EXCHANGE TRAILING STOP"),
+            new KeyValuePair<OrderType, string>(OrderType.FillOrKill, "FOK"),
+            new KeyValuePair<OrderType, string>(OrderType.ExchangeFillOrKill, "EXCHANGE FOK")
         };
     }
 }

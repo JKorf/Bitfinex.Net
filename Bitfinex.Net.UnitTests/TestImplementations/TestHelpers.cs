@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Objects;
@@ -12,7 +14,6 @@ using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
-using CryptoExchange.Net.Requests;
 using Moq;
 using Newtonsoft.Json;
 
@@ -60,14 +61,14 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             return self == to;
         }
 
-        public static IBitfinexSocketClient CreateAuthenticatedSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
+        public static BitfinexSocketClient CreateAuthenticatedSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
         {
-            return (BitfinexSocketClient)CreateSocketClient(socket, options ?? new BitfinexSocketClientOptions() { ApiCredentials = new ApiCredentials("Test", "Test"), LogVerbosity = LogVerbosity.Debug});
+            return CreateSocketClient(socket, options ?? new BitfinexSocketClientOptions() { ApiCredentials = new ApiCredentials("Test", "Test"), LogVerbosity = LogVerbosity.Debug});
         }
 
-        public static IBitfinexSocketClient CreateSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
+        public static BitfinexSocketClient CreateSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
         {
-            IBitfinexSocketClient client;
+            BitfinexSocketClient client;
             client = options != null ? new BitfinexSocketClient(options) : new BitfinexSocketClient();
             client.SocketFactory = Mock.Of<IWebsocketFactory>();
             Mock.Get(client.SocketFactory).Setup(f => f.CreateWebsocket(It.IsAny<Log>(), It.IsAny<string>())).Returns(socket);
@@ -82,10 +83,10 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             return client;
         }
 
-        public static IBitfinexClient CreateResponseClient(string response, BitfinexClientOptions options = null)
+        public static IBitfinexClient CreateResponseClient(string response, BitfinexClientOptions options = null, HttpStatusCode code = HttpStatusCode.OK)
         {
             var client = (BitfinexClient)CreateClient(options);
-            SetResponse(client, response);
+            SetResponse(client, response, code);
             return client;
         }
 
@@ -103,7 +104,7 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             return client;
         }
 
-        public static IRequest SetResponse(RestClient client, string responseData)
+        public static Mock<IRequest> SetResponse(RestClient client, string responseData, HttpStatusCode code = HttpStatusCode.OK)
         {
             var expectedBytes = Encoding.UTF8.GetBytes(responseData);
             var responseStream = new MemoryStream();
@@ -111,39 +112,39 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             responseStream.Seek(0, SeekOrigin.Begin);
 
             var response = new Mock<IResponse>();
-            response.Setup(c => c.GetResponseStream()).Returns(responseStream);
+            response.Setup(c => c.IsSuccessStatusCode).Returns(code == HttpStatusCode.OK);
+            response.Setup(c => c.StatusCode).Returns(code);
+            response.Setup(c => c.GetResponseStream()).Returns(Task.FromResult((Stream)responseStream));
 
             var request = new Mock<IRequest>();
-            request.Setup(c => c.Headers).Returns(new WebHeaderCollection());
             request.Setup(c => c.Uri).Returns(new Uri("http://www.test.com"));
-            request.Setup(c => c.GetResponse()).Returns(Task.FromResult(response.Object));
-            request.Setup(c => c.GetRequestStream()).Returns(Task.FromResult((Stream) new MemoryStream()));
+            request.Setup(c => c.GetResponse(It.IsAny<CancellationToken>())).Returns(Task.FromResult(response.Object));
 
             var factory = Mock.Get(client.RequestFactory);
-            factory.Setup(c => c.Create(It.IsAny<string>()))
+            factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<string>()))
                 .Returns(request.Object);
-            return request.Object;
+            return request;
         }
 
-        public static void SetErrorWithResponse(IBitfinexClient client, string responseData, HttpStatusCode code)
-        {
-            var expectedBytes = Encoding.UTF8.GetBytes(responseData);
-            var responseStream = new MemoryStream();
-            responseStream.Write(expectedBytes, 0, expectedBytes.Length);
-            responseStream.Seek(0, SeekOrigin.Begin);
+        //public static void SetErrorWithResponse(IBitfinexClient client, string responseData, HttpStatusCode code)
+        //{
+        //    var expectedBytes = Encoding.UTF8.GetBytes(responseData);
+        //    var responseStream = new MemoryStream();
+        //    responseStream.Write(expectedBytes, 0, expectedBytes.Length);
+        //    responseStream.Seek(0, SeekOrigin.Begin);
 
-            var r = new Mock<HttpWebResponse>();
-            r.Setup(x => x.GetResponseStream()).Returns(responseStream);
-            var we = new WebException("", null, WebExceptionStatus.Success, r.Object);
+        //    var r = new Mock<HttpWebResponse>();
+        //    r.Setup(x => x.GetResponseStream()).Returns(responseStream);
+        //    var we = new WebException("", null, WebExceptionStatus.Success, r.Object);
 
-            var request = new Mock<IRequest>();
-            request.Setup(c => c.Headers).Returns(new WebHeaderCollection());
-            request.Setup(c => c.GetResponse()).Throws(we);
+        //    var request = new Mock<IRequest>();
+        //    request.Setup(c => c.Headers).Returns(new WebHeaderCollection());
+        //    request.Setup(c => c.GetResponse()).Throws(we);
 
-            var factory = Mock.Get(client.RequestFactory);
-            factory.Setup(c => c.Create(It.IsAny<string>()))
-                .Returns(request.Object);
-        }
+        //    var factory = Mock.Get(client.RequestFactory);
+        //    factory.Setup(c => c.Create(It.IsAny<string>()))
+        //        .Returns(request.Object);
+        //}
 
     }
 }
