@@ -106,5 +106,11 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// </summary>
         [JsonProperty("oco_order")]
         public long? OcoOrder { get; set; }
+
+        /// <summary>
+        /// Affiliate code for the order
+        /// </summary>
+        [JsonProperty("aff_code")]
+        public string? AffiliateCode { get; set; }
     }
 }

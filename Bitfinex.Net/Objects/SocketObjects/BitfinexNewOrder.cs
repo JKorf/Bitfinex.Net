@@ -26,5 +26,19 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public long? GroupId { get; set; }
         [JsonProperty("cid")]
         public long? ClientOrderId { get; set; }
+        [JsonProperty("meta")]
+        public BitfinexMeta? Meta { get; set; }
+    }
+
+    /// <summary>
+    /// Order meta data
+    /// </summary>
+    public class BitfinexMeta
+    {
+        /// <summary>
+        /// The affiliate code for the order
+        /// </summary>
+        [JsonProperty("aff_code")]
+        public string? AffiliateCode { get; set; }
     }
 }

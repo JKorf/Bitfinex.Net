@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Bitfinex.Net.Converters;
+using Bitfinex.Net.Objects.SocketObjects;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
@@ -70,18 +72,18 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         [ArrayProperty(9), JsonConverter(typeof(OrderTypeConverter))]
         public OrderType? TypePrevious { get; set; }
-
+        
         /// <summary>
-        /// 
+        /// Tif timestamp
         /// </summary>
-        [ArrayProperty(10)]
-        public string PlaceHolder1 { get; set; } = "";
+        [ArrayProperty(10), JsonConverter(typeof(TimestampConverter))]
+        public DateTime TimestampTif { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [ArrayProperty(11)]
-        public string PlaceHolder2 { get; set; } = "";
+        public string PlaceHolder1 { get; set; } = "";
 
         /// <summary>
         /// 
@@ -151,19 +153,50 @@ namespace Bitfinex.Net.Objects
         public string PlaceHolder7 { get; set; } = "";
 
         /// <summary>
-        /// 
-        /// </summary>
-        [ArrayProperty(23)]
-        public bool Notify { get; set; }
-        /// <summary>
         /// Whether the order is hidden
         /// </summary>
-        [ArrayProperty(24)]
+        [ArrayProperty(23)]
         public bool Hidden { get; set; }
         /// <summary>
         /// If another order caused this order to be placed (OCO) this will be that other order's ID
         /// </summary>
-        [ArrayProperty(25)]
+        [ArrayProperty(24)]
         public long? PlacedId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ArrayProperty(25)]
+        public string? PlaceHolder8 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ArrayProperty(26)]
+        public string? PlaceHolder9 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ArrayProperty(27)]
+        public string? PlaceHolder10 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ArrayProperty(28)]
+        public string? Routing { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ArrayProperty(29)]
+        public string? PlaceHolder11 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [ArrayProperty(30)]
+        public string? PlaceHolder12 { get; set; }
+        /// <summary>
+        /// Meta data for the order
+        /// </summary>
+        [ArrayProperty(31)]
+        [JsonConverter(typeof(BitfinexMetaConverter))]
+        public BitfinexMeta? Meta { get; set; }
     }
 }

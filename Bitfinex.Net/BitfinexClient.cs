@@ -94,6 +94,8 @@ namespace Bitfinex.Net
         private const string GetOfferEndpoint = "offer/status";
         private const string CloseMarginFundingEndpoint = "funding/close";
         private const string ClosePositionEndpoint = "position/close";
+
+        private string _affCode;
         #endregion
 
         #region constructor/destructor
@@ -110,6 +112,7 @@ namespace Bitfinex.Net
         /// <param name="options">The options to use for this client</param>
         public BitfinexClient(BitfinexClientOptions options) : base(options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
         {
+            _affCode = options.AffiliateCode;
         }
         #endregion
 
@@ -1329,6 +1332,7 @@ namespace Bitfinex.Net
             CancellationToken ct = default)
         {
             symbol.ValidateNotNull(nameof(symbol));
+
             var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },
@@ -1343,9 +1347,9 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("use_all_available", useAllAvailable == true ? 1 : (int?)null);
             parameters.AddOptionalParameter(side == OrderSide.Buy ? "buy_stoplimit_price" : "sell_stoplimit_price", stopLimitPrice?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("ocoorder", ocoOrder);
-            parameters.AddOptionalParameter("buy_price_oco", ocoBuyPrice);
-            parameters.AddOptionalParameter("sell_price_oco", ocoSellPrice);
-            parameters.AddOptionalParameter("aff_code", affiliateCode);
+            parameters.AddOptionalParameter("buy_price_oco", ocoBuyPrice?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("sell_price_oco", ocoSellPrice?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("aff_code", affiliateCode ?? _affCode);
 
             return await SendRequest<BitfinexPlacedOrder>(GetUrl(PlaceOrderEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }

@@ -10,6 +10,11 @@ namespace Bitfinex.Net.Objects
     public class BitfinexClientOptions : RestClientOptions
     {
         /// <summary>
+        /// Default affiliate code to use when placing orders
+        /// </summary>
+        public string? AffiliateCode { get; set; } = "kCCe-CNBO";
+
+        /// <summary>
         /// Create new client options
         /// </summary>
         public BitfinexClientOptions(): base("https://api.bitfinex.com")
@@ -22,6 +27,11 @@ namespace Bitfinex.Net.Objects
     /// </summary>
     public class BitfinexSocketClientOptions: SocketClientOptions
     {
+        /// <summary>
+        /// Default affiliate code to use when placing orders
+        /// </summary>
+        public string? AffiliateCode { get; set; } = "kCCe-CNBO";
+
         /// <summary>
         /// Create new socket options
         /// </summary>

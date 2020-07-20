@@ -26,6 +26,8 @@ namespace Bitfinex.Net
         private static BitfinexSocketClientOptions defaultOptions = new BitfinexSocketClientOptions();
         private static BitfinexSocketClientOptions DefaultOptions => defaultOptions.Copy<BitfinexSocketClientOptions>();
 
+        private string _affCode;
+
         private readonly Random random = new Random();
         private static readonly object nonceLock = new object();
         private static long lastNonce;
@@ -64,6 +66,7 @@ namespace Bitfinex.Net
         {
             ContinueOnQueryResponse = true;
             _bookSerializer.Converters.Add(new OrderBookEntryConverter());
+            _affCode = options.AffiliateCode;
 
             AddGenericHandler("HB", (wrapper, msg) => { });
             AddGenericHandler("Info", InfoHandler);
@@ -359,9 +362,10 @@ namespace Bitfinex.Net
         /// <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
         /// <param name="priceOcoStop">Oco stop price of the order</param>
         /// <param name="flags">Additional flags</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <returns></returns>
-        public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null) =>
-            PlaceOrderAsync(type, symbol, amount, groupId, clientOrderId, price, priceTrailing, priceAuxiliaryLimit, priceOcoStop, flags).Result;
+        public CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, string? affiliateCode = null) =>
+            PlaceOrderAsync(type, symbol, amount, groupId, clientOrderId, price, priceTrailing, priceAuxiliaryLimit, priceOcoStop, flags, affiliateCode).Result;
         /// <summary>
         /// Places a new order
         /// </summary>
@@ -375,14 +379,16 @@ namespace Bitfinex.Net
         /// <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
         /// <param name="priceOcoStop">Oco stop price of the order</param>
         /// <param name="flags">Additional flags</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <returns></returns>
-        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null)
+        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, string? affiliateCode = null)
         {
             symbol.ValidateBitfinexSymbol();
             log.Write(LogVerbosity.Info, "Going to place order");
             if (clientOrderId == null)
                 clientOrderId = GenerateClientOrderId();
 
+            var affCode = affiliateCode ?? _affCode;
             var query = new BitfinexSocketQuery(clientOrderId.ToString(), BitfinexEventType.OrderNew, new BitfinexNewOrder
             {
                 Amount = amount,
@@ -394,7 +400,8 @@ namespace Bitfinex.Net
                 GroupId = groupId,
                 PriceAuxiliaryLimit = priceAuxiliaryLimit,
                 PriceOCOStop = priceOcoStop,
-                PriceTrailing = priceTrailing
+                PriceTrailing = priceTrailing,
+                Meta = affCode == null ? null: new BitfinexMeta() { AffiliateCode = affCode }
             });
 
             return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);

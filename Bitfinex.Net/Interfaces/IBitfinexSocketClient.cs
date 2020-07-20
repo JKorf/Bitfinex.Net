@@ -181,8 +181,9 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
         /// <param name="priceOcoStop">Oco stop price of the order</param>
         /// <param name="flags">Additional flags</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <returns></returns>
-        CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null);
+        CallResult<BitfinexOrder> PlaceOrder(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, string? affiliateCode = null);
 
         /// <summary>
         /// Places a new order
@@ -197,8 +198,9 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
         /// <param name="priceOcoStop">Oco stop price of the order</param>
         /// <param name="flags">Additional flags</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <returns></returns>
-        Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null);
+        Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal amount, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, string? affiliateCode = null);
 
         /// <summary>
         /// Updates an order

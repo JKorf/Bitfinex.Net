@@ -1294,7 +1294,7 @@
             <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.PlaceOrder(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.PlaceOrder(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags},System.String)">
             <summary>
             Places a new order
             </summary>
@@ -1308,9 +1308,10 @@
             <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
             <param name="priceOcoStop">Oco stop price of the order</param>
             <param name="flags">Additional flags</param>
+            <param name="affiliateCode">Affiliate code for the order</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.PlaceOrderAsync(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.PlaceOrderAsync(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags},System.String)">
             <summary>
             Places a new order
             </summary>
@@ -1324,6 +1325,7 @@
             <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
             <param name="priceOcoStop">Oco stop price of the order</param>
             <param name="flags">Additional flags</param>
+            <param name="affiliateCode">Affiliate code for the order</param>
             <returns></returns>
         </member>
         <member name="M:Bitfinex.Net.BitfinexSocketClient.UpdateOrder(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
@@ -2702,7 +2704,7 @@
             <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.PlaceOrder(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.PlaceOrder(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags},System.String)">
             <summary>
             Places a new order
             </summary>
@@ -2716,9 +2718,10 @@
             <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
             <param name="priceOcoStop">Oco stop price of the order</param>
             <param name="flags">Additional flags</param>
+            <param name="affiliateCode">Affiliate code for the order</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.PlaceOrderAsync(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.PlaceOrderAsync(Bitfinex.Net.Objects.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags},System.String)">
             <summary>
             Places a new order
             </summary>
@@ -2732,6 +2735,7 @@
             <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
             <param name="priceOcoStop">Oco stop price of the order</param>
             <param name="flags">Additional flags</param>
+            <param name="affiliateCode">Affiliate code for the order</param>
             <returns></returns>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.UpdateOrder(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Objects.OrderFlags})">
@@ -4144,6 +4148,11 @@
             Options for the BitfinexClient
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexClientOptions.AffiliateCode">
+            <summary>
+            Default affiliate code to use when placing orders
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.Objects.BitfinexClientOptions.#ctor">
             <summary>
             Create new client options
@@ -4152,6 +4161,11 @@
         <member name="T:Bitfinex.Net.Objects.BitfinexSocketClientOptions">
             <summary>
             Options for the BitfinexSocketClient
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSocketClientOptions.AffiliateCode">
+            <summary>
+            Default affiliate code to use when placing orders
             </summary>
         </member>
         <member name="M:Bitfinex.Net.Objects.BitfinexSocketClientOptions.#ctor">
@@ -4229,12 +4243,12 @@
             The previous order type
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder1">
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.TimestampTif">
             <summary>
-            
+            Tif timestamp
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder2">
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder1">
             <summary>
             
             </summary>
@@ -4299,11 +4313,6 @@
             
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Notify">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Hidden">
             <summary>
             Whether the order is hidden
@@ -4312,6 +4321,41 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlacedId">
             <summary>
             If another order caused this order to be placed (OCO) this will be that other order's ID
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder8">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder9">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder10">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Routing">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder11">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.PlaceHolder12">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrder.Meta">
+            <summary>
+            Meta data for the order
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexOrderBookBase">
@@ -5174,6 +5218,11 @@
             If this was an OneCancelsOther order this is the id of the other order
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.AffiliateCode">
+            <summary>
+            Affiliate code for the order
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Objects.RestV1Objects.BitfinexPositionV1">
             <summary>
             Position object of the V1 API
@@ -5322,6 +5371,16 @@
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexWithdrawalResult.Fees">
             <summary>
             The fees paid
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.SocketObjects.BitfinexMeta">
+            <summary>
+            Order meta data
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.SocketObjects.BitfinexMeta.AffiliateCode">
+            <summary>
+            The affiliate code for the order
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.SocketObjects.BitfinexSocketEvent`1">
