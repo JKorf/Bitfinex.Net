@@ -95,7 +95,7 @@ namespace Bitfinex.Net
         private const string CloseMarginFundingEndpoint = "funding/close";
         private const string ClosePositionEndpoint = "position/close";
 
-        private string _affCode;
+        private string? _affCode;
         #endregion
 
         #region constructor/destructor
@@ -112,6 +112,9 @@ namespace Bitfinex.Net
         /// <param name="options">The options to use for this client</param>
         public BitfinexClient(BitfinexClientOptions options) : base(options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
         {
+            if (options == null)
+                throw new ArgumentException("Cant pass null options, use empty constructor for default");
+
             _affCode = options.AffiliateCode;
         }
         #endregion

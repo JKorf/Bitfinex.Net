@@ -45,7 +45,7 @@ namespace Bitfinex.Net
                 throw new ArgumentException("Invalid precision: R0");
 
 
-            var result = await socketClient.SubscribeToBookUpdatesAsync(Symbol, precision, Frequency.Realtime, Levels.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
+            var result = await socketClient.SubscribeToBookUpdatesAsync(Symbol, precision, Frequency.Realtime, Levels!.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
             if (!result)
                 return result;
 
@@ -146,8 +146,8 @@ namespace Bitfinex.Net
                 log.Write(CryptoExchange.Net.Logging.LogVerbosity.Warning, $"Invalid checksum. Received from server: {checksum}, calculated local: {ourChecksumUtf}");
                 return false;
             }
-            else
-                return true;            
+            
+            return true;            
         }
 
         /// <inheritdoc />

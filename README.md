@@ -100,6 +100,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.0.14 - 12 Aug 2020
+    * Updated CryptoExchange.Net
+
 * Version 3.0.13 - 20 Jul 2020
     * Added affiliate code to models and new socket order
     * Fix price serialization new rest order

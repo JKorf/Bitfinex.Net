@@ -26,7 +26,7 @@ namespace Bitfinex.Net
         private static BitfinexSocketClientOptions defaultOptions = new BitfinexSocketClientOptions();
         private static BitfinexSocketClientOptions DefaultOptions => defaultOptions.Copy<BitfinexSocketClientOptions>();
 
-        private string _affCode;
+        private readonly string? _affCode;
 
         private readonly Random random = new Random();
         private static readonly object nonceLock = new object();
@@ -64,6 +64,9 @@ namespace Bitfinex.Net
         /// <param name="options">The options to use for this client</param>
         public BitfinexSocketClient(BitfinexSocketClientOptions options) : base(options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
         {
+            if (options == null)
+                throw new ArgumentException("Cant pass null options, use empty constructor for default");
+
             ContinueOnQueryResponse = true;
             _bookSerializer.Converters.Add(new OrderBookEntryConverter());
             _affCode = options.AffiliateCode;
@@ -117,7 +120,7 @@ namespace Bitfinex.Net
         /// <param name="handler">The handler for the data</param>
         /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<int> checksumHandler = null) => SubscribeToBookUpdatesAsync(symbol, precision, frequency, length, handler, checksumHandler).Result;
+        public CallResult<UpdateSubscription> SubscribeToBookUpdates(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<int>? checksumHandler = null) => SubscribeToBookUpdatesAsync(symbol, precision, frequency, length, handler, checksumHandler).Result;
         /// <summary>
         /// Subscribes to order book updates for a symbol
         /// </summary>
@@ -128,7 +131,7 @@ namespace Bitfinex.Net
         /// <param name="handler">The handler for the data</param>
         /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<int> checksumHandler = null)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<IEnumerable<BitfinexOrderBookEntry>> handler, Action<int>? checksumHandler = null)
         {
             symbol.ValidateBitfinexSymbol();
             length.ValidateIntValues(nameof(length), 25, 100);
