@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using Bitfinex.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 
@@ -17,8 +18,26 @@ namespace Bitfinex.Net.Objects
         /// <summary>
         /// Create new client options
         /// </summary>
-        public BitfinexClientOptions(): base("https://api.bitfinex.com")
+        public BitfinexClientOptions(): this(null, "https://api.bitfinex.com")
         {
+        }
+
+        /// <summary>
+        /// Create new client options
+        /// </summary>
+        /// <param name="client">HttpClient to use for requests from this client</param>
+        public BitfinexClientOptions(HttpClient client) : this(client, "https://api.bitfinex.com")
+        {
+        }
+
+        /// <summary>
+        /// Create new client options
+        /// </summary>
+        /// <param name="apiAddress">Custom API address to use</param>
+        /// <param name="client">HttpClient to use for requests from this client</param>
+        public BitfinexClientOptions(HttpClient client, string apiAddress) : base(apiAddress)
+        {
+            HttpClient = client;
         }
     }
 

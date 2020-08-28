@@ -4158,6 +4158,19 @@
             Create new client options
             </summary>
         </member>
+        <member name="M:Bitfinex.Net.Objects.BitfinexClientOptions.#ctor(System.Net.Http.HttpClient)">
+            <summary>
+            Create new client options
+            </summary>
+            <param name="client">HttpClient to use for requests from this client</param>
+        </member>
+        <member name="M:Bitfinex.Net.Objects.BitfinexClientOptions.#ctor(System.Net.Http.HttpClient,System.String)">
+            <summary>
+            Create new client options
+            </summary>
+            <param name="apiAddress">Custom API address to use</param>
+            <param name="client">HttpClient to use for requests from this client</param>
+        </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexSocketClientOptions">
             <summary>
             Options for the BitfinexSocketClient
