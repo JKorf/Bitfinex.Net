@@ -1805,7 +1805,7 @@ namespace Bitfinex.Net
 
         private Uri GetUrl(string endpoint, string version)
         {
-            var result = $"{BaseAddress}/v{version}/{endpoint}";
+            var result = $"{BaseAddress}v{version}/{endpoint}";
             return new Uri(result);
         }
         #endregion
