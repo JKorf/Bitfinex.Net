@@ -95,7 +95,7 @@ namespace Bitfinex.Net
         private const string CloseMarginFundingEndpoint = "funding/close";
         private const string ClosePositionEndpoint = "position/close";
 
-        private string? _affCode;
+        private readonly string? _affCode;
         #endregion
 
         #region constructor/destructor
@@ -1793,9 +1793,9 @@ namespace Bitfinex.Net
                 if (data["error"] != null && data["code"] != null && data["error_description"] != null)
                     return new ServerError((int)data["code"], data["error"] + ": " + data["error_description"]);
                 if (data["message"] != null)
-                    return new ServerError(-1, data["message"].ToString());
+                    return new ServerError(data["message"].ToString());
                 else
-                    return new ServerError(-1, data.ToString());
+                    return new ServerError(data.ToString());
             }
 
             var error = data.ToObject<BitfinexError>();

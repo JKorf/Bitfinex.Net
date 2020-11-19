@@ -13,7 +13,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Bitfinex.Net.Interfaces;
-using System.Diagnostics;
 
 namespace Bitfinex.Net
 {
@@ -47,7 +46,7 @@ namespace Bitfinex.Net
             }
         }
 
-        private JsonSerializer _bookSerializer = new JsonSerializer();
+        private readonly JsonSerializer _bookSerializer = new JsonSerializer();
         #endregion
 
         #region ctor
@@ -575,8 +574,7 @@ namespace Bitfinex.Net
 
         private void HandleSingleToArrayData<T>(string name, JArray dataArray, Action<IEnumerable<T>> handler, JsonSerializer? serializer = null)
         {
-            var wrapperArray = new JArray();
-            wrapperArray.Add(dataArray);
+            var wrapperArray = new JArray {dataArray};
 
             var desResult = Deserialize<IEnumerable<T>>(wrapperArray, serializer: serializer);
             if (!desResult)
@@ -681,7 +679,7 @@ namespace Bitfinex.Net
                 case 20051:
                     log.Write(LogVerbosity.Info, $"Code {code} received, reconnecting socket");
                     connection.PausedActivity = true; // Prevent new operations to be send
-                    var closeTask = connection.Socket.Close(); // Closing it via socket will automatically reconnect
+                    connection.Socket.Close();
                     break;
                 case 20060:
                     log.Write(LogVerbosity.Info, $"Code {code} received, entering maintenance mode");
@@ -784,7 +782,9 @@ namespace Bitfinex.Net
         }
 
         /// <inheritdoc />
+#pragma warning disable 8765
         protected override bool HandleQueryResponse<T>(SocketConnection s, object request, JToken data, out CallResult<T>? callResult)
+#pragma warning restore 8765
         {
             callResult = null;
             if (data.Type != JTokenType.Array)

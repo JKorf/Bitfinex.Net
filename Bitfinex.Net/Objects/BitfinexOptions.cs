@@ -18,7 +18,7 @@ namespace Bitfinex.Net.Objects
         /// <summary>
         /// Create new client options
         /// </summary>
-        public BitfinexClientOptions(): this(null, "https://api.bitfinex.com")
+        public BitfinexClientOptions(): base("https://api.bitfinex.com")
         {
         }
 
@@ -26,7 +26,7 @@ namespace Bitfinex.Net.Objects
         /// Create new client options
         /// </summary>
         /// <param name="client">HttpClient to use for requests from this client</param>
-        public BitfinexClientOptions(HttpClient client) : this(client, "https://api.bitfinex.com")
+        public BitfinexClientOptions(HttpClient client) : base(client, "https://api.bitfinex.com")
         {
         }
 
@@ -35,9 +35,8 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         /// <param name="apiAddress">Custom API address to use</param>
         /// <param name="client">HttpClient to use for requests from this client</param>
-        public BitfinexClientOptions(HttpClient client, string apiAddress) : base(apiAddress)
+        public BitfinexClientOptions(HttpClient client, string apiAddress) : base(client, apiAddress)
         {
-            HttpClient = client;
         }
     }
 
