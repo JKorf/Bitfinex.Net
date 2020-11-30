@@ -162,30 +162,33 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetLastKline(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLastKline(Bitfinex.Net.Objects.TimeFrame,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Get the last kline for a symbol
             </summary>
             <param name="timeFrame">The time frame of the kline</param>
             <param name="symbol">The symbol to get the kline for</param>
+            <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
             <param name="ct">Cancellation token</param>
             <returns>The last kline for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetLastKlineAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLastKlineAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Get the last kline for a symbol
             </summary>
             <param name="timeFrame">The time frame of the kline</param>
             <param name="symbol">The symbol to get the kline for</param>
+            <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
             <param name="ct">Cancellation token</param>
             <returns>The last kline for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetKlines(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetKlines(Bitfinex.Net.Objects.TimeFrame,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
             <summary>
             Gets klines for a symbol
             </summary>
             <param name="timeFrame">The time frame of the klines</param>
             <param name="symbol">The symbol to get the klines for</param>
+            <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
             <param name="limit">The amount of results</param>
             <param name="startTime">The start time of the klines</param>
             <param name="endTime">The end time of the klines</param>
@@ -193,12 +196,13 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetKlinesAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetKlinesAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
             <summary>
             Gets klines for a symbol
             </summary>
             <param name="timeFrame">The time frame of the klines</param>
             <param name="symbol">The symbol to get the klines for</param>
+            <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
             <param name="limit">The amount of results</param>
             <param name="startTime">The start time of the klines</param>
             <param name="endTime">The end time of the klines</param>
@@ -1606,30 +1610,33 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLastKline(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLastKline(Bitfinex.Net.Objects.TimeFrame,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Get the last kline for a symbol
             </summary>
             <param name="timeFrame">The time frame of the kline</param>
             <param name="symbol">The symbol to get the kline for</param>
+            <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
             <param name="ct">Cancellation token</param>
             <returns>The last kline for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLastKlineAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLastKlineAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Get the last kline for a symbol
             </summary>
             <param name="timeFrame">The time frame of the kline</param>
             <param name="symbol">The symbol to get the kline for</param>
+            <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
             <param name="ct">Cancellation token</param>
             <returns>The last kline for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetKlines(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetKlines(Bitfinex.Net.Objects.TimeFrame,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
             <summary>
             Gets klines for a symbol
             </summary>
             <param name="timeFrame">The time frame of the klines</param>
             <param name="symbol">The symbol to get the klines for</param>
+            <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
             <param name="limit">The amount of results</param>
             <param name="startTime">The start time of the klines</param>
             <param name="endTime">The end time of the klines</param>
@@ -1637,12 +1644,13 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetKlinesAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetKlinesAsync(Bitfinex.Net.Objects.TimeFrame,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Objects.Sorting},System.Threading.CancellationToken)">
             <summary>
             Gets klines for a symbol
             </summary>
             <param name="timeFrame">The time frame of the klines</param>
             <param name="symbol">The symbol to get the klines for</param>
+            <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
             <param name="limit">The amount of results</param>
             <param name="startTime">The start time of the klines</param>
             <param name="endTime">The end time of the klines</param>
