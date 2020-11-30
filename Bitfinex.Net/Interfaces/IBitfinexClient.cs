@@ -405,6 +405,30 @@ namespace Bitfinex.Net.Interfaces
         Task<WebCallResult<IEnumerable<BitfinexFundingOffer>>> GetFundingOfferHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
+        /// Submit a new funding offer.
+        /// </summary>
+        /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+        /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+        /// <param name="amount">Amount (positive for offer, negative for bid).</param>
+        /// <param name="rate">Daily rate.</param>
+        /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        WebCallResult<BitfinexFundingOffer> SubmitFundingOffer(FundingOrderType fundingOrderType, string symbol, decimal amount, decimal rate, int period, CancellationToken ct = default);
+
+        /// <summary>
+        /// Submit a new funding offer.
+        /// </summary>
+        /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+        /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+        /// <param name="amount">Amount (positive for offer, negative for bid).</param>
+        /// <param name="rate">Daily rate.</param>
+        /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal amount, decimal rate, int period, CancellationToken ct = default);
+
+        /// <summary>
         /// Get the funding loans
         /// </summary>
         /// <param name="symbol">The symbol to get the funding loans for</param>
