@@ -70,6 +70,8 @@ namespace Bitfinex.Net
         private const string MarginInfoBaseEndpoint = "auth/r/info/margin/base";
         private const string MarginInfoSymbolEndpoint = "auth/r/info/margin/{}";
         private const string FundingInfoEndpoint = "auth/r/info/funding/{}";
+        private const string FundingOfferSubmitEndpoint = "auth/w/funding/offer/submit";
+        private const string FundingOfferCancelEndpoint = "auth/w/funding/offer/cancel";
 
         private const string MovementsEndpoint = "auth/r/movements/{}/hist";
         private const string DailyPerformanceEndpoint = "auth/r/stats/perf:1D/hist";
@@ -759,6 +761,68 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
             return await SendRequest<IEnumerable<BitfinexFundingOffer>>(GetUrl(FillPathParameter(FundingOfferHistoryEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Submit a new funding offer.
+        /// </summary>
+        /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+        /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+        /// <param name="amount">Amount (positive for offer, negative for bid).</param>
+        /// <param name="rate">Daily rate.</param>
+        /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>> SubmitFundingOffer(FundingOrderType fundingOrderType, string symbol, decimal amount, decimal rate, int period, CancellationToken ct = default) =>
+            SubmitFundingOfferAsync(fundingOrderType,symbol, amount, rate, period, ct).Result;
+
+        /// <summary>
+        /// Submit a new funding offer.
+        /// </summary>
+        /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+        /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+        /// <param name="amount">Amount (positive for offer, negative for bid).</param>
+        /// <param name="rate">Daily rate.</param>
+        /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal amount, decimal rate, int period, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexSymbol();
+            var parameters = new Dictionary<string, object>()
+            {
+                { "type", JsonConvert.SerializeObject(fundingOrderType, new FundingOrderTypeConverter(false)) },
+                { "symbol", symbol },
+                { "amount", amount.ToString(CultureInfo.InvariantCulture) },
+                { "rate", rate.ToString(CultureInfo.InvariantCulture) },
+                { "period", period },
+            };
+            
+            return await SendRequest<BitfinexWriteResult<BitfinexFundingOffer>>(GetUrl(FundingOfferSubmitEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Cancels an existing Funding Offer based on the offer ID entered.
+        /// </summary>
+        /// <param name="offerId">The id of the order to cancel</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexFundingOffer> CancelFundingOffer(long offerId, CancellationToken ct = default) => CancelFundingOfferAsync(offerId, ct).Result;
+
+        /// <summary>
+        /// Cancels an existing Funding Offer based on the offer ID entered.
+        /// </summary>
+        /// <param name="offerId">The id of the offer to cancel</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long offerId, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "id", offerId }
+            };
+
+            return await SendRequest<BitfinexFundingOffer>(GetUrl(FundingOfferCancelEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
