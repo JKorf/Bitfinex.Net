@@ -137,44 +137,48 @@ namespace Bitfinex.Net.Interfaces
         /// </summary>
         /// <param name="timeFrame">The time frame of the kline</param>
         /// <param name="symbol">The symbol to get the kline for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The last kline for the symbol</returns>
-        WebCallResult<BitfinexKline> GetLastKline(TimeFrame timeFrame, string symbol, CancellationToken ct = default);
+        WebCallResult<BitfinexKline> GetLastKline(TimeFrame timeFrame, string symbol, string fundingPeriod = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the last kline for a symbol
         /// </summary>
         /// <param name="timeFrame">The time frame of the kline</param>
         /// <param name="symbol">The symbol to get the kline for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The last kline for the symbol</returns>
-        Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(TimeFrame timeFrame, string symbol, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(TimeFrame timeFrame, string symbol, string fundingPeriod = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets klines for a symbol
         /// </summary>
         /// <param name="timeFrame">The time frame of the klines</param>
         /// <param name="symbol">The symbol to get the klines for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="limit">The amount of results</param>
         /// <param name="startTime">The start time of the klines</param>
         /// <param name="endTime">The end time of the klines</param>
         /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        WebCallResult<IEnumerable<BitfinexKline>> GetKlines(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        WebCallResult<IEnumerable<BitfinexKline>> GetKlines(TimeFrame timeFrame, string symbol, string fundingPeriod = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets klines for a symbol
         /// </summary>
         /// <param name="timeFrame">The time frame of the klines</param>
         /// <param name="symbol">The symbol to get the klines for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="limit">The amount of results</param>
         /// <param name="startTime">The start time of the klines</param>
         /// <param name="endTime">The end time of the klines</param>
         /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexKline>>> GetKlinesAsync(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexKline>>> GetKlinesAsync(TimeFrame timeFrame, string symbol, string fundingPeriod = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Calculate the average execution price
