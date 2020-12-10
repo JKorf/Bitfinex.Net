@@ -15,13 +15,14 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Interfaces;
+using CryptoExchange.Net.ExchangeInterfaces;
 
 namespace Bitfinex.Net
 {
     /// <summary>
     /// Client for the Bitfinex API
     /// </summary>
-    public class BitfinexClient : RestClient, IBitfinexClient
+    public class BitfinexClient : RestClient, IBitfinexClient, IExchangeClient
     {
         #region fields
 
@@ -110,7 +111,7 @@ namespace Bitfinex.Net
         /// Create a new instance of BitfinexClient using provided options
         /// </summary>
         /// <param name="options">The options to use for this client</param>
-        public BitfinexClient(BitfinexClientOptions options) : base(options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
+        public BitfinexClient(BitfinexClientOptions options) : base("Bitfinex", options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
         {
             if (options == null)
                 throw new ArgumentException("Cant pass null options, use empty constructor for default");
@@ -157,6 +158,8 @@ namespace Bitfinex.Net
             return await SendRequest<BitfinexPlatformStatus>(GetUrl(StatusEndpoint, ApiVersion2), HttpMethod.Get, ct).ConfigureAwait(false);
         }
 
+        
+
         /// <summary>
         /// Gets a list of supported currencies
         /// </summary>
@@ -195,7 +198,7 @@ namespace Bitfinex.Net
         {
             var parameters = new Dictionary<string, object>
             {
-                {"symbols", string.Join(",", symbols)}
+                {"symbols", symbols.Any() ? string.Join(",", symbols): "ALL"}
             };
 
             return await SendRequest<IEnumerable<BitfinexSymbolOverview>>(GetUrl(TickersEndpoint, ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
@@ -1265,7 +1268,7 @@ namespace Bitfinex.Net
         {
             return await SendRequest<Bitfinex30DaySummary>(GetUrl(SummaryEndpoint, ApiVersion1), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
+        
         /// <summary>
         /// Place a new order
         /// </summary>
@@ -1779,7 +1782,100 @@ namespace Bitfinex.Net
             };
             return await SendRequest<BitfinexClosePositionResult>(GetUrl(ClosePositionEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
+        
+        private string ParseAsset(string assetName)
+        {
+            assetName = assetName.ToLowerInvariant();
+            if (assetName == "usdt") return "usd";
+
+            return assetName;
+        }
         #endregion
+
+        #region common interface
+        async Task<WebCallResult<IEnumerable<ICommonSymbol>>> IExchangeClient.GetSymbolsAsync()
+        {
+            var symbols = await GetSymbolDetailsAsync();
+            return WebCallResult<IEnumerable<ICommonSymbol>>.CreateFrom(symbols);
+        }
+
+        async Task<WebCallResult<IEnumerable<ICommonTicker>>> IExchangeClient.GetTickersAsync()
+        {
+            var tickersResult = await GetTickerAsync();
+            return WebCallResult<IEnumerable<ICommonTicker>>.CreateFrom(tickersResult);
+        }
+
+        async Task<WebCallResult<IEnumerable<ICommonRecentTrade>>> IExchangeClient.GetRecentTradesAsync(string symbol)
+        {
+            var tradesResult = await GetTradesAsync(symbol);
+            return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(tradesResult);
+        }
+
+        async Task<WebCallResult<ICommonOrderBook>> IExchangeClient.GetOrderBookAsync(string symbol)
+        {
+            var orderBookResult = await GetOrderBookAsync(symbol, Precision.PrecisionLevel0);
+            if (!orderBookResult)
+                return WebCallResult<ICommonOrderBook>.CreateErrorResult(orderBookResult.ResponseStatusCode, orderBookResult.ResponseHeaders, orderBookResult.Error!);
+
+            var result = new BitfinexOrderBook
+            {
+                Asks = orderBookResult.Data.Where(d => d.Quantity > 0),
+                Bids = orderBookResult.Data.Where(d => d.Quantity < 0)
+            };
+
+            return new WebCallResult<ICommonOrderBook>(orderBookResult.ResponseStatusCode, orderBookResult.ResponseHeaders, result, null);
+        }
+        
+        async Task<WebCallResult<IEnumerable<ICommonKline>>> IExchangeClient.GetKlinesAsync(string symbol, TimeSpan timespan)
+        {
+            var klines = await GetKlinesAsync(GetTimeFrameFromTimeSpan(timespan), symbol);
+            return WebCallResult<IEnumerable<ICommonKline>>.CreateFrom(klines);
+        }
+
+        async Task<WebCallResult<ICommonOrder>> IExchangeClient.GetOrderAsync(string orderId, string? symbol)
+        {
+            var result = await GetOrderAsync(long.Parse(orderId));
+            return WebCallResult<ICommonOrder>.CreateFrom(result);
+        }
+
+        async Task<WebCallResult<IEnumerable<ICommonTrade>>> IExchangeClient.GetTradesAsync(string orderId, string? symbol = null)
+        {
+            if (string.IsNullOrEmpty(symbol))
+                return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(new ArgumentError(nameof(symbol) + " required for Binance " + nameof(IExchangeClient.GetTradesAsync)));
+
+            var result = await GetTradesForOrderAsync(symbol, long.Parse(orderId));
+            return WebCallResult<IEnumerable<ICommonTrade>>.CreateFrom(result);
+        }
+
+        async Task<WebCallResult<ICommonOrderId>> IExchangeClient.PlaceOrderAsync(string symbol, IExchangeClient.OrderSide side, IExchangeClient.OrderType type, decimal quantity, decimal? price = null, string? accountId = null)
+        {
+            var result = await PlaceOrderAsync(symbol, GetOrderSide(side), GetOrderType(type), quantity, price ?? 0);
+            return WebCallResult<ICommonOrderId>.CreateFrom(result);
+        }
+
+        async Task<WebCallResult<IEnumerable<ICommonOrder>>> IExchangeClient.GetOpenOrdersAsync(string? symbol)
+        {
+            var result = await GetActiveOrdersAsync();
+            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(result);
+        }
+
+        async Task<WebCallResult<IEnumerable<ICommonOrder>>> IExchangeClient.GetClosedOrdersAsync(string? symbol)
+        {
+            var result = await GetOrderHistoryAsync(symbol);
+            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(result);
+        }
+
+        async Task<WebCallResult<ICommonOrderId>> IExchangeClient.CancelOrderAsync(string orderId, string? symbol)
+        {
+            var result = await CancelOrderAsync(long.Parse(orderId));
+            return WebCallResult<ICommonOrderId>.CreateFrom(result);
+        }
+
+        public string GetSymbolName(string baseAsset, string quoteAsset) =>
+            "t" + (ParseAsset(baseAsset) + ParseAsset(quoteAsset)).ToUpper(CultureInfo.InvariantCulture);
+
+        #endregion
+
 
         #region private methods
         /// <summary>
@@ -1791,9 +1887,9 @@ namespace Bitfinex.Net
             if (!(data is JArray))
             {
                 if (data["error"] != null && data["code"] != null && data["error_description"] != null)
-                    return new ServerError((int)data["code"], data["error"] + ": " + data["error_description"]);
+                    return new ServerError((int)data["code"]!, data["error"] + ": " + data["error_description"]);
                 if (data["message"] != null)
-                    return new ServerError(data["message"].ToString());
+                    return new ServerError(data["message"]!.ToString());
                 else
                     return new ServerError(data.ToString());
             }
@@ -1807,6 +1903,40 @@ namespace Bitfinex.Net
         {
             var result = $"{BaseAddress}v{version}/{endpoint}";
             return new Uri(result);
+        }
+
+        private static TimeFrame GetTimeFrameFromTimeSpan(TimeSpan timeSpan)
+        {
+            if (timeSpan == TimeSpan.FromMinutes(1)) return TimeFrame.OneMinute;
+            if (timeSpan == TimeSpan.FromMinutes(5)) return TimeFrame.FiveMinute;
+            if (timeSpan == TimeSpan.FromMinutes(15)) return TimeFrame.FifteenMinute;
+            if (timeSpan == TimeSpan.FromMinutes(30)) return TimeFrame.ThirtyMinute;
+            if (timeSpan == TimeSpan.FromHours(1)) return TimeFrame.OneHour;
+            if (timeSpan == TimeSpan.FromHours(3)) return TimeFrame.ThreeHour;
+            if (timeSpan == TimeSpan.FromHours(6)) return TimeFrame.SixHour;
+            if (timeSpan == TimeSpan.FromHours(12)) return TimeFrame.TwelveHour;
+            if (timeSpan == TimeSpan.FromDays(1)) return TimeFrame.OneDay;
+            if (timeSpan == TimeSpan.FromDays(7)) return TimeFrame.SevenDay;
+            if (timeSpan == TimeSpan.FromDays(14)) return TimeFrame.FourteenDay;
+            if (timeSpan == TimeSpan.FromDays(30) || timeSpan == TimeSpan.FromDays(31)) return TimeFrame.OneMonth;
+
+            throw new ArgumentException("Unsupported timespan for Bitfinex Klines, check supported intervals using Bitfinex.Net.Objects.TimeFrame");
+        }
+
+        private static OrderSide GetOrderSide(IExchangeClient.OrderSide side)
+        {
+            if (side == IExchangeClient.OrderSide.Sell) return OrderSide.Sell;
+            if (side == IExchangeClient.OrderSide.Buy) return OrderSide.Buy;
+
+            throw new ArgumentException("Unsupported order side for Bitfinex order: " + side);
+        }
+
+        private static OrderTypeV1 GetOrderType(IExchangeClient.OrderType type)
+        {
+            if (type == IExchangeClient.OrderType.Limit) return OrderTypeV1.Limit;
+            if (type == IExchangeClient.OrderType.Market) return OrderTypeV1.Market;
+
+            throw new ArgumentException("Unsupported order type for Bitfinex order: " + type);
         }
         #endregion
         #endregion

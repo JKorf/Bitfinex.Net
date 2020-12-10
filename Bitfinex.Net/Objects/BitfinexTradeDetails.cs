@@ -1,6 +1,7 @@
 ﻿using System;
 using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.ExchangeInterfaces;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
@@ -9,7 +10,7 @@ namespace Bitfinex.Net.Objects
     /// Details of a trade
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexTradeDetails
+    public class BitfinexTradeDetails: ICommonTrade
     {
         /// <summary>
         /// The id of the trade
@@ -76,5 +77,11 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         [ArrayProperty(10)]
         public string FeeCurrency { get; set; } = "";
+
+        public string CommonId => Id.ToString();
+        public decimal CommonPrice => ExecutedPrice;
+        public decimal CommonQuantity => ExecutedAmount;
+        public decimal CommonFee => Fee;
+        public string CommonFeeAsset => FeeCurrency;
     }
 }

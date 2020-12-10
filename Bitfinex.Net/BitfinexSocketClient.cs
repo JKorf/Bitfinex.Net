@@ -61,7 +61,7 @@ namespace Bitfinex.Net
         /// Create a new instance of BitfinexSocketClient using provided options
         /// </summary>
         /// <param name="options">The options to use for this client</param>
-        public BitfinexSocketClient(BitfinexSocketClientOptions options) : base(options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
+        public BitfinexSocketClient(BitfinexSocketClientOptions options) : base("Bitfinex", options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
         {
             if (options == null)
                 throw new ArgumentException("Cant pass null options, use empty constructor for default");

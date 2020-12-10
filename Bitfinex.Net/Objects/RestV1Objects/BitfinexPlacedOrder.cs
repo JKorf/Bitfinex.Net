@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.ExchangeInterfaces;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
@@ -8,12 +10,18 @@ namespace Bitfinex.Net.Objects.RestV1Objects
     /// <summary>
     /// Placed order info
     /// </summary>
-    public class BitfinexPlacedOrder
+    public class BitfinexPlacedOrder: ICommonOrderId, ICommonOrder
     {
+        /// <summary>
+        /// Id
+        /// </summary>
+        [JsonIgnore]
+        public string Id => OrderId.ToString(CultureInfo.InvariantCulture);
         /// <summary>
         /// The id of the order
         /// </summary>
-        public long Id { get; set; }
+        [JsonProperty("id")]
+        public long OrderId { get; set; }
         /// <summary>
         /// The symbol the order is for
         /// </summary>
@@ -67,6 +75,10 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         [JsonProperty("was_forced")]
         public bool Forced { get; set; }
         /// <summary>
+        /// The quantity of the order
+        /// </summary>
+        public decimal Quantity => OriginalAmount;
+        /// <summary>
         /// The original amount of the order
         /// </summary>
         [JsonProperty("original_amount")]
@@ -112,5 +124,35 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// </summary>
         [JsonProperty("aff_code")]
         public string? AffiliateCode { get; set; }
+        
+        string ICommonOrderId.CommonId => Id;
+        string ICommonOrder.CommonSymbol => Symbol;
+        decimal ICommonOrder.CommonPrice => Price;
+        decimal ICommonOrder.CommonQuantity => OriginalAmount;
+
+        string ICommonOrder.CommonStatus
+        {
+            get
+            {
+                if (Canceled) return "Canceled";
+                if (RemainingAmount == 0) return "Filled";
+                return "Open";
+            }
+        }
+
+        bool ICommonOrder.IsActive => Live;
+
+        IExchangeClient.OrderSide ICommonOrder.CommonSide =>
+            Side == OrderSide.Sell ? IExchangeClient.OrderSide.Sell : IExchangeClient.OrderSide.Buy;
+
+        IExchangeClient.OrderType ICommonOrder.CommonType
+        {
+            get
+            {
+                if (Type == OrderTypeV1.ExchangeMarket) return IExchangeClient.OrderType.Market;
+                if (Type == OrderTypeV1.ExchangeLimit) return IExchangeClient.OrderType.Limit;
+                else return IExchangeClient.OrderType.Other;
+            }
+        }
     }
 }

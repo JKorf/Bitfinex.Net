@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using CryptoExchange.Net.ExchangeInterfaces;
+using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.RestV1Objects
 {
     /// <summary>
     /// Symbol details
     /// </summary>
-    public class BitfinexSymbolDetails
+    public class BitfinexSymbolDetails: ICommonSymbol
     {
         /// <summary>
         /// The symbol pair
@@ -15,7 +16,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// The price precision of the pair
         /// </summary>
         [JsonProperty("price_precision")]
-        public decimal PricePrecision { get; set; }
+        public int PricePrecision { get; set; }
         /// <summary>
         /// The initial margin required to open a position
         /// </summary>
@@ -45,5 +46,8 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// If margin trading is enabled for the pair
         /// </summary>
         public bool Margin { get; set; }
+
+        string ICommonSymbol.CommonName => Pair;
+        decimal ICommonSymbol.CommonMinimumTradeSize => MinimumOrderSize;
     }
 }

@@ -5133,6 +5133,11 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Id">
             <summary>
+            Id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.OrderId">
+            <summary>
             The id of the order
             </summary>
         </member>
@@ -5189,6 +5194,11 @@
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Forced">
             <summary>
             If order was forced (margin only)
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.Quantity">
+            <summary>
+            The quantity of the order
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.RestV1Objects.BitfinexPlacedOrder.OriginalAmount">

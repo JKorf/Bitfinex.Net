@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Bitfinex.Net.Converters;
 using Bitfinex.Net.Objects.SocketObjects;
 using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.ExchangeInterfaces;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
@@ -11,7 +12,7 @@ namespace Bitfinex.Net.Objects
     /// Order info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexOrder
+    public class BitfinexOrder: ICommonOrder
     {
         /// <summary>
         /// The id of the order
@@ -198,5 +199,24 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(31)]
         [JsonConverter(typeof(BitfinexMetaConverter))]
         public BitfinexMeta? Meta { get; set; }
+
+        string ICommonOrderId.CommonId => Id.ToString();
+        string ICommonOrder.CommonSymbol => Symbol;
+        decimal ICommonOrder.CommonPrice => Price;
+        decimal ICommonOrder.CommonQuantity => AmountOriginal;
+        string ICommonOrder.CommonStatus => StatusString;
+        bool ICommonOrder.IsActive => Status == OrderStatus.Active;
+
+        IExchangeClient.OrderSide ICommonOrder.CommonSide =>
+            AmountOriginal < 0 ? IExchangeClient.OrderSide.Sell : IExchangeClient.OrderSide.Buy;
+        IExchangeClient.OrderType ICommonOrder.CommonType
+        {
+            get
+            {
+                if (Type == OrderType.ExchangeMarket) return IExchangeClient.OrderType.Market;
+                if (Type == OrderType.ExchangeLimit) return IExchangeClient.OrderType.Limit;
+                else return IExchangeClient.OrderType.Other;
+            }
+        }
     }
 }
