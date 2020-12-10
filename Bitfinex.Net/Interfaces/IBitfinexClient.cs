@@ -137,44 +137,48 @@ namespace Bitfinex.Net.Interfaces
         /// </summary>
         /// <param name="timeFrame">The time frame of the kline</param>
         /// <param name="symbol">The symbol to get the kline for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The last kline for the symbol</returns>
-        WebCallResult<BitfinexKline> GetLastKline(TimeFrame timeFrame, string symbol, CancellationToken ct = default);
+        WebCallResult<BitfinexKline> GetLastKline(TimeFrame timeFrame, string symbol, string fundingPeriod = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the last kline for a symbol
         /// </summary>
         /// <param name="timeFrame">The time frame of the kline</param>
         /// <param name="symbol">The symbol to get the kline for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The last kline for the symbol</returns>
-        Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(TimeFrame timeFrame, string symbol, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(TimeFrame timeFrame, string symbol, string fundingPeriod = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets klines for a symbol
         /// </summary>
         /// <param name="timeFrame">The time frame of the klines</param>
         /// <param name="symbol">The symbol to get the klines for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="limit">The amount of results</param>
         /// <param name="startTime">The start time of the klines</param>
         /// <param name="endTime">The end time of the klines</param>
         /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        WebCallResult<IEnumerable<BitfinexKline>> GetKlines(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        WebCallResult<IEnumerable<BitfinexKline>> GetKlines(TimeFrame timeFrame, string symbol, string fundingPeriod = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets klines for a symbol
         /// </summary>
         /// <param name="timeFrame">The time frame of the klines</param>
         /// <param name="symbol">The symbol to get the klines for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="limit">The amount of results</param>
         /// <param name="startTime">The start time of the klines</param>
         /// <param name="endTime">The end time of the klines</param>
         /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexKline>>> GetKlinesAsync(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexKline>>> GetKlinesAsync(TimeFrame timeFrame, string symbol, string fundingPeriod = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Calculate the average execution price
@@ -399,6 +403,46 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<IEnumerable<BitfinexFundingOffer>>> GetFundingOfferHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Submit a new funding offer.
+        /// </summary>
+        /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+        /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+        /// <param name="amount">Amount (positive for offer, negative for bid).</param>
+        /// <param name="rate">Daily rate.</param>
+        /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>> SubmitFundingOffer(FundingOrderType fundingOrderType, string symbol, decimal amount, decimal rate, int period, CancellationToken ct = default);
+
+        /// <summary>
+        /// Submit a new funding offer.
+        /// </summary>
+        /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+        /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+        /// <param name="amount">Amount (positive for offer, negative for bid).</param>
+        /// <param name="rate">Daily rate.</param>
+        /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal amount, decimal rate, int period, CancellationToken ct = default);
+
+        /// <summary>
+        /// Cancels an existing Funding Offer based on the offer ID entered.
+        /// </summary>
+        /// <param name="offerId">The id of the offer to cancel</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        WebCallResult<BitfinexFundingOffer> CancelFundingOffer(long offerId, CancellationToken ct = default);
+
+        /// <summary>
+        /// Cancels an existing Funding Offer based on the offer ID entered.
+        /// </summary>
+        /// <param name="offerId">The id of the offer to cancel</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long offerId, CancellationToken ct = default);
 
         /// <summary>
         /// Get the funding loans

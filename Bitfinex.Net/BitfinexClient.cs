@@ -43,7 +43,9 @@ namespace Bitfinex.Net
         private const string OrderBookEndpoint = "book/{}/{}";
         private const string StatsEndpoint = "stats1/{}:1m:{}:{}/{}";
         private const string LastCandleEndpoint = "candles/trade:{}:{}/last";
+        private const string LastFundingCandleEndpoint = "candles/trade:{}:{}:{}/last";
         private const string CandlesEndpoint = "candles/trade:{}:{}/hist";
+        private const string FundingCandlesEndpoint = "candles/trade:{}:{}:{}/hist";
         private const string MarketAverageEndpoint = "calc/trade/avg";
         private const string ForeignExchangeEndpoint = "calc/fx";
 
@@ -69,6 +71,8 @@ namespace Bitfinex.Net
         private const string MarginInfoBaseEndpoint = "auth/r/info/margin/base";
         private const string MarginInfoSymbolEndpoint = "auth/r/info/margin/{}";
         private const string FundingInfoEndpoint = "auth/r/info/funding/{}";
+        private const string FundingOfferSubmitEndpoint = "auth/w/funding/offer/submit";
+        private const string FundingOfferCancelEndpoint = "auth/w/funding/offer/cancel";
 
         private const string MovementsEndpoint = "auth/r/movements/{}/hist";
         private const string DailyPerformanceEndpoint = "auth/r/stats/perf:1D/hist";
@@ -343,23 +347,39 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="timeFrame">The time frame of the kline</param>
         /// <param name="symbol">The symbol to get the kline for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The last kline for the symbol</returns>
-        public WebCallResult<BitfinexKline> GetLastKline(TimeFrame timeFrame, string symbol, CancellationToken ct = default)
-            => GetLastKlineAsync(timeFrame, symbol, ct).Result;
+        public WebCallResult<BitfinexKline> GetLastKline(TimeFrame timeFrame, string symbol, string? fundingPeriod = null, CancellationToken ct = default)
+            => GetLastKlineAsync(timeFrame, symbol, fundingPeriod, ct).Result;
 
         /// <summary>
         /// Get the last kline for a symbol
         /// </summary>
         /// <param name="timeFrame">The time frame of the kline</param>
         /// <param name="symbol">The symbol to get the kline for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The last kline for the symbol</returns>
-        public async Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(TimeFrame timeFrame, string symbol, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(TimeFrame timeFrame, string symbol, string? fundingPeriod = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
 
-            var endpoint = FillPathParameter(LastCandleEndpoint, JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)), symbol);
+
+            string endpoint;
+            if (fundingPeriod != null)
+            {
+                endpoint = FillPathParameter(LastFundingCandleEndpoint,
+                    JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)),
+                    symbol,
+                    fundingPeriod);
+            }
+            else
+            {
+                endpoint = FillPathParameter(LastCandleEndpoint,
+                    JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)),
+                    symbol);
+            }
 
             return await SendRequest<BitfinexKline>(GetUrl(endpoint, ApiVersion2), HttpMethod.Get, ct).ConfigureAwait(false);
         }
@@ -369,27 +389,29 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="timeFrame">The time frame of the klines</param>
         /// <param name="symbol">The symbol to get the klines for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="limit">The amount of results</param>
         /// <param name="startTime">The start time of the klines</param>
         /// <param name="endTime">The end time of the klines</param>
         /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexKline>> GetKlines(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
-            => GetKlinesAsync(timeFrame, symbol, limit, startTime, endTime, sorting, ct).Result;
+        public WebCallResult<IEnumerable<BitfinexKline>> GetKlines(TimeFrame timeFrame, string symbol, string? fundingPeriod = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
+            => GetKlinesAsync(timeFrame, symbol, fundingPeriod, limit, startTime, endTime, sorting, ct).Result;
 
         /// <summary>
         /// Gets klines for a symbol
         /// </summary>
         /// <param name="timeFrame">The time frame of the klines</param>
         /// <param name="symbol">The symbol to get the klines for</param>
+        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="limit">The amount of results</param>
         /// <param name="startTime">The start time of the klines</param>
         /// <param name="endTime">The end time of the klines</param>
         /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexKline>>> GetKlinesAsync(TimeFrame timeFrame, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexKline>>> GetKlinesAsync(TimeFrame timeFrame, string symbol, string? fundingPeriod = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 5000);
@@ -400,9 +422,20 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
 
-            var endpoint = FillPathParameter(CandlesEndpoint,
-                JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)),
-                symbol);
+            string endpoint;
+            if (fundingPeriod != null)
+            {
+                endpoint = FillPathParameter(FundingCandlesEndpoint,
+                    JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)),
+                    symbol,
+                    fundingPeriod);
+            }
+            else
+            {
+                endpoint = FillPathParameter(CandlesEndpoint,
+                    JsonConvert.SerializeObject(timeFrame, new TimeFrameConverter(false)),
+                    symbol);
+            }
 
             return await SendRequest<IEnumerable<BitfinexKline>>(GetUrl(endpoint, ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
@@ -731,6 +764,68 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
             return await SendRequest<IEnumerable<BitfinexFundingOffer>>(GetUrl(FillPathParameter(FundingOfferHistoryEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Submit a new funding offer.
+        /// </summary>
+        /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+        /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+        /// <param name="amount">Amount (positive for offer, negative for bid).</param>
+        /// <param name="rate">Daily rate.</param>
+        /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>> SubmitFundingOffer(FundingOrderType fundingOrderType, string symbol, decimal amount, decimal rate, int period, CancellationToken ct = default) =>
+            SubmitFundingOfferAsync(fundingOrderType,symbol, amount, rate, period, ct).Result;
+
+        /// <summary>
+        /// Submit a new funding offer.
+        /// </summary>
+        /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+        /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+        /// <param name="amount">Amount (positive for offer, negative for bid).</param>
+        /// <param name="rate">Daily rate.</param>
+        /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal amount, decimal rate, int period, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexSymbol();
+            var parameters = new Dictionary<string, object>()
+            {
+                { "type", JsonConvert.SerializeObject(fundingOrderType, new FundingOrderTypeConverter(false)) },
+                { "symbol", symbol },
+                { "amount", amount.ToString(CultureInfo.InvariantCulture) },
+                { "rate", rate.ToString(CultureInfo.InvariantCulture) },
+                { "period", period },
+            };
+            
+            return await SendRequest<BitfinexWriteResult<BitfinexFundingOffer>>(GetUrl(FundingOfferSubmitEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Cancels an existing Funding Offer based on the offer ID entered.
+        /// </summary>
+        /// <param name="offerId">The id of the order to cancel</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexFundingOffer> CancelFundingOffer(long offerId, CancellationToken ct = default) => CancelFundingOfferAsync(offerId, ct).Result;
+
+        /// <summary>
+        /// Cancels an existing Funding Offer based on the offer ID entered.
+        /// </summary>
+        /// <param name="offerId">The id of the offer to cancel</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long offerId, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "id", offerId }
+            };
+
+            return await SendRequest<BitfinexFundingOffer>(GetUrl(FundingOfferCancelEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
