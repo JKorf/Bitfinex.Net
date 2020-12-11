@@ -434,6 +434,46 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.SubmitFundingOffer(Bitfinex.Net.Objects.FundingOrderType,System.String,System.Decimal,System.Decimal,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Submit a new funding offer.
+            </summary>
+            <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+            <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+            <param name="amount">Amount (positive for offer, negative for bid).</param>
+            <param name="rate">Daily rate.</param>
+            <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.SubmitFundingOfferAsync(Bitfinex.Net.Objects.FundingOrderType,System.String,System.Decimal,System.Decimal,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Submit a new funding offer.
+            </summary>
+            <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+            <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+            <param name="amount">Amount (positive for offer, negative for bid).</param>
+            <param name="rate">Daily rate.</param>
+            <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.CancelFundingOffer(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Cancels an existing Funding Offer based on the offer ID entered.
+            </summary>
+            <param name="offerId">The id of the order to cancel</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.CancelFundingOfferAsync(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Cancels an existing Funding Offer based on the offer ID entered.
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexClient.GetFundingLoans(System.String,System.Threading.CancellationToken)">
             <summary>
             Get the funding loans
@@ -1879,6 +1919,46 @@
             <param name="startTime">Start time of the data to return</param>
             <param name="endTime">End time of the data to return</param>
             <param name="limit">Max amount of results</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.SubmitFundingOffer(Bitfinex.Net.Objects.FundingOrderType,System.String,System.Decimal,System.Decimal,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Submit a new funding offer.
+            </summary>
+            <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+            <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+            <param name="amount">Amount (positive for offer, negative for bid).</param>
+            <param name="rate">Daily rate.</param>
+            <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.SubmitFundingOfferAsync(Bitfinex.Net.Objects.FundingOrderType,System.String,System.Decimal,System.Decimal,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Submit a new funding offer.
+            </summary>
+            <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
+            <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
+            <param name="amount">Amount (positive for offer, negative for bid).</param>
+            <param name="rate">Daily rate.</param>
+            <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelFundingOffer(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Cancels an existing Funding Offer based on the offer ID entered.
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelFundingOfferAsync(System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Cancels an existing Funding Offer based on the offer ID entered.
+            </summary>
+            <param name="offerId">The id of the offer to cancel</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
@@ -3592,6 +3672,26 @@
             Custom user price alert
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.FundingOrderType">
+            <summary>
+            Funding - Order Types.
+            </summary>
+        </member>
+        <member name="F:Bitfinex.Net.Objects.FundingOrderType.Limit">
+            <summary>
+            Place an order at an explicit, static rate.
+            </summary>
+        </member>
+        <member name="F:Bitfinex.Net.Objects.FundingOrderType.FRRDeltaVar">
+            <summary>
+            Place an order at an implicit, static rate, relative to the FRR.
+            </summary>
+        </member>
+        <member name="F:Bitfinex.Net.Objects.FundingOrderType.FRRDeltaFix">
+            <summary>
+            Place an order at an implicit, dynamic rate, relative to the FRR.
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Objects.WithdrawWallet">
             <summary>
             Withdraw wallet type
@@ -4802,6 +4902,46 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexWallet.BalanceAvailable">
             <summary>
             The available balance
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexWriteResult`1">
+            <summary>
+            Result V2.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWriteResult`1.Timestamp">
+            <summary>
+            Millisecond Time Stamp of the update.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWriteResult`1.Type">
+            <summary>
+            Purpose of notification ('on-req', 'oc-req', 'uca', 'fon-req', 'foc-req').
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWriteResult`1.Id">
+            <summary>
+            Unique ID of the message.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWriteResult`1.Data">
+            <summary>
+            Data object.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWriteResult`1.Code">
+            <summary>
+            Work in progress.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWriteResult`1.Status">
+            <summary>
+            Status of the notification; it may vary over time (SUCCESS, ERROR, FAILURE, ...).
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWriteResult`1.Text">
+            <summary>
+            Text of the notification.
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.RestV1Objects.Bitfinex30DaySummary">
