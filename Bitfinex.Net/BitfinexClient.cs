@@ -1894,6 +1894,12 @@ namespace Bitfinex.Net
             return WebCallResult<IEnumerable<ICommonSymbol>>.CreateFrom(symbols);
         }
 
+        async Task<WebCallResult<ICommonTicker>> IExchangeClient.GetTickerAsync(string symbol)
+        {
+            var tickersResult = await GetTickerAsync(default, symbol);
+            return new WebCallResult<ICommonTicker>(tickersResult.ResponseStatusCode, tickersResult.ResponseHeaders, tickersResult.Data?.FirstOrDefault(), tickersResult.Error);
+        }
+
         async Task<WebCallResult<IEnumerable<ICommonTicker>>> IExchangeClient.GetTickersAsync()
         {
             var tickersResult = await GetTickerAsync();
@@ -1921,9 +1927,9 @@ namespace Bitfinex.Net
             return new WebCallResult<ICommonOrderBook>(orderBookResult.ResponseStatusCode, orderBookResult.ResponseHeaders, result, null);
         }
         
-        async Task<WebCallResult<IEnumerable<ICommonKline>>> IExchangeClient.GetKlinesAsync(string symbol, TimeSpan timespan)
+        async Task<WebCallResult<IEnumerable<ICommonKline>>> IExchangeClient.GetKlinesAsync(string symbol, TimeSpan timespan, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
-            var klines = await GetKlinesAsync(GetTimeFrameFromTimeSpan(timespan), symbol);
+            var klines = await GetKlinesAsync(GetTimeFrameFromTimeSpan(timespan), symbol, startTime: startTime, endTime: endTime, limit: limit);
             return WebCallResult<IEnumerable<ICommonKline>>.CreateFrom(klines);
         }
 
@@ -1964,6 +1970,12 @@ namespace Bitfinex.Net
         {
             var result = await CancelOrderAsync(long.Parse(orderId));
             return WebCallResult<ICommonOrderId>.CreateFrom(result);
+        }
+
+        async Task<WebCallResult<IEnumerable<ICommonBalance>>> IExchangeClient.GetBalancesAsync(string? accountId = null)
+        {
+            var result = await GetBalancesAsync();
+            return new WebCallResult<IEnumerable<ICommonBalance>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Where(d => d.Type == WalletType.Exchange), result.Error);
         }
 
         public string GetSymbolName(string baseAsset, string quoteAsset) =>

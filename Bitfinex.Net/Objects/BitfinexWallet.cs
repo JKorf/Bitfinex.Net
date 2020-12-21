@@ -1,5 +1,6 @@
 ﻿using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.ExchangeInterfaces;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects
@@ -8,7 +9,7 @@ namespace Bitfinex.Net.Objects
     /// Wallet info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexWallet
+    public class BitfinexWallet: ICommonBalance
     {
         /// <summary>
         /// The type of the wallet
@@ -39,5 +40,9 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         [ArrayProperty(4)]
         public decimal? BalanceAvailable { get; set; }
+
+        string ICommonBalance.CommonAsset => Currency;
+        decimal ICommonBalance.CommonAvailable => BalanceAvailable ?? 0;
+        decimal ICommonBalance.CommonTotal => Balance;
     }
 }
