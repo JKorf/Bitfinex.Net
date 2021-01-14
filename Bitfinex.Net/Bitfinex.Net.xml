@@ -4671,7 +4671,7 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.DailyChangePercentage">
             <summary>
-            Change percentage versus 24 hours ago
+            Change factor versus 24 hours ago. x100 for percentage.
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexStreamSymbolOverview.LastPrice">

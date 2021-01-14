@@ -35,7 +35,7 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(4)]
         public decimal DailyChange { get; set; }
         /// <summary>
-        /// Change percentage versus 24 hours ago
+        /// Change factor versus 24 hours ago. x100 for percentage.
         /// </summary>
         [ArrayProperty(5)]
         public decimal DailyChangePercentage { get; set; }
