@@ -119,6 +119,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.1.2 - 22 jan 2021
+    * Updated for ICommonKline
+
 * Version 3.1.1 - 14 jan 2021
     * Updated CryptoExchange.Net
 
