@@ -46,5 +46,7 @@ namespace Bitfinex.Net.Objects
         decimal ICommonKline.CommonLow => Low;
         decimal ICommonKline.CommonOpen => Open;
         decimal ICommonKline.CommonClose => Close;
+        DateTime ICommonKline.CommonOpenTime => Timestamp;
+        decimal ICommonKline.CommonVolume => Volume;
     }
 }
