@@ -119,6 +119,12 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.2.0 - 03 feb 2021
+    * Updated PlaceOrder method to V2
+
+* Version 3.2.0 - 03 feb 2021
+    * Updated PlaceOrder method to V2
+
 * Version 3.1.2 - 22 jan 2021
     * Updated for ICommonKline
 
