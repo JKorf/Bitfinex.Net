@@ -81,10 +81,11 @@ namespace Bitfinex.Net
         private const string SetAlertEndpoint = "auth/w/alert/set";
         private const string DeleteAlertEndpoint = "auth/w/alert/price:{}:{}/del";
 
+        private const string PlaceOrderEndpoint = "auth/w/order/submit";
+
         private const string AccountInfoEndpoint = "account_infos";
         private const string SummaryEndpoint = "summary";
         private const string WithdrawalFeeEndpoint = "account_fees";
-        private const string PlaceOrderEndpoint = "order/new";
         private const string CancelOrderEndpoint = "order/cancel";
         private const string CancelAllOrderEndpoint = "order/cancel/all";
         private const string OrderStatusEndpoint = "order/status";
@@ -1221,6 +1222,124 @@ namespace Bitfinex.Net
         {
             return await SendRequest<BitfinexUserInfo>(GetUrl(UserInfoEndpoint, ApiVersion2), HttpMethod.Post, ct, signed: true).ConfigureAwait(false);
         }
+
+        /// <summary>
+        /// Place a new order
+        /// </summary>
+        /// <param name="symbol">Symbol to place order for</param>
+        /// <param name="side">Side of the order</param>
+        /// <param name="type">Type of the order</param>
+        /// <param name="amount">The amount of the order</param>
+        /// <param name="price">The price for the order</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <param name="flags"></param>
+        /// <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
+        /// <param name="groupId">Group id</param>
+        /// <param name="clientOrderId">Client order id</param>
+        /// <param name="priceTrailing">The trailing price for a trailing stop order</param>
+        /// <param name="priceAuxLimit">Auxiliary Limit price (for STOP LIMIT)</param>
+        /// <param name="priceOcoStop">OCO stop price</param>
+        /// <param name="cancelTime">datetime for automatic order cancellation</param>
+        /// <returns></returns>
+        public WebCallResult<BitfinexWriteResult<BitfinexOrder>> PlaceOrder(
+            string symbol,
+            OrderSide side,
+            OrderType type,
+            decimal price,
+            decimal amount,
+            int? flags = null,
+            int? leverage = null,
+            int? groupId = null,
+            int? clientOrderId = null,
+            decimal? priceTrailing = null,
+            decimal? priceAuxLimit = null,
+            decimal? priceOcoStop = null,
+            DateTime? cancelTime = null,
+            string? affiliateCode = null,
+            CancellationToken ct = default) => PlaceOrderAsync(symbol, side, type, price, amount, flags, leverage, groupId, clientOrderId, priceTrailing, priceAuxLimit, priceOcoStop, cancelTime, affiliateCode, ct).Result;
+
+        /// <summary>
+        /// Place a new order
+        /// </summary>
+        /// <param name="symbol">Symbol to place order for</param>
+        /// <param name="side">Side of the order</param>
+        /// <param name="type">Type of the order</param>
+        /// <param name="amount">The amount of the order</param>
+        /// <param name="price">The price for the order</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <param name="flags"></param>
+        /// <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
+        /// <param name="groupId">Group id</param>
+        /// <param name="clientOrderId">Client order id</param>
+        /// <param name="priceTrailing">The trailing price for a trailing stop order</param>
+        /// <param name="priceAuxLimit">Auxiliary Limit price (for STOP LIMIT)</param>
+        /// <param name="priceOcoStop">OCO stop price</param>
+        /// <param name="cancelTime">datetime for automatic order cancellation</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> PlaceOrderAsync(
+            string symbol,
+            OrderSide side,
+            OrderType type,
+            decimal price,
+            decimal amount,
+            int? flags = null,
+            int? leverage = null,
+            int? groupId = null,
+            int? clientOrderId = null,
+            decimal? priceTrailing = null,
+            decimal? priceAuxLimit = null,
+            decimal? priceOcoStop = null,
+            DateTime? cancelTime = null,
+            string? affiliateCode = null,
+            CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexSymbol();
+
+            if (side == OrderSide.Sell)
+                amount = -amount;
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "symbol", symbol },
+                { "type", JsonConvert.SerializeObject(type, new OrderTypeConverter(false)) },
+                { "price", price.ToString(CultureInfo.InvariantCulture) },
+                { "amount", amount.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            parameters.AddOptionalParameter("gid", groupId);
+            parameters.AddOptionalParameter("cid", clientOrderId);
+            parameters.AddOptionalParameter("flags", flags);
+            parameters.AddOptionalParameter("lev", leverage);
+            parameters.AddOptionalParameter("price_trailing", priceTrailing?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("price_aux_limit", priceAuxLimit?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("price_oco_stop", priceOcoStop?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("tif", cancelTime?.ToString("yyyy-MM-dd hh:mm:ss"));
+            parameters.AddOptionalParameter("meta", new Dictionary<string, string?>()
+            {
+                { "aff_code" , affiliateCode ?? _affCode }
+            });
+
+            var result = await SendRequest<BitfinexWriteResult<JArray>>(GetUrl(PlaceOrderEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            if (!result)
+                return WebCallResult<BitfinexWriteResult<BitfinexOrder>>.CreateErrorResult(result.ResponseStatusCode,
+                    result.ResponseHeaders, result.Error);
+
+            var orderData = result.Data.Data.First().ToObject<BitfinexOrder>(); //JsonConvert.DeserializeObject<BitfinexOrder>(, new [] {  new ArrayConverter() });
+            var output = new BitfinexWriteResult<BitfinexOrder>()
+            {
+                Code = result.Data.Code,
+                Id = result.Data.Id,
+                Status = result.Data.Status,
+                Text = result.Data.Text,
+                Timestamp = result.Data.Timestamp,
+                Type = result.Data.Type,
+                Data = orderData
+            };
+            return new WebCallResult<BitfinexWriteResult<BitfinexOrder>>(result.ResponseStatusCode,
+                result.ResponseHeaders, output, result.Error);
+        }
         #endregion
 
         #region Version1
@@ -1364,97 +1483,6 @@ namespace Bitfinex.Net
             return await SendRequest<Bitfinex30DaySummary>(GetUrl(SummaryEndpoint, ApiVersion1), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
         
-        /// <summary>
-        /// Place a new order
-        /// </summary>
-        /// <param name="symbol">Symbol to place order for</param>
-        /// <param name="side">Side of the order</param>
-        /// <param name="type">Type of the order</param>
-        /// <param name="amount">The amount of the order</param>
-        /// <param name="price">The price for the order</param>
-        /// <param name="hidden">If the order should be placed as hidden</param>
-        /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
-        /// <param name="useAllAvailable">If all available funds should be used</param>
-        /// <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
-        /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
-        /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
-        /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
-        /// <param name="affiliateCode">Affiliate code for the order</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexPlacedOrder> PlaceOrder(
-            string symbol,
-            OrderSide side,
-            OrderTypeV1 type,
-            decimal amount,
-            decimal price,
-            bool? hidden = null,
-            bool? postOnly = null,
-            bool? useAllAvailable = null,
-            decimal? stopLimitPrice = null,
-            bool? ocoOrder = null,
-            decimal? ocoBuyPrice = null,
-            decimal? ocoSellPrice = null,
-            string? affiliateCode = null,
-            CancellationToken ct = default) => PlaceOrderAsync(symbol, side, type, amount, price, hidden, postOnly, useAllAvailable, stopLimitPrice, ocoOrder, ocoBuyPrice, ocoSellPrice, affiliateCode, ct).Result;
-
-        /// <summary>
-        /// Place a new order
-        /// </summary>
-        /// <param name="symbol">Symbol to place order for</param>
-        /// <param name="side">Side of the order</param>
-        /// <param name="type">Type of the order</param>
-        /// <param name="amount">The amount of the order</param>
-        /// <param name="price">The price for the order</param>
-        /// <param name="hidden">If the order should be placed as hidden</param>
-        /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
-        /// <param name="useAllAvailable">If all available funds should be used</param>
-        /// <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
-        /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
-        /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
-        /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
-        /// <param name="affiliateCode">Affiliate code for the order</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public async Task<WebCallResult<BitfinexPlacedOrder>> PlaceOrderAsync(
-            string symbol,
-            OrderSide side,
-            OrderTypeV1 type,
-            decimal amount,
-            decimal price,
-            bool? hidden = null,
-            bool? postOnly = null,
-            bool? useAllAvailable = null,
-            decimal? stopLimitPrice = null,
-            bool? ocoOrder = null,
-            decimal? ocoBuyPrice = null,
-            decimal? ocoSellPrice = null,
-            string? affiliateCode = null,
-            CancellationToken ct = default)
-        {
-            symbol.ValidateNotNull(nameof(symbol));
-
-            var parameters = new Dictionary<string, object>
-            {
-                { "symbol", symbol },
-                { "amount", amount.ToString(CultureInfo.InvariantCulture) },
-                { "price", price.ToString(CultureInfo.InvariantCulture) },
-                { "exchange", "bitfinex" },
-                { "side", JsonConvert.SerializeObject(side, new OrderSideConverter(false)) },
-                { "type", JsonConvert.SerializeObject(type, new OrderTypeV1Converter(false)) }
-            };
-            parameters.AddOptionalParameter("is_hidden", hidden);
-            parameters.AddOptionalParameter("is_postonly", postOnly);
-            parameters.AddOptionalParameter("use_all_available", useAllAvailable == true ? 1 : (int?)null);
-            parameters.AddOptionalParameter(side == OrderSide.Buy ? "buy_stoplimit_price" : "sell_stoplimit_price", stopLimitPrice?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("ocoorder", ocoOrder);
-            parameters.AddOptionalParameter("buy_price_oco", ocoBuyPrice?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("sell_price_oco", ocoSellPrice?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("aff_code", affiliateCode ?? _affCode);
-
-            return await SendRequest<BitfinexPlacedOrder>(GetUrl(PlaceOrderEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
-        }
-
         /// <summary>
         /// Cancel a specific order
         /// </summary>
@@ -1951,7 +1979,7 @@ namespace Bitfinex.Net
         async Task<WebCallResult<ICommonOrderId>> IExchangeClient.PlaceOrderAsync(string symbol, IExchangeClient.OrderSide side, IExchangeClient.OrderType type, decimal quantity, decimal? price = null, string? accountId = null)
         {
             var result = await PlaceOrderAsync(symbol, GetOrderSide(side), GetOrderType(type), quantity, price ?? 0);
-            return WebCallResult<ICommonOrderId>.CreateFrom(result);
+            return new WebCallResult<ICommonOrderId>(result.ResponseStatusCode, result.ResponseHeaders, result.Data?.Data, result.Error);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonOrder>>> IExchangeClient.GetOpenOrdersAsync(string? symbol)
@@ -2038,10 +2066,10 @@ namespace Bitfinex.Net
             throw new ArgumentException("Unsupported order side for Bitfinex order: " + side);
         }
 
-        private static OrderTypeV1 GetOrderType(IExchangeClient.OrderType type)
+        private static OrderType GetOrderType(IExchangeClient.OrderType type)
         {
-            if (type == IExchangeClient.OrderType.Limit) return OrderTypeV1.Limit;
-            if (type == IExchangeClient.OrderType.Market) return OrderTypeV1.Market;
+            if (type == IExchangeClient.OrderType.Limit) return OrderType.Limit;
+            if (type == IExchangeClient.OrderType.Market) return OrderType.Market;
 
             throw new ArgumentException("Unsupported order type for Bitfinex order: " + type);
         }

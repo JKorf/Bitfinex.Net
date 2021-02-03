@@ -12,7 +12,7 @@ namespace Bitfinex.Net.Objects
     /// Order info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexOrder: ICommonOrder
+    public class BitfinexOrder: ICommonOrder, ICommonOrderId
     {
         /// <summary>
         /// The id of the order

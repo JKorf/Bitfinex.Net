@@ -756,6 +756,48 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.PlaceOrder(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderType,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
+            <summary>
+            Place a new order
+            </summary>
+            <param name="symbol">Symbol to place order for</param>
+            <param name="side">Side of the order</param>
+            <param name="type">Type of the order</param>
+            <param name="amount">The amount of the order</param>
+            <param name="price">The price for the order</param>
+            <param name="affiliateCode">Affiliate code for the order</param>
+            <param name="ct">Cancellation token</param>
+            <param name="flags"></param>
+            <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
+            <param name="groupId">Group id</param>
+            <param name="clientOrderId">Client order id</param>
+            <param name="priceTrailing">The trailing price for a trailing stop order</param>
+            <param name="priceAuxLimit">Auxiliary Limit price (for STOP LIMIT)</param>
+            <param name="priceOcoStop">OCO stop price</param>
+            <param name="cancelTime">datetime for automatic order cancellation</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.PlaceOrderAsync(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderType,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
+            <summary>
+            Place a new order
+            </summary>
+            <param name="symbol">Symbol to place order for</param>
+            <param name="side">Side of the order</param>
+            <param name="type">Type of the order</param>
+            <param name="amount">The amount of the order</param>
+            <param name="price">The price for the order</param>
+            <param name="affiliateCode">Affiliate code for the order</param>
+            <param name="ct">Cancellation token</param>
+            <param name="flags"></param>
+            <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
+            <param name="groupId">Group id</param>
+            <param name="clientOrderId">Client order id</param>
+            <param name="priceTrailing">The trailing price for a trailing stop order</param>
+            <param name="priceAuxLimit">Auxiliary Limit price (for STOP LIMIT)</param>
+            <param name="priceOcoStop">OCO stop price</param>
+            <param name="cancelTime">datetime for automatic order cancellation</param>
+            <returns></returns>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexClient.GetFundingBook(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets the margin funding book
@@ -861,46 +903,6 @@
             <summary>
             Get 30-day summary on trading volume and margin funding
             </summary>
-            <param name="ct">Cancellation token</param>
-            <returns></returns>
-        </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.PlaceOrder(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Threading.CancellationToken)">
-            <summary>
-            Place a new order
-            </summary>
-            <param name="symbol">Symbol to place order for</param>
-            <param name="side">Side of the order</param>
-            <param name="type">Type of the order</param>
-            <param name="amount">The amount of the order</param>
-            <param name="price">The price for the order</param>
-            <param name="hidden">If the order should be placed as hidden</param>
-            <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
-            <param name="useAllAvailable">If all available funds should be used</param>
-            <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
-            <param name="ocoOrder">If the order is a one-cancels-other order</param>
-            <param name="ocoBuyPrice">The one-cancels-other buy price</param>
-            <param name="ocoSellPrice">The one-cancels-other sell price</param>
-            <param name="affiliateCode">Affiliate code for the order</param>
-            <param name="ct">Cancellation token</param>
-            <returns></returns>
-        </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.PlaceOrderAsync(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Threading.CancellationToken)">
-            <summary>
-            Place a new order
-            </summary>
-            <param name="symbol">Symbol to place order for</param>
-            <param name="side">Side of the order</param>
-            <param name="type">Type of the order</param>
-            <param name="amount">The amount of the order</param>
-            <param name="price">The price for the order</param>
-            <param name="hidden">If the order should be placed as hidden</param>
-            <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
-            <param name="useAllAvailable">If all available funds should be used</param>
-            <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
-            <param name="ocoOrder">If the order is a one-cancels-other order</param>
-            <param name="ocoBuyPrice">The one-cancels-other buy price</param>
-            <param name="ocoSellPrice">The one-cancels-other sell price</param>
-            <param name="affiliateCode">Affiliate code for the order</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
@@ -2352,7 +2354,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.PlaceOrder(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.PlaceOrder(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderType,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
             <summary>
             Place a new order
             </summary>
@@ -2361,18 +2363,19 @@
             <param name="type">Type of the order</param>
             <param name="amount">The amount of the order</param>
             <param name="price">The price for the order</param>
-            <param name="hidden">If the order should be placed as hidden</param>
-            <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
-            <param name="useAllAvailable">If all available funds should be used</param>
-            <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
-            <param name="ocoOrder">If the order is a one-cancels-other order</param>
-            <param name="ocoBuyPrice">The one-cancels-other buy price</param>
-            <param name="ocoSellPrice">The one-cancels-other sell price</param>
             <param name="affiliateCode">Affiliate code for the order</param>
             <param name="ct">Cancellation token</param>
+            <param name="flags"></param>
+            <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
+            <param name="groupId">Group id</param>
+            <param name="clientOrderId">Client order id</param>
+            <param name="priceTrailing">The trailing price for a trailing stop order</param>
+            <param name="priceAuxLimit">Auxiliary Limit price (for STOP LIMIT)</param>
+            <param name="priceOcoStop">OCO stop price</param>
+            <param name="cancelTime">datetime for automatic order cancellation</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.PlaceOrderAsync(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderTypeV1,System.Decimal,System.Decimal,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.PlaceOrderAsync(System.String,Bitfinex.Net.Objects.OrderSide,Bitfinex.Net.Objects.OrderType,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
             <summary>
             Place a new order
             </summary>
@@ -2381,15 +2384,16 @@
             <param name="type">Type of the order</param>
             <param name="amount">The amount of the order</param>
             <param name="price">The price for the order</param>
-            <param name="hidden">If the order should be placed as hidden</param>
-            <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
-            <param name="useAllAvailable">If all available funds should be used</param>
-            <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
-            <param name="ocoOrder">If the order is a one-cancels-other order</param>
-            <param name="ocoBuyPrice">The one-cancels-other buy price</param>
-            <param name="ocoSellPrice">The one-cancels-other sell price</param>
             <param name="affiliateCode">Affiliate code for the order</param>
             <param name="ct">Cancellation token</param>
+            <param name="flags"></param>
+            <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
+            <param name="groupId">Group id</param>
+            <param name="clientOrderId">Client order id</param>
+            <param name="priceTrailing">The trailing price for a trailing stop order</param>
+            <param name="priceAuxLimit">Auxiliary Limit price (for STOP LIMIT)</param>
+            <param name="priceOcoStop">OCO stop price</param>
+            <param name="cancelTime">datetime for automatic order cancellation</param>
             <returns></returns>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelOrder(System.Int64,System.Threading.CancellationToken)">

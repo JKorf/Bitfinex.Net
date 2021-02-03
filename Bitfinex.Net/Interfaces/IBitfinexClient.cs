@@ -842,29 +842,31 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="type">Type of the order</param>
         /// <param name="amount">The amount of the order</param>
         /// <param name="price">The price for the order</param>
-        /// <param name="hidden">If the order should be placed as hidden</param>
-        /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
-        /// <param name="useAllAvailable">If all available funds should be used</param>
-        /// <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
-        /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
-        /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
-        /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
         /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <param name="ct">Cancellation token</param>
+        /// <param name="flags"></param>
+        /// <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
+        /// <param name="groupId">Group id</param>
+        /// <param name="clientOrderId">Client order id</param>
+        /// <param name="priceTrailing">The trailing price for a trailing stop order</param>
+        /// <param name="priceAuxLimit">Auxiliary Limit price (for STOP LIMIT)</param>
+        /// <param name="priceOcoStop">OCO stop price</param>
+        /// <param name="cancelTime">datetime for automatic order cancellation</param>
         /// <returns></returns>
-        WebCallResult<BitfinexPlacedOrder> PlaceOrder(
+        WebCallResult<BitfinexWriteResult<BitfinexOrder>> PlaceOrder(
             string symbol,
             OrderSide side,
-            OrderTypeV1 type,
-            decimal amount,
+            OrderType type,
             decimal price,
-            bool? hidden = null,
-            bool? postOnly = null,
-            bool? useAllAvailable = null,
-            decimal? stopLimitPrice = null,
-            bool? ocoOrder = null,
-            decimal? ocoBuyPrice = null,
-            decimal? ocoSellPrice = null,
+            decimal amount,
+            int? flags = null,
+            int? leverage = null,
+            int? groupId = null,
+            int? clientOrderId = null,
+            decimal? priceTrailing = null,
+            decimal? priceAuxLimit = null,
+            decimal? priceOcoStop = null,
+            DateTime? cancelTime = null,
             string? affiliateCode = null,
             CancellationToken ct = default);
 
@@ -876,29 +878,31 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="type">Type of the order</param>
         /// <param name="amount">The amount of the order</param>
         /// <param name="price">The price for the order</param>
-        /// <param name="hidden">If the order should be placed as hidden</param>
-        /// <param name="postOnly">If the only should only be placed if it isn't immediately filled</param>
-        /// <param name="useAllAvailable">If all available funds should be used</param>
-        /// <param name="stopLimitPrice">The stop price if a stop limit order is placed</param>
-        /// <param name="ocoOrder">If the order is a one-cancels-other order</param>
-        /// <param name="ocoBuyPrice">The one-cancels-other buy price</param>
-        /// <param name="ocoSellPrice">The one-cancels-other sell price</param>
         /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <param name="ct">Cancellation token</param>
+        /// <param name="flags"></param>
+        /// <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
+        /// <param name="groupId">Group id</param>
+        /// <param name="clientOrderId">Client order id</param>
+        /// <param name="priceTrailing">The trailing price for a trailing stop order</param>
+        /// <param name="priceAuxLimit">Auxiliary Limit price (for STOP LIMIT)</param>
+        /// <param name="priceOcoStop">OCO stop price</param>
+        /// <param name="cancelTime">datetime for automatic order cancellation</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexPlacedOrder>> PlaceOrderAsync(
+        Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> PlaceOrderAsync(
             string symbol,
             OrderSide side,
-            OrderTypeV1 type,
-            decimal amount,
+            OrderType type,
             decimal price,
-            bool? hidden = null,
-            bool? postOnly = null,
-            bool? useAllAvailable = null,
-            decimal? stopLimitPrice = null,
-            bool? ocoOrder = null,
-            decimal? ocoBuyPrice = null,
-            decimal? ocoSellPrice = null,
+            decimal amount,
+            int? flags = null,
+            int? leverage = null,
+            int? groupId = null,
+            int? clientOrderId = null,
+            decimal? priceTrailing = null,
+            decimal? priceAuxLimit = null,
+            decimal? priceOcoStop = null,
+            DateTime? cancelTime = null,
             string? affiliateCode = null,
             CancellationToken ct = default);
 
