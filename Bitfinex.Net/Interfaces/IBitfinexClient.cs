@@ -910,17 +910,21 @@ namespace Bitfinex.Net.Interfaces
         /// Cancel a specific order
         /// </summary>
         /// <param name="orderId">The id of the order to cancel</param>
+        /// <param name="clientOrderId">The client order id of the order to cancel</param>
+        /// <param name="clientOrderIdDate">The date of the client order (year month and day)</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        WebCallResult<BitfinexPlacedOrder> CancelOrder(long orderId, CancellationToken ct = default);
+        WebCallResult<BitfinexWriteResult<BitfinexOrder>> CancelOrder(long? orderId = null, long? clientOrderId = null, DateTime? clientOrderIdDate = null, CancellationToken ct = default);
 
         /// <summary>
         /// Cancel a specific order
         /// </summary>
         /// <param name="orderId">The id of the order to cancel</param>
+        /// <param name="clientOrderId">The client order id of the order to cancel</param>
+        /// <param name="clientOrderIdDate">The date of the client order (year month and day)</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexPlacedOrder>> CancelOrderAsync(long orderId, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> CancelOrderAsync(long? orderId = null, long? clientOrderId = null, DateTime? clientOrderIdDate = null, CancellationToken ct = default);
 
         /// <summary>
         /// Cancels all open orders

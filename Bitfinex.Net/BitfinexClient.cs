@@ -82,11 +82,11 @@ namespace Bitfinex.Net
         private const string DeleteAlertEndpoint = "auth/w/alert/price:{}:{}/del";
 
         private const string PlaceOrderEndpoint = "auth/w/order/submit";
+        private const string CancelOrderEndpoint = "auth/w/order/cancel";
 
         private const string AccountInfoEndpoint = "account_infos";
         private const string SummaryEndpoint = "summary";
         private const string WithdrawalFeeEndpoint = "account_fees";
-        private const string CancelOrderEndpoint = "order/cancel";
         private const string CancelAllOrderEndpoint = "order/cancel/all";
         private const string OrderStatusEndpoint = "order/status";
 
@@ -1326,7 +1326,7 @@ namespace Bitfinex.Net
                 return WebCallResult<BitfinexWriteResult<BitfinexOrder>>.CreateErrorResult(result.ResponseStatusCode,
                     result.ResponseHeaders, result.Error);
 
-            var orderData = result.Data.Data.First().ToObject<BitfinexOrder>(); //JsonConvert.DeserializeObject<BitfinexOrder>(, new [] {  new ArrayConverter() });
+            var orderData = result.Data.Data.First().ToObject<BitfinexOrder>();
             var output = new BitfinexWriteResult<BitfinexOrder>()
             {
                 Code = result.Data.Code,
@@ -1487,24 +1487,35 @@ namespace Bitfinex.Net
         /// Cancel a specific order
         /// </summary>
         /// <param name="orderId">The id of the order to cancel</param>
+        /// <param name="clientOrderId">The client order id of the order to cancel</param>
+        /// <param name="clientOrderIdDate">The date of the client order (year month and day)</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexPlacedOrder> CancelOrder(long orderId, CancellationToken ct = default) => CancelOrderAsync(orderId, ct).Result;
+        public WebCallResult<BitfinexWriteResult<BitfinexOrder>> CancelOrder(long? orderId = null, long? clientOrderId = null, DateTime? clientOrderIdDate = null, CancellationToken ct = default) => CancelOrderAsync(orderId, clientOrderId, clientOrderIdDate, ct).Result;
 
         /// <summary>
         /// Cancel a specific order
         /// </summary>
         /// <param name="orderId">The id of the order to cancel</param>
+        /// <param name="clientOrderId">The client order id of the order to cancel</param>
+        /// <param name="clientOrderIdDate">The date of the client order (year month and day)</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitfinexPlacedOrder>> CancelOrderAsync(long orderId, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> CancelOrderAsync(long? orderId = null, long? clientOrderId = null, DateTime? clientOrderIdDate = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>
-            {
-                { "order_id", orderId }
-            };
+            if(orderId != null && clientOrderId != null)
+                throw new ArgumentException("Either orderId or clientOrderId should be provided, not both");
 
-            return await SendRequest<BitfinexPlacedOrder>(GetUrl(CancelOrderEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            if (clientOrderId != null && clientOrderIdDate == null)
+                throw new ArgumentException("The date of the order has to be provided if canceling by clientOrderId");
+
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("id", orderId);
+            parameters.AddOptionalParameter("cid", clientOrderId);
+            parameters.AddOptionalParameter("cid_date", clientOrderIdDate?.ToString("yyyy-MM-dd"));
+
+            var result = await SendRequest<BitfinexWriteResult<BitfinexOrder>>(GetUrl(CancelOrderEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return result;
         }
 
         /// <summary>
@@ -1997,7 +2008,7 @@ namespace Bitfinex.Net
         async Task<WebCallResult<ICommonOrderId>> IExchangeClient.CancelOrderAsync(string orderId, string? symbol)
         {
             var result = await CancelOrderAsync(long.Parse(orderId));
-            return WebCallResult<ICommonOrderId>.CreateFrom(result);
+            return new WebCallResult<ICommonOrderId>(result.ResponseStatusCode, result.ResponseHeaders, result.Data?.Data, result.Error);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonBalance>>> IExchangeClient.GetBalancesAsync(string? accountId = null)
