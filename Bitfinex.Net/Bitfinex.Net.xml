@@ -2400,6 +2400,26 @@
             <param name="cancelTime">datetime for automatic order cancellation</param>
             <returns></returns>
         </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelOrder(System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Cancel a specific order
+            </summary>
+            <param name="orderId">The id of the order to cancel</param>
+            <param name="clientOrderId">The client order id of the order to cancel</param>
+            <param name="clientOrderIdDate">The date of the client order (year month and day)</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelOrderAsync(System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Cancel a specific order
+            </summary>
+            <param name="orderId">The id of the order to cancel</param>
+            <param name="clientOrderId">The client order id of the order to cancel</param>
+            <param name="clientOrderIdDate">The date of the client order (year month and day)</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.CancelAllOrders(System.Threading.CancellationToken)">
             <summary>
             Cancels all open orders

@@ -52,10 +52,13 @@ namespace Bitfinex.Net
         private const string WalletsEndpoint = "auth/r/wallets";
         private const string CalcAvailableBalanceEndpoint = "auth/calc/order/avail";
         private const string OpenOrdersEndpoint = "auth/r/orders";
+        private const string OrderHistorySingleEndpoint = "auth/r/orders/hist";
         private const string OrderHistoryEndpoint = "auth/r/orders/{}/hist";
         private const string OrderTradesEndpoint = "auth/r/order/{}:{}/trades";
+        private const string MyTradesSingleEndpoint = "auth/r/trades/hist";
         private const string MyTradesEndpoint = "auth/r/trades/{}/hist";
         private const string UserInfoEndpoint = "auth/r/info/user";
+        private const string LedgerEntriesSingleEndpoint = "auth/r/ledgers/hist";
         private const string LedgerEntriesEndpoint = "auth/r/ledgers/{}/hist";
 
         private const string ActivePositionsEndpoint = "auth/r/positions";
@@ -551,7 +554,7 @@ namespace Bitfinex.Net
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexOrder>> GetOrderHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
+        public WebCallResult<IEnumerable<BitfinexOrder>> GetOrderHistory(string? symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
             GetOrderHistoryAsync(symbol, startTime, endTime, limit, ct).Result;
 
         /// <summary>
@@ -563,9 +566,9 @@ namespace Bitfinex.Net
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOrderHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOrderHistoryAsync(string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol?.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
             var parameters = new Dictionary<string, object>();
@@ -573,7 +576,9 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
-            return await SendRequest<IEnumerable<BitfinexOrder>>(GetUrl(FillPathParameter(OrderHistoryEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var url = string.IsNullOrEmpty(symbol)
+                ? OrderHistorySingleEndpoint : FillPathParameter(OrderHistoryEndpoint, symbol!);
+            return await SendRequest<IEnumerable<BitfinexOrder>>(GetUrl(url, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -608,7 +613,7 @@ namespace Bitfinex.Net
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexTradeDetails>> GetTradeHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
+        public WebCallResult<IEnumerable<BitfinexTradeDetails>> GetTradeHistory(string? symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
             GetTradeHistoryAsync(symbol, startTime, endTime, limit, ct).Result;
 
         /// <summary>
@@ -620,17 +625,19 @@ namespace Bitfinex.Net
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetTradeHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetTradeHistoryAsync(string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol?.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 1000);
 
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
-
-            return await SendRequest<IEnumerable<BitfinexTradeDetails>>(GetUrl(FillPathParameter(MyTradesEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            
+            var url = string.IsNullOrEmpty(symbol)
+                ? MyTradesSingleEndpoint : FillPathParameter(MyTradesEndpoint, symbol!);
+            return await SendRequest<IEnumerable<BitfinexTradeDetails>>(GetUrl(url, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1181,7 +1188,7 @@ namespace Bitfinex.Net
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexLedgerEntry>> GetLedgerEntries(string currency, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
+        public WebCallResult<IEnumerable<BitfinexLedgerEntry>> GetLedgerEntries(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
             GetLedgerEntriesAsync(currency, startTime, endTime, limit, ct).Result;
 
         /// <summary>
@@ -1193,9 +1200,8 @@ namespace Bitfinex.Net
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(string currency, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
-            currency.ValidateNotNull(nameof(currency));
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
             var parameters = new Dictionary<string, object>();
@@ -1203,7 +1209,10 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);
 
-            return await SendRequest<IEnumerable<BitfinexLedgerEntry>>(GetUrl(FillPathParameter(LedgerEntriesEndpoint, currency), ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var url = string.IsNullOrEmpty(currency)
+                ? LedgerEntriesSingleEndpoint : FillPathParameter(LedgerEntriesEndpoint, currency!);
+
+            return await SendRequest<IEnumerable<BitfinexLedgerEntry>>(GetUrl(url, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1981,7 +1990,7 @@ namespace Bitfinex.Net
         async Task<WebCallResult<IEnumerable<ICommonTrade>>> IExchangeClient.GetTradesAsync(string orderId, string? symbol = null)
         {
             if (string.IsNullOrEmpty(symbol))
-                return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(new ArgumentError(nameof(symbol) + " required for Binance " + nameof(IExchangeClient.GetTradesAsync)));
+                return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(new ArgumentError(nameof(symbol) + " required for Bitfinex " + nameof(IExchangeClient.GetTradesAsync)));
 
             var result = await GetTradesForOrderAsync(symbol, long.Parse(orderId));
             return WebCallResult<IEnumerable<ICommonTrade>>.CreateFrom(result);
