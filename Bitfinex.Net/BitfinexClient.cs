@@ -1315,7 +1315,7 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("price_trailing", priceTrailing?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("price_aux_limit", priceAuxLimit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("price_oco_stop", priceOcoStop?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("tif", cancelTime?.ToString("yyyy-MM-dd hh:mm:ss"));
+            parameters.AddOptionalParameter("tif", cancelTime?.ToString("yyyy-MM-dd HH:mm:ss"));
             parameters.AddOptionalParameter("meta", new Dictionary<string, string?>()
             {
                 { "aff_code" , affiliateCode ?? _affCode }
