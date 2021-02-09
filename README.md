@@ -119,6 +119,10 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.3.0 - 09 feb 2021
+    * Fixed cancelationDate hours serialization on PlaceOrder
+    * Made symbol optional for GetTradeHistory, GetLedgerHistory and GetOrderHistory
+
 * Version 3.2.0 - 03 feb 2021
     * Updated PlaceOrder method to V2
 
