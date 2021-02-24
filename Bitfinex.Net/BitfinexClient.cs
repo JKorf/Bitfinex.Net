@@ -1186,10 +1186,11 @@ namespace Bitfinex.Net
         /// <param name="startTime">Start time of the data to return</param>
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
+        /// <param name="category">Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexLedgerEntry>> GetLedgerEntries(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
-            GetLedgerEntriesAsync(currency, startTime, endTime, limit, ct).Result;
+        public WebCallResult<IEnumerable<BitfinexLedgerEntry>> GetLedgerEntries(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default) =>
+            GetLedgerEntriesAsync(currency, startTime, endTime, limit, category, ct).Result;
 
         /// <summary>
         /// Get changes in your balance for a currency
@@ -1198,13 +1199,15 @@ namespace Bitfinex.Net
         /// <param name="startTime">Start time of the data to return</param>
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
+        /// <param name="category">Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
             var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("category", category);
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", startTime != null ? JsonConvert.SerializeObject(startTime, new TimestampConverter()) : null);
             parameters.AddOptionalParameter("end", endTime != null ? JsonConvert.SerializeObject(endTime, new TimestampConverter()) : null);

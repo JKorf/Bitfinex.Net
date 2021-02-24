@@ -720,7 +720,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetLedgerEntries(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLedgerEntries(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get changes in your balance for a currency
             </summary>
@@ -728,10 +728,11 @@
             <param name="startTime">Start time of the data to return</param>
             <param name="endTime">End time of the data to return</param>
             <param name="limit">Max amount of results</param>
+            <param name="category">Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.BitfinexClient.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get changes in your balance for a currency
             </summary>
@@ -739,6 +740,7 @@
             <param name="startTime">Start time of the data to return</param>
             <param name="endTime">End time of the data to return</param>
             <param name="limit">Max amount of results</param>
+            <param name="category">Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
@@ -2214,7 +2216,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLedgerEntries(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLedgerEntries(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get changes in your balance for a currency
             </summary>
@@ -2222,10 +2224,11 @@
             <param name="startTime">Start time of the data to return</param>
             <param name="endTime">End time of the data to return</param>
             <param name="limit">Max amount of results</param>
+            <param name="category">Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get changes in your balance for a currency
             </summary>
@@ -2233,6 +2236,7 @@
             <param name="startTime">Start time of the data to return</param>
             <param name="endTime">End time of the data to return</param>
             <param name="limit">Max amount of results</param>
+            <param name="category">Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>

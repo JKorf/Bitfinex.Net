@@ -697,9 +697,10 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="startTime">Start time of the data to return</param>
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
+        /// <param name="category">Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        WebCallResult<IEnumerable<BitfinexLedgerEntry>> GetLedgerEntries(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        WebCallResult<IEnumerable<BitfinexLedgerEntry>> GetLedgerEntries(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get changes in your balance for a currency
@@ -708,9 +709,10 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="startTime">Start time of the data to return</param>
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
+        /// <param name="category">Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets information about the user associated with the api key/secret
