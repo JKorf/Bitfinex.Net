@@ -7,7 +7,7 @@
   <PropertyGroup>
     <PackageId>Bitfinex.Net</PackageId>
     <Authors>JKorf</Authors>
-    <PackageVersion>3.3.0</PackageVersion>
+    <PackageVersion>3.3.1</PackageVersion>
     <AssemblyVersion>3.3.0</AssemblyVersion>
     <Description>Bitfinex.Net is a .Net wrapper for the Bitfinex API. It includes all features the API provides, REST API and Websocket, using clear and readable objects including but not limited to Reading market info, Placing and managing orders and Reading balances and funds</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -17,7 +17,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>3.3.0 - Fixed cancelationDate hours serialization on PlaceOrder, Made symbol optional for GetTradeHistory, GetLedgerHistory and GetOrderHistory</PackageReleaseNotes>
+    <PackageReleaseNotes>3.3.1 - Added category filter to GetLedgerEntries</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup>
     <DocumentationFile>Bitfinex.Net.xml</DocumentationFile>
