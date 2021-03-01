@@ -119,6 +119,10 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.4.0 - 01 mrt 2021
+    * Added config for deterministic build
+    * Updated CryptoExchange.Net
+
 * Version 3.3.1 - 24 feb 2021
     * Added category filter to GetLedgerEntries
 
