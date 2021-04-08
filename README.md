@@ -123,6 +123,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.4.3 - 08 apr 2021
+    * Allow GetMovements without parameters
+
 * Version 3.4.2 - 30 mrt 2021
     * Updated CryptoExchange.Net
 
