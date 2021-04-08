@@ -594,7 +594,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">Symbol to get history for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        WebCallResult<IEnumerable<BitfinexMovement>> GetMovements(string symbol, CancellationToken ct = default);
+        WebCallResult<IEnumerable<BitfinexMovement>> GetMovements(string? symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Get the withdrawal/deposit history
@@ -602,7 +602,7 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">Symbol to get history for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string symbol, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Daily performance

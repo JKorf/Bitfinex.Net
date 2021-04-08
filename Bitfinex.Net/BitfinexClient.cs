@@ -77,6 +77,7 @@ namespace Bitfinex.Net
         private const string FundingOfferSubmitEndpoint = "auth/w/funding/offer/submit";
         private const string FundingOfferCancelEndpoint = "auth/w/funding/offer/cancel";
 
+        private const string AllMovementsEndpoint = "auth/r/movements/hist";
         private const string MovementsEndpoint = "auth/r/movements/{}/hist";
         private const string DailyPerformanceEndpoint = "auth/r/stats/perf:1D/hist";
 
@@ -1038,7 +1039,7 @@ namespace Bitfinex.Net
         /// <param name="symbol">Symbol to get history for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexMovement>> GetMovements(string symbol, CancellationToken ct = default) => GetMovementsAsync(symbol, ct).Result;
+        public WebCallResult<IEnumerable<BitfinexMovement>> GetMovements(string? symbol, CancellationToken ct = default) => GetMovementsAsync(symbol, ct).Result;
 
         /// <summary>
         /// Get the withdrawal/deposit history
@@ -1046,10 +1047,10 @@ namespace Bitfinex.Net
         /// <param name="symbol">Symbol to get history for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string symbol, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? symbol = null, CancellationToken ct = default)
         {
-            symbol.ValidateNotNull(nameof(symbol));
-            return await SendRequest<IEnumerable<BitfinexMovement>>(GetUrl(FillPathParameter(MovementsEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            var url = GetUrl(symbol == null ? AllMovementsEndpoint : FillPathParameter(MovementsEndpoint, symbol), ApiVersion2);
+            return await SendRequest<IEnumerable<BitfinexMovement>>(url, HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <summary>
