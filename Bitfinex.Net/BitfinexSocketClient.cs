@@ -67,6 +67,7 @@ namespace Bitfinex.Net
                 throw new ArgumentException("Cant pass null options, use empty constructor for default");
 
             ContinueOnQueryResponse = true;
+            UnhandledMessageExpected = true;
             _bookSerializer.Converters.Add(new OrderBookEntryConverter());
             _affCode = options.AffiliateCode;
 
