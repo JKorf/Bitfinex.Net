@@ -699,6 +699,13 @@ namespace Bitfinex.Net
         /// <inheritdoc />
         protected override async Task<bool> Unsubscribe(SocketConnection connection, SocketSubscription subscription)
         {
+            if(subscription.Request == null)
+            {
+                // If we don't have a request object we can't unsubscribe it. Probably is an auth subscription which gets pushed regardless
+                // Just returning true here will remove the handler and close the socket if there are no other handlers left on the socket, which is the best we can do
+                return true;
+            }
+
             var channelId = ((BitfinexSubscriptionRequest) subscription.Request!).ChannelId;
             var unsub = new BitfinexUnsubscribeRequest(channelId);
             var result = false;
