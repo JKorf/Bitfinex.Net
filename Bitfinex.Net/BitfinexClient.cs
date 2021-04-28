@@ -1970,10 +1970,11 @@ namespace Bitfinex.Net
             if (!orderBookResult)
                 return WebCallResult<ICommonOrderBook>.CreateErrorResult(orderBookResult.ResponseStatusCode, orderBookResult.ResponseHeaders, orderBookResult.Error!);
 
+            var isFunding = symbol.StartsWith("f");
             var result = new BitfinexOrderBook
             {
-                Asks = orderBookResult.Data.Where(d => d.Quantity > 0),
-                Bids = orderBookResult.Data.Where(d => d.Quantity < 0)
+                Asks = orderBookResult.Data.Where(d => isFunding ? d.Quantity < 0: d.Quantity > 0),
+                Bids = orderBookResult.Data.Where(d => isFunding? d.Quantity > 0: d.Quantity < 0)
             };
 
             return new WebCallResult<ICommonOrderBook>(orderBookResult.ResponseStatusCode, orderBookResult.ResponseHeaders, result, null);
