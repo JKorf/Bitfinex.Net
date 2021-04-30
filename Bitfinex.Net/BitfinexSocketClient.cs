@@ -135,6 +135,9 @@ namespace Bitfinex.Net
         {
             symbol.ValidateBitfinexSymbol();
             length.ValidateIntValues(nameof(length), 25, 100);
+            if (precision == Precision.R0)
+                throw new ArgumentException("Invalid precision R0, use SubscribeToRawBookUpdates instead");
+
             var internalHandler = new Action<JToken>(data =>
             {
                 if (data[1].ToString() == "cs")
