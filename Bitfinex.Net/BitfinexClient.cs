@@ -2093,8 +2093,8 @@ namespace Bitfinex.Net
 
         private static OrderType GetOrderType(IExchangeClient.OrderType type)
         {
-            if (type == IExchangeClient.OrderType.Limit) return OrderType.Limit;
-            if (type == IExchangeClient.OrderType.Market) return OrderType.Market;
+            if (type == IExchangeClient.OrderType.Limit) return OrderType.ExchangeLimit;
+            if (type == IExchangeClient.OrderType.Market) return OrderType.ExchangeMarket;
 
             throw new ArgumentException("Unsupported order type for Bitfinex order: " + type);
         }
