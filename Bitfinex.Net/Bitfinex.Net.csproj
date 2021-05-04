@@ -7,9 +7,9 @@
   <PropertyGroup>
     <PackageId>Bitfinex.Net</PackageId>
     <Authors>JKorf</Authors>
-    <PackageVersion>3.4.6</PackageVersion>
+    <PackageVersion>3.4.7</PackageVersion>
     <AssemblyVersion>3.4.0</AssemblyVersion>
-    <FileVersion>3.4.6</FileVersion>
+    <FileVersion>3.4.7</FileVersion>
     <Description>Bitfinex.Net is a .Net wrapper for the Bitfinex API. It includes all features the API provides, REST API and Websocket, using clear and readable objects including but not limited to Reading market info, Placing and managing orders and Reading balances and funds</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Bitfinex Bitfinex.Net C# .Net CryptoCurrency Exchange API wrapper</PackageTags>
@@ -20,7 +20,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>3.4.6 - Inverted bid/ask when requesting order book for funding symbol, Updated CryptoExchange.Net</PackageReleaseNotes>
+    <PackageReleaseNotes>3.4.7 - Fixed IExchangeClient order type parsing on PlaceOrder</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup>
     <DocumentationFile>Bitfinex.Net.xml</DocumentationFile>

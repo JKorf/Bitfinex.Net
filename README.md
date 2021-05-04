@@ -123,6 +123,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.4.7 - 04 mei 2021
+    * Fixed IExchangeClient order type parsing on PlaceOrder
+
 * Version 3.4.6 - 28 apr 2021
     * Inverted bid/ask when requesting order book for funding symbol
     * Updated CryptoExchange.Net
