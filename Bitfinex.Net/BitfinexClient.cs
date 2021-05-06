@@ -1337,7 +1337,7 @@ namespace Bitfinex.Net
             var result = await SendRequest<BitfinexWriteResult<JArray>>(GetUrl(PlaceOrderEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
             if (!result)
                 return WebCallResult<BitfinexWriteResult<BitfinexOrder>>.CreateErrorResult(result.ResponseStatusCode,
-                    result.ResponseHeaders, result.Error);
+                    result.ResponseHeaders, result.Error!);
 
             var orderData = result.Data.Data.First().ToObject<BitfinexOrder>();
             var output = new BitfinexWriteResult<BitfinexOrder>()
@@ -1942,31 +1942,31 @@ namespace Bitfinex.Net
         #region common interface
         async Task<WebCallResult<IEnumerable<ICommonSymbol>>> IExchangeClient.GetSymbolsAsync()
         {
-            var symbols = await GetSymbolDetailsAsync();
+            var symbols = await GetSymbolDetailsAsync().ConfigureAwait(false);
             return WebCallResult<IEnumerable<ICommonSymbol>>.CreateFrom(symbols);
         }
 
         async Task<WebCallResult<ICommonTicker>> IExchangeClient.GetTickerAsync(string symbol)
         {
-            var tickersResult = await GetTickerAsync(default, symbol);
+            var tickersResult = await GetTickerAsync(default, symbol).ConfigureAwait(false);
             return new WebCallResult<ICommonTicker>(tickersResult.ResponseStatusCode, tickersResult.ResponseHeaders, tickersResult.Data?.FirstOrDefault(), tickersResult.Error);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonTicker>>> IExchangeClient.GetTickersAsync()
         {
-            var tickersResult = await GetTickerAsync();
+            var tickersResult = await GetTickerAsync().ConfigureAwait(false);
             return WebCallResult<IEnumerable<ICommonTicker>>.CreateFrom(tickersResult);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonRecentTrade>>> IExchangeClient.GetRecentTradesAsync(string symbol)
         {
-            var tradesResult = await GetTradesAsync(symbol);
+            var tradesResult = await GetTradesAsync(symbol).ConfigureAwait(false);
             return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(tradesResult);
         }
 
         async Task<WebCallResult<ICommonOrderBook>> IExchangeClient.GetOrderBookAsync(string symbol)
         {
-            var orderBookResult = await GetOrderBookAsync(symbol, Precision.PrecisionLevel0);
+            var orderBookResult = await GetOrderBookAsync(symbol, Precision.PrecisionLevel0).ConfigureAwait(false);
             if (!orderBookResult)
                 return WebCallResult<ICommonOrderBook>.CreateErrorResult(orderBookResult.ResponseStatusCode, orderBookResult.ResponseHeaders, orderBookResult.Error!);
 
@@ -1982,13 +1982,13 @@ namespace Bitfinex.Net
         
         async Task<WebCallResult<IEnumerable<ICommonKline>>> IExchangeClient.GetKlinesAsync(string symbol, TimeSpan timespan, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
-            var klines = await GetKlinesAsync(GetTimeFrameFromTimeSpan(timespan), symbol, startTime: startTime, endTime: endTime, limit: limit);
+            var klines = await GetKlinesAsync(GetTimeFrameFromTimeSpan(timespan), symbol, startTime: startTime, endTime: endTime, limit: limit).ConfigureAwait(false);
             return WebCallResult<IEnumerable<ICommonKline>>.CreateFrom(klines);
         }
 
         async Task<WebCallResult<ICommonOrder>> IExchangeClient.GetOrderAsync(string orderId, string? symbol)
         {
-            var result = await GetOrderAsync(long.Parse(orderId));
+            var result = await GetOrderAsync(long.Parse(orderId)).ConfigureAwait(false);
             return WebCallResult<ICommonOrder>.CreateFrom(result);
         }
 
@@ -1997,37 +1997,37 @@ namespace Bitfinex.Net
             if (string.IsNullOrEmpty(symbol))
                 return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(new ArgumentError(nameof(symbol) + " required for Bitfinex " + nameof(IExchangeClient.GetTradesAsync)));
 
-            var result = await GetTradesForOrderAsync(symbol, long.Parse(orderId));
+            var result = await GetTradesForOrderAsync(symbol, long.Parse(orderId)).ConfigureAwait(false);
             return WebCallResult<IEnumerable<ICommonTrade>>.CreateFrom(result);
         }
 
         async Task<WebCallResult<ICommonOrderId>> IExchangeClient.PlaceOrderAsync(string symbol, IExchangeClient.OrderSide side, IExchangeClient.OrderType type, decimal quantity, decimal? price = null, string? accountId = null)
         {
-            var result = await PlaceOrderAsync(symbol, GetOrderSide(side), GetOrderType(type), quantity, price ?? 0);
+            var result = await PlaceOrderAsync(symbol, GetOrderSide(side), GetOrderType(type), quantity, price ?? 0).ConfigureAwait(false);
             return new WebCallResult<ICommonOrderId>(result.ResponseStatusCode, result.ResponseHeaders, result.Data?.Data, result.Error);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonOrder>>> IExchangeClient.GetOpenOrdersAsync(string? symbol)
         {
-            var result = await GetActiveOrdersAsync();
+            var result = await GetActiveOrdersAsync().ConfigureAwait(false);
             return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(result);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonOrder>>> IExchangeClient.GetClosedOrdersAsync(string? symbol)
         {
-            var result = await GetOrderHistoryAsync(symbol);
+            var result = await GetOrderHistoryAsync(symbol).ConfigureAwait(false);
             return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(result);
         }
 
         async Task<WebCallResult<ICommonOrderId>> IExchangeClient.CancelOrderAsync(string orderId, string? symbol)
         {
-            var result = await CancelOrderAsync(long.Parse(orderId));
+            var result = await CancelOrderAsync(long.Parse(orderId)).ConfigureAwait(false);
             return new WebCallResult<ICommonOrderId>(result.ResponseStatusCode, result.ResponseHeaders, result.Data?.Data, result.Error);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonBalance>>> IExchangeClient.GetBalancesAsync(string? accountId = null)
         {
-            var result = await GetBalancesAsync();
+            var result = await GetBalancesAsync().ConfigureAwait(false);
             return new WebCallResult<IEnumerable<ICommonBalance>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Where(d => d.Type == WalletType.Exchange), result.Error);
         }
 
