@@ -123,6 +123,9 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.5.0-beta2 - 06 mei 2021
+    * Updated CryptoExchange.Net
+
 * Version 3.5.0-beta1 - 30 apr 2021
     * Updated to CryptoExchange.Net 4.0.0-beta1, new websocket implementation
 
