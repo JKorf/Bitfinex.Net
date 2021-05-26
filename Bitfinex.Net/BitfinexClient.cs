@@ -155,25 +155,10 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Whether Bitfinex platform is running normally or not</returns>
-        public WebCallResult<BitfinexPlatformStatus> GetPlatformStatus(CancellationToken ct = default) => GetPlatformStatusAsync(ct).Result;
-
-        /// <summary>
-        /// Gets the platform status
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns>Whether Bitfinex platform is running normally or not</returns>
         public async Task<WebCallResult<BitfinexPlatformStatus>> GetPlatformStatusAsync(CancellationToken ct = default)
         {
             return await SendRequest<BitfinexPlatformStatus>(GetUrl(StatusEndpoint, ApiVersion2), HttpMethod.Get, ct).ConfigureAwait(false);
         }
-
-        
-
-        /// <summary>
-        /// Gets a list of supported currencies
-        /// </summary>
-        /// <param name="ct">Cancellation token</param><returns></returns>
-        public WebCallResult<IEnumerable<BitfinexCurrency>> GetCurrencies(CancellationToken ct = default) => GetCurrenciesAsync(ct).Result;
 
         /// <summary>
         /// Gets a list of supported currencies
@@ -185,17 +170,8 @@ namespace Bitfinex.Net
             var result = await SendRequest<IEnumerable<IEnumerable<BitfinexCurrency>>>(GetUrl(CurrenciesEndpoint, ApiVersion2), HttpMethod.Get, ct).ConfigureAwait(false);
             if (!result)
                 return WebCallResult<IEnumerable<BitfinexCurrency>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error!);
-            return new WebCallResult<IEnumerable<BitfinexCurrency>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.First(), null);
+            return result.As(result.Data.First());
         }
-
-
-        /// <summary>
-        /// Returns basic symbol data for the provided symbols
-        /// </summary>
-        /// <param name="symbols">The symbols to get data for</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns>Symbol data</returns>
-        public WebCallResult<IEnumerable<BitfinexSymbolOverview>> GetTicker(CancellationToken ct = default, params string[] symbols) => GetTickerAsync(ct, symbols).Result;
 
         /// <summary>
         /// Returns basic market data for the provided symbols
@@ -212,18 +188,6 @@ namespace Bitfinex.Net
 
             return await SendRequest<IEnumerable<BitfinexSymbolOverview>>(GetUrl(TickersEndpoint, ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get recent trades for a symbol
-        /// </summary>
-        /// <param name="symbol">The symbol to get trades for</param>
-        /// <param name="limit">The amount of results</param>
-        /// <param name="startTime">The start time to return trades for</param>
-        /// <param name="endTime">The end time to return trades for</param>
-        /// <param name="sorting">The way the result is sorted</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns>Trades for the symbol</returns>
-        public WebCallResult<IEnumerable<BitfinexTradeSimple>> GetTrades(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default) => GetTradesAsync(symbol, limit, startTime, endTime, sorting, ct).Result;
 
         /// <summary>
         /// Get recent trades for a symbol
@@ -256,16 +220,6 @@ namespace Bitfinex.Net
         /// <param name="limit">The amount of results in the book</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The order book for the symbol</returns>
-        public WebCallResult<IEnumerable<BitfinexOrderBookEntry>> GetOrderBook(string symbol, Precision precision, int? limit = null, CancellationToken ct = default) => GetOrderBookAsync(symbol, precision, limit, ct).Result;
-
-        /// <summary>
-        /// Gets the order book for a symbol
-        /// </summary>
-        /// <param name="symbol">The symbol to get the order book for</param>
-        /// <param name="precision">The precision of the data</param>
-        /// <param name="limit">The amount of results in the book</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns>The order book for the symbol</returns>
         public async Task<WebCallResult<IEnumerable<BitfinexOrderBookEntry>>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
@@ -287,15 +241,6 @@ namespace Bitfinex.Net
         /// <param name="limit">The amount of results in the book</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The order book for the symbol</returns>
-        public WebCallResult<IEnumerable<BitfinexRawOrderBookEntry>> GetRawOrderBook(string symbol, int? limit = null, CancellationToken ct = default) => GetRawOrderBookAsync(symbol, limit, ct).Result;
-
-        /// <summary>
-        /// Gets the raw order book for a symbol
-        /// </summary>
-        /// <param name="symbol">The symbol to get the order book for</param>
-        /// <param name="limit">The amount of results in the book</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns>The order book for the symbol</returns>
         public async Task<WebCallResult<IEnumerable<BitfinexRawOrderBookEntry>>> GetRawOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
@@ -308,7 +253,6 @@ namespace Bitfinex.Net
             return await SendRequest<IEnumerable<BitfinexRawOrderBookEntry>>(GetUrl(FillPathParameter(OrderBookEndpoint, symbol, prec), ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
 
-
         /// <summary>
         /// Get various stats for the symbol
         /// </summary>
@@ -319,19 +263,7 @@ namespace Bitfinex.Net
         /// <param name="sorting">The way the result should be sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexStats> GetStats(string symbol, StatKey key, StatSide side, StatSection section, Sorting? sorting = null, CancellationToken ct = default) => GetStatsAsync(symbol, key, side, section, sorting, ct).Result;
-
-        /// <summary>
-        /// Get various stats for the symbol
-        /// </summary>
-        /// <param name="symbol">The symbol to request stats for</param>
-        /// <param name="key">The type of stats</param>
-        /// <param name="side">Side of the stats</param>
-        /// <param name="section">Section of the stats</param>
-        /// <param name="sorting">The way the result should be sorted</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public async Task<WebCallResult<BitfinexStats>> GetStatsAsync(string symbol, StatKey key, StatSide side, StatSection section, Sorting? sorting, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexStats>> GetStatsAsync(string symbol, StatKey key, StatSide side, StatSection section, Sorting? sorting = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
 
@@ -346,18 +278,7 @@ namespace Bitfinex.Net
 
             return await SendRequest<BitfinexStats>(GetUrl(endpoint, ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get the last kline for a symbol
-        /// </summary>
-        /// <param name="timeFrame">The time frame of the kline</param>
-        /// <param name="symbol">The symbol to get the kline for</param>
-        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns>The last kline for the symbol</returns>
-        public WebCallResult<BitfinexKline> GetLastKline(TimeFrame timeFrame, string symbol, string? fundingPeriod = null, CancellationToken ct = default)
-            => GetLastKlineAsync(timeFrame, symbol, fundingPeriod, ct).Result;
-
+        
         /// <summary>
         /// Get the last kline for a symbol
         /// </summary>
@@ -388,21 +309,6 @@ namespace Bitfinex.Net
 
             return await SendRequest<BitfinexKline>(GetUrl(endpoint, ApiVersion2), HttpMethod.Get, ct).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Gets klines for a symbol
-        /// </summary>
-        /// <param name="timeFrame">The time frame of the klines</param>
-        /// <param name="symbol">The symbol to get the klines for</param>
-        /// <param name="fundingPeriod">The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
-        /// <param name="limit">The amount of results</param>
-        /// <param name="startTime">The start time of the klines</param>
-        /// <param name="endTime">The end time of the klines</param>
-        /// <param name="sorting">The way the result is sorted</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexKline>> GetKlines(TimeFrame timeFrame, string symbol, string? fundingPeriod = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
-            => GetKlinesAsync(timeFrame, symbol, fundingPeriod, limit, startTime, endTime, sorting, ct).Result;
 
         /// <summary>
         /// Gets klines for a symbol
@@ -454,18 +360,6 @@ namespace Bitfinex.Net
         /// <param name="period">Maximum period for margin funding</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The average price at which the execution would happen</returns>
-        public WebCallResult<BitfinexAveragePrice> GetAveragePrice(string symbol, decimal amount, decimal rateLimit, int? period = null, CancellationToken ct = default)
-            => GetAveragePriceAsync(symbol, amount, rateLimit, period, ct).Result;
-
-        /// <summary>
-        /// Calculate the average execution price
-        /// </summary>
-        /// <param name="symbol">The symbol to calculate for</param>
-        /// <param name="amount">The amount to execute</param>
-        /// <param name="rateLimit">Limit to price</param>
-        /// <param name="period">Maximum period for margin funding</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns>The average price at which the execution would happen</returns>
         public async Task<WebCallResult<BitfinexAveragePrice>> GetAveragePriceAsync(string symbol, decimal amount, decimal? rateLimit = null, int? period = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
@@ -480,16 +374,6 @@ namespace Bitfinex.Net
 
             return await SendRequest<BitfinexAveragePrice>(GetUrl(MarketAverageEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Returns the exchange rate for the currencies
-        /// </summary>
-        /// <param name="currency1">The first currency</param>
-        /// <param name="currency2">The second currency</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns>Exchange rate</returns>
-        public WebCallResult<BitfinexForeignExchangeRate> GetForeignExchangeRate(string currency1, string currency2, CancellationToken ct = default) =>
-            GetForeignExchangeRateAsync(currency1, currency2, ct).Result;
 
         /// <summary>
         /// Returns the exchange rate for the currencies
@@ -517,13 +401,6 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexWallet>> GetBalances(CancellationToken ct = default) => GetBalancesAsync(ct).Result;
-
-        /// <summary>
-        /// Get all funds
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexWallet>>> GetBalancesAsync(CancellationToken ct = default)
         {
             return await SendRequest<IEnumerable<BitfinexWallet>>(GetUrl(WalletsEndpoint, ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
@@ -534,29 +411,10 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexOrder>> GetActiveOrders(CancellationToken ct = default) => GetActiveOrdersAsync(ct).Result;
-
-        /// <summary>
-        /// Get the active orders
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetActiveOrdersAsync(CancellationToken ct = default)
         {
             return await SendRequest<IEnumerable<BitfinexOrder>>(GetUrl(OpenOrdersEndpoint, ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get the order history for a symbol for this account
-        /// </summary>
-        /// <param name="symbol">The symbol to get the history for</param>
-        /// <param name="startTime">Start time of the data to return</param>
-        /// <param name="endTime">End time of the data to return</param>
-        /// <param name="limit">Max amount of results</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexOrder>> GetOrderHistory(string? symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
-            GetOrderHistoryAsync(symbol, startTime, endTime, limit, ct).Result;
 
         /// <summary>
         /// Get the order history for a symbol for this account
@@ -589,33 +447,12 @@ namespace Bitfinex.Net
         /// <param name="orderId">The order Id</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexTradeDetails>> GetTradesForOrder(string symbol, long orderId, CancellationToken ct = default) => GetTradesForOrderAsync(symbol, orderId, ct).Result;
-
-        /// <summary>
-        /// Get the individual trades for an order
-        /// </summary>
-        /// <param name="symbol">The symbol of the order</param>
-        /// <param name="orderId">The order Id</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetTradesForOrderAsync(string symbol, long orderId, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
 
             return await SendRequest<IEnumerable<BitfinexTradeDetails>>(GetUrl(FillPathParameter(OrderTradesEndpoint, symbol, orderId.ToString(CultureInfo.InvariantCulture)), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get the trade history for a symbol
-        /// </summary>
-        /// <param name="symbol">The symbol to get history for</param>
-        /// <param name="startTime">Start time of the data to return</param>
-        /// <param name="endTime">End time of the data to return</param>
-        /// <param name="limit">Max amount of results</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexTradeDetails>> GetTradeHistory(string? symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
-            GetTradeHistoryAsync(symbol, startTime, endTime, limit, ct).Result;
 
         /// <summary>
         /// Get the trade history for a symbol
@@ -646,27 +483,10 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexPosition>> GetActivePositions(CancellationToken ct = default) => GetActivePositionsAsync(ct).Result;
-
-        /// <summary>
-        /// Get the active positions
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetActivePositionsAsync(CancellationToken ct = default)
         {
             return await SendRequest<IEnumerable<BitfinexPosition>>(GetUrl(ActivePositionsEndpoint, ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get a list of historical positions
-        /// </summary>
-        /// <param name="startTime">Start time of the data to return</param>
-        /// <param name="endTime">End time of the data to return</param>
-        /// <param name="limit">Max amount of results</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexPositionExtended>> GetPositionHistory(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) => GetPositionHistoryAsync(startTime, endTime, limit, ct).Result;
 
         /// <summary>
         /// Get a list of historical positions
@@ -686,17 +506,6 @@ namespace Bitfinex.Net
 
             return await SendRequest<IEnumerable<BitfinexPositionExtended>>(GetUrl(PositionHistoryEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get positions by id
-        /// </summary>
-        /// <param name="ids">The id's of positions to return</param>
-        /// <param name="startTime">Start time of the data to return</param>
-        /// <param name="endTime">End time of the data to return</param>
-        /// <param name="limit">Max amount of results</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexPositionExtended>> GetPositionsById(IEnumerable<string> ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) => GetPositionsByIdAsync(ids, startTime, endTime, limit, ct).Result;
 
         /// <summary>
         /// Get positions by id
@@ -728,31 +537,11 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to return the funding offer for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexFundingOffer>> GetActiveFundingOffers(string symbol, CancellationToken ct = default) => GetActiveFundingOffersAsync(symbol, ct).Result;
-
-        /// <summary>
-        /// Get the active funding offers
-        /// </summary>
-        /// <param name="symbol">The symbol to return the funding offer for</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingOffer>>> GetActiveFundingOffersAsync(string symbol, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             return await SendRequest<IEnumerable<BitfinexFundingOffer>>(GetUrl(FillPathParameter(ActiveFundingOffersEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get the funding offer history
-        /// </summary>
-        /// <param name="symbol">The symbol to get history for</param>
-        /// <param name="startTime">Start time of the data to return</param>
-        /// <param name="endTime">End time of the data to return</param>
-        /// <param name="limit">Max amount of results</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexFundingOffer>> GetFundingOfferHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
-            GetFundingOfferHistoryAsync(symbol, startTime, endTime, limit, ct).Result;
 
         /// <summary>
         /// Get the funding offer history
@@ -785,19 +574,6 @@ namespace Bitfinex.Net
         /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>> SubmitFundingOffer(FundingOrderType fundingOrderType, string symbol, decimal amount, decimal rate, int period, CancellationToken ct = default) =>
-            SubmitFundingOfferAsync(fundingOrderType,symbol, amount, rate, period, ct).Result;
-
-        /// <summary>
-        /// Submit a new funding offer.
-        /// </summary>
-        /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
-        /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
-        /// <param name="amount">Amount (positive for offer, negative for bid).</param>
-        /// <param name="rate">Daily rate.</param>
-        /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal amount, decimal rate, int period, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
@@ -812,14 +588,6 @@ namespace Bitfinex.Net
             
             return await SendRequest<BitfinexWriteResult<BitfinexFundingOffer>>(GetUrl(FundingOfferSubmitEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Cancels an existing Funding Offer based on the offer ID entered.
-        /// </summary>
-        /// <param name="offerId">The id of the order to cancel</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexFundingOffer> CancelFundingOffer(long offerId, CancellationToken ct = default) => CancelFundingOfferAsync(offerId, ct).Result;
 
         /// <summary>
         /// Cancels an existing Funding Offer based on the offer ID entered.
@@ -843,31 +611,11 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to get the funding loans for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexFunding>> GetFundingLoans(string symbol, CancellationToken ct = default) => GetFundingLoansAsync(symbol, ct).Result;
-
-        /// <summary>
-        /// Get the funding loans
-        /// </summary>
-        /// <param name="symbol">The symbol to get the funding loans for</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFunding>>> GetFundingLoansAsync(string symbol, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             return await SendRequest<IEnumerable<BitfinexFunding>>(GetUrl(FillPathParameter(FundingLoansEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get the funding loan history
-        /// </summary>
-        /// <param name="symbol">The symbol to get history for</param>
-        /// <param name="startTime">Start time of the data to return</param>
-        /// <param name="endTime">End time of the data to return</param>
-        /// <param name="limit">Max amount of results</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexFunding>> GetFundingLoansHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
-            GetFundingLoansHistoryAsync(symbol, startTime, endTime, limit, ct).Result;
 
         /// <summary>
         /// Get the funding loan history
@@ -896,31 +644,11 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to get the funding credits for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexFundingCredit>> GetFundingCredits(string symbol, CancellationToken ct = default) => GetFundingCreditsAsync(symbol, ct).Result;
-
-        /// <summary>
-        /// Get the funding credits
-        /// </summary>
-        /// <param name="symbol">The symbol to get the funding credits for</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingCredit>>> GetFundingCreditsAsync(string symbol, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             return await SendRequest<IEnumerable<BitfinexFundingCredit>>(GetUrl(FillPathParameter(FundingCreditsEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get the funding credits history
-        /// </summary>
-        /// <param name="symbol">The symbol to get history for</param>
-        /// <param name="startTime">Start time of the data to return</param>
-        /// <param name="endTime">End time of the data to return</param>
-        /// <param name="limit">Max amount of results</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexFundingCredit>> GetFundingCreditsHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
-            GetFundingCreditsHistoryAsync(symbol, startTime, endTime, limit, ct).Result;
 
         /// <summary>
         /// Get the funding credits history
@@ -952,18 +680,6 @@ namespace Bitfinex.Net
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexFundingTrade>> GetFundingTradesHistory(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default) =>
-            GetFundingTradesHistoryAsync(symbol, startTime, endTime, limit, ct).Result;
-
-        /// <summary>
-        /// Get the funding trades history
-        /// </summary>
-        /// <param name="symbol">The symbol to get history for</param>
-        /// <param name="startTime">Start time of the data to return</param>
-        /// <param name="endTime">End time of the data to return</param>
-        /// <param name="limit">Max amount of results</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexFundingTrade>>> GetFundingTradesHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
@@ -981,25 +697,10 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexMarginBase> GetBaseMarginInfo(CancellationToken ct = default) => GetBaseMarginInfoAsync(ct).Result;
-
-        /// <summary>
-        /// Get the base margin info
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexMarginBase>> GetBaseMarginInfoAsync(CancellationToken ct = default)
         {
             return await SendRequest<BitfinexMarginBase>(GetUrl(MarginInfoBaseEndpoint, ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get the margin info for a symbol
-        /// </summary>
-        /// <param name="symbol">The symbol to get the info for</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexMarginSymbol> GetSymbolMarginInfo(string symbol, CancellationToken ct = default) => GetSymbolMarginInfoAsync(symbol, ct).Result;
 
         /// <summary>
         /// Get the margin info for a symbol
@@ -1019,27 +720,11 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to get the info for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexFundingInfo> GetFundingInfo(string symbol, CancellationToken ct = default) => GetFundingInfoAsync(symbol, ct).Result;
-
-        /// <summary>
-        /// Get funding info for a symbol
-        /// </summary>
-        /// <param name="symbol">The symbol to get the info for</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexFundingInfo>> GetFundingInfoAsync(string symbol, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             return await SendRequest<BitfinexFundingInfo>(GetUrl(FillPathParameter(FundingInfoEndpoint, symbol), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get the withdrawal/deposit history
-        /// </summary>
-        /// <param name="symbol">Symbol to get history for</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexMovement>> GetMovements(string? symbol, CancellationToken ct = default) => GetMovementsAsync(symbol, ct).Result;
 
         /// <summary>
         /// Get the withdrawal/deposit history
@@ -1058,24 +743,11 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexPerformance> GetDailyPerformance(CancellationToken ct = default) => GetDailyPerformanceAsync(ct).Result;
-        /// <summary>
-        /// Daily performance
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexPerformance>> GetDailyPerformanceAsync(CancellationToken ct = default)
         {
             // TODO doesn't work?
             return await SendRequest<BitfinexPerformance>(GetUrl(DailyPerformanceEndpoint, ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Get the list of alerts
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexAlert>> GetAlertList(CancellationToken ct = default) => GetAlertListAsync(ct).Result;
 
         /// <summary>
         /// Get the list of alerts
@@ -1091,15 +763,6 @@ namespace Bitfinex.Net
 
             return await SendRequest< IEnumerable<BitfinexAlert>>(GetUrl(AlertListEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Set an alert
-        /// </summary>
-        /// <param name="symbol">The symbol to set the alert for</param>
-        /// <param name="price">The price to set the alert for</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexAlert> SetAlert(string symbol, decimal price, CancellationToken ct = default) => SetAlertAsync(symbol, price, ct).Result;
 
         /// <summary>
         /// Set an alert
@@ -1129,33 +792,12 @@ namespace Bitfinex.Net
         /// <param name="price">The price of the alert to delete</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexSuccessResult> DeleteAlert(string symbol, decimal price, CancellationToken ct = default) => DeleteAlertAsync(symbol, price, ct).Result;
-
-        /// <summary>
-        /// Delete an existing alert
-        /// </summary>
-        /// <param name="symbol">The symbol of the alert to delete</param>
-        /// <param name="price">The price of the alert to delete</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexSuccessResult>> DeleteAlertAsync(string symbol, decimal price, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
 
             return await SendRequest<BitfinexSuccessResult>(GetUrl(FillPathParameter(DeleteAlertEndpoint, symbol, price.ToString(CultureInfo.InvariantCulture)), ApiVersion2), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Calculates the available balance for a symbol at a specific rate
-        /// </summary>
-        /// <param name="symbol">The symbol</param>
-        /// <param name="side">Buy or sell</param>
-        /// <param name="rate">The rate/price</param>
-        /// <param name="type">The wallet type</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexAvailableBalance> GetAvailableBalance(string symbol, OrderSide side, decimal rate, WalletType type, CancellationToken ct = default) =>
-            GetAvailableBalanceAsync(symbol, side, rate, type, ct).Result;
 
         /// <summary>
         /// Calculates the available balance for a symbol at a specific rate
@@ -1190,19 +832,6 @@ namespace Bitfinex.Net
         /// <param name="category">Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexLedgerEntry>> GetLedgerEntries(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default) =>
-            GetLedgerEntriesAsync(currency, startTime, endTime, limit, category, ct).Result;
-
-        /// <summary>
-        /// Get changes in your balance for a currency
-        /// </summary>
-        /// <param name="currency">The currency to check the ledger for</param>
-        /// <param name="startTime">Start time of the data to return</param>
-        /// <param name="endTime">End time of the data to return</param>
-        /// <param name="limit">Max amount of results</param>
-        /// <param name="category">Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(string? currency = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
@@ -1224,53 +853,10 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexUserInfo> GetUserInfo(CancellationToken ct = default) => GetUserInfoAsync(ct).Result;
-
-        /// <summary>
-        /// Gets information about the user associated with the api key/secret
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexUserInfo>> GetUserInfoAsync(CancellationToken ct = default)
         {
             return await SendRequest<BitfinexUserInfo>(GetUrl(UserInfoEndpoint, ApiVersion2), HttpMethod.Post, ct, signed: true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Place a new order
-        /// </summary>
-        /// <param name="symbol">Symbol to place order for</param>
-        /// <param name="side">Side of the order</param>
-        /// <param name="type">Type of the order</param>
-        /// <param name="amount">The amount of the order</param>
-        /// <param name="price">The price for the order</param>
-        /// <param name="affiliateCode">Affiliate code for the order</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <param name="flags"></param>
-        /// <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
-        /// <param name="groupId">Group id</param>
-        /// <param name="clientOrderId">Client order id</param>
-        /// <param name="priceTrailing">The trailing price for a trailing stop order</param>
-        /// <param name="priceAuxLimit">Auxiliary Limit price (for STOP LIMIT)</param>
-        /// <param name="priceOcoStop">OCO stop price</param>
-        /// <param name="cancelTime">datetime for automatic order cancellation</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexWriteResult<BitfinexOrder>> PlaceOrder(
-            string symbol,
-            OrderSide side,
-            OrderType type,
-            decimal price,
-            decimal amount,
-            int? flags = null,
-            int? leverage = null,
-            int? groupId = null,
-            int? clientOrderId = null,
-            decimal? priceTrailing = null,
-            decimal? priceAuxLimit = null,
-            decimal? priceOcoStop = null,
-            DateTime? cancelTime = null,
-            string? affiliateCode = null,
-            CancellationToken ct = default) => PlaceOrderAsync(symbol, side, type, price, amount, flags, leverage, groupId, clientOrderId, priceTrailing, priceAuxLimit, priceOcoStop, cancelTime, affiliateCode, ct).Result;
 
         /// <summary>
         /// Place a new order
@@ -1350,21 +936,11 @@ namespace Bitfinex.Net
                 Type = result.Data.Type,
                 Data = orderData
             };
-            return new WebCallResult<BitfinexWriteResult<BitfinexOrder>>(result.ResponseStatusCode,
-                result.ResponseHeaders, output, result.Error);
+            return result.As(output);
         }
         #endregion
 
         #region Version1
-
-        /// <summary>
-        /// Gets the margin funding book
-        /// </summary>
-        /// <param name="currency">Currency to get the book for</param>
-        /// <param name="limit">Limit of the results</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexFundingBook> GetFundingBook(string currency, int? limit = null, CancellationToken ct = default) => GetFundingBookAsync(currency, limit, ct).Result;
 
         /// <summary>
         /// Gets the margin funding book
@@ -1390,17 +966,6 @@ namespace Bitfinex.Net
         /// <param name="limit">Limit of the results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexLend>> GetLends(string currency, DateTime? startTime = null, int? limit = null, CancellationToken ct = default) =>
-            GetLendsAsync(currency, startTime, limit, ct).Result;
-
-        /// <summary>
-        /// Gets the most recent lends
-        /// </summary>
-        /// <param name="currency">Currency to get the book for</param>
-        /// <param name="startTime">Return data after this time</param>
-        /// <param name="limit">Limit of the results</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexLend>>> GetLendsAsync(string currency, DateTime? startTime = null, int? limit = null, CancellationToken ct = default)
         {
             currency.ValidateNotNull(nameof(currency));
@@ -1409,13 +974,6 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("timestamp", startTime == null ? null: JsonConvert.SerializeObject(startTime, new TimestampSecondsConverter()));
             return await SendRequest<IEnumerable<BitfinexLend>>(GetUrl(FillPathParameter(LendsEndpoint, currency), ApiVersion1), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Gets a list of all symbols
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<IEnumerable<string>> GetSymbols(CancellationToken ct = default) => GetSymbolsAsync(ct).Result;
 
         /// <summary>
         /// Gets a list of all symbols
@@ -1432,13 +990,6 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitfinexSymbolDetails>> GetSymbolDetails(CancellationToken ct = default) => GetSymbolDetailsAsync(ct).Result;
-
-        /// <summary>
-        /// Gets details of all symbols
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<BitfinexSymbolDetails>>> GetSymbolDetailsAsync(CancellationToken ct = default)
         {
             return await SendRequest<IEnumerable<BitfinexSymbolDetails>>(GetUrl(SymbolDetailsEndpoint, ApiVersion1), HttpMethod.Get, ct).ConfigureAwait(false);
@@ -1449,25 +1000,11 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexAccountInfo> GetAccountInfo(CancellationToken ct = default) => GetAccountInfoAsync(ct).Result;
-
-        /// <summary>
-        /// Get information about your account
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexAccountInfo>> GetAccountInfoAsync(CancellationToken ct = default)
         {
             var result = await SendRequest<IEnumerable<BitfinexAccountInfo>>(GetUrl(AccountInfoEndpoint, ApiVersion1), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
-            return result ? new WebCallResult<BitfinexAccountInfo>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.First(), null) : WebCallResult<BitfinexAccountInfo>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error!);
+            return result ? result.As(result.Data.First()) : WebCallResult<BitfinexAccountInfo>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error!);
         }
-
-        /// <summary>
-        /// Get withdrawal fees for this account
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexWithdrawalFees> GetWithdrawalFees(CancellationToken ct = default) => GetWithdrawalFeesAsync(ct).Result;
 
         /// <summary>
         /// Get withdrawal fees for this account
@@ -1484,28 +1021,11 @@ namespace Bitfinex.Net
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<Bitfinex30DaySummary> Get30DaySummary(CancellationToken ct = default) => Get30DaySummaryAsync(ct).Result;
-
-        /// <summary>
-        /// Get 30-day summary on trading volume and margin funding
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<Bitfinex30DaySummary>> Get30DaySummaryAsync(CancellationToken ct = default)
         {
             return await SendRequest<Bitfinex30DaySummary>(GetUrl(SummaryEndpoint, ApiVersion1), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
         
-        /// <summary>
-        /// Cancel a specific order
-        /// </summary>
-        /// <param name="orderId">The id of the order to cancel</param>
-        /// <param name="clientOrderId">The client order id of the order to cancel</param>
-        /// <param name="clientOrderIdDate">The date of the client order (year month and day)</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexWriteResult<BitfinexOrder>> CancelOrder(long? orderId = null, long? clientOrderId = null, DateTime? clientOrderIdDate = null, CancellationToken ct = default) => CancelOrderAsync(orderId, clientOrderId, clientOrderIdDate, ct).Result;
-
         /// <summary>
         /// Cancel a specific order
         /// </summary>
@@ -1527,16 +1047,8 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("cid", clientOrderId);
             parameters.AddOptionalParameter("cid_date", clientOrderIdDate?.ToString("yyyy-MM-dd"));
 
-            var result = await SendRequest<BitfinexWriteResult<BitfinexOrder>>(GetUrl(CancelOrderEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
-            return result;
+            return await SendRequest<BitfinexWriteResult<BitfinexOrder>>(GetUrl(CancelOrderEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Cancels all open orders
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexResult> CancelAllOrders(CancellationToken ct = default) => CancelAllOrdersAsync(ct).Result;
 
         /// <summary>
         /// Cancels all open orders
@@ -1553,14 +1065,6 @@ namespace Bitfinex.Net
         /// <param name="orderId">The order id of the order to get</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexPlacedOrder> GetOrder(long orderId, CancellationToken ct = default) => GetOrderAsync(orderId, ct).Result;
-
-        /// <summary>
-        /// Get the status of a specific order
-        /// </summary>
-        /// <param name="orderId">The order id of the order to get</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexPlacedOrder>> GetOrderAsync(long orderId, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>
@@ -1570,16 +1074,6 @@ namespace Bitfinex.Net
 
             return await SendRequest<BitfinexPlacedOrder>(GetUrl(OrderStatusEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Gets a deposit address for a currency
-        /// </summary>
-        /// <param name="currency">The currency to get address for</param>
-        /// <param name="toWallet">The type of wallet the deposit is for</param>
-        /// <param name="forceNew">If true a new address will be generated (previous addresses will still be valid)</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexDepositAddress> GetDepositAddress(string currency, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default) => GetDepositAddressAsync(currency, toWallet, forceNew, ct).Result;
 
         /// <summary>
         /// Gets a deposit address for a currency
@@ -1611,17 +1105,6 @@ namespace Bitfinex.Net
         /// <param name="amount">The amount to transfer</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexTransferResult> WalletTransfer(string currency, decimal amount, WithdrawWallet fromWallet, WithdrawWallet toWallet, CancellationToken ct = default) => WalletTransferAsync(currency, amount, fromWallet, toWallet, ct).Result;
-
-        /// <summary>
-        /// Transfers funds from one wallet to another
-        /// </summary>
-        /// <param name="currency">The currency to transfer</param>
-        /// <param name="fromWallet">The wallet to remove funds from</param>
-        /// <param name="toWallet">The wallet to add funds to</param>
-        /// <param name="amount">The amount to transfer</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexTransferResult>> WalletTransferAsync(string currency, decimal amount, WithdrawWallet fromWallet, WithdrawWallet toWallet, CancellationToken ct = default)
         {
             currency.ValidateNotNull(nameof(currency));
@@ -1634,61 +1117,6 @@ namespace Bitfinex.Net
             };
             return await SendRequest<BitfinexTransferResult>(GetUrl(TransferEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
-        /// All withdrawals need the withdrawType, wallet and amount parameters
-        /// CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
-        /// Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.
-        /// </summary>
-        /// <param name="withdrawType">The type of funds to withdraw</param>
-        /// <param name="wallet">The wallet to withdraw from</param>
-        /// <param name="amount">The amount to withdraw</param>
-        /// <param name="address">The destination of the withdrawal</param>
-        /// <param name="accountNumber">The account number</param>
-        /// <param name="bankSwift">The SWIFT code of the bank</param>
-        /// <param name="bankName">The bank name</param>
-        /// <param name="bankAddress">The bank address</param>
-        /// <param name="bankCity">The bank city</param>
-        /// <param name="bankCountry">The bank country</param>
-        /// <param name="paymentDetails">Message for the receiver</param>
-        /// <param name="expressWire">Whether it is an express wire withdrawal</param>
-        /// <param name="intermediaryBankName">Intermediary bank name</param>
-        /// <param name="intermediaryBankAddress">Intermediary bank address</param>
-        /// <param name="intermediaryBankCity">Intermediary bank city</param>
-        /// <param name="intermediaryBankCountry">Intermediary bank country</param>
-        /// <param name="intermediaryBankAccount">Intermediary bank account</param>
-        /// <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
-        /// <param name="accountName">The name of the account</param>
-        /// <param name="paymentId">Hex string for Monero transaction</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexWithdrawalResult> Withdraw(string withdrawType,
-                                                             WithdrawWallet wallet,
-                                                             decimal amount,
-                                                             string? address = null,
-                                                             string? accountNumber = null,
-                                                             string? bankSwift = null,
-                                                             string? bankName = null,
-                                                             string? bankAddress = null,
-                                                             string? bankCity = null,
-                                                             string? bankCountry = null,
-                                                             string? paymentDetails = null,
-                                                             bool? expressWire = null,
-                                                             string? intermediaryBankName = null,
-                                                             string? intermediaryBankAddress = null,
-                                                             string? intermediaryBankCity = null,
-                                                             string? intermediaryBankCountry = null,
-                                                             string? intermediaryBankAccount = null,
-                                                             string? intermediaryBankSwift = null,
-                                                             string? accountName = null,
-                                                             string? paymentId = null,
-                                                             CancellationToken ct = default) =>
-                                                             WithdrawAsync(withdrawType, wallet, amount, address, accountNumber, bankSwift, bankName, bankAddress,
-                                                                 bankCity, bankCountry, paymentDetails, expressWire, intermediaryBankName, intermediaryBankAddress,
-                                                                 intermediaryBankCity, intermediaryBankCountry, intermediaryBankAccount, intermediaryBankSwift,
-                                                                 accountName, paymentId, ct).Result;
-
 
         /// <summary>
         /// Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
@@ -1772,17 +1200,8 @@ namespace Bitfinex.Net
             var data = result.Data.First();
             if (!data.Success)
                 return WebCallResult<BitfinexWithdrawalResult>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new ServerError(data.Message));
-            return new WebCallResult<BitfinexWithdrawalResult>(result.ResponseStatusCode, result.ResponseHeaders, data, null);
+            return result.As(data);
         }
-
-        /// <summary>
-        /// Claim a position
-        /// </summary>
-        /// <param name="id">The id of the position to claim</param>
-        /// <param name="amount">The (partial) amount to be claimed</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexDepositAddress> ClaimPosition(long id, decimal amount, CancellationToken ct = default) => ClaimPositionAsync(id, amount, ct).Result;
 
         /// <summary>
         /// Claim a position
@@ -1800,19 +1219,6 @@ namespace Bitfinex.Net
             };
             return await SendRequest<BitfinexDepositAddress>(GetUrl(ClaimPositionEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Submit a new order
-        /// </summary>
-        /// <param name="currency">The currency</param>
-        /// <param name="amount">The amount</param>
-        /// <param name="rate">Rate to lend or borrow at in percent per 365 days (0 for FRR)</param>
-        /// <param name="period">Number of days</param>
-        /// <param name="direction">Direction of the offer</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexOffer> NewOffer(string currency, decimal amount, decimal rate, int period, FundingType direction, CancellationToken ct = default) =>
-            NewOfferAsync(currency, amount, rate, period, direction, ct).Result;
 
         /// <summary>
         /// Submit a new order
@@ -1844,14 +1250,6 @@ namespace Bitfinex.Net
         /// <param name="offerId">The id of the offer to cancel</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexOffer> CancelOffer(long offerId, CancellationToken ct = default) => CancelOfferAsync(offerId, ct).Result;
-
-        /// <summary>
-        /// Cancel an offer
-        /// </summary>
-        /// <param name="offerId">The id of the offer to cancel</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexOffer>> CancelOfferAsync(long offerId, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>
@@ -1860,14 +1258,6 @@ namespace Bitfinex.Net
             };
             return await SendRequest<BitfinexOffer>(GetUrl(CancelOfferEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Cancel an offer
-        /// </summary>
-        /// <param name="offerId">The id of the offer to cancel</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexOffer> GetOffer(long offerId, CancellationToken ct = default) => GetOfferAsync(offerId, ct).Result;
 
         /// <summary>
         /// Cancel an offer
@@ -1890,14 +1280,6 @@ namespace Bitfinex.Net
         /// <param name="swapId">The id to close</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public WebCallResult<BitfinexFundingContract> CloseMarginFunding(long swapId, CancellationToken ct = default) => CloseMarginFundingAsync(swapId, ct).Result;
-
-        /// <summary>
-        /// Close margin funding
-        /// </summary>
-        /// <param name="swapId">The id to close</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
         public async Task<WebCallResult<BitfinexFundingContract>> CloseMarginFundingAsync(long swapId, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>
@@ -1906,14 +1288,6 @@ namespace Bitfinex.Net
             };
             return await SendRequest<BitfinexFundingContract>(GetUrl(CloseMarginFundingEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
-
-        /// <summary>
-        /// Close a position
-        /// </summary>
-        /// <param name="positionId">The id to close</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        public WebCallResult<BitfinexClosePositionResult> ClosePosition(long positionId, CancellationToken ct = default) => ClosePositionAsync(positionId, ct).Result;
 
         /// <summary>
         /// Close a position
@@ -1943,25 +1317,25 @@ namespace Bitfinex.Net
         async Task<WebCallResult<IEnumerable<ICommonSymbol>>> IExchangeClient.GetSymbolsAsync()
         {
             var symbols = await GetSymbolDetailsAsync().ConfigureAwait(false);
-            return WebCallResult<IEnumerable<ICommonSymbol>>.CreateFrom(symbols);
+            return symbols.As<IEnumerable<ICommonSymbol>>(symbols.Data);
         }
 
         async Task<WebCallResult<ICommonTicker>> IExchangeClient.GetTickerAsync(string symbol)
         {
             var tickersResult = await GetTickerAsync(default, symbol).ConfigureAwait(false);
-            return new WebCallResult<ICommonTicker>(tickersResult.ResponseStatusCode, tickersResult.ResponseHeaders, tickersResult.Data?.FirstOrDefault(), tickersResult.Error);
+            return tickersResult.As<ICommonTicker>(tickersResult.Data?.FirstOrDefault());
         }
 
         async Task<WebCallResult<IEnumerable<ICommonTicker>>> IExchangeClient.GetTickersAsync()
         {
             var tickersResult = await GetTickerAsync().ConfigureAwait(false);
-            return WebCallResult<IEnumerable<ICommonTicker>>.CreateFrom(tickersResult);
+            return tickersResult.As<IEnumerable<ICommonTicker>>(tickersResult.Data);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonRecentTrade>>> IExchangeClient.GetRecentTradesAsync(string symbol)
         {
             var tradesResult = await GetTradesAsync(symbol).ConfigureAwait(false);
-            return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(tradesResult);
+            return tradesResult.As<IEnumerable<ICommonRecentTrade>>(tradesResult.Data);
         }
 
         async Task<WebCallResult<ICommonOrderBook>> IExchangeClient.GetOrderBookAsync(string symbol)
@@ -1977,19 +1351,19 @@ namespace Bitfinex.Net
                 Bids = orderBookResult.Data.Where(d => isFunding? d.Quantity > 0: d.Quantity < 0)
             };
 
-            return new WebCallResult<ICommonOrderBook>(orderBookResult.ResponseStatusCode, orderBookResult.ResponseHeaders, result, null);
+            return orderBookResult.As<ICommonOrderBook>(result);
         }
         
         async Task<WebCallResult<IEnumerable<ICommonKline>>> IExchangeClient.GetKlinesAsync(string symbol, TimeSpan timespan, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var klines = await GetKlinesAsync(GetTimeFrameFromTimeSpan(timespan), symbol, startTime: startTime, endTime: endTime, limit: limit).ConfigureAwait(false);
-            return WebCallResult<IEnumerable<ICommonKline>>.CreateFrom(klines);
+            return klines.As<IEnumerable<ICommonKline>>(klines.Data);
         }
 
         async Task<WebCallResult<ICommonOrder>> IExchangeClient.GetOrderAsync(string orderId, string? symbol)
         {
             var result = await GetOrderAsync(long.Parse(orderId)).ConfigureAwait(false);
-            return WebCallResult<ICommonOrder>.CreateFrom(result);
+            return result.As<ICommonOrder>(result.Data);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonTrade>>> IExchangeClient.GetTradesAsync(string orderId, string? symbol = null)
@@ -1998,37 +1372,37 @@ namespace Bitfinex.Net
                 return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(new ArgumentError(nameof(symbol) + " required for Bitfinex " + nameof(IExchangeClient.GetTradesAsync)));
 
             var result = await GetTradesForOrderAsync(symbol, long.Parse(orderId)).ConfigureAwait(false);
-            return WebCallResult<IEnumerable<ICommonTrade>>.CreateFrom(result);
+            return result.As<IEnumerable<ICommonTrade>>(result.Data);
         }
 
         async Task<WebCallResult<ICommonOrderId>> IExchangeClient.PlaceOrderAsync(string symbol, IExchangeClient.OrderSide side, IExchangeClient.OrderType type, decimal quantity, decimal? price = null, string? accountId = null)
         {
             var result = await PlaceOrderAsync(symbol, GetOrderSide(side), GetOrderType(type), quantity, price ?? 0).ConfigureAwait(false);
-            return new WebCallResult<ICommonOrderId>(result.ResponseStatusCode, result.ResponseHeaders, result.Data?.Data, result.Error);
+            return result.As<ICommonOrderId>(result.Data?.Data);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonOrder>>> IExchangeClient.GetOpenOrdersAsync(string? symbol)
         {
             var result = await GetActiveOrdersAsync().ConfigureAwait(false);
-            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(result);
+            return result.As<IEnumerable<ICommonOrder>>(result.Data);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonOrder>>> IExchangeClient.GetClosedOrdersAsync(string? symbol)
         {
             var result = await GetOrderHistoryAsync(symbol).ConfigureAwait(false);
-            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(result);
+            return result.As<IEnumerable<ICommonOrder>>(result.Data);
         }
 
         async Task<WebCallResult<ICommonOrderId>> IExchangeClient.CancelOrderAsync(string orderId, string? symbol)
         {
             var result = await CancelOrderAsync(long.Parse(orderId)).ConfigureAwait(false);
-            return new WebCallResult<ICommonOrderId>(result.ResponseStatusCode, result.ResponseHeaders, result.Data?.Data, result.Error);
+            return result.As<ICommonOrderId>(result.Data?.Data);
         }
 
         async Task<WebCallResult<IEnumerable<ICommonBalance>>> IExchangeClient.GetBalancesAsync(string? accountId = null)
         {
             var result = await GetBalancesAsync().ConfigureAwait(false);
-            return new WebCallResult<IEnumerable<ICommonBalance>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Where(d => d.Type == WalletType.Exchange), result.Error);
+            return result.As<IEnumerable<ICommonBalance>>(result.Data.Where(d => d.Type == WalletType.Exchange));
         }
 
         public string GetSymbolName(string baseAsset, string quoteAsset) =>

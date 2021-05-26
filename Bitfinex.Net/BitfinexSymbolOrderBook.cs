@@ -11,6 +11,7 @@ using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
 using Force.Crc32;
+using Microsoft.Extensions.Logging;
 
 namespace Bitfinex.Net
 {
@@ -60,8 +61,9 @@ namespace Bitfinex.Net
         {
         }
 
-        private void ProcessUpdate(IEnumerable<BitfinexOrderBookEntry> entries)
+        private void ProcessUpdate(DataEvent<IEnumerable<BitfinexOrderBookEntry>> data)
         {
+            var entries = data.Data;
             if (!bookSet)
             {
                 var askEntries = entries.Where(e => e.Quantity < 0).ToList();
@@ -110,9 +112,9 @@ namespace Bitfinex.Net
         /// Process a received checksum
         /// </summary>
         /// <param name="checksum"></param>
-        protected void ProcessChecksum(int checksum)
+        protected void ProcessChecksum(DataEvent<int> checksum)
         {
-            AddChecksum(checksum);            
+            AddChecksum(checksum.Data);            
         }
 
         /// <summary>
@@ -143,7 +145,7 @@ namespace Bitfinex.Net
 
             if (ourChecksumUtf != checksum)
             {
-                log.Write(CryptoExchange.Net.Logging.LogVerbosity.Warning, $"Invalid checksum. Received from server: {checksum}, calculated local: {ourChecksumUtf}");
+                log.Write(LogLevel.Warning, $"Invalid checksum. Received from server: {checksum}, calculated local: {ourChecksumUtf}");
                 return false;
             }
             

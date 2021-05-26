@@ -14,6 +14,7 @@ using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
+using Microsoft.Extensions.Logging;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -33,10 +34,10 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var socket = new TestSocket();
             socket.CanConnect = true;
-            var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){ LogVerbosity = LogVerbosity.Debug});
+            var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){ LogLevel = LogLevel.Debug});
 
             BitfinexOrderBookEntry[] result;
-            var subTask = client.SubscribeToBookUpdatesAsync("tBTCUSD", prec, freq, 25, data => result = data.ToArray());
+            var subTask = client.SubscribeToBookUpdatesAsync("tBTCUSD", prec, freq, 25, data => result = data.Data.ToArray());
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -72,10 +73,10 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var socket = new TestSocket();
             socket.CanConnect = true;
-            var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){LogVerbosity =LogVerbosity.Debug});
+            var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions(){ LogLevel = LogLevel.Debug});
 
             BitfinexOrderBookEntry[] result = null;
-            var subTask = client.SubscribeToBookUpdatesAsync("tBTCUSD", prec, freq, 25, data => result = data.ToArray());
+            var subTask = client.SubscribeToBookUpdatesAsync("tBTCUSD", prec, freq, 25, data => result = data.Data.ToArray());
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -117,7 +118,7 @@ namespace Bitfinex.Net.UnitTests
             socket.CanConnect = true;
             var client = TestHelpers.CreateSocketClient(socket, new BitfinexSocketClientOptions()
             {
-                LogVerbosity = LogVerbosity.Debug
+                LogLevel = LogLevel.Debug
             });
 
             var subTask = client.SubscribeToKlineUpdatesAsync("tBTCUSD", timeframe, data => { });
@@ -159,7 +160,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexKline[] result = null;
-            var subTask = client.SubscribeToKlineUpdatesAsync("tBTCUSD", timeframe, data => result = data.ToArray());
+            var subTask = client.SubscribeToKlineUpdatesAsync("tBTCUSD", timeframe, data => result = data.Data.ToArray());
 
             var subResponse = new CandleSubscriptionResponse()
             {
@@ -217,7 +218,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexStreamSymbolOverview result = null;
-            var subTask = client.SubscribeToTickerUpdatesAsync("tBTCUSD", data => result = data);
+            var subTask = client.SubscribeToTickerUpdatesAsync("tBTCUSD", data => result = data.Data);
 
             var subResponse = new TickerSubscriptionResponse()
             {
@@ -278,7 +279,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexRawOrderBookEntry[] result = null;
-            var subTask = client.SubscribeToRawBookUpdatesAsync("tBTCUSD", 10, data => result = data.ToArray());
+            var subTask = client.SubscribeToRawBookUpdatesAsync("tBTCUSD", 10, data => result = data.Data.ToArray());
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -339,7 +340,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateSocketClient(socket);
 
             BitfinexTradeSimple[] result = null;
-            var subTask = client.SubscribeToTradeUpdatesAsync("BTCUSD", data => result = data.ToArray());
+            var subTask = client.SubscribeToTradeUpdatesAsync("BTCUSD", data => result = data.Data.ToArray());
 
             var subResponse = new TradesSubscriptionResponse()
             {
@@ -376,7 +377,7 @@ namespace Bitfinex.Net.UnitTests
             var expected = new BitfinexSocketEvent<BitfinexOrder[]>(eventType, new [] { new BitfinexOrder() { StatusString = "ACTIVE" }});
             client.SubscribeToTradingUpdatesAsync(data =>
             {
-                result = data;
+                result = data.Data;
                 rstEvent.Set();
             }, null, null);
 
@@ -404,7 +405,7 @@ namespace Bitfinex.Net.UnitTests
             client.SubscribeToTradingUpdatesAsync(null,
                 data =>
                 {
-                    result = data;
+                    result = data.Data;
                     rstEvent.Set();
                 }, null);
 
@@ -431,7 +432,7 @@ namespace Bitfinex.Net.UnitTests
             var expected = new BitfinexSocketEvent<IEnumerable<BitfinexWallet>>(eventType, new[] { new BitfinexWallet() { } });
             client.SubscribeToWalletUpdatesAsync(data =>
                 {
-                    result = data;
+                    result = data.Data;
                     rstEvent.Set();
                 });
 
@@ -460,7 +461,7 @@ namespace Bitfinex.Net.UnitTests
             var expected = new BitfinexSocketEvent<IEnumerable<BitfinexPosition>>(eventType, new[] { new BitfinexPosition() { } });
             client.SubscribeToTradingUpdatesAsync(null, null, data =>
             {
-                result = data;
+                result = data.Data;
                 rstEvent.Set();
             });
 
@@ -489,7 +490,7 @@ namespace Bitfinex.Net.UnitTests
             var expected = new BitfinexSocketEvent<BitfinexFundingCredit[]>(eventType, new[] { new BitfinexFundingCredit() { StatusString="ACTIVE" } });
             client.SubscribeToFundingUpdatesAsync(null,data =>
             {
-                result = data;
+                result = data.Data;
                 rstEvent.Set();
             }, null);
 
@@ -518,7 +519,7 @@ namespace Bitfinex.Net.UnitTests
             var expected = new BitfinexSocketEvent<BitfinexFunding[]>(eventType, new[] { new BitfinexFunding() { StatusString = "ACTIVE" } });
             client.SubscribeToFundingUpdatesAsync(null, null, data =>
             {
-                result = data;
+                result = data.Data;
                 rstEvent.Set();
             });
 
@@ -547,7 +548,7 @@ namespace Bitfinex.Net.UnitTests
             var expected = new BitfinexSocketEvent<BitfinexFundingOffer[]>(eventType, new[] { new BitfinexFundingOffer() { StatusString = "ACTIVE" } });
             client.SubscribeToFundingUpdatesAsync(data =>
             {
-                result = data;
+                result = data.Data;
                 rstEvent.Set();
             }, null, null);
 
@@ -620,7 +621,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket, new BitfinexSocketClientOptions()
             {
                 ApiCredentials = new ApiCredentials("Test", "Test"),
-                LogVerbosity = LogVerbosity.Debug,
+                LogLevel = LogLevel.Debug,
                 SocketResponseTimeout = TimeSpan.FromMilliseconds(100)
             });
 
@@ -701,7 +702,7 @@ namespace Bitfinex.Net.UnitTests
             socket.CanConnect = true;
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket, new BitfinexSocketClientOptions()
             {
-                LogVerbosity = LogVerbosity.Debug,
+                LogLevel = LogLevel.Debug,
                 ReconnectInterval = TimeSpan.FromMilliseconds(10)
             });
 
@@ -749,7 +750,7 @@ namespace Bitfinex.Net.UnitTests
             socket.Url = "wss://api.bitfinex.com/ws/2";
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket, new BitfinexSocketClientOptions()
             {
-                LogVerbosity = LogVerbosity.Debug,
+                LogLevel = LogLevel.Debug,
                 ReconnectInterval = TimeSpan.FromMilliseconds(10)
             });
 
