@@ -123,6 +123,10 @@ Bitfinex.Net provides two clients to interact with the Bitfinex API. The `Bitfin
 
 
 ## Release notes
+* Version 3.5.0-beta3 - 26 May 2021
+    * Removed non-async calls
+    * Updated to CryptoExchange.Net changes
+
 * Version 3.5.0-beta2 - 06 mei 2021
     * Updated CryptoExchange.Net
 
