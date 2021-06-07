@@ -815,7 +815,7 @@ namespace Bitfinex.Net
             {
                 { "symbol", symbol },
                 { "dir", side == OrderSide.Buy ? 1: -1 },
-                { "rate", rate },
+                { "rate", rate.ToString(CultureInfo.InvariantCulture) },
                 { "type", JsonConvert.SerializeObject(type, new WalletTypeConverter(false)).ToUpper() }
             };
 
@@ -1111,7 +1111,7 @@ namespace Bitfinex.Net
             var parameters = new Dictionary<string, object>
             {
                 { "currency", currency },
-                { "amount", amount },
+                { "amount", amount.ToString(CultureInfo.InvariantCulture) },
                 { "walletfrom", JsonConvert.SerializeObject(fromWallet, new WithdrawWalletConverter(false)) },
                 { "walletto", JsonConvert.SerializeObject(toWallet, new WithdrawWalletConverter(false)) },
             };
