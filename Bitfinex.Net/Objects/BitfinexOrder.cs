@@ -204,8 +204,11 @@ namespace Bitfinex.Net.Objects
         string ICommonOrder.CommonSymbol => Symbol;
         decimal ICommonOrder.CommonPrice => Price;
         decimal ICommonOrder.CommonQuantity => AmountOriginal;
-        string ICommonOrder.CommonStatus => StatusString;
+        IExchangeClient.OrderStatus ICommonOrder.CommonStatus => Status == OrderStatus.Canceled ? IExchangeClient.OrderStatus.Canceled:
+            Status == OrderStatus.Executed ? IExchangeClient.OrderStatus.Filled:
+            IExchangeClient.OrderStatus.Active;
         bool ICommonOrder.IsActive => Status == OrderStatus.Active;
+        DateTime ICommonOrder.CommonOrderTime => TimestampCreated;
 
         IExchangeClient.OrderSide ICommonOrder.CommonSide =>
             AmountOriginal < 0 ? IExchangeClient.OrderSide.Sell : IExchangeClient.OrderSide.Buy;

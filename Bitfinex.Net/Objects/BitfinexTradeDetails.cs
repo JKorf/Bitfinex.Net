@@ -78,10 +78,11 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(10)]
         public string FeeCurrency { get; set; } = "";
 
-        public string CommonId => Id.ToString();
-        public decimal CommonPrice => ExecutedPrice;
-        public decimal CommonQuantity => ExecutedAmount;
-        public decimal CommonFee => Fee;
-        public string CommonFeeAsset => FeeCurrency;
+        string ICommonTrade.CommonId => Id.ToString();
+        decimal ICommonTrade.CommonPrice => ExecutedPrice;
+        decimal ICommonTrade.CommonQuantity => ExecutedAmount;
+        decimal ICommonTrade.CommonFee => Fee;
+        string ICommonTrade.CommonFeeAsset => FeeCurrency;
+        DateTime ICommonTrade.CommonTradeTime => TimestampCreated;
     }
 }

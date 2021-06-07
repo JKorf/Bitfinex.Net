@@ -130,17 +130,18 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         decimal ICommonOrder.CommonPrice => Price;
         decimal ICommonOrder.CommonQuantity => OriginalAmount;
 
-        string ICommonOrder.CommonStatus
+        IExchangeClient.OrderStatus ICommonOrder.CommonStatus
         {
             get
             {
-                if (Canceled) return "Canceled";
-                if (RemainingAmount == 0) return "Filled";
-                return "Open";
+                if (Canceled) return IExchangeClient.OrderStatus.Canceled;
+                if (RemainingAmount == 0) return IExchangeClient.OrderStatus.Filled;
+                return IExchangeClient.OrderStatus.Active;
             }
         }
 
         bool ICommonOrder.IsActive => Live;
+        DateTime ICommonOrder.CommonOrderTime => Timestamp;
 
         IExchangeClient.OrderSide ICommonOrder.CommonSide =>
             Side == OrderSide.Sell ? IExchangeClient.OrderSide.Sell : IExchangeClient.OrderSide.Buy;

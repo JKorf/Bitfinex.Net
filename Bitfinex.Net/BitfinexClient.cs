@@ -108,6 +108,15 @@ namespace Bitfinex.Net
         private readonly string? _affCode;
         #endregion
 
+        /// <summary>
+        /// Event triggered when an order is placed via this client
+        /// </summary>
+        public event Action<ICommonOrderId> OnOrderPlaced;
+        /// <summary>
+        /// Event triggered when an order is cancelled via this client
+        /// </summary>
+        public event Action<ICommonOrderId> OnOrderCanceled;
+
         #region constructor/destructor
         /// <summary>
         /// Create a new instance of BitfinexClient using the default options
@@ -936,6 +945,8 @@ namespace Bitfinex.Net
                 Type = result.Data.Type,
                 Data = orderData
             };
+
+            OnOrderPlaced?.Invoke(orderData);
             return result.As(output);
         }
         #endregion
@@ -1047,7 +1058,10 @@ namespace Bitfinex.Net
             parameters.AddOptionalParameter("cid", clientOrderId);
             parameters.AddOptionalParameter("cid_date", clientOrderIdDate?.ToString("yyyy-MM-dd"));
 
-            return await SendRequest<BitfinexWriteResult<BitfinexOrder>>(GetUrl(CancelOrderEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var result = await SendRequest<BitfinexWriteResult<BitfinexOrder>>(GetUrl(CancelOrderEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            if(result)
+                OnOrderCanceled?.Invoke(result.Data.Data);
+            return result;
         }
 
         /// <summary>

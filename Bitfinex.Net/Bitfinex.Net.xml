@@ -9,6 +9,16 @@
             Client for the Bitfinex API
             </summary>
         </member>
+        <member name="E:Bitfinex.Net.BitfinexClient.OnOrderPlaced">
+            <summary>
+            Event triggered when an order is placed via this client
+            </summary>
+        </member>
+        <member name="E:Bitfinex.Net.BitfinexClient.OnOrderCanceled">
+            <summary>
+            Event triggered when an order is cancelled via this client
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexClient.#ctor">
             <summary>
             Create a new instance of BitfinexClient using the default options
