@@ -101,7 +101,7 @@ namespace Bitfinex.Net
             {
                 HandleData("Ticker", (JArray) data.Data[1], symbol, data, handler);
             });
-            return await Subscribe(new BitfinexSubscriptionRequest("ticker", symbol), null, false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(new BitfinexSubscriptionRequest("ticker", symbol), null, false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace Bitfinex.Net
                 JsonConvert.SerializeObject(precision, new PrecisionConverter(false)),
                 JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)),
                 length);
-            return await Subscribe(sub, null, false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(sub, null, false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace Bitfinex.Net
                 else
                     HandleSingleToArrayData("Raw book update", dataArray, symbol, data, handler);
             });
-            return await Subscribe(new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), null, false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), null, false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace Bitfinex.Net
                     handler(data.As<IEnumerable<BitfinexTradeSimple>>(new[] { desResult.Data }, symbol));
                 }
             });
-            return await Subscribe(new BitfinexSubscriptionRequest("trades", symbol), null, false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(new BitfinexSubscriptionRequest("trades", symbol), null, false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace Bitfinex.Net
                 else
                     HandleSingleToArrayData("Kline update", dataArray, symbol, data, handler);
             });
-            return await Subscribe(new BitfinexKlineSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false))), null, false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(new BitfinexKlineSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new TimeFrameConverter(false))), null, false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace Bitfinex.Net
                 HandleAuthUpdate(tokenData, positionHandler, "Positions");
             });
 
-            return await Subscribe(null, "Orders|Trades|Positions", true, tokenHandler).ConfigureAwait(false);
+            return await SubscribeAsync(null, "Orders|Trades|Positions", true, tokenHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace Bitfinex.Net
                 HandleAuthUpdate(tokenData, walletHandler, "Wallet");
             });
 
-            return await Subscribe(null, "Wallet", true, tokenHandler).ConfigureAwait(false);
+            return await SubscribeAsync(null, "Wallet", true, tokenHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace Bitfinex.Net
                 HandleAuthUpdate(tokenData, fundingLoanHandler, "FundingLoans");
             });
 
-            return await Subscribe(null, "FundingOffers|FundingCredits|FundingLoans", true, tokenHandler).ConfigureAwait(false);
+            return await SubscribeAsync(null, "FundingOffers|FundingCredits|FundingLoans", true, tokenHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace Bitfinex.Net
                 Meta = affCode == null ? null: new BitfinexMeta() { AffiliateCode = affCode }
             });
 
-            return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);
+            return await QueryAsync<BitfinexOrder>(query, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -352,7 +352,7 @@ namespace Bitfinex.Net
                 PriceTrailing = priceTrailing?.ToString(CultureInfo.InvariantCulture)
             });
 
-            return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);
+            return await QueryAsync<BitfinexOrder>(query, true).ConfigureAwait(false);
         }
 
         ///// <summary>
@@ -383,7 +383,7 @@ namespace Bitfinex.Net
             log.Write(LogLevel.Information, "Going to cancel order " + orderId);
             var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderCancel, new JObject { ["id"] = orderId });
 
-            return await Query<BitfinexOrder>(query, true).ConfigureAwait(false);
+            return await QueryAsync<BitfinexOrder>(query, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -479,7 +479,7 @@ namespace Bitfinex.Net
                 cancelObject.GroupIds = new[] { groupOrderIds.Select(g => g.Key).ToArray() };
 
             var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, cancelObject);
-            return await Query<bool>(query, true).ConfigureAwait(false);
+            return await QueryAsync<bool>(query, true).ConfigureAwait(false);
         }
         
         private void HandleAuthUpdate<T>(DataEvent<JToken> token, Action<DataEvent<BitfinexSocketEvent<IEnumerable<T>>>> action, string category)
@@ -549,7 +549,7 @@ namespace Bitfinex.Net
                 case 20051:
                     log.Write(LogLevel.Information, $"Code {code} received, reconnecting socket");
                     messageEvent.Connection.PausedActivity = true; // Prevent new operations to be send
-                    messageEvent.Connection.Socket.Close();
+                    messageEvent.Connection.Socket.CloseAsync();
                     break;
                 case 20060:
                     log.Write(LogLevel.Information, $"Code {code} received, entering maintenance mode");
@@ -557,7 +557,7 @@ namespace Bitfinex.Net
                     break;
                 case 20061:
                     log.Write(LogLevel.Information, $"Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
-                    messageEvent.Connection.Socket.Close(); // Closing it via socket will automatically reconnect
+                    messageEvent.Connection.Socket.CloseAsync(); // Closing it via socket will automatically reconnect
                     break;
                 default:
                     log.Write(LogLevel.Warning, $"Unknown info code received: {code}");
@@ -566,7 +566,7 @@ namespace Bitfinex.Net
         }
 
         /// <inheritdoc />
-        protected override async Task<bool> Unsubscribe(SocketConnection connection, SocketSubscription subscription)
+        protected override async Task<bool> UnsubscribeAsync(SocketConnection connection, SocketSubscription subscription)
         {
             if(subscription.Request == null)
             {
@@ -578,7 +578,7 @@ namespace Bitfinex.Net
             var channelId = ((BitfinexSubscriptionRequest) subscription.Request!).ChannelId;
             var unsub = new BitfinexUnsubscribeRequest(channelId);
             var result = false;
-            await connection.SendAndWait(unsub, ResponseTimeout, data =>
+            await connection.SendAndWaitAsync(unsub, ResponseTimeout, data =>
             {
                 if (data.Type != JTokenType.Object)
                     return false;
@@ -619,14 +619,14 @@ namespace Bitfinex.Net
         #endregion
 
         /// <inheritdoc />
-        protected override async Task<CallResult<bool>> AuthenticateSocket(SocketConnection s)
+        protected override async Task<CallResult<bool>> AuthenticateSocketAsync(SocketConnection s)
         {
             if (authProvider == null)
                 return new CallResult<bool>(false, new NoApiCredentialsError());
 
             var authObject = GetAuthObject();
             var result = new CallResult<bool>(false, new ServerError("No response from server"));
-            await s.SendAndWait(authObject, ResponseTimeout, tokenData =>
+            await s.SendAndWaitAsync(authObject, ResponseTimeout, tokenData =>
             {
                 if (tokenData.Type != JTokenType.Object)
                     return false;

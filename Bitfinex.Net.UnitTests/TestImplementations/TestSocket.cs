@@ -37,7 +37,7 @@ namespace Binance.Net.UnitTests.TestImplementations
         public TimeSpan CloseTime { get; set; }
         public TimeSpan OpenTime { get; set; }
 
-        public async Task<bool> Connect()
+        public async Task<bool> ConnectAsync()
         {
             await Task.Delay(OpenTime);
             Connected = CanConnect;
@@ -56,7 +56,7 @@ namespace Binance.Net.UnitTests.TestImplementations
             
         }
 
-        public async Task Close()
+        public async Task CloseAsync()
         {
             await Task.Delay(CloseTime);
 

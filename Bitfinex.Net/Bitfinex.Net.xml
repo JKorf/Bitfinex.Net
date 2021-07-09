@@ -784,10 +784,10 @@
             <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.Unsubscribe(CryptoExchange.Net.Sockets.SocketConnection,CryptoExchange.Net.Sockets.SocketSubscription)">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.UnsubscribeAsync(CryptoExchange.Net.Sockets.SocketConnection,CryptoExchange.Net.Sockets.SocketSubscription)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.AuthenticateSocket(CryptoExchange.Net.Sockets.SocketConnection)">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.AuthenticateSocketAsync(CryptoExchange.Net.Sockets.SocketConnection)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.BitfinexSocketClient.HandleQueryResponse``1(CryptoExchange.Net.Sockets.SocketConnection,System.Object,Newtonsoft.Json.Linq.JToken,CryptoExchange.Net.Objects.CallResult{``0}@)">
@@ -816,7 +816,7 @@
             <param name="limit">The limit of entries in the order book, either 25 or 100</param>
             <param name="options">Options for the order book</param>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.DoStart">
+        <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.DoStartAsync">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.DoReset">
@@ -835,7 +835,7 @@
             <param name="checksum"></param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.DoResync">
+        <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.DoResyncAsync">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.BitfinexSymbolOrderBook.Dispose">
