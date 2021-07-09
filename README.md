@@ -90,6 +90,10 @@ For the basic client options see also the CryptoExchange.Net [docs](https://gith
 |`AffiliateCode`|The affiliate code to use for requests|kCCe-CNBO
 
 ## Release notes
+* Version 4.0.0-beta1 - 09 Jul 2021
+    * Added Async postfix for async methods
+    * Updated CryptoExchange.Net
+
 * Version 3.5.0-beta4 - 07 Jun 2021
     * Fixed IExchangeClient PlaceOrder OrderType
     * Fixed WalletTransferAsync amount parameter serialization
