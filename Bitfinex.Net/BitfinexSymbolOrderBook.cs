@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -168,25 +167,6 @@ namespace Bitfinex.Net
             bids.Clear();
 
             socketClient?.Dispose();
-        }
-
-        // Format the value with the indicated number of significant digits.
-        private string ToSignificantDigits(decimal value)
-        {
-            var stringValue = value.ToString(CultureInfo.InvariantCulture);
-            var stringLength = stringValue.Length;
-            if (stringValue.Contains('.'))
-                stringLength -= 1;
-
-            for (var i = 0;i < 5 - stringLength; i++)
-            {
-                if (!stringValue.Contains('.'))
-                    stringValue += ".0";
-                else
-                    stringValue += "0";
-            }
-
-            return stringValue;
         }
     }
 }

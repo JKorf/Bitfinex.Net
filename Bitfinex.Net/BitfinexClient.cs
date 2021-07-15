@@ -111,11 +111,11 @@ namespace Bitfinex.Net
         /// <summary>
         /// Event triggered when an order is placed via this client
         /// </summary>
-        public event Action<ICommonOrderId> OnOrderPlaced;
+        public event Action<ICommonOrderId>? OnOrderPlaced;
         /// <summary>
         /// Event triggered when an order is cancelled via this client
         /// </summary>
-        public event Action<ICommonOrderId> OnOrderCanceled;
+        public event Action<ICommonOrderId>? OnOrderCanceled;
 
         #region constructor/destructor
         /// <summary>
@@ -1318,7 +1318,7 @@ namespace Bitfinex.Net
             return await SendRequestAsync<BitfinexClosePositionResult>(GetUrl(ClosePositionEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
         
-        private string ParseAsset(string assetName)
+        private static string ParseAsset(string assetName)
         {
             assetName = assetName.ToLowerInvariant();
             if (assetName == "usdt") return "ust";
@@ -1385,7 +1385,7 @@ namespace Bitfinex.Net
             if (string.IsNullOrEmpty(symbol))
                 return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(new ArgumentError(nameof(symbol) + " required for Bitfinex " + nameof(IExchangeClient.GetTradesAsync)));
 
-            var result = await GetTradesForOrderAsync(symbol, long.Parse(orderId)).ConfigureAwait(false);
+            var result = await GetTradesForOrderAsync(symbol!, long.Parse(orderId)).ConfigureAwait(false);
             return result.As<IEnumerable<ICommonTrade>>(result.Data);
         }
 
@@ -1419,6 +1419,12 @@ namespace Bitfinex.Net
             return result.As<IEnumerable<ICommonBalance>>(result.Data.Where(d => d.Type == WalletType.Exchange));
         }
 
+        /// <summary>
+        /// Get the name of a symbol for Bitfinex based on the base and quote asset
+        /// </summary>
+        /// <param name="baseAsset"></param>
+        /// <param name="quoteAsset"></param>
+        /// <returns></returns>
         public string GetSymbolName(string baseAsset, string quoteAsset) =>
             "t" + (ParseAsset(baseAsset) + ParseAsset(quoteAsset)).ToUpper(CultureInfo.InvariantCulture);
 

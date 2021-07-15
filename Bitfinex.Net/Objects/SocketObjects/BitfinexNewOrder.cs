@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
         public OrderType OrderType { get; set; }
 
         [JsonProperty("symbol")] 
-        public string Symbol { get; set; } = "";
+        public string Symbol { get; set; } = string.Empty;
         [JsonProperty("amount"), JsonConverter(typeof(DecimalAsStringConverter))]
         public decimal? Amount { get; set; }
         [JsonProperty("price"), JsonConverter(typeof(DecimalAsStringConverter))]

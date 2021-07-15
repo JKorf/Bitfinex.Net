@@ -20,7 +20,7 @@ namespace Bitfinex.Net.Objects
         /// The currency
         /// </summary>
         [ArrayProperty(1)]
-        public string Currency { get; set; } = "";
+        public string Currency { get; set; } = string.Empty;
         /// <summary>
         /// The timestamp
         /// </summary>

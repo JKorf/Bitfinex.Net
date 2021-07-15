@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Bitfinex.Net.Converters;
 using Bitfinex.Net.Objects.SocketObjects;
 using CryptoExchange.Net.Converters;
@@ -36,7 +35,7 @@ namespace Bitfinex.Net.Objects
         /// The symbol of the order
         /// </summary>
         [ArrayProperty(3)]
-        public string Symbol { get; set; } = "";
+        public string Symbol { get; set; } = string.Empty;
 
         /// <summary>
         /// The creation time of the order
@@ -84,7 +83,7 @@ namespace Bitfinex.Net.Objects
         /// 
         /// </summary>
         [ArrayProperty(11)]
-        public string PlaceHolder1 { get; set; } = "";
+        public string PlaceHolder1 { get; set; } = string.Empty;
 
         /// <summary>
         /// 
@@ -102,17 +101,17 @@ namespace Bitfinex.Net.Objects
         /// The raw status string
         /// </summary>
         [ArrayProperty(13)]
-        public string StatusString { get; set; } = "";
+        public string StatusString { get; set; } = string.Empty;
         /// <summary>
         /// 
         /// </summary>
         [ArrayProperty(14)]
-        public string PlaceHolder3 { get; set; } = "";
+        public string PlaceHolder3 { get; set; } = string.Empty;
         /// <summary>
         /// 
         /// </summary>
         [ArrayProperty(15)]
-        public string PlaceHolder4 { get; set; } = "";
+        public string PlaceHolder4 { get; set; } = string.Empty;
 
         /// <summary>
         /// The price of the order
@@ -141,17 +140,17 @@ namespace Bitfinex.Net.Objects
         /// 
         /// </summary>
         [ArrayProperty(20)]
-        public string PlaceHolder5 { get; set; } = "";
+        public string PlaceHolder5 { get; set; } = string.Empty;
         /// <summary>
         /// 
         /// </summary>
         [ArrayProperty(21)]
-        public string PlaceHolder6 { get; set; } = "";
+        public string PlaceHolder6 { get; set; } = string.Empty;
         /// <summary>
         /// 
         /// </summary>
         [ArrayProperty(22)]
-        public string PlaceHolder7 { get; set; } = "";
+        public string PlaceHolder7 { get; set; } = string.Empty;
 
         /// <summary>
         /// Whether the order is hidden

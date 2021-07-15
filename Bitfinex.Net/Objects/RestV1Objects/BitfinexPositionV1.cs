@@ -16,11 +16,11 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// The symbol of the position
         /// </summary>
-        public string Symbol { get; set; } = "";
+        public string Symbol { get; set; } = string.Empty;
         /// <summary>
         /// The status of the position
         /// </summary>
-        public string Status { get; set; } = "";
+        public string Status { get; set; } = string.Empty;
         /// <summary>
         /// The base 
         /// </summary>

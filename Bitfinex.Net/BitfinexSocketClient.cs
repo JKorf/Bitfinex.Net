@@ -2,7 +2,6 @@
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.SocketObjects;
 using CryptoExchange.Net;
-using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
 using Newtonsoft.Json;

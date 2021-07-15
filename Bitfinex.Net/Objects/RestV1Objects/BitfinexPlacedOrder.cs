@@ -25,11 +25,11 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// The symbol the order is for
         /// </summary>
-        public string Symbol { get; set; } = "";
+        public string Symbol { get; set; } = string.Empty;
         /// <summary>
         /// On what exchange
         /// </summary>
-        public string Exchange { get; set; } = "";
+        public string Exchange { get; set; } = string.Empty;
         /// <summary>
         /// The price of the order
         /// </summary>
@@ -107,12 +107,12 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// The client order date
         /// </summary>
         [JsonProperty("cid_date")]
-        public string ClientOrderDate { get; set; } = "";
+        public string ClientOrderDate { get; set; } = string.Empty;
         /// <summary>
         /// The source of the order
         /// </summary>
         [JsonProperty("src")]
-        public string Source { get; set; } = "";
+        public string Source { get; set; } = string.Empty;
         /// <summary>
         /// If this was an OneCancelsOther order this is the id of the other order
         /// </summary>

@@ -16,7 +16,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// Additional info
         /// </summary>
-        public string Message { get; set; } = "";
+        public string Message { get; set; } = string.Empty;
         /// <summary>
         /// The id of the withdrawal
         /// </summary>

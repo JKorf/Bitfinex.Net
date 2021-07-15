@@ -13,7 +13,7 @@ namespace Bitfinex.Net.Objects
         /// Type
         /// </summary>
         [ArrayProperty(0)]
-        public string Type { get; set; } = "";
+        public string Type { get; set; } = string.Empty;
 
         /// <summary>
         /// Data

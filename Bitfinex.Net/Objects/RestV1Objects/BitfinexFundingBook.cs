@@ -14,11 +14,11 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// The bids in the book
         /// </summary>
-        public IEnumerable<BitfinexFundingBookEntry> Bids { get; set; } = new List<BitfinexFundingBookEntry>();
+        public IEnumerable<BitfinexFundingBookEntry> Bids { get; set; } = Array.Empty<BitfinexFundingBookEntry>();
         /// <summary>
         /// The asks in the book
         /// </summary>
-        public IEnumerable<BitfinexFundingBookEntry> Asks { get; set; } = new List<BitfinexFundingBookEntry>();
+        public IEnumerable<BitfinexFundingBookEntry> Asks { get; set; } = Array.Empty<BitfinexFundingBookEntry>();
     }
 
     /// <summary>

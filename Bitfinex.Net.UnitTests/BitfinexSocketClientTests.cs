@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Binance.Net.UnitTests.TestImplementations;
 using Bitfinex.Net.UnitTests.TestImplementations;
 using CryptoExchange.Net.Authentication;
-using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;

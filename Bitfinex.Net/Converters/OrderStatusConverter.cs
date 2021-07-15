@@ -18,12 +18,12 @@ namespace Bitfinex.Net.Converters
             { "ACTIVE", OrderStatus.Active }
         };
         
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             writer.WriteValue(value.ToString().ToUpper(CultureInfo.InvariantCulture));
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             if (reader.Value == null)
                 return OrderStatus.Unknown;

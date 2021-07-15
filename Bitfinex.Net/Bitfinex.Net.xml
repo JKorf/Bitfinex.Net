@@ -609,6 +609,14 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
+        <member name="M:Bitfinex.Net.BitfinexClient.GetSymbolName(System.String,System.String)">
+            <summary>
+            Get the name of a symbol for Bitfinex based on the base and quote asset
+            </summary>
+            <param name="baseAsset"></param>
+            <param name="quoteAsset"></param>
+            <returns></returns>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexClient.ParseErrorResponse(Newtonsoft.Json.Linq.JToken)">
             <summary>
             </summary>
@@ -3110,6 +3118,21 @@
             Meta data for the order
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.BitfinexOrderBook">
+            <summary>
+            Order book
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBook.Bids">
+            <summary>
+            List of bids
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBook.Asks">
+            <summary>
+            List of asks
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexOrderBookBase">
             <summary>
             Base for order book
@@ -3553,6 +3576,10 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexWriteResult`1.Id">
             <summary>
             Unique ID of the message.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexWriteResult`1.Placeholder1">
+            <summary>
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexWriteResult`1.Data">

@@ -5,15 +5,15 @@ namespace Bitfinex.Net.Objects.SocketObjects
     internal class BitfinexAuthenticationResponse
     {
         [JsonProperty("event")]
-        public string Event { get; set; } = "";
+        public string Event { get; set; } = string.Empty;
         [JsonProperty("status")]
-        public string Status { get; set; } = "";
+        public string Status { get; set; } = string.Empty;
         [JsonProperty("userId")]
         public long UserId { get; set; }
         [JsonProperty("chanId")]
         public long ChannelId { get; set; }
         [JsonProperty("auth_id")]
-        public string AuthenticationId { get; set; } = "";
+        public string AuthenticationId { get; set; } = string.Empty;
         [JsonProperty("caps")]
         public BitfinexApiKeyPermissions Permissions { get; set; } = default!;
 
