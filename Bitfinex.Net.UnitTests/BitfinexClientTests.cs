@@ -367,7 +367,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = await client.GetTradesForOrderAsync("tETHBTC", 1);
+            var result = await client.GetOrderTradesAsync("tETHBTC", 1);
 
             // assert
             Assert.AreEqual(true, result.Success);

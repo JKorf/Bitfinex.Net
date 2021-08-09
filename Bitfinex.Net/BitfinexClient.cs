@@ -208,7 +208,7 @@ namespace Bitfinex.Net
         /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Trades for the symbol</returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexTradeSimple>>> GetTradesAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexTradeSimple>>> GetRecentTradeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 5000);
@@ -434,7 +434,7 @@ namespace Bitfinex.Net
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOrderHistoryAsync(string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOrdersAsync(string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             symbol?.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
@@ -456,7 +456,7 @@ namespace Bitfinex.Net
         /// <param name="orderId">The order Id</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetTradesForOrderAsync(string symbol, long orderId, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetOrderTradesAsync(string symbol, long orderId, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
 
@@ -1348,7 +1348,7 @@ namespace Bitfinex.Net
 
         async Task<WebCallResult<IEnumerable<ICommonRecentTrade>>> IExchangeClient.GetRecentTradesAsync(string symbol)
         {
-            var tradesResult = await GetTradesAsync(symbol).ConfigureAwait(false);
+            var tradesResult = await GetRecentTradeHistoryAsync(symbol).ConfigureAwait(false);
             return tradesResult.As<IEnumerable<ICommonRecentTrade>>(tradesResult.Data);
         }
 
@@ -1385,7 +1385,7 @@ namespace Bitfinex.Net
             if (string.IsNullOrEmpty(symbol))
                 return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(new ArgumentError(nameof(symbol) + " required for Bitfinex " + nameof(IExchangeClient.GetTradesAsync)));
 
-            var result = await GetTradesForOrderAsync(symbol!, long.Parse(orderId)).ConfigureAwait(false);
+            var result = await GetOrderTradesAsync(symbol!, long.Parse(orderId)).ConfigureAwait(false);
             return result.As<IEnumerable<ICommonTrade>>(result.Data);
         }
 
@@ -1403,7 +1403,7 @@ namespace Bitfinex.Net
 
         async Task<WebCallResult<IEnumerable<ICommonOrder>>> IExchangeClient.GetClosedOrdersAsync(string? symbol)
         {
-            var result = await GetOrderHistoryAsync(symbol).ConfigureAwait(false);
+            var result = await GetOrdersAsync(symbol).ConfigureAwait(false);
             return result.As<IEnumerable<ICommonOrder>>(result.Data);
         }
 
