@@ -92,7 +92,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = await client.GetTradesAsync("tETHBTC");
+            var result = await client.GetTradeHistoryAsync("tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
