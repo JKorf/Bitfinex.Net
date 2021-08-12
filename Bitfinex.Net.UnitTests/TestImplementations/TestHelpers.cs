@@ -14,6 +14,7 @@ using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 
@@ -63,7 +64,7 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
 
         public static BitfinexSocketClient CreateAuthenticatedSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
         {
-            return CreateSocketClient(socket, options ?? new BitfinexSocketClientOptions() { ApiCredentials = new ApiCredentials("Test", "Test"), LogVerbosity = LogVerbosity.Debug});
+            return CreateSocketClient(socket, options ?? new BitfinexSocketClientOptions() { ApiCredentials = new ApiCredentials("Test", "Test"), LogLevel = LogLevel.Debug});
         }
 
         public static BitfinexSocketClient CreateSocketClient(IWebsocket socket, BitfinexSocketClientOptions options = null)
@@ -114,11 +115,11 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             var response = new Mock<IResponse>();
             response.Setup(c => c.IsSuccessStatusCode).Returns(code == HttpStatusCode.OK);
             response.Setup(c => c.StatusCode).Returns(code);
-            response.Setup(c => c.GetResponseStream()).Returns(Task.FromResult((Stream)responseStream));
+            response.Setup(c => c.GetResponseStreamAsync()).Returns(Task.FromResult((Stream)responseStream));
 
             var request = new Mock<IRequest>();
             request.Setup(c => c.Uri).Returns(new Uri("http://www.test.com"));
-            request.Setup(c => c.GetResponse(It.IsAny<CancellationToken>())).Returns(Task.FromResult(response.Object));
+            request.Setup(c => c.GetResponseAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(response.Object));
 
             var factory = Mock.Get(client.RequestFactory);
             factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<string>(), It.IsAny<int>()))

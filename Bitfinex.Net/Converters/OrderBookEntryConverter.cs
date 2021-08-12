@@ -3,8 +3,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
 namespace Bitfinex.Net.Converters
 {
@@ -15,7 +13,7 @@ namespace Bitfinex.Net.Converters
             return true;
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             var data = JArray.Load(reader);
             if(data[0].Type == JTokenType.Array)
@@ -31,7 +29,7 @@ namespace Bitfinex.Net.Converters
             }           
         }
 
-        private BitfinexOrderBookEntry ParseEntry(JArray data)
+        private static BitfinexOrderBookEntry ParseEntry(JArray data)
         {
             JToken price;
             JToken count;
@@ -58,7 +56,7 @@ namespace Bitfinex.Net.Converters
             };
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

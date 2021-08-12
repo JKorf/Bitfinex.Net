@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
 using Force.Crc32;
+using Microsoft.Extensions.Logging;
 
 namespace Bitfinex.Net
 {
@@ -39,7 +39,7 @@ namespace Bitfinex.Net
         }
 
         /// <inheritdoc />
-        protected override async Task<CallResult<UpdateSubscription>> DoStart()
+        protected override async Task<CallResult<UpdateSubscription>> DoStartAsync()
         {
             if(precision == Precision.R0)
                 throw new ArgumentException("Invalid precision: R0");
@@ -51,7 +51,7 @@ namespace Bitfinex.Net
 
             Status = OrderBookStatus.Syncing;
             
-            var setResult = await WaitForSetOrderBook(10000).ConfigureAwait(false);
+            var setResult = await WaitForSetOrderBookAsync(10000).ConfigureAwait(false);
             return setResult ? result : new CallResult<UpdateSubscription>(null, setResult.Error);
         }
 
@@ -60,8 +60,9 @@ namespace Bitfinex.Net
         {
         }
 
-        private void ProcessUpdate(IEnumerable<BitfinexOrderBookEntry> entries)
+        private void ProcessUpdate(DataEvent<IEnumerable<BitfinexOrderBookEntry>> data)
         {
+            var entries = data.Data;
             if (!bookSet)
             {
                 var askEntries = entries.Where(e => e.Quantity < 0).ToList();
@@ -110,9 +111,9 @@ namespace Bitfinex.Net
         /// Process a received checksum
         /// </summary>
         /// <param name="checksum"></param>
-        protected void ProcessChecksum(int checksum)
+        protected void ProcessChecksum(DataEvent<int> checksum)
         {
-            AddChecksum(checksum);            
+            AddChecksum(checksum.Data);            
         }
 
         /// <summary>
@@ -143,7 +144,7 @@ namespace Bitfinex.Net
 
             if (ourChecksumUtf != checksum)
             {
-                log.Write(CryptoExchange.Net.Logging.LogVerbosity.Warning, $"Invalid checksum. Received from server: {checksum}, calculated local: {ourChecksumUtf}");
+                log.Write(LogLevel.Warning, $"Invalid checksum. Received from server: {checksum}, calculated local: {ourChecksumUtf}");
                 return false;
             }
             
@@ -151,9 +152,9 @@ namespace Bitfinex.Net
         }
 
         /// <inheritdoc />
-        protected override async Task<CallResult<bool>> DoResync()
+        protected override async Task<CallResult<bool>> DoResyncAsync()
         {
-            return await WaitForSetOrderBook(10000).ConfigureAwait(false);
+            return await WaitForSetOrderBookAsync(10000).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -166,25 +167,6 @@ namespace Bitfinex.Net
             bids.Clear();
 
             socketClient?.Dispose();
-        }
-
-        // Format the value with the indicated number of significant digits.
-        private string ToSignificantDigits(decimal value)
-        {
-            var stringValue = value.ToString(CultureInfo.InvariantCulture);
-            var stringLength = stringValue.Length;
-            if (stringValue.Contains('.'))
-                stringLength -= 1;
-
-            for (var i = 0;i < 5 - stringLength; i++)
-            {
-                if (!stringValue.Contains('.'))
-                    stringValue += ".0";
-                else
-                    stringValue += "0";
-            }
-
-            return stringValue;
         }
     }
 }

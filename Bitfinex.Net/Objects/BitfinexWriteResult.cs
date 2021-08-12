@@ -29,6 +29,8 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(2)]
         public long Id { get; set; }
 
+        /// <summary>
+        /// </summary>
         [ArrayProperty(3)]
         public string? Placeholder1 { get; set; }
 

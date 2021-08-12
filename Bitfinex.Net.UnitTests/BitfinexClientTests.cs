@@ -9,6 +9,7 @@ using System.Linq;
 using Bitfinex.Net.UnitTests.TestImplementations;
 using Moq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -16,7 +17,7 @@ namespace Bitfinex.Net.UnitTests
     public class BitfinexClientTests
     {
         [TestCase]
-        public void GetPlatformStatus_Should_RespondWithPlatformStatus()
+        public async Task GetPlatformStatus_Should_RespondWithPlatformStatus()
         {
             // arrange
             var expected = new BitfinexPlatformStatus()
@@ -27,7 +28,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetPlatformStatus();
+            var result = await client.GetPlatformStatusAsync();
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -35,7 +36,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetTicker_Should_RespondWithPrices()
+        public async Task GetTicker_Should_RespondWithPrices()
         {
             // arrange
             var expected = new[]
@@ -59,7 +60,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetTicker(default, "Test");
+            var result = await client.GetTickerAsync(default, "Test");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -67,7 +68,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetTrades_Should_RespondWithPrices()
+        public async Task GetTrades_Should_RespondWithPrices()
         {
             // arrange
             var expected = new[]
@@ -91,7 +92,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetTrades("tETHBTC");
+            var result = await client.GetTradeHistoryAsync("tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -100,7 +101,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetOrderbook_Should_RespondWithOrderbook()
+        public async Task GetOrderbook_Should_RespondWithOrderbook()
         {
             // arrange
             var expected = new[]
@@ -122,7 +123,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetOrderBook("tETHBTC", Precision.PrecisionLevel0);
+            var result = await client.GetOrderBookAsync("tETHBTC", Precision.PrecisionLevel0);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -131,7 +132,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetStats_Should_RespondWithStats()
+        public async Task GetStats_Should_RespondWithStats()
         {
             // arrange
             var expected =
@@ -144,7 +145,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetStats("tETHBTC", StatKey.ActiveFundingInPositions, StatSide.Long, StatSection.History);
+            var result = await client.GetStatsAsync("tETHBTC", StatKey.ActiveFundingInPositions, StatSide.Long, StatSection.History);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -152,7 +153,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetLastCandle_Should_RespondWithCandle()
+        public async Task GetLastCandle_Should_RespondWithCandle()
         {
             // arrange
             var expected =
@@ -169,7 +170,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetLastKline(TimeFrame.FiveMinute, "tETHBTC");
+            var result = await client.GetLastKlineAsync(TimeFrame.FiveMinute, "tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -177,7 +178,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetCandles_Should_RespondWithCandles()
+        public async Task GetCandles_Should_RespondWithCandles()
         {
             // arrange
             var expected = new[]
@@ -204,7 +205,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetKlines(TimeFrame.FiveMinute, "tETHBTC");
+            var result = await client.GetKlinesAsync(TimeFrame.FiveMinute, "tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -213,7 +214,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetMarketAveragePrice_Should_RespondWithAveragePrice()
+        public async Task GetMarketAveragePrice_Should_RespondWithAveragePrice()
         {
             // arrange
             var expected =
@@ -226,7 +227,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = client.GetAveragePrice("tETHBTC", 0.1m, 0.2m);
+            var result = await client.GetAveragePriceAsync("tETHBTC", 0.1m, 0.2m);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -234,7 +235,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetWallets_Should_RespondWithWallets()
+        public async Task GetWallets_Should_RespondWithWallets()
         {
             // arrange
             var expected = new[]
@@ -259,7 +260,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetBalances();
+            var result = await client.GetBalancesAsync();
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -268,7 +269,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetActiveOrders_Should_RespondWithActiveOrders()
+        public async Task GetActiveOrders_Should_RespondWithActiveOrders()
         {
             // arrange
             var expected = new[]
@@ -320,7 +321,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetActiveOrders();
+            var result = await client.GetActiveOrdersAsync();
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -329,7 +330,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetTradesForOrder_Should_RespondWithTrades()
+        public async Task GetTradesForOrder_Should_RespondWithTrades()
         {
             // arrange
             var expected = new[]
@@ -366,7 +367,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetTradesForOrder("tETHBTC", 1);
+            var result = await client.GetOrderTradesAsync("tETHBTC", 1);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -375,7 +376,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetActivePositions_Should_RespondWithPositions()
+        public async Task GetActivePositions_Should_RespondWithPositions()
         {
             // arrange
             var expected = new[]
@@ -410,7 +411,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetActivePositions();
+            var result = await client.GetActivePositionsAsync();
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -419,7 +420,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetActiveFundingOffers_Should_RespondWithFundingOffers()
+        public async Task GetActiveFundingOffers_Should_RespondWithFundingOffers()
         {
             // arrange
             var expected = new[]
@@ -464,7 +465,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetActiveFundingOffers("tBTCUSD");
+            var result = await client.GetActiveFundingOffersAsync("tBTCUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -473,7 +474,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetFundingLoans_Should_RespondWithFundingLoans()
+        public async Task GetFundingLoans_Should_RespondWithFundingLoans()
         {
             // arrange
             var expected = new[]
@@ -522,7 +523,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetFundingLoans("fUSD");
+            var result = await client.GetFundingLoansAsync("fUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -531,7 +532,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetFundingCredits_Should_RespondWithFundingCredits()
+        public async Task GetFundingCredits_Should_RespondWithFundingCredits()
         {
             // arrange
             var expected = new[]
@@ -582,7 +583,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetFundingCredits("tBTCUSD");
+            var result = await client.GetFundingCreditsAsync("tBTCUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -591,7 +592,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetFundingTradesHistory_Should_RespondWithFundingTrades()
+        public async Task GetFundingTradesHistory_Should_RespondWithFundingTrades()
         {
             // arrange
             var expected = new[]
@@ -622,7 +623,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetFundingTradesHistory("fUSD");
+            var result = await client.GetFundingTradesHistoryAsync("fUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -631,7 +632,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetBaseMargin_Should_RespondWithMargin()
+        public async Task GetBaseMargin_Should_RespondWithMargin()
         {
             // arrange
             var expected = new BitfinexMarginBase()
@@ -648,7 +649,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetBaseMarginInfo();
+            var result = await client.GetBaseMarginInfoAsync();
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -656,7 +657,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetSymbolMargin_Should_RespondWithMargin()
+        public async Task GetSymbolMargin_Should_RespondWithMargin()
         {
             // arrange
             var expected = new BitfinexMarginSymbol()
@@ -673,7 +674,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetSymbolMarginInfo("tETHBTC");
+            var result = await client.GetSymbolMarginInfoAsync("tETHBTC");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -681,7 +682,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetFundingInfo_Should_RespondWithFundingInfo()
+        public async Task GetFundingInfo_Should_RespondWithFundingInfo()
         {
             // arrange
             var expected = new BitfinexFundingInfo()
@@ -699,7 +700,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetFundingInfo("tBTCUSD");
+            var result = await client.GetFundingInfoAsync("tBTCUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -707,7 +708,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetMovements_Should_RespondWithMovements()
+        public async Task GetMovements_Should_RespondWithMovements()
         {
             // arrange
             var expected = new[]
@@ -729,7 +730,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetMovements("fUSD");
+            var result = await client.GetMovementsAsync("fUSD");
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -737,7 +738,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetAlertList_Should_RespondWithAlerts()
+        public async Task GetAlertList_Should_RespondWithAlerts()
         {
             // arrange
             var expected = new[]
@@ -754,7 +755,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetAlertList();
+            var result = await client.GetAlertListAsync();
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -762,7 +763,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void SetAlert_Should_RespondWithAlert()
+        public async Task SetAlert_Should_RespondWithAlert()
         {
             // arrange
             var expected =
@@ -777,7 +778,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.SetAlert("tETHBTC", 0.1m);
+            var result = await client.SetAlertAsync("tETHBTC", 0.1m);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -785,7 +786,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void DeleteAlert_Should_ReturnSuccess()
+        public async Task DeleteAlert_Should_ReturnSuccess()
         {
             // arrange
             var expected =
@@ -796,7 +797,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.DeleteAlert("tETHBTC", 0.1m);
+            var result = await client.DeleteAlertAsync("tETHBTC", 0.1m);
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -804,7 +805,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetAccountInfo_Should_ReturnAccountInfo()
+        public async Task GetAccountInfo_Should_ReturnAccountInfo()
         {
             // arrange
             var expected =
@@ -825,7 +826,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(new [] {expected});
 
             // act
-            var result = client.GetAccountInfo();
+            var result = await client.GetAccountInfoAsync();
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -834,7 +835,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [TestCase]
-        public void GetWithdrawalFees_Should_ReturnFees()
+        public async Task GetWithdrawalFees_Should_ReturnFees()
         {
             // arrange
             var expected =
@@ -849,7 +850,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedResponseClient(expected);
 
             // act
-            var result = client.GetWithdrawalFees();
+            var result = await client.GetWithdrawalFeesAsync();
 
             // assert
             Assert.AreEqual(true, result.Success);
@@ -859,13 +860,13 @@ namespace Bitfinex.Net.UnitTests
 
 
         [TestCase]
-        public void ReceivingHttpError_Should_ResultInErrorResult()
+        public async Task ReceivingHttpError_Should_ResultInErrorResult()
         {
             // arrange
             var client = TestHelpers.CreateResponseClient("Error message", null, HttpStatusCode.BadRequest);
 
             // act
-            var result = client.GetCurrencies();
+            var result = await client.GetCurrenciesAsync();
 
             // assert
             Assert.AreEqual(false, result.Success);
@@ -875,7 +876,7 @@ namespace Bitfinex.Net.UnitTests
 
 
         [Test]
-        public void ProvidingApiCredentials_Should_SaveApiCredentials()
+        public async Task ProvidingApiCredentials_Should_SaveApiCredentials()
         {
             // arrange
             // act
@@ -887,7 +888,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public void SigningString_Should_ReturnCorrectString()
+        public async Task SigningString_Should_ReturnCorrectString()
         {
             // arrange
             var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"));
@@ -900,14 +901,14 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public void MakingAuthv2Call_Should_SendAuthHeaders()
+        public async Task MakingAuthv2Call_Should_SendAuthHeaders()
         {
             // arrange
             var client = TestHelpers.CreateClient(new BitfinexClientOptions(){ ApiCredentials = new ApiCredentials("TestKey", "t")});
             var request = TestHelpers.SetResponse((RestClient)client, "{}");
 
             // act
-            client.GetActiveOrders();
+            await client.GetActiveOrdersAsync();
 
             // assert
             request.Verify(r => r.AddHeader("bfx-nonce", It.IsAny<string>()));
@@ -916,14 +917,14 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public void MakingAuthv1Call_Should_SendAuthHeaders()
+        public async Task MakingAuthv1Call_Should_SendAuthHeaders()
         {
             // arrange
             var client = TestHelpers.CreateClient(new BitfinexClientOptions() { ApiCredentials = new ApiCredentials("TestKey", "t") });
             var request = TestHelpers.SetResponse((RestClient)client, "{}");
 
             // act
-            client.GetAccountInfo();
+            await client.GetAccountInfoAsync();
 
             // assert
             request.Verify(r => r.AddHeader("X-BFX-SIGNATURE", It.IsAny<string>()));
@@ -944,7 +945,7 @@ namespace Bitfinex.Net.UnitTests
         [TestCase("fBTC", true)]
         [TestCase("fNANO", true)]
         [TestCase("fNA", false)]
-        public void CheckValidBitfinexSymbol(string symbol, bool isValid)
+        public async Task CheckValidBitfinexSymbol(string symbol, bool isValid)
         {
             if (isValid)
                 Assert.DoesNotThrow(symbol.ValidateBitfinexSymbol);

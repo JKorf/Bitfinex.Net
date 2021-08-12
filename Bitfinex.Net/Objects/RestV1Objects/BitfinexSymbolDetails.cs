@@ -11,7 +11,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// The symbol pair
         /// </summary>
-        public string Pair { get; set; } = "";
+        public string Pair { get; set; } = string.Empty;
         /// <summary>
         /// The price precision of the pair
         /// </summary>
@@ -41,7 +41,7 @@ namespace Bitfinex.Net.Objects.RestV1Objects
         /// <summary>
         /// Expiration
         /// </summary>
-        public string Expiration { get; set; } = "";
+        public string Expiration { get; set; } = string.Empty;
         /// <summary>
         /// If margin trading is enabled for the pair
         /// </summary>

@@ -18,7 +18,7 @@ namespace Bitfinex.Net.Converters
             quotes = useQuotes;
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             if (value == null)
                 return;
@@ -29,7 +29,7 @@ namespace Bitfinex.Net.Converters
                 writer.WriteRawValue(((decimal)value).ToString(CultureInfo.InvariantCulture));
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

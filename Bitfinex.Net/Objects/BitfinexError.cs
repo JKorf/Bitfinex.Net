@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects
         [ArrayProperty(1)]
         public int ErrorCode { get; set; }
         [ArrayProperty(2)]
-        public string ErrorMessage { get; set; } = "";
+        public string ErrorMessage { get; set; } = string.Empty;
 
         public BitfinexError(int errorCode, string errorMessage)
         {

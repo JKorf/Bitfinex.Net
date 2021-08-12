@@ -20,7 +20,7 @@ namespace Bitfinex.Net.Converters
             asInt = writeAsInt;
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             if (asInt)
             {
@@ -35,7 +35,7 @@ namespace Bitfinex.Net.Converters
             }
         }
 
-        public override object? ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             if (reader.Value == null)
                 return null;

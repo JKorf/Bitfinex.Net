@@ -19,7 +19,7 @@ namespace Bitfinex.Net.Objects
         /// The currency
         /// </summary>
         [ArrayProperty(1)]
-        public string Currency { get; set; } = "";
+        public string Currency { get; set; } = string.Empty;
         /// <summary>
         /// The timestamp of the event
         /// </summary>
@@ -39,6 +39,6 @@ namespace Bitfinex.Net.Objects
         /// The description of the event
         /// </summary>
         [ArrayProperty(8)]
-        public string Description { get; set; } = "";
+        public string Description { get; set; } = string.Empty;
     }
 }

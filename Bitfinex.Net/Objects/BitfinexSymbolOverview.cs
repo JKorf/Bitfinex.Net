@@ -14,7 +14,7 @@ namespace Bitfinex.Net.Objects
         /// The symbol
         /// </summary>
         [ArrayProperty(0)]
-        public string Symbol { get; set; } = "";
+        public string Symbol { get; set; } = string.Empty;
         /// <summary>
         /// The best bid price
         /// </summary>

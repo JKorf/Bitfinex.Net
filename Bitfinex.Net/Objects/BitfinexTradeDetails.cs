@@ -22,7 +22,7 @@ namespace Bitfinex.Net.Objects
         /// The pair the trade is for
         /// </summary>
         [ArrayProperty(1)]
-        public string Pair { get; set; } = "";
+        public string Pair { get; set; } = string.Empty;
 
         /// <summary>
         /// The time the trade was created
@@ -76,12 +76,13 @@ namespace Bitfinex.Net.Objects
         /// The currency the fee is in
         /// </summary>
         [ArrayProperty(10)]
-        public string FeeCurrency { get; set; } = "";
+        public string FeeCurrency { get; set; } = string.Empty;
 
-        public string CommonId => Id.ToString();
-        public decimal CommonPrice => ExecutedPrice;
-        public decimal CommonQuantity => ExecutedAmount;
-        public decimal CommonFee => Fee;
-        public string CommonFeeAsset => FeeCurrency;
+        string ICommonTrade.CommonId => Id.ToString();
+        decimal ICommonTrade.CommonPrice => ExecutedPrice;
+        decimal ICommonTrade.CommonQuantity => ExecutedAmount;
+        decimal ICommonTrade.CommonFee => Fee;
+        string ICommonTrade.CommonFeeAsset => FeeCurrency;
+        DateTime ICommonTrade.CommonTradeTime => TimestampCreated;
     }
 }
