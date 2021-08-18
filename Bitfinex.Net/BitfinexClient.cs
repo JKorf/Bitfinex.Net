@@ -1129,7 +1129,11 @@ namespace Bitfinex.Net
                 { "walletfrom", JsonConvert.SerializeObject(fromWallet, new WithdrawWalletConverter(false)) },
                 { "walletto", JsonConvert.SerializeObject(toWallet, new WithdrawWalletConverter(false)) },
             };
-            return await SendRequestAsync<BitfinexTransferResult>(GetUrl(TransferEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var result =  await SendRequestAsync<BitfinexTransferResult[]>(GetUrl(TransferEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            if (!result)
+                return result.As((BitfinexTransferResult)null);
+            
+            return result.As(result.Data.First());
         }
 
         /// <summary>
