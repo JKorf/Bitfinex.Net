@@ -55,7 +55,7 @@ namespace Bitfinex.Net
 
             Status = OrderBookStatus.Syncing;
             
-            var setResult = await WaitForSetOrderBookAsync(10000).ConfigureAwait(false);
+            var setResult = await WaitForSetOrderBookAsync(30000).ConfigureAwait(false);
             return setResult ? result : new CallResult<UpdateSubscription>(null, setResult.Error);
         }
 
@@ -160,7 +160,7 @@ namespace Bitfinex.Net
         /// <inheritdoc />
         protected override async Task<CallResult<bool>> DoResyncAsync()
         {
-            return await WaitForSetOrderBookAsync(10000).ConfigureAwait(false);
+            return await WaitForSetOrderBookAsync(30000).ConfigureAwait(false);
         }
 
         /// <summary>
