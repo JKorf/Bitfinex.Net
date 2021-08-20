@@ -534,7 +534,7 @@ namespace Bitfinex.Net
             if (!infoEvent)
                 return;
 
-            log.Write(LogLevel.Debug, $"Info event received: {messageEvent.JsonData}");
+            log.Write(LogLevel.Debug, $"Socket {messageEvent.Connection.Socket.Id} Info event received: {messageEvent.JsonData}");
             if (messageEvent.JsonData["code"] == null)
             {
                 // welcome event
@@ -546,20 +546,20 @@ namespace Bitfinex.Net
             switch (code)
             {
                 case 20051:
-                    log.Write(LogLevel.Information, $"Code {code} received, reconnecting socket");
+                    log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.Socket.Id} Code {code} received, reconnecting socket");
                     messageEvent.Connection.PausedActivity = true; // Prevent new operations to be send
                     messageEvent.Connection.Socket.CloseAsync();
                     break;
                 case 20060:
-                    log.Write(LogLevel.Information, $"Code {code} received, entering maintenance mode");
+                    log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.Socket.Id} Code {code} received, entering maintenance mode");
                     messageEvent.Connection.PausedActivity = true;
                     break;
                 case 20061:
-                    log.Write(LogLevel.Information, $"Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
+                    log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.Socket.Id} Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
                     messageEvent.Connection.Socket.CloseAsync(); // Closing it via socket will automatically reconnect
                     break;
                 default:
-                    log.Write(LogLevel.Warning, $"Unknown info code received: {code}");
+                    log.Write(LogLevel.Warning, $"Socket {messageEvent.Connection.Socket.Id} Unknown info code received: {code}");
                     break;
             }
         }

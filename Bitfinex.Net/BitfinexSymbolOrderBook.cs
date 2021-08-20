@@ -21,6 +21,7 @@ namespace Bitfinex.Net
     {
         private readonly IBitfinexSocketClient socketClient;
         private readonly Precision precision;
+        private bool _initial = true;
 
         /// <summary>
         /// Create a new order book instance
@@ -32,7 +33,10 @@ namespace Bitfinex.Net
         public BitfinexSymbolOrderBook(string symbol, Precision precisionLevel, int limit, BitfinexOrderBookOptions? options = null) : base(symbol, options ?? new BitfinexOrderBookOptions())
         {
             symbol.ValidateBitfinexSymbol();
-            socketClient = options?.SocketClient ?? new BitfinexSocketClient();
+            socketClient = options?.SocketClient ?? new BitfinexSocketClient(new BitfinexSocketClientOptions
+            {
+                LogLevel = options?.LogLevel ?? LogLevel.Information
+            });
 
             Levels = limit;
             precision = precisionLevel;
@@ -58,13 +62,15 @@ namespace Bitfinex.Net
         /// <inheritdoc />
         protected override void DoReset()
         {
+            _initial = true;
         }
 
         private void ProcessUpdate(DataEvent<IEnumerable<BitfinexOrderBookEntry>> data)
         {
             var entries = data.Data;
-            if (!bookSet)
+            if (_initial)
             {
+                _initial = false;
                 var askEntries = entries.Where(e => e.Quantity < 0).ToList();
                 var bidEntries = entries.Where(e => e.Quantity > 0).ToList();
                 foreach (var entry in askEntries)
@@ -126,13 +132,13 @@ namespace Bitfinex.Net
             var checksumValues = new List<string>();
             for (var i = 0; i < 25; i++)
             {
-                if (bids.Count >= i)
+                if (bids.Count > i)
                 {
                     var bid = (BitfinexOrderBookEntry)bids.ElementAt(i).Value;
                     checksumValues.Add(bid.RawPrice);
                     checksumValues.Add(bid.RawQuantity);
                 }
-                if (asks.Count >= i)
+                if (asks.Count > i)
                 {
                     var ask = (BitfinexOrderBookEntry)asks.ElementAt(i).Value;
                     checksumValues.Add(ask.RawPrice);
