@@ -129,6 +129,9 @@ namespace Bitfinex.Net
         /// <returns></returns>
         protected override bool DoChecksum(int checksum)
         {
+            if (LastSequenceNumber == 0 || BidCount < 25 || AskCount < 25)
+                return true; // No data yet?
+
             var checksumValues = new List<string>();
             for (var i = 0; i < 25; i++)
             {
@@ -150,7 +153,7 @@ namespace Bitfinex.Net
 
             if (ourChecksumUtf != checksum)
             {
-                log.Write(LogLevel.Warning, $"Invalid checksum. Received from server: {checksum}, calculated local: {ourChecksumUtf}");
+                log.Write(LogLevel.Warning, $"{Symbol} Invalid checksum. Received from server: {checksum}, calculated local: {ourChecksumUtf}");
                 return false;
             }
             
