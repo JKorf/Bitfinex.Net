@@ -129,7 +129,7 @@ namespace Bitfinex.Net
         /// <returns></returns>
         protected override bool DoChecksum(int checksum)
         {
-            if (LastSequenceNumber == 0 || BidCount < 25 || AskCount < 25)
+            if (LastSequenceNumber == 0)
                 return true; // No data yet?
 
             var checksumValues = new List<string>();
@@ -141,12 +141,17 @@ namespace Bitfinex.Net
                     checksumValues.Add(bid.RawPrice);
                     checksumValues.Add(bid.RawQuantity);
                 }
+                else
+                    log.Write(LogLevel.Trace, $"Skipping checksum bid level {i}, no data");
+
                 if (asks.Count > i)
                 {
                     var ask = (BitfinexOrderBookEntry)asks.ElementAt(i).Value;
                     checksumValues.Add(ask.RawPrice);
                     checksumValues.Add(ask.RawQuantity);
                 }
+                else
+                    log.Write(LogLevel.Trace, $"Skipping checksum ask level {i}, no data");
             }
             var checksumString = string.Join(":", checksumValues);
             var ourChecksumUtf = (int)Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(checksumString));

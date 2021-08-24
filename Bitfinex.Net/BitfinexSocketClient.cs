@@ -130,6 +130,10 @@ namespace Bitfinex.Net
                 else
                 {
                     var dataArray = (JArray)data.Data[1];
+                    if (dataArray.Count == 0)
+                        // Empty array
+                        return;
+
                     if (dataArray[0].Type == JTokenType.Array)
                     {
                         HandleData("Book snapshot", dataArray, symbol, data, handler, _bookSerializer);
@@ -790,9 +794,8 @@ namespace Bitfinex.Net
 
                 var bRequest = (BitfinexSubscriptionRequest) request;
                 if (!bRequest.CheckResponse(data))
-                    return false;
-                
-                log.Write(LogLevel.Debug, $"Socket {s.Socket.Id} subscription completed, {bRequest.Symbol} - {subResponse.Data.ChannelId}");
+                    return false;                
+
                 bRequest.ChannelId = subResponse.Data.ChannelId;
                 callResult = new CallResult<object>(subResponse.Data, subResponse.Error);
                 return true;

@@ -56,14 +56,14 @@ namespace Bitfinex.Net.Converters
 
             var priceWithExp = ((JValue)price).ToString(CultureInfo.InvariantCulture);
             if (priceWithExp.Contains("E-07") || priceWithExp.Contains("E-08"))
-                result.RawPrice = priceWithExp.Replace('E', 'e').Replace("-07", "-7").Replace("-07", "-7");
+                result.RawPrice = priceWithExp.Replace('E', 'e').Replace("-07", "-7").Replace("-08", "-8");
             else
                 result.RawPrice = ((JValue)price).ToString("F8", CultureInfo.InvariantCulture).TrimEnd('0').TrimEnd('.');
 
 
             var quantityWithExp = ((JValue)quantity).ToString(CultureInfo.InvariantCulture);
             if (quantityWithExp.Contains("E-07") || quantityWithExp.Contains("E-08"))
-                result.RawQuantity = quantityWithExp.Replace('E', 'e').Replace("-07", "-7").Replace("-07", "-7");
+                result.RawQuantity = quantityWithExp.Replace('E', 'e').Replace("-07", "-7").Replace("-08", "-8");
             else
                 result.RawQuantity = ((JValue)quantity).ToString("F8", CultureInfo.InvariantCulture).TrimEnd('0').TrimEnd('.');
 
