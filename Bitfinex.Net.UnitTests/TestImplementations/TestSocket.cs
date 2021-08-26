@@ -36,6 +36,7 @@ namespace Binance.Net.UnitTests.TestImplementations
 
         public TimeSpan CloseTime { get; set; }
         public TimeSpan OpenTime { get; set; }
+        public int? RatelimitPerSecond { get; set; }
 
         public async Task<bool> ConnectAsync()
         {

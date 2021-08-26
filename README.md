@@ -90,6 +90,9 @@ For the basic client options see also the CryptoExchange.Net [docs](https://gith
 |`AffiliateCode`|The affiliate code to use for requests|kCCe-CNBO
 
 ## Release notes
+* Version 4.0.3 - 26 Aug 2021
+    * Updated CryptoExchange.Net
+
 * Version 4.0.2 - 24 Aug 2021
     * Updated CryptoExchange.Net, improving websocket and SymbolOrderBook performance
     * Fixes for checksum validation BitfinexSymbolOrderBook
