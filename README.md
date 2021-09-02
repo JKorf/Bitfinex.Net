@@ -90,6 +90,9 @@ For the basic client options see also the CryptoExchange.Net [docs](https://gith
 |`AffiliateCode`|The affiliate code to use for requests|kCCe-CNBO
 
 ## Release notes
+* Version 4.0.4 - 02 Sep 2021
+    * Fix for disposing order book closing socket even if there are other connections
+
 * Version 4.0.3 - 26 Aug 2021
     * Updated CryptoExchange.Net
 
