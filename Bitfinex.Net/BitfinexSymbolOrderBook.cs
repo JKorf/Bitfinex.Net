@@ -22,6 +22,7 @@ namespace Bitfinex.Net
         private readonly IBitfinexSocketClient socketClient;
         private readonly Precision precision;
         private bool _initial = true;
+        private bool _socketOwner;
 
         /// <summary>
         /// Create a new order book instance
@@ -37,6 +38,7 @@ namespace Bitfinex.Net
             {
                 LogLevel = options?.LogLevel ?? LogLevel.Information
             });
+            _socketOwner = options?.SocketClient == null;
 
             Levels = limit;
             precision = precisionLevel;
@@ -180,7 +182,8 @@ namespace Bitfinex.Net
             asks.Clear();
             bids.Clear();
 
-            socketClient?.Dispose();
+            if(_socketOwner)
+                socketClient?.Dispose();
         }
     }
 }
