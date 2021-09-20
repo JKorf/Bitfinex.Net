@@ -880,7 +880,7 @@ namespace Bitfinex.Net.UnitTests
         {
             // arrange
             // act
-            var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"));
+            var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"), null);
 
             // assert
             Assert.AreEqual(authProvider.Credentials.Key.GetString(), "TestKey");
@@ -891,7 +891,7 @@ namespace Bitfinex.Net.UnitTests
         public async Task SigningString_Should_ReturnCorrectString()
         {
             // arrange
-            var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"));
+            var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"), null);
 
             // act
             string signed = authProvider.Sign("SomeTestString");

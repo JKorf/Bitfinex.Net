@@ -36,12 +36,13 @@
             </summary>
             <param name="options">The options to use for new clients</param>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexClient.SetApiCredentials(System.String,System.String)">
+        <member name="M:Bitfinex.Net.BitfinexClient.SetApiCredentials(System.String,System.String,CryptoExchange.Net.Interfaces.INonceProvider)">
             <summary>
             Set the API key and secret
             </summary>
             <param name="apiKey">The api key</param>
             <param name="apiSecret">The api secret</param>
+            <param name="nonceProvider">Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that</param>
         </member>
         <member name="M:Bitfinex.Net.BitfinexClient.GetPlatformStatusAsync(System.Threading.CancellationToken)">
             <summary>
@@ -650,6 +651,14 @@
             </summary>
             <param name="options">The options to use for this client</param>
         </member>
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SetApiCredentials(System.String,System.String,CryptoExchange.Net.Interfaces.INonceProvider)">
+            <summary>
+            Set the API key and secret
+            </summary>
+            <param name="apiKey">The api key</param>
+            <param name="apiSecret">The api secret</param>
+            <param name="nonceProvider">Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that</param>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexSocketClient.SetDefaultOptions(Bitfinex.Net.Objects.BitfinexSocketClientOptions)">
             <summary>
             set the default options used when creating a client without specifying options
@@ -856,12 +865,13 @@
             Interface for the Bitfinex client
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.SetApiCredentials(System.String,System.String)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.SetApiCredentials(System.String,System.String,CryptoExchange.Net.Interfaces.INonceProvider)">
             <summary>
             Set the API key and secret
             </summary>
             <param name="apiKey">The api key</param>
             <param name="apiSecret">The api secret</param>
+            <param name="nonceProvider">Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that</param>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexClient.GetPlatformStatusAsync(System.Threading.CancellationToken)">
             <summary>
@@ -1424,6 +1434,14 @@
             <summary>
             Interface for the Bitfinex socket client
             </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SetApiCredentials(System.String,System.String,CryptoExchange.Net.Interfaces.INonceProvider)">
+            <summary>
+            Set the API key and secret
+            </summary>
+            <param name="apiKey">The api key</param>
+            <param name="apiSecret">The api secret</param>
+            <param name="nonceProvider">Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that</param>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.BitfinexStreamSymbolOverview}})">
             <summary>
@@ -2900,6 +2918,11 @@
             Default affiliate code to use when placing orders
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexClientOptions.NonceProvider">
+            <summary>
+            Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.Objects.BitfinexClientOptions.#ctor">
             <summary>
             Create new client options
@@ -2926,6 +2949,11 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexSocketClientOptions.AffiliateCode">
             <summary>
             Default affiliate code to use when placing orders
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexSocketClientOptions.NonceProvider">
+            <summary>
+            Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that
             </summary>
         </member>
         <member name="M:Bitfinex.Net.Objects.BitfinexSocketClientOptions.#ctor">

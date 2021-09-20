@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bitfinex.Net.Interfaces;
 using Microsoft.Extensions.Logging;
+using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Interfaces;
 
 namespace Bitfinex.Net
 {
@@ -28,23 +30,6 @@ namespace Bitfinex.Net
         private readonly string? _affCode;
 
         private readonly Random random = new Random();
-        private static readonly object nonceLock = new object();
-        private static long lastNonce;
-        internal static string Nonce
-        {
-            get
-            {
-                lock (nonceLock)
-                {
-                    var nonce = (long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000);
-                    if (nonce == lastNonce)
-                        nonce += 1;
-
-                    lastNonce = nonce;
-                    return lastNonce.ToString(CultureInfo.InvariantCulture);
-                }
-            }
-        }
 
         private readonly JsonSerializer _bookSerializer = new JsonSerializer();
         #endregion
@@ -61,7 +46,7 @@ namespace Bitfinex.Net
         /// Create a new instance of BitfinexSocketClient using provided options
         /// </summary>
         /// <param name="options">The options to use for this client</param>
-        public BitfinexSocketClient(BitfinexSocketClientOptions options) : base("Bitfinex", options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials))
+        public BitfinexSocketClient(BitfinexSocketClientOptions options) : base("Bitfinex", options, options.ApiCredentials == null ? null : new BitfinexAuthenticationProvider(options.ApiCredentials, options.NonceProvider))
         {
             if (options == null)
                 throw new ArgumentException("Cant pass null options, use empty constructor for default");
@@ -78,6 +63,17 @@ namespace Bitfinex.Net
         #endregion
 
         #region public methods
+        /// <summary>
+        /// Set the API key and secret
+        /// </summary>
+        /// <param name="apiKey">The api key</param>
+        /// <param name="apiSecret">The api secret</param>
+        /// <param name="nonceProvider">Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that</param>
+        public void SetApiCredentials(string apiKey, string apiSecret, INonceProvider? nonceProvider = null)
+        {
+            SetAuthenticationProvider(new BitfinexAuthenticationProvider(new ApiCredentials(apiKey, apiSecret), nonceProvider));
+        }
+
         /// <summary>
         /// set the default options used when creating a client without specifying options
         /// </summary>
@@ -599,7 +595,7 @@ namespace Bitfinex.Net
 
         private BitfinexAuthentication GetAuthObject(params string[] filter)
         {
-            var n = Nonce;
+            var n = ((BitfinexAuthenticationProvider)authProvider!).GetNonce().ToString();
             var authentication = new BitfinexAuthentication
             {
                 Event = "auth",

@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using Newtonsoft.Json;
 
@@ -14,14 +15,18 @@ namespace Bitfinex.Net
 {
     internal class BitfinexAuthenticationProvider: AuthenticationProvider
     {
+        private INonceProvider _nonceProvider;
         private readonly HMACSHA384 encryptor;
         private readonly object locker;
 
-        public BitfinexAuthenticationProvider(ApiCredentials credentials) : base(credentials)
+        public long GetNonce() => _nonceProvider.GetNonce();
+
+        public BitfinexAuthenticationProvider(ApiCredentials credentials, INonceProvider? nonceProvider) : base(credentials)
         {
             if (credentials.Secret == null)
                 throw new ArgumentException("ApiKey/Secret needed");
 
+            _nonceProvider = nonceProvider ?? new DefaultNonceProvider((long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000));
             locker = new object();
             encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(credentials.Secret.GetString()));
         }
@@ -49,7 +54,7 @@ namespace Bitfinex.Net
             else if (uri.Contains("v2"))
             {
                 var json = JsonConvert.SerializeObject(parameters.OrderBy(p => p.Key).ToDictionary(p => p.Key, p => p.Value));
-                var n = BitfinexSocketClient.Nonce;
+                var n = _nonceProvider.GetNonce().ToString();
                 var signature = $"/api{uri.Split(new[] { ".com" }, StringSplitOptions.None)[1]}{n}{json}";
                 var signedData = Sign(signature);
 
@@ -69,7 +74,7 @@ namespace Bitfinex.Net
             if (uri.Contains("v1"))
             {
                 parameters.Add("request", uri.Split(new[] { ".com" }, StringSplitOptions.None)[1]);
-                parameters.Add("nonce", BitfinexSocketClient.Nonce);
+                parameters.Add("nonce", _nonceProvider.GetNonce().ToString());
             }
             else if (uri.Contains("v2"))
             {

@@ -19,7 +19,8 @@ namespace Bitfinex.Net.Interfaces
         /// </summary>
         /// <param name="apiKey">The api key</param>
         /// <param name="apiSecret">The api secret</param>
-        void SetApiCredentials(string apiKey, string apiSecret);
+        /// <param name="nonceProvider">Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that</param>
+        void SetApiCredentials(string apiKey, string apiSecret, INonceProvider? nonceProvider = null);
 
         /// <summary>
         /// Gets the platform status

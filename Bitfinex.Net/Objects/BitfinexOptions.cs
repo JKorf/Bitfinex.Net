@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using Bitfinex.Net.Interfaces;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 
 namespace Bitfinex.Net.Objects
@@ -14,6 +15,11 @@ namespace Bitfinex.Net.Objects
         /// Default affiliate code to use when placing orders
         /// </summary>
         public string? AffiliateCode { get; set; } = "kCCe-CNBO";
+
+        /// <summary>
+        /// Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that
+        /// </summary>
+        public INonceProvider? NonceProvider { get; set; }
 
         /// <summary>
         /// Create new client options
@@ -49,6 +55,11 @@ namespace Bitfinex.Net.Objects
         /// Default affiliate code to use when placing orders
         /// </summary>
         public string? AffiliateCode { get; set; } = "kCCe-CNBO";
+
+        /// <summary>
+        /// Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that
+        /// </summary>
+        public INonceProvider? NonceProvider { get; set; }
 
         /// <summary>
         /// Create new socket options
