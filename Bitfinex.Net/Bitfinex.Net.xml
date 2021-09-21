@@ -2908,6 +2908,9 @@
             The transaction id
             </summary>
         </member>
+        <member name="M:Bitfinex.Net.Objects.BitfinexNonceProvider.GetNonce">
+            <inheritdoc />
+        </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexClientOptions">
             <summary>
             Options for the BitfinexClient

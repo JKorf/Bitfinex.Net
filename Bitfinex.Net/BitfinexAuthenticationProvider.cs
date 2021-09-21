@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using Bitfinex.Net.Objects;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
@@ -26,7 +27,7 @@ namespace Bitfinex.Net
             if (credentials.Secret == null)
                 throw new ArgumentException("ApiKey/Secret needed");
 
-            _nonceProvider = nonceProvider ?? new DefaultNonceProvider((long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000));
+            _nonceProvider = nonceProvider ?? new BitfinexNonceProvider();
             locker = new object();
             encryptor = new HMACSHA384(Encoding.UTF8.GetBytes(credentials.Secret.GetString()));
         }
