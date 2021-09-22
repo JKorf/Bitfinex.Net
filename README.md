@@ -90,6 +90,9 @@ For the basic client options see also the CryptoExchange.Net [docs](https://gith
 |`AffiliateCode`|The affiliate code to use for requests|kCCe-CNBO
 
 ## Release notes
+* Version 4.1.2 - 22 Sep 2021
+    * Fixed nonce provider when running multiple program instances
+
 * Version 4.1.1 - 21 Sep 2021
     * Fix for nonce provider not working correctly in combination with other exchanges
 
