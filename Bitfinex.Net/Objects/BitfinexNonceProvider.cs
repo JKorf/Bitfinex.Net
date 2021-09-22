@@ -13,10 +13,8 @@ namespace Bitfinex.Net.Objects
         {
             lock (nonceLock)
             {
-                long nonce;
-                if (lastNonce == null)
-                    nonce = (long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000);
-                else
+                var nonce = (long)Math.Round((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000);
+                if (lastNonce.HasValue && nonce <= lastNonce.Value)
                     nonce = lastNonce.Value + 1;
                 lastNonce = nonce;
                 return nonce;
