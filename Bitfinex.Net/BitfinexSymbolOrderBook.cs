@@ -22,7 +22,7 @@ namespace Bitfinex.Net
         private readonly IBitfinexSocketClient socketClient;
         private readonly Precision precision;
         private bool _initial = true;
-        private bool _socketOwner;
+        private readonly bool _socketOwner;
 
         /// <summary>
         /// Create a new order book instance

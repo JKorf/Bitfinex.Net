@@ -16,7 +16,7 @@ namespace Bitfinex.Net
 {
     internal class BitfinexAuthenticationProvider: AuthenticationProvider
     {
-        private INonceProvider _nonceProvider;
+        private readonly INonceProvider _nonceProvider;
         private readonly HMACSHA384 encryptor;
         private readonly object locker;
 

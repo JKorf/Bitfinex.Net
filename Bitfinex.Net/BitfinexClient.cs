@@ -948,7 +948,7 @@ namespace Bitfinex.Net
                 Data = orderData
             };
 
-            OnOrderPlaced?.Invoke(orderData);
+            OnOrderPlaced?.Invoke(orderData!);
             return result.As(output);
         }
         #endregion
@@ -1062,7 +1062,7 @@ namespace Bitfinex.Net
 
             var result = await SendRequestAsync<BitfinexWriteResult<BitfinexOrder>>(GetUrl(CancelOrderEndpoint, ApiVersion2), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
             if(result)
-                OnOrderCanceled?.Invoke(result.Data.Data);
+                OnOrderCanceled?.Invoke(result.Data.Data!);
             return result;
         }
 
@@ -1133,7 +1133,7 @@ namespace Bitfinex.Net
             };
             var result =  await SendRequestAsync<BitfinexTransferResult[]>(GetUrl(TransferEndpoint, ApiVersion1), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
             if (!result)
-                return result.As((BitfinexTransferResult)null);
+                return result.As((BitfinexTransferResult)null!);
             
             return result.As(result.Data.First());
         }
@@ -1334,6 +1334,7 @@ namespace Bitfinex.Net
         #endregion
 
         #region common interface
+#pragma warning disable 1066
         async Task<WebCallResult<IEnumerable<ICommonSymbol>>> IExchangeClient.GetSymbolsAsync()
         {
             var symbols = await GetSymbolDetailsAsync().ConfigureAwait(false);
@@ -1424,6 +1425,7 @@ namespace Bitfinex.Net
             var result = await GetBalancesAsync().ConfigureAwait(false);
             return result.As<IEnumerable<ICommonBalance>>(result.Data.Where(d => d.Type == WalletType.Exchange));
         }
+#pragma warning restore 1066
 
         /// <summary>
         /// Get the name of a symbol for Bitfinex based on the base and quote asset
@@ -1455,7 +1457,7 @@ namespace Bitfinex.Net
             }
 
             var error = data.ToObject<BitfinexError>();
-            return new ServerError(error.ErrorCode, error.ErrorMessage);
+            return new ServerError(error!.ErrorCode, error.ErrorMessage);
 
         }
 

@@ -20,7 +20,7 @@ namespace Bitfinex.Net.Converters
         
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            writer.WriteValue(value.ToString().ToUpper(CultureInfo.InvariantCulture));
+            writer.WriteValue(value?.ToString().ToUpper(CultureInfo.InvariantCulture));
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)

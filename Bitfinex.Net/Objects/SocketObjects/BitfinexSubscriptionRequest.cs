@@ -38,13 +38,13 @@ namespace Bitfinex.Net.Objects.SocketObjects
 
         public virtual bool CheckResponse(JToken responseMessage)
         {
-            if (responseMessage["channel"] == null || (string) responseMessage["channel"] != Channel)
+            if (responseMessage["channel"] == null || responseMessage["channel"]!.ToString() != Channel)
                 return false;
 
             if (responseMessage["symbol"] == null)
                 return false;
 
-            var symbol = ((string) responseMessage["symbol"]).ToLower(CultureInfo.InvariantCulture);
+            var symbol = responseMessage["symbol"]!.ToString().ToLower(CultureInfo.InvariantCulture);
             if (symbol != Symbol.ToLower(CultureInfo.InvariantCulture))
             {
                 if (symbol.StartsWith("t"))
@@ -81,10 +81,10 @@ namespace Bitfinex.Net.Objects.SocketObjects
             if (!base.CheckResponse(responseMessage))
                 return false;
 
-            if (responseMessage["prec"] == null || ((string)responseMessage["prec"]) != Precision)
+            if (responseMessage["prec"] == null || (responseMessage["prec"]!.ToString()) != Precision)
                 return false;
 
-            if (responseMessage["len"] == null || (int)responseMessage["len"] != Length)
+            if (responseMessage["len"] == null || responseMessage["len"]!.Value<int>() != Length)
                 return false;
 
             return true;
@@ -106,7 +106,7 @@ namespace Bitfinex.Net.Objects.SocketObjects
             if (!base.CheckResponse(responseMessage))
                 return false;
 
-            if (responseMessage["freq"] == null || (string)responseMessage["freq"] != Frequency)
+            if (responseMessage["freq"] == null || responseMessage["freq"]!.ToString() != Frequency)
                 return false;
 
             return true;
@@ -125,10 +125,10 @@ namespace Bitfinex.Net.Objects.SocketObjects
 
         public override bool CheckResponse(JToken responseMessage)
         {
-            if (responseMessage["channel"] == null || (string)responseMessage["channel"] != Channel)
+            if (responseMessage["channel"] == null || responseMessage["channel"]!.ToString() != Channel)
                 return false;
 
-            if (responseMessage["key"] == null || (string)responseMessage["key"] != Key)
+            if (responseMessage["key"] == null || responseMessage["key"]!.ToString() != Key)
                 return false;
 
             return true;
