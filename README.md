@@ -90,6 +90,10 @@ For the basic client options see also the CryptoExchange.Net [docs](https://gith
 |`AffiliateCode`|The affiliate code to use for requests|kCCe-CNBO
 
 ## Release notes
+* Version 4.2.0 - 29 Sep 2021
+    * Split GetTickerAsync in GetTickerAsync and GetTickersAsync, changed `params` to `IEnumerable`
+    * Updated CryptoExchange.Net
+
 * Version 4.1.2 - 22 Sep 2021
     * Fixed nonce provider when running multiple program instances
 
