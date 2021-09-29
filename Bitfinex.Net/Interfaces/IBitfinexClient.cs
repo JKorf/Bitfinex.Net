@@ -39,10 +39,18 @@ namespace Bitfinex.Net.Interfaces
         /// <summary>
         /// Returns basic market data for the provided symbols
         /// </summary>
+        /// <param name="symbol">The symbol to get data for</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>Symbol data</returns>
+        Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickerAsync(string symbol, CancellationToken ct = default);
+
+        /// <summary>
+        /// Returns basic market data for the provided symbols
+        /// </summary>
         /// <param name="symbols">The symbols to get data for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Symbol data</returns>
-        Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickerAsync(CancellationToken ct = default, params string[] symbols);
+        Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get recent trades for a symbol

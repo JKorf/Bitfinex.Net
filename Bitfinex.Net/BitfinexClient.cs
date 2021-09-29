@@ -187,14 +187,23 @@ namespace Bitfinex.Net
         /// <summary>
         /// Returns basic market data for the provided symbols
         /// </summary>
+        /// <param name="symbol">The symbol to get data for</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>Symbol data</returns>
+        public Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickerAsync(string symbol, CancellationToken ct = default)
+            => GetTickersAsync(new[] { symbol }, ct);
+
+        /// <summary>
+        /// Returns basic market data for the provided symbols
+        /// </summary>
         /// <param name="symbols">The symbols to get data for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Symbol data</returns>
-        public async Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickerAsync(CancellationToken ct = default, params string[] symbols)
+        public async Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>
             {
-                {"symbols", symbols.Any() ? string.Join(",", symbols): "ALL"}
+                {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
 
             return await SendRequestAsync<IEnumerable<BitfinexSymbolOverview>>(GetUrl(TickersEndpoint, ApiVersion2), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
@@ -1343,13 +1352,13 @@ namespace Bitfinex.Net
 
         async Task<WebCallResult<ICommonTicker>> IExchangeClient.GetTickerAsync(string symbol)
         {
-            var tickersResult = await GetTickerAsync(default, symbol).ConfigureAwait(false);
+            var tickersResult = await GetTickerAsync(symbol).ConfigureAwait(false);
             return tickersResult.As<ICommonTicker>(tickersResult.Data?.FirstOrDefault());
         }
 
         async Task<WebCallResult<IEnumerable<ICommonTicker>>> IExchangeClient.GetTickersAsync()
         {
-            var tickersResult = await GetTickerAsync().ConfigureAwait(false);
+            var tickersResult = await GetTickersAsync().ConfigureAwait(false);
             return tickersResult.As<IEnumerable<ICommonTicker>>(tickersResult.Data);
         }
 

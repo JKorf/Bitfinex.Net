@@ -60,7 +60,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient(expected);
 
             // act
-            var result = await client.GetTickerAsync(default, "Test");
+            var result = await client.GetTickersAsync(new[] { "Test" }, default);
 
             // assert
             Assert.AreEqual(true, result.Success);

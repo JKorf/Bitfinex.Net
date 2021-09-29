@@ -38,6 +38,7 @@ namespace Binance.Net.UnitTests.TestImplementations
         public TimeSpan OpenTime { get; set; }
         public int? RatelimitPerSecond { get; set; }
 
+        public double IncomingKbps => 0;
         public async Task<bool> ConnectAsync()
         {
             await Task.Delay(OpenTime);
