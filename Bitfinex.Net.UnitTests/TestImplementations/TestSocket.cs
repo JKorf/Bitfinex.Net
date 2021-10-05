@@ -13,10 +13,12 @@ namespace Binance.Net.UnitTests.TestImplementations
         public bool CanConnect { get; set; }
         public bool Connected { get; set; }
 
+#pragma warning disable 8618
         public event Action OnClose;
         public event Action<string> OnMessage;
         public event Action<Exception> OnError;
         public event Action OnOpen;
+#pragma warning restore 8618
 
         public int Id { get; }
         public bool ShouldReconnect { get; set; }
@@ -95,6 +97,11 @@ namespace Binance.Net.UnitTests.TestImplementations
         public void InvokeMessage<T>(T data)
         {
             OnMessage?.Invoke(JsonConvert.SerializeObject(data));
+        }
+
+        public void InvokeError(Exception error)
+        {
+            OnError?.Invoke(error);
         }
     }
 }
