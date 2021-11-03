@@ -92,6 +92,9 @@ For the basic client options see also the CryptoExchange.Net [docs](https://gith
 |`AffiliateCode`|The affiliate code to use for requests|kCCe-CNBO
 
 ## Release notes
+* Version 4.2.4 - 03 Nov 2021
+    * Fixed raw order book stream not accounting for checksum updates
+
 * Version 4.2.3 - 08 Oct 2021
     * Updated CryptoExchange.Net to fix some socket issues
 
