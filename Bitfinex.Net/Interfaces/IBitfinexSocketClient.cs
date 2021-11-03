@@ -48,8 +48,9 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="limit">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
+        /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToRawBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookEntry>>> handler);
+        Task<CallResult<UpdateSubscription>> SubscribeToRawBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null);
 
         /// <summary>
         /// Subscribes to public trade updates for a symbol

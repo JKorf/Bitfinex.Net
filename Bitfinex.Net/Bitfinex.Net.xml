@@ -693,13 +693,14 @@
             <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToRawBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexRawOrderBookEntry}}})">
+        <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToRawBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexRawOrderBookEntry}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Int32}})">
             <summary>
             Subscribes to raw order book updates for a symbol
             </summary>
             <param name="symbol">The symbol to subscribe to</param>
             <param name="limit">The range for the order book updates</param>
             <param name="handler">The handler for the data</param>
+            <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
             <returns></returns>
         </member>
         <member name="M:Bitfinex.Net.BitfinexSocketClient.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexTradeSimple}}})">
@@ -1479,13 +1480,14 @@
             <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToRawBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexRawOrderBookEntry}}})">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToRawBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexRawOrderBookEntry}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Int32}})">
             <summary>
             Subscribes to raw order book updates for a symbol
             </summary>
             <param name="symbol">The symbol to subscribe to</param>
             <param name="limit">The range for the order book updates</param>
             <param name="handler">The handler for the data</param>
+            <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
             <returns></returns>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexSocketClient.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.BitfinexTradeSimple}}})">

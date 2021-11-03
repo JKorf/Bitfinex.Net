@@ -155,17 +155,26 @@ namespace Bitfinex.Net
         /// <param name="symbol">The symbol to subscribe to</param>
         /// <param name="limit">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
+        /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToRawBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookEntry>>> handler)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToRawBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null)
         {
             symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<DataEvent<JToken>>(data =>
             {
-                var dataArray = (JArray)data.Data[1]!;
-                if (dataArray[0].Type == JTokenType.Array)
-                    HandleData("Raw book snapshot", dataArray, symbol, data, handler);
+                if (data.Data[1]?.ToString() == "cs")
+                {
+                    // Process
+                    checksumHandler?.Invoke(data.As(data.Data[2]!.Value<int>(), symbol));
+                }
                 else
-                    HandleSingleToArrayData("Raw book update", dataArray, symbol, data, handler);
+                {
+                    var dataArray = (JArray)data.Data[1]!;
+                    if (dataArray[0].Type == JTokenType.Array)
+                        HandleData("Raw book snapshot", dataArray, symbol, data, handler);
+                    else
+                        HandleSingleToArrayData("Raw book update", dataArray, symbol, data, handler);
+                }
             });
             return await SubscribeAsync(new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), null, false, internalHandler).ConfigureAwait(false);
         }
