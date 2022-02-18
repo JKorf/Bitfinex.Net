@@ -1,4 +1,4 @@
-﻿using Bitfinex.Net.Objects;
+﻿using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
 using System.Collections.Generic;
 

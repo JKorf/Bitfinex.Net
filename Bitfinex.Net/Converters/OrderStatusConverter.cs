@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using Bitfinex.Net.Objects;
+using Bitfinex.Net.Enums;
 using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Converters
@@ -49,7 +49,7 @@ namespace Bitfinex.Net.Converters
             if (TryParseSubstring(split[0], out result))
                 return result;
 
-            Debug.WriteLine($"Couldn't deserialize order status: {status}");
+            Trace.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss:fff} | Warning | Couldn't deserialize order status: {status}");
             return OrderStatus.Unknown;
         }
 

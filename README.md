@@ -5,8 +5,7 @@ Bitfinex.Net is a wrapper around the Bitfinex API as described on [Bitfinex](htt
 
 **If you think something is broken, something is missing or have any questions, please open an [Issue](https://github.com/JKorf/Bitfinex.Net/issues)**
 
-## CryptoExchange.Net
-This library is build upon the CryptoExchange.Net library, make sure to check out the documentation on that for basic usage: [docs](https://github.com/JKorf/CryptoExchange.Net)
+[Documentation](https://jkorf.github.io/Bitfinex.Net/)
 
 ## Donate / Sponsor
 I develop and maintain this package on my own for free in my spare time. Donations are greatly appreciated. If you prefer to donate any other currency please contact me.
@@ -20,78 +19,22 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 ## Discord
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
-## Getting started
-Make sure you have installed the Bitfinex.Net [Nuget](https://www.nuget.org/packages/Bitfinex.Net/) package and add `using Bitfinex.Net` to your usings.  You now have access to 2 clients:  
-**BitfinexClient**  
-The client to interact with the Bitfinex REST API. Getting prices:
-````C#
-var client = new BitfinexClient(new BitfinexClientOptions(){
- // Specify options for the client
-});
-var callResult = await client.GetTickerAsync();
-// Make sure to check if the call was successful
-if(!callResult.Success)
-{
-  // Call failed, check callResult.Error for more info
-}
-else
-{
-  // Call succeeded, callResult.Data will have the resulting data
-}
-````
-
-Placing an order:
-````C#
-var client = new BitfinexClient(new BitfinexClientOptions(){
- // Specify options for the client
- ApiCredentials = new ApiCredentials("Key", "Secret")
-});
-var callResult = await client.PlaceOrderAsync("BTCUSDT", OrderSide.Buy, OrderType.Limit, 50, 10);
-// Make sure to check if the call was successful
-if(!callResult.Success)
-{
-  // Call failed, check callResult.Error for more info
-}
-else
-{
-  // Call succeeded, callResult.Data will have the resulting data
-}
-````
-
-**BitfinexSocketClient**  
-The client to interact with the Bitfinex websocket API. Basic usage:
-````C#
-var client = new BitfinexSocketClient(new BitfinexSocketClientOptions()
-{
-  // Specify options for the client
-});
-var subscribeResult = client.SubscribeToTickerUpdatesAsync("tETHBTC", data => {
-  // Handle data when it is received
-});
-// Make sure to check if the subscritpion was successful
-if(!subscribeResult.Success)
-{
-  // Subscription failed, check callResult.Error for more info
-}
-else
-{
-  // Subscription succeeded, the handler will start receiving data when it is available
-}
-````
-
-## Client options
-For the basic client options see also the CryptoExchange.Net [docs](https://github.com/JKorf/CryptoExchange.Net#client-options). The here listed options are the options specific for Bitfinex.Net.
-**BitfinexClientOptions**
-| Property | Description | Default |
-| ----------- | ----------- | ---------|
-|`AffiliateCode`|The affiliate code to use for requests|kCCe-CNBO
-
-**BitfinexSocketClientOptions**  
-| Property | Description | Default |
-| ----------- | ----------- | ---------|
-|`AffiliateCode`|The affiliate code to use for requests|kCCe-CNBO
-
 ## Release notes
+* Version 5.0.0 - 18 Feb 2022
+    * Added Github.io page for documentation: https://jkorf.github.io/Bitfinex.Net/
+    * Added unit tests for parsing the returned JSON for each endpoint and subscription
+    * Added AddBitfinex extension method on IServiceCollection for easy dependency injection
+    * Added URL reference to API endpoint documentation for each endpoint
+    
+	* Refactored client structure to be consistent across exchange implementations
+    * Renamed various properties to be consistent across exchange implementations
+
+    * Cleaned up project structure
+    * Fixed various models
+
+    * Updated CryptoExchange.Net, see https://github.com/JKorf/CryptoExchange.Net#release-notes
+    * See https://jkorf.github.io/Bitfinex.Net/MigrationGuide.html for additional notes for updating from V4 to V5
+
 * Version 4.2.4 - 03 Nov 2021
     * Fixed raw order book stream not accounting for checksum updates
 

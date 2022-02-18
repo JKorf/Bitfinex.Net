@@ -1,0 +1,23 @@
+{
+  id: 1231813572,
+  cid: 43529705395,
+  cid_date: '2021-05-18',
+  gid: null,
+  symbol: 'ethusd',
+  exchange: 'bitfinex',
+  price: '400.0',
+  avg_execution_price: '0.0',
+  side: 'buy',
+  type: 'limit',
+  timestamp: '1621339530.0',
+  is_live: true,
+  is_cancelled: false,
+  is_hidden: false,
+  oco_order: null,
+  was_forced: false,
+  original_amount: '0.1',
+  remaining_amount: '0.1',
+  executed_amount: '0.0',
+  src: 'api',
+  meta: null
+}

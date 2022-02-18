@@ -1,5 +1,5 @@
 ﻿using System;
-using Bitfinex.Net.Objects.SocketObjects;
+using Bitfinex.Net.Objects.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

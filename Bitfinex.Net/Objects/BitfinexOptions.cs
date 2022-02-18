@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Net.Http;
-using Bitfinex.Net.Interfaces;
+using Bitfinex.Net.Enums;
+using Bitfinex.Net.Interfaces.Clients;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 
@@ -9,8 +9,13 @@ namespace Bitfinex.Net.Objects
     /// <summary>
     /// Options for the BitfinexClient
     /// </summary>
-    public class BitfinexClientOptions : RestClientOptions
+    public class BitfinexClientOptions : BaseRestClientOptions
     {
+        /// <summary>
+        /// Default options for the client
+        /// </summary>
+        public static BitfinexClientOptions Default { get; set; } = new BitfinexClientOptions();
+            
         /// <summary>
         /// Default affiliate code to use when placing orders
         /// </summary>
@@ -21,36 +26,58 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         public INonceProvider? NonceProvider { get; set; }
 
+        private readonly RestApiClientOptions _spotApiOptions = new RestApiClientOptions(BitfinexApiAddresses.Default.RestClientAddress);
         /// <summary>
-        /// Create new client options
+        /// Options for the spot API
         /// </summary>
-        public BitfinexClientOptions(): base("https://api.bitfinex.com")
+        public RestApiClientOptions SpotApiOptions
         {
+            get => _spotApiOptions;
+            set => _spotApiOptions.Copy(_spotApiOptions, value);
         }
 
         /// <summary>
-        /// Create new client options
+        /// Ctor
         /// </summary>
-        /// <param name="client">HttpClient to use for requests from this client</param>
-        public BitfinexClientOptions(HttpClient client) : base(client, "https://api.bitfinex.com")
+        public BitfinexClientOptions()
         {
+            if (Default == null)
+                return;
+
+            Copy(this, Default);
         }
 
         /// <summary>
-        /// Create new client options
+        /// Copy the values of the def to the input
         /// </summary>
-        /// <param name="apiAddress">Custom API address to use</param>
-        /// <param name="client">HttpClient to use for requests from this client</param>
-        public BitfinexClientOptions(HttpClient client, string apiAddress) : base(client, apiAddress)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="input"></param>
+        /// <param name="def"></param>
+        public new void Copy<T>(T input, T def) where T : BitfinexClientOptions
         {
+            base.Copy(input, def);
+
+            input.AffiliateCode = def.AffiliateCode;
+            input.NonceProvider = def.NonceProvider;
+
+            input.SpotApiOptions = new RestApiClientOptions(def.SpotApiOptions);
         }
     }
 
     /// <summary>
     /// Options for the BitfinexSocketClient
     /// </summary>
-    public class BitfinexSocketClientOptions: SocketClientOptions
+    public class BitfinexSocketClientOptions: BaseSocketClientOptions
     {
+        /// <summary>
+        /// Default options for the client
+        /// </summary>
+        public static BitfinexSocketClientOptions Default { get; set; } = new BitfinexSocketClientOptions()
+        {
+            SocketSubscriptionsCombineTarget = 10,
+            SocketNoDataTimeout = TimeSpan.FromSeconds(30)
+        };
+
         /// <summary>
         /// Default affiliate code to use when placing orders
         /// </summary>
@@ -61,13 +88,42 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         public INonceProvider? NonceProvider { get; set; }
 
+        
+        private readonly ApiClientOptions _spotStreamsOptions = new ApiClientOptions(BitfinexApiAddresses.Default.SocketClientAddress);
         /// <summary>
-        /// Create new socket options
+        /// Options for the spot streams
         /// </summary>
-        public BitfinexSocketClientOptions(): base("wss://api.bitfinex.com/ws/2")
+        public ApiClientOptions SpotStreamsOptions
         {
-            SocketSubscriptionsCombineTarget = 10;
-            SocketNoDataTimeout = TimeSpan.FromSeconds(30);
+            get => _spotStreamsOptions;
+            set => _spotStreamsOptions.Copy(_spotStreamsOptions, value);
+        }
+
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        public BitfinexSocketClientOptions()
+        {
+            if (Default == null)
+                return;
+
+            Copy(this, Default);
+        }
+
+        /// <summary>
+        /// Copy the values of the def to the input
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="input"></param>
+        /// <param name="def"></param>
+        public new void Copy<T>(T input, T def) where T : BitfinexSocketClientOptions
+        {
+            base.Copy(input, def);
+
+            input.AffiliateCode = def.AffiliateCode;
+            input.NonceProvider = def.NonceProvider;
+
+            input.SpotStreamsOptions = new ApiClientOptions(def.SpotStreamsOptions);
         }
     }
 
@@ -79,14 +135,14 @@ namespace Bitfinex.Net.Objects
         /// <summary>
         /// The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.
         /// </summary>
-        public IBitfinexSocketClient? SocketClient { get; }
-
+        public IBitfinexSocketClient? SocketClient { get; set; }
         /// <summary>
+        /// The precision level of the order book
         /// </summary>
-        /// <param name="client">The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.</param>
-        public BitfinexOrderBookOptions(IBitfinexSocketClient? client = null) : base("Bitfinex", false, true)
-        {
-            SocketClient = client;
-        }
+        public Precision? Precision { get; set; }
+        /// <summary>
+        /// The limit of entries in the order book, either 25 or 100
+        /// </summary>
+        public int? Limit { get; set; }
     }
 }

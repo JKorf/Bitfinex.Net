@@ -1,0 +1,4 @@
+[{
+  "status":"success",
+  "message":"1.0 USD transfered from Exchange to Deposit"
+}]

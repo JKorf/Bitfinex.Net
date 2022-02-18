@@ -1,0 +1,5 @@
+[
+  "btcusd",
+  "ltcusd",
+  "ltcbtc"
+]

@@ -1,0 +1,1 @@
+[1568713496510,"fon-req",null,null,[604366339,"fUSD",1568713496502,1568713496502,50,50,"LIMIT",null,null,null,"ACTIVE",null,null,null,0.00002,2,false,null,null,false,null],null,"SUCCESS","Submitting funding offer of 50.0 USD at 0.002000 for 2 days."]

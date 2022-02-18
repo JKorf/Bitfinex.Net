@@ -1,0 +1,1 @@
+[[2531822314,"USD",null,1573521810000,null,0.01644445,0,null,"Settlement @ 185.79 on wallet margin"],[2531822309,"ETH",null,1573521810000,null,-0.00008869,0.29934048,null,"Settlement @ 185.79 on wallet margin"]]

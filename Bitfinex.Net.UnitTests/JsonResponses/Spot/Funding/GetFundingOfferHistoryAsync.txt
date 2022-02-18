@@ -1,0 +1,1 @@
+[[653170899,"fUSD",1574072620000,1574072620000,0,-57.9,null,null,null,null,"EXECUTED at 0.0368% (57.9)",null,null,null,0.000369,2,0,0,null,null,null],[653169994,"fUSD",1574072512000,1574072512000,0,-57.9,null,null,null,null,"EXECUTED at 0.0368% (57.9)",null,null,null,0.000369,2,0,0,null,null,null]]

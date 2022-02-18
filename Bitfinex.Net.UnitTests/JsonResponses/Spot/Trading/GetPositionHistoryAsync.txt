@@ -1,0 +1,1 @@
+[["tBTCUSD","CLOSED",0,8639.50216298,0,0,null,null,null,null,null,142355652,1574002216000,1574003099000,null,null,null,null,null,null],["tBTCUSD","CLOSED",0,8474.92702755,0,0,null,null,null,null,null,142353530,1573913641000,1573914783000,null,null,null,null,null,null]]  

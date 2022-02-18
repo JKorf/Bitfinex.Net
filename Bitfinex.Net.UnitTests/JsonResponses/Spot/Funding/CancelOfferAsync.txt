@@ -1,0 +1,13 @@
+{
+  "id":13800585,
+  "currency":"USD",
+  "rate":"20.0",
+  "period":2,
+  "direction":"lend",
+  "timestamp":"1444279698.0",
+  "is_live":true,
+  "is_cancelled":false,
+  "original_amount":"50.0",
+  "remaining_amount":"50.0",
+  "executed_amount":"0.0"
+}

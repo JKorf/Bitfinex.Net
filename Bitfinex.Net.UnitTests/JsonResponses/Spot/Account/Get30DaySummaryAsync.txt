@@ -1,0 +1,16 @@
+{
+  "trade_vol_30d":[
+    {"curr":"BTC","vol":11.88696022},
+    {"curr":"LTC","vol":0.0},
+    {"curr":"ETH","vol":0.1},
+    {"curr":"Total (USD)","vol":5027.63}
+  ],
+  "funding_profit_30d":[
+    {"curr":"USD","amount":0.0},
+    {"curr":"BTC","amount":0.0},
+    {"curr":"LTC","amount":0.0},
+    {"curr":"ETH","amount":0.0}
+  ],
+  "maker_fee":0.001,
+  "taker_fee":0.002
+}

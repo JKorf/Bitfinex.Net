@@ -1,0 +1,1 @@
+[1568716652310,"foc-req",null,null,[604393839,"fUSD",1568716545000,1568716545000,50,50,"LIMIT",null,null,null,"ACTIVE",null,null,null,0.06,2,false,null,null,false,null],null,"SUCCESS",null]

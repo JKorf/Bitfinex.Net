@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Bitfinex.Net.Objects;
+using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Converters

@@ -1,0 +1,10 @@
+{
+  "id":11576737,
+  "position_id":944309,
+  "currency":"USD",
+  "rate":"9.8874",
+  "period":2,
+  "amount":"34.24603414",
+  "timestamp":"1444280948.0",
+  "auto_close":false
+}

@@ -1,0 +1,6 @@
+{
+  "result":"success",
+  "method":"bitcoin",
+  "currency":"BTC",
+  "address":"1A2wyHKJ4KWEoahDHVxwQy3kdd6g1qiSYV"
+}

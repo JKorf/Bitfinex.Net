@@ -1,0 +1,1 @@
+[1567590617.442,"on-req",null,null,[[30630788061,null,1567590617439,"tBTCUSD",1567590617439,1567590617439,0.001,0.001,"LIMIT",null,null,null,0,"ACTIVE",null,null,15,0,0,0,null,null,null,0,null,null,null,null,"API>BFX",null,null,null]],null,"SUCCESS","Submitting 1 orders."]
