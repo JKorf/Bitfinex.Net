@@ -2084,16 +2084,14 @@
         </member>
         <member name="M:Bitfinex.Net.Objects.BitfinexClientOptions.#ctor">
             <summary>
-            Ctor
+            ctor
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Objects.BitfinexClientOptions.Copy``1(``0,``0)">
+        <member name="M:Bitfinex.Net.Objects.BitfinexClientOptions.#ctor(Bitfinex.Net.Objects.BitfinexClientOptions)">
             <summary>
-            Copy the values of the def to the input
+            ctor
             </summary>
-            <typeparam name="T"></typeparam>
-            <param name="input"></param>
-            <param name="def"></param>
+            <param name="baseOn">Base the new options on other options</param>
         </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexSocketClientOptions">
             <summary>
@@ -2122,16 +2120,14 @@
         </member>
         <member name="M:Bitfinex.Net.Objects.BitfinexSocketClientOptions.#ctor">
             <summary>
-            Ctor
+            ctor
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Objects.BitfinexSocketClientOptions.Copy``1(``0,``0)">
+        <member name="M:Bitfinex.Net.Objects.BitfinexSocketClientOptions.#ctor(Bitfinex.Net.Objects.BitfinexSocketClientOptions)">
             <summary>
-            Copy the values of the def to the input
+            ctor
             </summary>
-            <typeparam name="T"></typeparam>
-            <param name="input"></param>
-            <param name="def"></param>
+            <param name="baseOn">Base the new options on other options</param>
         </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexOrderBookOptions">
             <summary>
@@ -4116,7 +4112,7 @@
         <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook.DoResyncAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook.Dispose">
+        <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook.Dispose(System.Boolean)">
             <summary>
             Dispose
             </summary>

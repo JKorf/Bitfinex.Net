@@ -26,41 +26,36 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         public INonceProvider? NonceProvider { get; set; }
 
-        private readonly RestApiClientOptions _spotApiOptions = new RestApiClientOptions(BitfinexApiAddresses.Default.RestClientAddress);
+        private RestApiClientOptions _spotApiOptions = new RestApiClientOptions(BitfinexApiAddresses.Default.RestClientAddress);
         /// <summary>
         /// Options for the spot API
         /// </summary>
         public RestApiClientOptions SpotApiOptions
         {
             get => _spotApiOptions;
-            set => _spotApiOptions.Copy(_spotApiOptions, value);
+            set => _spotApiOptions = new RestApiClientOptions(_spotApiOptions, value);
         }
 
         /// <summary>
-        /// Ctor
+        /// ctor
         /// </summary>
-        public BitfinexClientOptions()
+        public BitfinexClientOptions() : this(Default)
         {
-            if (Default == null)
+        }
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="baseOn">Base the new options on other options</param>
+        internal BitfinexClientOptions(BitfinexClientOptions baseOn) : base(baseOn)
+        {
+            if (baseOn == null)
                 return;
 
-            Copy(this, Default);
-        }
+            AffiliateCode = baseOn.AffiliateCode;
+            NonceProvider = baseOn.NonceProvider;
 
-        /// <summary>
-        /// Copy the values of the def to the input
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="input"></param>
-        /// <param name="def"></param>
-        public new void Copy<T>(T input, T def) where T : BitfinexClientOptions
-        {
-            base.Copy(input, def);
-
-            input.AffiliateCode = def.AffiliateCode;
-            input.NonceProvider = def.NonceProvider;
-
-            input.SpotApiOptions = new RestApiClientOptions(def.SpotApiOptions);
+            _spotApiOptions = new RestApiClientOptions(baseOn.SpotApiOptions, null);
         }
     }
 
@@ -89,41 +84,36 @@ namespace Bitfinex.Net.Objects
         public INonceProvider? NonceProvider { get; set; }
 
         
-        private readonly ApiClientOptions _spotStreamsOptions = new ApiClientOptions(BitfinexApiAddresses.Default.SocketClientAddress);
+        private ApiClientOptions _spotStreamsOptions = new ApiClientOptions(BitfinexApiAddresses.Default.SocketClientAddress);
         /// <summary>
         /// Options for the spot streams
         /// </summary>
         public ApiClientOptions SpotStreamsOptions
         {
             get => _spotStreamsOptions;
-            set => _spotStreamsOptions.Copy(_spotStreamsOptions, value);
+            set => _spotStreamsOptions = new ApiClientOptions(_spotStreamsOptions, value);
         }
 
         /// <summary>
-        /// Ctor
+        /// ctor
         /// </summary>
-        public BitfinexSocketClientOptions()
+        public BitfinexSocketClientOptions() : this(Default)
         {
-            if (Default == null)
+        }
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="baseOn">Base the new options on other options</param>
+        internal BitfinexSocketClientOptions(BitfinexSocketClientOptions baseOn) : base(baseOn)
+        {
+            if (baseOn == null)
                 return;
 
-            Copy(this, Default);
-        }
+            AffiliateCode = baseOn.AffiliateCode;
+            NonceProvider = baseOn.NonceProvider;
 
-        /// <summary>
-        /// Copy the values of the def to the input
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="input"></param>
-        /// <param name="def"></param>
-        public new void Copy<T>(T input, T def) where T : BitfinexSocketClientOptions
-        {
-            base.Copy(input, def);
-
-            input.AffiliateCode = def.AffiliateCode;
-            input.NonceProvider = def.NonceProvider;
-
-            input.SpotStreamsOptions = new ApiClientOptions(def.SpotStreamsOptions);
+            _spotStreamsOptions = new ApiClientOptions(baseOn.SpotStreamsOptions, null);
         }
     }
 

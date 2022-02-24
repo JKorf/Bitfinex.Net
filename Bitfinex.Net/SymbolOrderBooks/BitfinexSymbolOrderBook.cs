@@ -183,14 +183,12 @@ namespace Bitfinex.Net.SymbolOrderBooks
         /// <summary>
         /// Dispose
         /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            processBuffer.Clear();
-            asks.Clear();
-            bids.Clear();
-
             if(_socketOwner)
                 socketClient?.Dispose();
+
+            base.Dispose(disposing);
         }
     }
 }

@@ -70,7 +70,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
 
         /// <inheritdoc />
         protected override TimeSyncInfo GetTimeSyncInfo()
-            => new TimeSyncInfo(_log, _options.SpotApiOptions.AutoTimestamp, BitfinexClientSpotApi.TimeSyncState);
+            => new TimeSyncInfo(_log, _options.SpotApiOptions.AutoTimestamp, _options.SpotApiOptions.TimestampRecalculationInterval, BitfinexClientSpotApi.TimeSyncState);
 
         /// <inheritdoc />
         public override TimeSpan GetTimeOffset()
