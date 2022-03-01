@@ -35,7 +35,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         internal static SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
         internal static DateTime LastTimeSync;
 
-        internal static TimeSyncState TimeSyncState = new TimeSyncState();
+        internal static TimeSyncState TimeSyncState = new TimeSyncState("Api");
         #endregion
 
         /// <inheritdoc />
