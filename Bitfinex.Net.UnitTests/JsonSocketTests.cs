@@ -18,41 +18,41 @@ namespace Bitfinex.Net.UnitTests
         [Test]
         public async Task ValidateTickerUpdateStreamJson()
         {
-            await TestFileToObject<BitfinexStreamSymbolOverview>(@"JsonResponses\Spot\Socket\TickerUpdate.txt");
+            await TestFileToObject<BitfinexStreamSymbolOverview>(@"JsonResponses/Spot/Socket/TickerUpdate.txt");
         }
 
         [Test]
         public async Task ValidateTradeUpdateStreamJson()
         {
-            await TestFileToObject<BitfinexTradeSimple>(@"JsonResponses\Spot\Socket\TradeUpdate.txt");
+            await TestFileToObject<BitfinexTradeSimple>(@"JsonResponses/Spot/Socket/TradeUpdate.txt");
         }
 
         [Test]
         public async Task ValidateKlineUpdateStreamJson()
         {
-            await TestFileToObject<BitfinexKline>(@"JsonResponses\Spot\Socket\KlineUpdate.txt");
+            await TestFileToObject<BitfinexKline>(@"JsonResponses/Spot/Socket/KlineUpdate.txt");
         }
 
         [Test]
         public async Task ValidatUserTradeUpdateStreamJson()
         {
-            await TestFileToObject<BitfinexOrder>(@"JsonResponses\Spot\Socket\UserTradeUpdate1.txt");
-            await TestFileToObject<BitfinexTradeDetails>(@"JsonResponses\Spot\Socket\UserTradeUpdate2.txt");
-            await TestFileToObject<BitfinexPosition>(@"JsonResponses\Spot\Socket\UserTradeUpdate3.txt");
+            await TestFileToObject<BitfinexOrder>(@"JsonResponses/Spot/Socket/UserTradeUpdate1.txt");
+            await TestFileToObject<BitfinexTradeDetails>(@"JsonResponses/Spot/Socket/UserTradeUpdate2.txt");
+            await TestFileToObject<BitfinexPosition>(@"JsonResponses/Spot/Socket/UserTradeUpdate3.txt");
         }
 
         [Test]
         public async Task ValidatUserBalanceUpdateStreamJson()
         {
-            await TestFileToObject<BitfinexWallet>(@"JsonResponses\Spot\Socket\BalanceUpdate.txt");
+            await TestFileToObject<BitfinexWallet>(@"JsonResponses/Spot/Socket/BalanceUpdate.txt");
         }
 
         [Test]
         public async Task ValidatFundingUpdateStreamJson()
         {
-            await TestFileToObject<BitfinexFundingOffer>(@"JsonResponses\Spot\Socket\FundingUpdate1.txt");
-            await TestFileToObject<BitfinexFundingCredit>(@"JsonResponses\Spot\Socket\FundingUpdate2.txt");
-            await TestFileToObject<BitfinexFunding>(@"JsonResponses\Spot\Socket\FundingUpdate3.txt");
+            await TestFileToObject<BitfinexFundingOffer>(@"JsonResponses/Spot/Socket/FundingUpdate1.txt");
+            await TestFileToObject<BitfinexFundingCredit>(@"JsonResponses/Spot/Socket/FundingUpdate2.txt");
+            await TestFileToObject<BitfinexFunding>(@"JsonResponses/Spot/Socket/FundingUpdate3.txt");
         }
 
         private static async Task TestFileToObject<T>(string filePath, List<string> ignoreProperties = null)

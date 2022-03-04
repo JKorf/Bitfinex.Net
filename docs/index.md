@@ -3,7 +3,7 @@ title: Home
 nav_order: 1
 ---
 
-![Build status](https://travis-ci.com/JKorf/Bitfinex.Net.svg?branch=master) ![Nuget version](https://img.shields.io/nuget/v/bitfinex.net.svg)  ![Nuget downloads](https://img.shields.io/nuget/dt/Bitfinex.Net.svg)
+[![.NET](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml/badge.svg)] (https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml) ![Nuget version](https://img.shields.io/nuget/v/bitfinex.net.svg)  ![Nuget downloads](https://img.shields.io/nuget/dt/Bitfinex.Net.svg)
 
 This library is based on the CryptoExchange.Net base library. General usage/configuration information can be found in the [CryptoExchange.Net documentation](https://jkorf.github.io/CryptoExchange.Net)
 
