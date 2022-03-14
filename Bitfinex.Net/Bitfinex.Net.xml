@@ -160,6 +160,12 @@
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetFundingInfoAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.SubmitFundingAutoRenewAsync(System.String,System.Boolean,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetFundingAutoRenewStatusAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi">
             <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApi" />
         </member>
@@ -1324,6 +1330,24 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.SubmitFundingAutoRenewAsync(System.String,System.Boolean,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Activate or deactivate auto-renew. Allows you to specify the currency, amount, rate, and period.
+            </summary>
+            <param name="symbol">Currency for which to enable auto-renew</param>
+            <param name="status">1 to activate, 0 to deactivate.</param>
+            <param name="quantity">Amount to be auto-renewed (Minimum 50 USD equivalent).</param>
+            <param name="rate">Percentage rate at which to auto-renew. (rate == 0 to renew at FRR).</param>
+            <param name="period">Period in days.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetFundingAutoRenewStatusAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Status of auto-renew.
+            </summary>
+            <param name="symbol">Currency for which to enable auto-renew</param>
+            <returns></returns>
+        </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.IBitfinexClient">
             <summary>
             Client for accessing the Bitfinex API. 
@@ -2240,6 +2264,86 @@
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexForeignExchangeRate.CurrentRate">
             <summary>
             The current exchange rate
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew">
+            <summary>
+            Activate or deactivate auto-renew. Allows you to specify the currency, amount, rate, and period.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew.Timestamp">
+            <summary>
+            Millisecond Time Stamp of the update.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew.Type">
+            <summary>
+            Purpose of notification ('on-req', 'oc-req', 'uca', 'fon-req', 'foc-req', 'fa-req').
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew.Id">
+            <summary>
+            Unique ID of the message.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew.Symbol">
+            <summary>
+            Currency (USD, …)
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew.Period">
+            <summary>
+            Period in days.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew.Rate">
+            <summary>
+            The rate of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew.MaxQuantity">
+            <summary>
+            Max amount to be auto-renewed
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew.Code">
+            <summary>
+            Work in progress.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew.Status">
+            <summary>
+            Status of the notification; it may vary over time (SUCCESS, ERROR, FAILURE, ...).
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenew.Text">
+            <summary>
+            Text of the notification.
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenewStatus">
+            <summary>
+            Funding auto renew status
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenewStatus.Symbol">
+            <summary>
+            The symbol
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenewStatus.Period">
+            <summary>
+            The period of the offer in days
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenewStatus.Rate">
+            <summary>
+            The rate of the order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingAutoRenewStatus.Quantity">
+            <summary>
+            The quantity of the offer
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.Models.BitfinexFunding">

@@ -29,6 +29,8 @@ namespace Bitfinex.Net.Clients.GeneralApi
         private const string FundingOfferSubmitEndpoint = "auth/w/funding/offer/submit";
         private const string FundingOfferCancelEndpoint = "auth/w/funding/offer/cancel";
         private const string FundingInfoEndpoint = "auth/r/info/funding/{}";
+        private const string FundingAutoRenewEndpoint = "auth/w/funding/auto";
+        private const string FundingAutoRenewStatusEndpoint = "auth/r/funding/auto/status";
 
         private const string NewOfferEndpoint = "offer/new";
         private const string CancelOfferEndpoint = "offer/cancel";
@@ -76,6 +78,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
             };
 
             return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexFundingOffer>>(_baseClient.GetUrl(FundingOfferSubmitEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+
         }
 
         /// <inheritdoc />
@@ -186,11 +189,38 @@ namespace Bitfinex.Net.Clients.GeneralApi
             };
             return await _baseClient.SendRequestAsync<BitfinexFundingContract>(_baseClient.GetUrl(CloseMarginFundingEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
+
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexFundingInfo>> GetFundingInfoAsync(string symbol, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             return await _baseClient.SendRequestAsync<BitfinexFundingInfo>(_baseClient.GetUrl(FundingInfoEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BitfinexFundingAutoRenew>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "currency", asset },
+                { "status", JsonConvert.SerializeObject(status, new BoolToIntConverter(false, true)) },
+            };
+            parameters.AddOptionalParameter("amount", quantity?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("rate", rate?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("period", period?.ToString(CultureInfo.InvariantCulture));
+
+            return await _baseClient.SendRequestAsync<BitfinexFundingAutoRenew>(_baseClient.GetUrl(FundingAutoRenewEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BitfinexFundingAutoRenewStatus>> GetFundingAutoRenewStatusAsync(string asset, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "currency", asset },
+            };
+
+            return await _baseClient.SendRequestAsync<BitfinexFundingAutoRenewStatus>(_baseClient.GetUrl(FundingAutoRenewStatusEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
     }
 }

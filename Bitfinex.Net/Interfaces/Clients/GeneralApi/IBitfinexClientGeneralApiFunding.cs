@@ -159,5 +159,25 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<BitfinexFundingInfo>> GetFundingInfoAsync(string symbol, CancellationToken ct = default);
+
+        /// <summary>
+        /// Activate or deactivate auto-renew. Allows you to specify the currency, amount, rate, and period.
+        /// </summary>
+        /// <param name="asset">Currency for which to enable auto-renew</param>
+        /// <param name="status">1 to activate, 0 to deactivate.</param>
+        /// <param name="quantity">Amount to be auto-renewed (Minimum 50 USD equivalent).</param>
+        /// <param name="rate">Percentage rate at which to auto-renew. (rate == 0 to renew at FRR).</param>
+        /// <param name="period">Period in days.</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexFundingAutoRenew>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Status of auto-renew.
+        /// </summary>
+        /// <param name="asset">Currency for which to enable auto-renew</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexFundingAutoRenewStatus>> GetFundingAutoRenewStatusAsync(string asset, CancellationToken ct = default);
     }
 }
