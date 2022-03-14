@@ -198,29 +198,26 @@ namespace Bitfinex.Net.Clients.GeneralApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexFundingAutoRenew>> SubmitFundingAutoRenewAsync(string symbol, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexFundingAutoRenew>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>()
             {
-                { "currency", symbol },
+                { "currency", asset },
                 { "status", JsonConvert.SerializeObject(status, new BoolToIntConverter(false, true)) },
             };
-            if (quantity.HasValue)
-                parameters.Add("amount", quantity.Value.ToString(CultureInfo.InvariantCulture));
-            if (rate.HasValue)
-                parameters.Add("rate", rate.Value.ToString(CultureInfo.InvariantCulture));
-            if (period.HasValue)
-                parameters.Add("period", period.Value.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("amount", quantity?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("rate", rate?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("period", period?.ToString(CultureInfo.InvariantCulture));
 
             return await _baseClient.SendRequestAsync<BitfinexFundingAutoRenew>(_baseClient.GetUrl(FundingAutoRenewEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexFundingAutoRenewStatus>> GetFundingAutoRenewStatusAsync(string symbol, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexFundingAutoRenewStatus>> GetFundingAutoRenewStatusAsync(string asset, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>()
             {
-                { "currency", symbol },
+                { "currency", asset },
             };
 
             return await _baseClient.SendRequestAsync<BitfinexFundingAutoRenewStatus>(_baseClient.GetUrl(FundingAutoRenewStatusEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
