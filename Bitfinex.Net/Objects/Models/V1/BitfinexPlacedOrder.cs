@@ -26,7 +26,7 @@ namespace Bitfinex.Net.Objects.Models.V1
         /// <summary>
         /// The price of the order
         /// </summary>
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
         /// <summary>
         /// The average execution price (for market orders)
         /// </summary>
