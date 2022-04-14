@@ -181,7 +181,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             asset.ValidateNotNull(nameof(asset));
             var parameters = new Dictionary<string, object>
             {
-                { "asset", asset },
+                { "currency", asset },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) },
                 { "walletfrom", JsonConvert.SerializeObject(fromWallet, new WithdrawWalletConverter(false)) },
                 { "walletto", JsonConvert.SerializeObject(toWallet, new WithdrawWalletConverter(false)) },
