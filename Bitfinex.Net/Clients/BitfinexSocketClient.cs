@@ -82,7 +82,7 @@ namespace Bitfinex.Net.Clients
             if (!infoEvent)
                 return;
 
-            log.Write(LogLevel.Debug, $"Socket {messageEvent.Connection.Socket.Id} Info event received: {messageEvent.JsonData}");
+            log.Write(LogLevel.Debug, $"Socket {messageEvent.Connection.SocketId} Info event received: {messageEvent.JsonData}");
             if (messageEvent.JsonData["code"] == null)
             {
                 // welcome event, send a config message for receiving checsum updates for order book subscriptions
@@ -94,20 +94,20 @@ namespace Bitfinex.Net.Clients
             switch (code)
             {
                 case 20051:
-                    log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.Socket.Id} Code {code} received, reconnecting socket");
+                    log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, reconnecting socket");
                     messageEvent.Connection.PausedActivity = true; // Prevent new operations to be send
-                    messageEvent.Connection.Socket.CloseAsync();
+                    _ = messageEvent.Connection.TriggerReconnectAsync();
                     break;
                 case 20060:
-                    log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.Socket.Id} Code {code} received, entering maintenance mode");
+                    log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, entering maintenance mode");
                     messageEvent.Connection.PausedActivity = true;
                     break;
                 case 20061:
-                    log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.Socket.Id} Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
-                    messageEvent.Connection.Socket.CloseAsync(); // Closing it via socket will automatically reconnect
+                    log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
+                    _ = messageEvent.Connection.TriggerReconnectAsync(); // Closing it via socket will automatically reconnect
                     break;
                 default:
-                    log.Write(LogLevel.Warning, $"Socket {messageEvent.Connection.Socket.Id} Unknown info code received: {code}");
+                    log.Write(LogLevel.Warning, $"Socket {messageEvent.Connection.SocketId} Unknown info code received: {code}");
                     break;
             }
         }
@@ -191,7 +191,7 @@ namespace Bitfinex.Net.Clients
                 var authResponse = Deserialize<BitfinexAuthenticationResponse>(tokenData);
                 if (!authResponse)
                 {
-                    log.Write(LogLevel.Warning, $"Socket {s.Socket.Id} authentication failed: " + authResponse.Error);
+                    log.Write(LogLevel.Warning, $"Socket {s.SocketId} authentication failed: " + authResponse.Error);
                     result = new CallResult<bool>(authResponse.Error!);
                     return false;
                 }
@@ -200,11 +200,11 @@ namespace Bitfinex.Net.Clients
                 {
                     var error = new ServerError(authResponse.Data.ErrorCode, authResponse.Data.ErrorMessage ?? "-");
                     result = new CallResult<bool>(error);
-                    log.Write(LogLevel.Debug, $"Socket {s.Socket.Id} authentication failed: " + error);
+                    log.Write(LogLevel.Debug, $"Socket {s.SocketId} authentication failed: " + error);
                     return false;
                 }
 
-                log.Write(LogLevel.Debug, $"Socket {s.Socket.Id} authentication completed");
+                log.Write(LogLevel.Debug, $"Socket {s.SocketId} authentication completed");
                 result = new CallResult<bool>(true);
                 return true;
             }).ConfigureAwait(false);
@@ -341,7 +341,7 @@ namespace Bitfinex.Net.Clients
                 if (!subResponse)
                 {
                     callResult = new CallResult<object>(subResponse.Error!);
-                    log.Write(LogLevel.Warning, $"Socket {s.Socket.Id} subscription failed: " + subResponse.Error);
+                    log.Write(LogLevel.Warning, $"Socket {s.SocketId} subscription failed: " + subResponse.Error);
                     return false;
                 }
 
@@ -359,13 +359,13 @@ namespace Bitfinex.Net.Clients
                 if (!subResponse)
                 {
                     callResult = new CallResult<object>(subResponse.Error!);
-                    log.Write(LogLevel.Warning, $"Socket {s.Socket.Id} subscription failed: " + subResponse.Error);
+                    log.Write(LogLevel.Warning, $"Socket {s.SocketId} subscription failed: " + subResponse.Error);
                     return false;
                 }
 
                 var error = new ServerError(subResponse.Data.Code, subResponse.Data.Message);
                 callResult = new CallResult<object>(error);
-                log.Write(LogLevel.Debug, $"Socket {s.Socket.Id} subscription failed: " + error);
+                log.Write(LogLevel.Debug, $"Socket {s.SocketId} subscription failed: " + error);
                 return true;
             }
         }

@@ -25,7 +25,6 @@ namespace Binance.Net.UnitTests.TestImplementations
         public Func<string, string> DataInterpreterString { get; set; }
         public Func<byte[], string> DataInterpreterBytes { get; set; }
         public DateTime? DisconnectTime { get; set; }
-        public string Url { get; set; }
         public bool IsClosed => !Connected;
         public bool IsOpen => Connected;
         public bool PingConnection { get; set; }
@@ -41,6 +40,9 @@ namespace Binance.Net.UnitTests.TestImplementations
         public int? RatelimitPerSecond { get; set; }
 
         public double IncomingKbps => 0;
+
+        public Uri Uri { get; set; } = new Uri("wss://test.com/ws");
+
         public async Task<bool> ConnectAsync()
         {
             await Task.Delay(OpenTime);
@@ -102,6 +104,12 @@ namespace Binance.Net.UnitTests.TestImplementations
         public void InvokeError(Exception error)
         {
             OnError?.Invoke(error);
+        }
+
+        public async Task ProcessAsync()
+        {
+            while (Connected)
+                await Task.Delay(10);
         }
     }
 }

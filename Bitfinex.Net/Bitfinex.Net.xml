@@ -2175,6 +2175,11 @@
             The limit of entries in the order book, either 25 or 100
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookOptions.InitialDataTimeout">
+            <summary>
+            After how much time we should consider the connection dropped if no data is received for this time after the initial subscriptions
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Objects.Internal.BitfinexMeta">
             <summary>
             Order meta data

@@ -749,7 +749,7 @@ namespace Bitfinex.Net.UnitTests
             socket.CanConnect = true;
             socket.CloseTime = TimeSpan.FromMilliseconds(1000);
             socket.OpenTime = TimeSpan.FromMilliseconds(100);
-            socket.Url = "wss://api.bitfinex.com/ws/2";
+            socket.Uri = new Uri("wss://api.bitfinex.com/ws/2");
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket, new BitfinexSocketClientOptions()
             {
                 LogLevel = LogLevel.Debug,

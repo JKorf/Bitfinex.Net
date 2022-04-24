@@ -25,6 +25,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
     {
         private readonly IBitfinexSocketClient socketClient;
         private readonly Precision precision;
+        private readonly TimeSpan _initialDataTimeout;
         private bool _initial = true;
         private readonly bool _socketOwner;
 
@@ -41,6 +42,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
                 LogLevel = options?.LogLevel ?? LogLevel.Information
             });
             _socketOwner = options?.SocketClient == null;
+            _initialDataTimeout = options?.InitialDataTimeout ?? TimeSpan.FromSeconds(30);
 
             Levels = options?.Limit ?? 25;
             precision = options?.Precision ?? Precision.PrecisionLevel0;
@@ -64,7 +66,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
 
             Status = OrderBookStatus.Syncing;
             
-            var setResult = await WaitForSetOrderBookAsync(30000, ct).ConfigureAwait(false);
+            var setResult = await WaitForSetOrderBookAsync(_initialDataTimeout, ct).ConfigureAwait(false);
             return setResult ? result : new CallResult<UpdateSubscription>(setResult.Error!);
         }
 
@@ -177,7 +179,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
         /// <inheritdoc />
         protected override async Task<CallResult<bool>> DoResyncAsync(CancellationToken ct)
         {
-            return await WaitForSetOrderBookAsync(30000, ct).ConfigureAwait(false);
+            return await WaitForSetOrderBookAsync(_initialDataTimeout, ct).ConfigureAwait(false);
         }
 
         /// <summary>

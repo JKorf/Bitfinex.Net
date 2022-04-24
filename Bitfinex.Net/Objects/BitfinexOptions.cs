@@ -134,5 +134,9 @@ namespace Bitfinex.Net.Objects
         /// The limit of entries in the order book, either 25 or 100
         /// </summary>
         public int? Limit { get; set; }
+        /// <summary>
+        /// After how much time we should consider the connection dropped if no data is received for this time after the initial subscriptions
+        /// </summary>
+        public TimeSpan? InitialDataTimeout { get; set; }
     }
 }
