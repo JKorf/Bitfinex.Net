@@ -68,7 +68,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         public async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<DataEvent<IEnumerable<BitfinexOrderBookEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
-            length.ValidateIntValues(nameof(length), 25, 100);
+            length.ValidateIntValues(nameof(length), 1, 25, 100, 250);
             if (precision == Precision.R0)
                 throw new ArgumentException("Invalid precision R0, use SubscribeToRawBookUpdatesAsync instead");
 
