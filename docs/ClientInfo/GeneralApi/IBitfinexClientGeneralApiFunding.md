@@ -111,6 +111,30 @@ Task<WebCallResult<IEnumerable<BitfinexFundingOffer>>> GetActiveFundingOffersAsy
 
 ***
 
+## GetFundingAutoRenewStatusAsync  
+
+<p>
+
+*Status of auto-renew.*  
+
+```csharp  
+var client = new BitfinexClient();  
+var result = await client.GeneralApi.Funding.GetFundingAutoRenewStatusAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<BitfinexFundingAutoRenewStatus>> GetFundingAutoRenewStatusAsync(string asset, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|asset|Currency for which to enable auto-renew|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
 ## GetFundingCreditsAsync  
 
 [https://docs.bitfinex.com/reference#rest-auth-funding-credits](https://docs.bitfinex.com/reference#rest-auth-funding-credits)  
@@ -346,6 +370,34 @@ Task<WebCallResult<BitfinexOffer>> NewOfferAsync(string asset, decimal quantity,
 |price|Rate to lend or borrow at in percent per 365 days (0 for FRR)|
 |period|Number of days|
 |direction|Direction of the offer|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## SubmitFundingAutoRenewAsync  
+
+<p>
+
+*Activate or deactivate auto-renew. Allows you to specify the currency, amount, rate, and period.*  
+
+```csharp  
+var client = new BitfinexClient();  
+var result = await client.GeneralApi.Funding.SubmitFundingAutoRenewAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<BitfinexFundingAutoRenew>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = default, decimal? rate = default, int? period = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|asset|Currency for which to enable auto-renew|
+|status|1 to activate, 0 to deactivate.|
+|_[Optional]_ quantity|Amount to be auto-renewed (Minimum 50 USD equivalent).|
+|_[Optional]_ rate|Percentage rate at which to auto-renew. (rate == 0 to renew at FRR).|
+|_[Optional]_ period|Period in days.|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
