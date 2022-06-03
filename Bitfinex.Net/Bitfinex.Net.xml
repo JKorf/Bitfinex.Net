@@ -3257,9 +3257,19 @@
             The symbol
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.Frr">
+            <summary>
+            FRR
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.BestBidPrice">
             <summary>
             The best bid price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.BestBidPeriod">
+            <summary>
+            The best bid price period
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.BestBidQuantity">
@@ -3270,6 +3280,11 @@
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.BestAskPrice">
             <summary>
             The best ask price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.BestAskPeriod">
+            <summary>
+            The best bid price period
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.BestAskQuantity">
@@ -3305,6 +3320,19 @@
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.LowPrice">
             <summary>
             The 24 hour low price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.PlaceHolder1">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.PlaceHolder2">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.FrrAmountAvailable">
+            <summary>
+            FRR amount available
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.Models.BitfinexTradeDetails">

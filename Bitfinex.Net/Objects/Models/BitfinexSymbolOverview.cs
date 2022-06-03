@@ -1,12 +1,15 @@
-﻿using CryptoExchange.Net.Converters;
+﻿using Bitfinex.Net.Converters;
+using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Market overview
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(BitfinexSymbolOverviewConverter))]
     public class BitfinexSymbolOverview
     {
         /// <summary>
@@ -15,54 +18,84 @@ namespace Bitfinex.Net.Objects.Models
         [ArrayProperty(0)]
         public string Symbol { get; set; } = string.Empty;
         /// <summary>
-        /// The best bid price
+        /// FRR
         /// </summary>
         [ArrayProperty(1)]
+        public decimal Frr { get; set; }
+        /// <summary>
+        /// The best bid price
+        /// </summary>
+        [ArrayProperty(2)]
         public decimal BestBidPrice { get; set; }
+        /// <summary>
+        /// The best bid price period
+        /// </summary>
+        [ArrayProperty(3)]
+        public decimal BestBidPeriod { get; set; }
         /// <summary>
         /// The best bid quantity
         /// </summary>
-        [ArrayProperty(2)]
+        [ArrayProperty(4)]
         public decimal BestBidQuantity { get; set; }
         /// <summary>
         /// The best ask price
         /// </summary>
-        [ArrayProperty(3)]
+        [ArrayProperty(5)]
         public decimal BestAskPrice { get; set; }
+        /// <summary>
+        /// The best bid price period
+        /// </summary>
+        [ArrayProperty(6)]
+        public decimal BestAskPeriod { get; set; }
         /// <summary>
         /// The best ask quantity
         /// </summary>
-        [ArrayProperty(4)]
+        [ArrayProperty(7)]
         public decimal BestAskQuantity { get; set; }
         /// <summary>
         /// Change versus 24 hours ago
         /// </summary>
-        [ArrayProperty(5)]
+        [ArrayProperty(8)]
         public decimal DailyChange { get; set; }
         /// <summary>
         /// Change percentage versus 24 hours ago
         /// </summary>
-        [ArrayProperty(6)]
+        [ArrayProperty(9)]
         public decimal DailyChangePercentage { get; set; }
         /// <summary>
         /// The last trade price
         /// </summary>
-        [ArrayProperty(7)]
+        [ArrayProperty(10)]
         public decimal LastPrice { get; set; }
         /// <summary>
         /// The 24 hour volume
         /// </summary>
-        [ArrayProperty(8)]
+        [ArrayProperty(11)]
         public decimal Volume { get; set; }
         /// <summary>
         /// The 24 hour high price
         /// </summary>
-        [ArrayProperty(9)]
+        [ArrayProperty(12)]
         public decimal HighPrice { get; set; }
         /// <summary>
         /// The 24 hour low price
         /// </summary>
-        [ArrayProperty(10)]
+        [ArrayProperty(13)]
         public decimal LowPrice { get; set; }
+        /// <summary>
+        /// </summary>
+        [ArrayProperty(14)]
+        public string PlaceHolder1 { get; set; } = "";
+        /// <summary>
+        /// </summary>
+        [ArrayProperty(15)]
+        public string PlaceHolder2 { get; set; } = "";
+        /// <summary>
+        /// FRR amount available
+        /// </summary>
+        [ArrayProperty(16)]
+        public decimal FrrAmountAvailable { get; set; }
+
+
     }
 }
