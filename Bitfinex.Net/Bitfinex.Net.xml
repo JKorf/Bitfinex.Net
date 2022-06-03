@@ -3420,6 +3420,11 @@
             The price of the trade
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexTradeSimple.Period">
+            <summary>
+            The period of the funding 
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexTradeSimple.UpdateType">
             <summary>
             The type of update
