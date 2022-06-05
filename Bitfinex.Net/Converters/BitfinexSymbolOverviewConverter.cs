@@ -9,6 +9,7 @@ namespace Bitfinex.Net.Converters
 {
     internal class BitfinexSymbolOverviewConverter : JsonConverter
     {
+        public override bool CanWrite { get { return false; } }
         public override bool CanConvert(Type objectType)
         {
             return true;
@@ -57,8 +58,8 @@ namespace Bitfinex.Net.Converters
                     Volume = decimal.Parse(data[11].ToString(), NumberStyles.Float),
                     HighPrice = decimal.Parse(data[12].ToString(), NumberStyles.Float),
                     LowPrice = decimal.Parse(data[13].ToString(), NumberStyles.Float),
-                    //PlaceHolder1 = data[14],
-                    //PlaceHolder2 = data[15],
+                    PlaceHolder1 = data[14]?.ToString(),
+                    PlaceHolder2 = data[15]?.ToString(),
                     FrrAmountAvailable = decimal.Parse(data[16].ToString(), NumberStyles.Float)
                 };
             }

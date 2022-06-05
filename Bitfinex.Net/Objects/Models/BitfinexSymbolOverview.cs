@@ -21,7 +21,7 @@ namespace Bitfinex.Net.Objects.Models
         /// FRR
         /// </summary>
         [ArrayProperty(1)]
-        public decimal Frr { get; set; }
+        public decimal? Frr { get; set; }
         /// <summary>
         /// The best bid price
         /// </summary>
@@ -31,7 +31,7 @@ namespace Bitfinex.Net.Objects.Models
         /// The best bid price period
         /// </summary>
         [ArrayProperty(3)]
-        public decimal BestBidPeriod { get; set; }
+        public decimal? BestBidPeriod { get; set; }
         /// <summary>
         /// The best bid quantity
         /// </summary>
@@ -46,7 +46,7 @@ namespace Bitfinex.Net.Objects.Models
         /// The best bid price period
         /// </summary>
         [ArrayProperty(6)]
-        public decimal BestAskPeriod { get; set; }
+        public decimal? BestAskPeriod { get; set; }
         /// <summary>
         /// The best ask quantity
         /// </summary>
@@ -85,16 +85,16 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// </summary>
         [ArrayProperty(14)]
-        public string PlaceHolder1 { get; set; } = "";
+        public string? PlaceHolder1 { get; set; }
         /// <summary>
         /// </summary>
         [ArrayProperty(15)]
-        public string PlaceHolder2 { get; set; } = "";
+        public string? PlaceHolder2 { get; set; }
         /// <summary>
         /// FRR amount available
         /// </summary>
         [ArrayProperty(16)]
-        public decimal FrrAmountAvailable { get; set; }
+        public decimal? FrrAmountAvailable { get; set; }
 
 
     }

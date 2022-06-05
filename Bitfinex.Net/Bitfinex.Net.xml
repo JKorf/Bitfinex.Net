@@ -3562,24 +3562,39 @@
             Market overview
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.Frr">
+            <summary>
+            FRR
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.BestBidPrice">
             <summary>
-            Best bid price
+            The best bid price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.BestBidPeriod">
+            <summary>
+            The best bid price period
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.BestBidQuantity">
             <summary>
-            Best bid quantity
+            The best bid quantity
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.BestAskPrice">
             <summary>
-            Best ask price
+            The best ask price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.BestAskPeriod">
+            <summary>
+            The best bid price period
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.BestAskQuantity">
             <summary>
-            Best ask quantity
+            The best ask quantity
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.DailyChange">
@@ -3589,7 +3604,7 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.DailyChangePercentage">
             <summary>
-            Change factor versus 24 hours ago. x100 for percentage.
+            Change percentage versus 24 hours ago
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.LastPrice">
@@ -3610,6 +3625,19 @@
         <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.LowPrice">
             <summary>
             The 24 hour low price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.PlaceHolder1">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.PlaceHolder2">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview.FrrAmountAvailable">
+            <summary>
+            FRR amount available
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.Models.V1.Bitfinex30DaySummary">
