@@ -379,6 +379,9 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToKlineUpdatesAsync(System.String,System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToUserTradeUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrder}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexPosition}}}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
@@ -1953,6 +1956,18 @@
             <para><a href="https://docs.bitfinex.com/reference#ws-public-candles" /></para>
             </summary>
             <param name="symbol">The symbol to subscribe to</param>
+            <param name="interval">The interval of the klines</param>
+            <param name="handler">The handler for the data</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.SubscribeToKlineUpdatesAsync(System.String,System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribes to kline updates for a symbol
+            <para><a href="https://docs.bitfinex.com/reference#ws-public-candles" /></para>
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="period">The funding period of the klines</param>
             <param name="interval">The interval of the klines</param>
             <param name="handler">The handler for the data</param>
             <param name="ct">Cancellation token for closing this subscription</param>

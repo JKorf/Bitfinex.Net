@@ -175,6 +175,27 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, string period, KlineInterval interval, Action<DataEvent<IEnumerable<BitfinexKline>>> handler, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexSymbol();
+            var internalHandler = new Action<DataEvent<JToken>>(data =>
+            {
+                var dataArray = (JArray)data.Data[1]!;
+                if (dataArray.Count == 0)
+                {
+                    _log.Write(LogLevel.Warning, "No data in kline update, check if the symbol is correct");
+                    return;
+                }
+
+                if (dataArray[0].Type == JTokenType.Array)
+                    HandleData("Kline snapshot", dataArray, symbol, data, handler);
+                else
+                    HandleSingleToArrayData("Kline update", dataArray, symbol, data, handler);
+            });
+            return await _baseClient.SubscribeInternalAsync(this, new BitfinexKlineSubscriptionRequest(symbol + $":{period}", JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))), null, false, internalHandler, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToUserTradeUpdatesAsync(
             Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexOrder>>>> orderHandler,
             Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexTradeDetails>>>> tradeHandler,

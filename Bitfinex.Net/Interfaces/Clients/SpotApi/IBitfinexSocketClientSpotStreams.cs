@@ -73,6 +73,18 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, KlineInterval interval, Action<DataEvent<IEnumerable<BitfinexKline>>> handler, CancellationToken ct = default);
 
         /// <summary>
+        /// Subscribes to kline updates for a symbol
+        /// <para><a href="https://docs.bitfinex.com/reference#ws-public-candles" /></para>
+        /// </summary>
+        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="period">The funding period of the klines</param>
+        /// <param name="interval">The interval of the klines</param>
+        /// <param name="handler">The handler for the data</param>
+        /// <param name="ct">Cancellation token for closing this subscription</param>
+        /// <returns></returns>
+        Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, string period, KlineInterval interval, Action<DataEvent<IEnumerable<BitfinexKline>>> handler, CancellationToken ct = default);
+
+        /// <summary>
         /// Subscribe to trading information updates
         /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-trades" /></para>
         /// </summary>
