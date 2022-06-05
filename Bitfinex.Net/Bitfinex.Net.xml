@@ -3092,6 +3092,11 @@
             The price of this entry
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry.Period">
+            <summary>
+            The period of this entry
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry.Count">
             <summary>
             The amount of orders for this price
@@ -3115,6 +3120,11 @@
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry.Price">
             <summary>
             The price for this order
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry.Period">
+            <summary>
+            The period of this entry
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry.Quantity">

@@ -7,7 +7,7 @@ using Bitfinex.Net.Objects.Models;
 
 namespace Bitfinex.Net.Converters
 {
-    internal class OrderBookEntryConverter : JsonConverter
+    internal class RawOrderBookEntryConverter : JsonConverter
     {
         public override bool CanWrite { get { return false; } }
 
@@ -21,7 +21,7 @@ namespace Bitfinex.Net.Converters
             var data = JArray.Load(reader);
             if(data[0].Type == JTokenType.Array)
             {
-                var result = new List<BitfinexOrderBookEntry>();
+                var result = new List<BitfinexRawOrderBookEntry>();
                 foreach(var entry in data)                
                     result.Add(ParseEntry((JArray)entry));                
                 return result;
@@ -32,46 +32,33 @@ namespace Bitfinex.Net.Converters
             }           
         }
 
-        private static BitfinexOrderBookEntry ParseEntry(JArray data)
+        private static BitfinexRawOrderBookEntry ParseEntry(JArray data)
         {
             JToken price;
             JToken? period;
-            JToken count;
+            JToken orderId;
             JToken quantity;
             if (data.Count == 3)
             {
-                price = data[0];
-                count = data[1];
+                orderId = data[0];
+                price = data[1];
                 quantity = data[2];
                 period = null;
             }
             else
             {
-                price = data[0];
+                orderId = data[0];
                 period = data[1];
-                count = data[2];
+                price = data[2];
                 quantity = data[3];
             }
-            var result = new BitfinexOrderBookEntry()
+            var result = new BitfinexRawOrderBookEntry()
             {
-                Count = (int)count,
+                OrderId = (int)orderId,
                 Price = (decimal)price,
                 Period = (decimal?)period,
                 Quantity = (decimal)quantity,
             };
-
-            var priceWithExp = ((JValue)price).ToString(CultureInfo.InvariantCulture);
-            if (priceWithExp.Contains("E-07") || priceWithExp.Contains("E-08"))
-                result.RawPrice = priceWithExp.Replace('E', 'e').Replace("-07", "-7").Replace("-08", "-8");
-            else
-                result.RawPrice = ((JValue)price).ToString("F8", CultureInfo.InvariantCulture).TrimEnd('0').TrimEnd('.');
-
-
-            var quantityWithExp = ((JValue)quantity).ToString(CultureInfo.InvariantCulture);
-            if (quantityWithExp.Contains("E-07") || quantityWithExp.Contains("E-08"))
-                result.RawQuantity = quantityWithExp.Replace('E', 'e').Replace("-07", "-7").Replace("-08", "-8");
-            else
-                result.RawQuantity = ((JValue)quantity).ToString("F8", CultureInfo.InvariantCulture).TrimEnd('0').TrimEnd('.');
 
             return result;
         }
