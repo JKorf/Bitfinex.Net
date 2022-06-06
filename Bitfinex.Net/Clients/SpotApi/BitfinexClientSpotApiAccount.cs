@@ -127,7 +127,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default)
         {
-            limit?.ValidateIntBetween(nameof(limit), 1, 500);
+            limit?.ValidateIntBetween(nameof(limit), 1, 2500);
 
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("category", category);
