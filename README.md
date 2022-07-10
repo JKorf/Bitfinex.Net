@@ -20,6 +20,10 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
 ## Release notes
+* Version 5.0.13 - 10 Jul 2022
+    * Fixed WalletTransferAsync success checking
+    * Updated CryptoExchange.Net
+
 * Version 5.0.12 - 12 Jun 2022
     * Updated CryptoExchange.Net
 
