@@ -131,7 +131,7 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         public Precision? Precision { get; set; }
         /// <summary>
-        /// The limit of entries in the order book, either 25 or 100
+        /// The limit of entries in the order book, either 1, 25, 100 or 250
         /// </summary>
         public int? Limit { get; set; }
         /// <summary>

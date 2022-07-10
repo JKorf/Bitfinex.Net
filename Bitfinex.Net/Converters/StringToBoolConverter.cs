@@ -13,7 +13,7 @@ namespace Bitfinex.Net.Converters
             new KeyValuePair<bool, string>(false, "No"),
             new KeyValuePair<bool, string>(true, "Yes"),
             new KeyValuePair<bool, string>(true, "success"),
-            new KeyValuePair<bool, string>(true, "error")
+            new KeyValuePair<bool, string>(false, "error")
         };
     }
 }
