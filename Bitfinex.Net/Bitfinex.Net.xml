@@ -2172,7 +2172,7 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookOptions.Limit">
             <summary>
-            The limit of entries in the order book, either 25 or 100
+            The limit of entries in the order book, either 1, 25, 100 or 250
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookOptions.InitialDataTimeout">
