@@ -45,6 +45,7 @@ namespace Binance.Net.UnitTests.TestImplementations
 
         public Uri Uri { get; set; } = new Uri("wss://test.com/ws");
         public TimeSpan KeepAliveInterval { get; set; }
+        public Func<Task<Uri>> GetReconnectionUrl { get; set; }
 
         public async Task<bool> ConnectAsync()
         {
