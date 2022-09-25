@@ -123,8 +123,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             var isFunding = symbol.StartsWith("f");
             var book = new BitfinexOrderBook()
             {
-                Asks = result.Data.Where(d => isFunding ? d.Quantity < 0 : d.Quantity > 0),
-                Bids = result.Data.Where(d => isFunding ? d.Quantity > 0 : d.Quantity < 0)
+                Asks = result.Data.Where(d => isFunding ? d.Quantity > 0 : d.Quantity < 0),
+                Bids = result.Data.Where(d => isFunding ? d.Quantity < 0 : d.Quantity > 0)
             };
             return result.As(book);
         }
@@ -146,8 +146,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             var isFunding = symbol.StartsWith("f");
             var book = new BitfinexOrderBook()
             {
-                Asks = result.Data.Where(d => isFunding ? d.Quantity < 0 : d.Quantity > 0),
-                Bids = result.Data.Where(d => isFunding ? d.Quantity > 0 : d.Quantity < 0)
+                Asks = result.Data.Where(d => isFunding ? d.Quantity > 0 : d.Quantity < 0),
+                Bids = result.Data.Where(d => isFunding ? d.Quantity < 0 : d.Quantity > 0)
             };
             return result.As(book);
         }
