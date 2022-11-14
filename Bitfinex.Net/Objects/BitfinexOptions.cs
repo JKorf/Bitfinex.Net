@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects
     /// <summary>
     /// Options for the BitfinexClient
     /// </summary>
-    public class BitfinexClientOptions : BaseRestClientOptions
+    public class BitfinexClientOptions : ClientOptions
     {
         /// <summary>
         /// Default options for the client
@@ -62,16 +62,12 @@ namespace Bitfinex.Net.Objects
     /// <summary>
     /// Options for the BitfinexSocketClient
     /// </summary>
-    public class BitfinexSocketClientOptions: BaseSocketClientOptions
+    public class BitfinexSocketClientOptions: ClientOptions
     {
         /// <summary>
         /// Default options for the client
         /// </summary>
-        public static BitfinexSocketClientOptions Default { get; set; } = new BitfinexSocketClientOptions()
-        {
-            SocketSubscriptionsCombineTarget = 10,
-            SocketNoDataTimeout = TimeSpan.FromSeconds(30)
-        };
+        public static BitfinexSocketClientOptions Default { get; set; } = new BitfinexSocketClientOptions();
 
         /// <summary>
         /// Default affiliate code to use when placing orders
@@ -83,15 +79,19 @@ namespace Bitfinex.Net.Objects
         /// </summary>
         public INonceProvider? NonceProvider { get; set; }
 
-        
-        private ApiClientOptions _spotStreamsOptions = new ApiClientOptions(BitfinexApiAddresses.Default.SocketClientAddress);
+        private SocketApiClientOptions _spotStreamsOptions = new SocketApiClientOptions(BitfinexApiAddresses.Default.SocketClientAddress)
+        {
+            SocketSubscriptionsCombineTarget = 10,
+            SocketNoDataTimeout = TimeSpan.FromSeconds(30)
+        };
+
         /// <summary>
         /// Options for the spot streams
         /// </summary>
-        public ApiClientOptions SpotStreamsOptions
+        public SocketApiClientOptions SpotStreamsOptions
         {
             get => _spotStreamsOptions;
-            set => _spotStreamsOptions = new ApiClientOptions(_spotStreamsOptions, value);
+            set => _spotStreamsOptions = new SocketApiClientOptions(_spotStreamsOptions, value);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Bitfinex.Net.Objects
             AffiliateCode = baseOn.AffiliateCode;
             NonceProvider = baseOn.NonceProvider;
 
-            _spotStreamsOptions = new ApiClientOptions(baseOn.SpotStreamsOptions, null);
+            _spotStreamsOptions = new SocketApiClientOptions(baseOn.SpotStreamsOptions, null);
         }
     }
 

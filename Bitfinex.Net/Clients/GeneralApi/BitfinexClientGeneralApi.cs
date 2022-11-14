@@ -7,6 +7,7 @@ using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -22,8 +23,6 @@ namespace Bitfinex.Net.Clients.GeneralApi
         internal string? AffiliateCode { get; set; }
 
         private readonly BitfinexClientOptions _options;
-        private readonly Log _log;
-        private readonly BitfinexClient _baseClient;
         #endregion
 
         #region Api clients
@@ -33,10 +32,9 @@ namespace Bitfinex.Net.Clients.GeneralApi
 
         #region ctor
 
-        internal BitfinexClientGeneralApi(Log log, BitfinexClient baseClient, BitfinexClientOptions options) :
-            base(options, options.SpotApiOptions)
+        internal BitfinexClientGeneralApi(Log log, BitfinexClientOptions options) :
+            base(log, options, options.SpotApiOptions)
         {
-            _baseClient = baseClient;
             _log = log;
             _options = options;
 
@@ -57,11 +55,32 @@ namespace Bitfinex.Net.Clients.GeneralApi
             CancellationToken cancellationToken,
             Dictionary<string, object>? parameters = null,
             bool signed = false) where T : class
-                => _baseClient.SendRequestAsync<T>(this, uri, method, cancellationToken, parameters, signed);
+                => base.SendRequestAsync<T>(uri, method, cancellationToken, parameters, signed);
 
         internal Uri GetUrl(string endpoint, string version)
         {
             return new Uri(BaseAddress.AppendPath($"v{version}", endpoint));
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected override Error ParseErrorResponse(JToken data)
+        {
+            if (!(data is JArray))
+            {
+                if (data["error"] != null && data["code"] != null && data["error_description"] != null)
+                    return new ServerError((int)data["code"]!, data["error"] + ": " + data["error_description"]);
+                if (data["message"] != null)
+                    return new ServerError(data["message"]!.ToString());
+                else
+                    return new ServerError(data.ToString());
+            }
+
+            var error = data.ToObject<BitfinexError>();
+            return new ServerError(error!.ErrorCode, error.ErrorMessage);
+
         }
 
         /// <inheritdoc />

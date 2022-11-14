@@ -45,8 +45,8 @@ namespace Bitfinex.Net.Clients
             if (options == null)
                 throw new ArgumentException("Cant pass null options, use empty constructor for default");
 
-            GeneralApi = AddApiClient(new BitfinexClientGeneralApi(log, this, options));
-            SpotApi = AddApiClient(new BitfinexClientSpotApi(log, this, options));
+            GeneralApi = AddApiClient(new BitfinexClientGeneralApi(log, options));
+            SpotApi = AddApiClient(new BitfinexClientSpotApi(log, options));
         }
         #endregion
 
@@ -61,38 +61,6 @@ namespace Bitfinex.Net.Clients
             BitfinexClientOptions.Default = options;
         }
 
-        #endregion
-
-        #region private methods
-        /// <summary>
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        protected override Error ParseErrorResponse(JToken data)
-        {
-            if (!(data is JArray))
-            {
-                if (data["error"] != null && data["code"] != null && data["error_description"] != null)
-                    return new ServerError((int)data["code"]!, data["error"] + ": " + data["error_description"]);
-                if (data["message"] != null)
-                    return new ServerError(data["message"]!.ToString());
-                else
-                    return new ServerError(data.ToString());
-            }
-
-            var error = data.ToObject<BitfinexError>();
-            return new ServerError(error!.ErrorCode, error.ErrorMessage);
-
-        }
-
-        internal Task<WebCallResult<T>> SendRequestAsync<T>(
-            RestApiClient apiClient,
-            Uri uri,
-            HttpMethod method,
-            CancellationToken cancellationToken,
-            Dictionary<string, object>? parameters = null,
-            bool signed = false) where T : class
-                => base.SendRequestAsync<T>(apiClient, uri, method, cancellationToken, parameters, signed);
         #endregion
     }
 }

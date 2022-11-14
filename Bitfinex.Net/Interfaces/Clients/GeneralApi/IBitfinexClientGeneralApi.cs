@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CryptoExchange.Net.Interfaces;
+using System;
 
 namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 {
@@ -7,6 +8,11 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
     /// </summary>
     public interface IBitfinexClientGeneralApi : IDisposable
     {
+        /// <summary>
+        /// The factory for creating requests. Used for unit testing
+        /// </summary>
+        IRequestFactory RequestFactory { get; set; }
+
         /// <summary>
         /// Endpoints related to funding
         /// </summary>

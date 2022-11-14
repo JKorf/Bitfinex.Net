@@ -16,10 +16,10 @@ namespace Bitfinex.Net.UnitTests
         private JsonToObjectComparer<IBitfinexClient> _comparer = new JsonToObjectComparer<IBitfinexClient>((json) => TestHelpers.CreateResponseClient(json, new BitfinexClientOptions()
         { 
             ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "123"), 
-            OutputOriginalData = true,
             SpotApiOptions = new CryptoExchange.Net.Objects.RestApiClientOptions
             {
-                RateLimiters = new List<IRateLimiter>()
+                RateLimiters = new List<IRateLimiter>(),
+                OutputOriginalData = true,
             }
         }, System.Net.HttpStatusCode.OK));
 

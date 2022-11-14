@@ -624,7 +624,10 @@ namespace Bitfinex.Net.UnitTests
             {
                 ApiCredentials = new ApiCredentials("Test", "Test"),
                 LogLevel = LogLevel.Debug,
-                SocketResponseTimeout = TimeSpan.FromMilliseconds(100)
+                SpotStreamsOptions = new SocketApiClientOptions
+                {
+                    SocketResponseTimeout = TimeSpan.FromMilliseconds(100)
+                }
             });
 
             // act
@@ -705,7 +708,10 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateAuthenticatedSocketClient(socket, new BitfinexSocketClientOptions()
             {
                 LogLevel = LogLevel.Debug,
-                ReconnectInterval = TimeSpan.FromMilliseconds(10)
+                SpotStreamsOptions = new SocketApiClientOptions
+                {
+                    ReconnectInterval = TimeSpan.FromMilliseconds(10)
+                }
             });
 
             var rstEvent = new ManualResetEvent(false);

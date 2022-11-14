@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
 
@@ -15,6 +16,11 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// </summary>
     public interface IBitfinexSocketClientSpotStreams : IDisposable
     {
+        /// <summary>
+        /// The factory for creating sockets. Used for unit testing
+        /// </summary>
+        IWebsocketFactory SocketFactory { get; set; }
+
         /// <summary>
         /// Subscribes to ticker updates for a symbol
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
