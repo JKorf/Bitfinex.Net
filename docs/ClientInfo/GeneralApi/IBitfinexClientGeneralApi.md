@@ -10,3 +10,6 @@ parent: Rest API documentation
 ***
 *Endpoints related to funding*  
 **[IBitfinexClientGeneralApiFunding](IBitfinexClientGeneralApiFunding.html) Funding { get; }**  
+***
+*The factory for creating requests. Used for unit testing*  
+**IRequestFactory RequestFactory { get; set; }**  
