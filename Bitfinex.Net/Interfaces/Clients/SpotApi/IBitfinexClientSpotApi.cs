@@ -10,6 +10,11 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     public interface IBitfinexClientSpotApi : IDisposable
     {
         /// <summary>
+        /// The factory for creating requests. Used for unit testing
+        /// </summary>
+        IRequestFactory RequestFactory { get; set; }
+
+        /// <summary>
         /// Endpoints related to account settings, info or actions
         /// </summary>
         public IBitfinexClientSpotApiAccount Account { get; }

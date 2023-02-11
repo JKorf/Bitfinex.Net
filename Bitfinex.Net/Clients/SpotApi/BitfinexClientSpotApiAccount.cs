@@ -190,6 +190,9 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.As((BitfinexTransferResult)null!);
 
+            if (!result.Data.First().Success)
+                return result.AsError<BitfinexTransferResult>(new ServerError(result.Data.First().Message));
+
             return result.As(result.Data.First());
         }
 

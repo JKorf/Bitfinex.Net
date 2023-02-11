@@ -11,6 +11,7 @@ using CryptoExchange.Net.Interfaces.CommonClients;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -27,8 +28,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         #region fields
         internal string? AffiliateCode { get; set; }
 
-        private readonly BitfinexClient _baseClient;
-        private readonly Log _log;
         private readonly BitfinexClientOptions _options;
 
         internal static TimeSpan TimeOffset;
@@ -61,11 +60,9 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region ctor
 
-        internal BitfinexClientSpotApi(Log log, BitfinexClient baseClient, BitfinexClientOptions options) :
-            base(options, options.SpotApiOptions)
+        internal BitfinexClientSpotApi(Log log, BitfinexClientOptions options) :
+            base(log, options, options.SpotApiOptions)
         {
-            _baseClient = baseClient;
-            _log = log;
             _options = options;
 
             Account = new BitfinexClientSpotApiAccount(this);
@@ -142,7 +139,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             CancellationToken cancellationToken,
             Dictionary<string, object>? parameters = null,
             bool signed = false) where T : class
-                => _baseClient.SendRequestAsync<T>(this, uri, method, cancellationToken, parameters, signed);
+                => base.SendRequestAsync<T>(uri, method, cancellationToken, parameters, signed);
 
         internal Uri GetUrl(string endpoint, string version)
         {
@@ -154,7 +151,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             => Task.FromResult(new WebCallResult<DateTime>(null, null, null, null, null, null, null, null, DateTime.UtcNow, null));
 
         /// <inheritdoc />
-        protected override TimeSyncInfo GetTimeSyncInfo()
+        public override TimeSyncInfo GetTimeSyncInfo()
             => new TimeSyncInfo(_log, _options.SpotApiOptions.AutoTimestamp, _options.SpotApiOptions.TimestampRecalculationInterval, TimeSyncState);
 
         /// <inheritdoc />
@@ -430,5 +427,26 @@ namespace Bitfinex.Net.Clients.SpotApi
             }));
         }
         #endregion
+
+        /// <summary>
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected override Error ParseErrorResponse(JToken data)
+        {
+            if (!(data is JArray))
+            {
+                if (data["error"] != null && data["code"] != null && data["error_description"] != null)
+                    return new ServerError((int)data["code"]!, data["error"] + ": " + data["error_description"]);
+                if (data["message"] != null)
+                    return new ServerError(data["message"]!.ToString());
+                else
+                    return new ServerError(data.ToString());
+            }
+
+            var error = data.ToObject<BitfinexError>();
+            return new ServerError(error!.ErrorCode, error.ErrorMessage);
+
+        }
     }
 }

@@ -17,6 +17,7 @@ using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
+using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
@@ -74,8 +75,8 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
         {
             BitfinexSocketClient client;
             client = options != null ? new BitfinexSocketClient(options) : new BitfinexSocketClient();
-            client.SocketFactory = Mock.Of<IWebsocketFactory>();
-            Mock.Get(client.SocketFactory).Setup(f => f.CreateWebsocket(It.IsAny<Log>(), It.IsAny<string>())).Returns(socket);
+            client.SpotStreams.SocketFactory = Mock.Of<IWebsocketFactory>();
+            Mock.Get(client.SpotStreams.SocketFactory).Setup(f => f.CreateWebsocket(It.IsAny<Log>(), It.IsAny<WebSocketParameters>())).Returns(socket);
             return client;
         }
 
@@ -83,7 +84,8 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
         {
             IBitfinexClient client;
             client = options != null ? new BitfinexClient(options) : new BitfinexClient();
-            client.RequestFactory = Mock.Of<IRequestFactory>();
+            client.SpotApi.RequestFactory = Mock.Of<IRequestFactory>();
+            client.GeneralApi.RequestFactory = Mock.Of<IRequestFactory>();
             return client;
         }
 
@@ -108,7 +110,7 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             return client;
         }
 
-        public static Mock<IRequest> SetResponse(BaseRestClient client, string responseData, HttpStatusCode code = HttpStatusCode.OK)
+        public static Mock<IRequest> SetResponse(BitfinexClient client, string responseData, HttpStatusCode code = HttpStatusCode.OK)
         {
             var expectedBytes = Encoding.UTF8.GetBytes(responseData);
             var responseStream = new MemoryStream();
@@ -125,7 +127,10 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             request.Setup(c => c.GetResponseAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(response.Object));
             request.Setup(c => c.GetHeaders()).Returns(new Dictionary<string, IEnumerable<string>>());
 
-            var factory = Mock.Get(client.RequestFactory);
+            var factory = Mock.Get(client.SpotApi.RequestFactory);
+            factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))
+                .Returns(request.Object);
+            factory = Mock.Get(client.GeneralApi.RequestFactory);
             factory.Setup(c => c.Create(It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))
                 .Returns(request.Object);
             return request;

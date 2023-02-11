@@ -7,6 +7,9 @@ parent: Socket API documentation
 `BitfinexSocketClient > SpotStreams`  
 *Bitfinex spot streams*
   
+***
+*The factory for creating sockets. Used for unit testing*  
+**IWebsocketFactory SocketFactory { get; set; }**  
 
 ***
 

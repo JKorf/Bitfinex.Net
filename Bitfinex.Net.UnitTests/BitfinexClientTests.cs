@@ -65,7 +65,7 @@ namespace Bitfinex.Net.UnitTests
         {
             // arrange
             var client = TestHelpers.CreateClient(new BitfinexClientOptions(){ ApiCredentials = new ApiCredentials("TestKey", "t")});
-            var request = TestHelpers.SetResponse((BaseRestClient)client, "{}");
+            var request = TestHelpers.SetResponse((BitfinexClient)client, "{}");
 
             // act
             await client.SpotApi.Trading.GetOpenOrdersAsync();
@@ -81,7 +81,7 @@ namespace Bitfinex.Net.UnitTests
         {
             // arrange
             var client = TestHelpers.CreateClient(new BitfinexClientOptions() { ApiCredentials = new ApiCredentials("TestKey", "t") });
-            var request = TestHelpers.SetResponse((BaseRestClient)client, "{}");
+            var request = TestHelpers.SetResponse((BitfinexClient)client, "{}");
 
             // act
             await client.SpotApi.Account.GetAccountInfoAsync();
