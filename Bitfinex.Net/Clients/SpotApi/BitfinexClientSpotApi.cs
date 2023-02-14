@@ -29,12 +29,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         internal string? AffiliateCode { get; set; }
 
         private readonly BitfinexClientOptions _options;
-
-        internal static TimeSpan TimeOffset;
-        internal static SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
-        internal static DateTime LastTimeSync;
-
-        internal static TimeSyncState TimeSyncState = new TimeSyncState("Api");
         #endregion
 
         /// <inheritdoc />
@@ -147,16 +141,10 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        protected override Task<WebCallResult<DateTime>> GetServerTimestampAsync()
-            => Task.FromResult(new WebCallResult<DateTime>(null, null, null, null, null, null, null, null, DateTime.UtcNow, null));
+        public override TimeSyncInfo? GetTimeSyncInfo() => null;
 
         /// <inheritdoc />
-        public override TimeSyncInfo GetTimeSyncInfo()
-            => new TimeSyncInfo(_log, _options.SpotApiOptions.AutoTimestamp, _options.SpotApiOptions.TimestampRecalculationInterval, TimeSyncState);
-
-        /// <inheritdoc />
-        public override TimeSpan GetTimeOffset()
-            => TimeSyncState.TimeOffset;
+        public override TimeSpan? GetTimeOffset() => null;
 
         /// <inheritdoc />
         public ISpotClient CommonSpotClient => this;

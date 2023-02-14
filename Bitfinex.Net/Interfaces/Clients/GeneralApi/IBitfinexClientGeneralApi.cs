@@ -6,13 +6,8 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
     /// <summary>
     /// General API endpoints
     /// </summary>
-    public interface IBitfinexClientGeneralApi : IDisposable
+    public interface IBitfinexClientGeneralApi : IRestApiClient, IDisposable
     {
-        /// <summary>
-        /// The factory for creating requests. Used for unit testing
-        /// </summary>
-        IRequestFactory RequestFactory { get; set; }
-
         /// <summary>
         /// Endpoints related to funding
         /// </summary>

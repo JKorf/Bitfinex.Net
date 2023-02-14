@@ -14,13 +14,8 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// <summary>
     /// Bitfinex spot streams
     /// </summary>
-    public interface IBitfinexSocketClientSpotStreams : IDisposable
+    public interface IBitfinexSocketClientSpotStreams : ISocketApiClient, IDisposable
     {
-        /// <summary>
-        /// The factory for creating sockets. Used for unit testing
-        /// </summary>
-        IWebsocketFactory SocketFactory { get; set; }
-
         /// <summary>
         /// Subscribes to ticker updates for a symbol
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
