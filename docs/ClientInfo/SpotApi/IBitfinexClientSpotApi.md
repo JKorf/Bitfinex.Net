@@ -17,8 +17,5 @@ parent: Rest API documentation
 *Endpoints related to retrieving market and system data*  
 **[IBitfinexClientSpotApiExchangeData](IBitfinexClientSpotApiExchangeData.html) ExchangeData { get; }**  
 ***
-*The factory for creating requests. Used for unit testing*  
-**IRequestFactory RequestFactory { get; set; }**  
-***
 *Endpoints related to orders and trades*  
 **[IBitfinexClientSpotApiTrading](IBitfinexClientSpotApiTrading.html) Trading { get; }**  
