@@ -502,7 +502,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var channelId = ((BitfinexSubscriptionRequest)subscription.Request!).ChannelId;
             var unsub = new BitfinexUnsubscribeRequest(channelId);
             var result = false;
-            await connection.SendAndWaitAsync(unsub, Options.SocketResponseTimeout, data =>
+            await connection.SendAndWaitAsync(unsub, Options.SocketResponseTimeout, null, data =>
             {
                 if (data.Type != JTokenType.Object)
                     return false;
@@ -547,7 +547,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var authObject = GetAuthObject(s.ApiClient);
             var result = new CallResult<bool>(new ServerError("No response from server"));
-            await s.SendAndWaitAsync(authObject, Options.SocketResponseTimeout, tokenData =>
+            await s.SendAndWaitAsync(authObject, Options.SocketResponseTimeout, null, tokenData =>
             {
                 if (tokenData.Type != JTokenType.Object)
                     return false;

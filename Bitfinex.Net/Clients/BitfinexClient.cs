@@ -13,6 +13,7 @@ using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Interfaces.Clients.GeneralApi;
 using Bitfinex.Net.Clients.GeneralApi;
 using Bitfinex.Net.Clients.SpotApi;
+using CryptoExchange.Net.Authentication;
 
 namespace Bitfinex.Net.Clients
 {
@@ -61,6 +62,12 @@ namespace Bitfinex.Net.Clients
             BitfinexClientOptions.Default = options;
         }
 
+        /// <inheritdoc />
+        public void SetApiCredentials(ApiCredentials credentials)
+        {
+            GeneralApi.SetApiCredentials(credentials);
+            SpotApi.SetApiCredentials(credentials);
+        }
         #endregion
     }
 }

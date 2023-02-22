@@ -4,6 +4,7 @@ using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.Internal;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using Microsoft.Extensions.Logging;
@@ -84,15 +85,9 @@ namespace Bitfinex.Net.Clients.GeneralApi
         }
 
         /// <inheritdoc />
-        protected override Task<WebCallResult<DateTime>> GetServerTimestampAsync()
-            => Task.FromResult(new WebCallResult<DateTime>(null, null, null, null, null, null, null, null, DateTime.UtcNow, null));
+        public override TimeSyncInfo? GetTimeSyncInfo() => null;
 
         /// <inheritdoc />
-        public override TimeSyncInfo GetTimeSyncInfo()
-            => new TimeSyncInfo(_log, _options.SpotApiOptions.AutoTimestamp, _options.SpotApiOptions.TimestampRecalculationInterval, BitfinexClientSpotApi.TimeSyncState);
-
-        /// <inheritdoc />
-        public override TimeSpan GetTimeOffset()
-            => BitfinexClientSpotApi.TimeSyncState.TimeOffset;
+        public override TimeSpan? GetTimeOffset() => null;
     }
 }
