@@ -195,7 +195,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 else
                     HandleSingleToArrayData("Kline update", dataArray, symbol, data, handler);
             });
-            return await _baseClient.SubscribeInternalAsync(this, new BitfinexKlineSubscriptionRequest(symbol + $":{period}", JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))), null, false, internalHandler, ct).ConfigureAwait(false);
+            return await SubscribeAsync(new BitfinexKlineSubscriptionRequest(symbol + $":{period}", JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))), null, false, internalHandler, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
