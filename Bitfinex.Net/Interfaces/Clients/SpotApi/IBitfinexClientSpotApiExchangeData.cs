@@ -49,6 +49,17 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
 
         /// <summary>
+        /// Get ticker history
+        /// </summary>
+        /// <param name="symbols">Symbols</param>
+        /// <param name="limit">The amount of results</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexTickerHistory>>> GetTickerHistoryAsync(IEnumerable<string>? symbols = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
+
+        /// <summary>
         /// Get recent trades for a symbol
         /// <para><a href="https://docs.bitfinex.com/reference#rest-public-trades" /></para>
         /// </summary>

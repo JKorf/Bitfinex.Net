@@ -91,6 +91,20 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
+        public async Task<WebCallResult<IEnumerable<BitfinexTickerHistory>>> GetTickerHistoryAsync(IEnumerable<string>? symbols = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
+            };
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTickerHistory>>(_baseClient.GetUrl("tickers/hist", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexTradeSimple>>> GetTradeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();

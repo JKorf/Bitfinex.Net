@@ -271,6 +271,9 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetTickersAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetTickerHistoryAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetTradeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
@@ -1635,6 +1638,17 @@
             <param name="symbols">The symbols to get data for</param>
             <param name="ct">Cancellation token</param>
             <returns>Symbol data</returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetTickerHistoryAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Get ticker history
+            </summary>
+            <param name="symbols">Symbols</param>
+            <param name="limit">The amount of results</param>
+            <param name="startTime">Filter by start time</param>
+            <param name="endTime">Filter by end time</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetTradeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
@@ -3323,6 +3337,31 @@
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexSymbolOverview.LowPrice">
             <summary>
             The 24 hour low price
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexTickerHistory">
+            <summary>
+            History info
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexTickerHistory.Symbol">
+            <summary>
+            Symbol
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexTickerHistory.BestBidPrice">
+            <summary>
+            Best bid price at the time
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexTickerHistory.BestAskPrice">
+            <summary>
+            Best ask price at the time
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexTickerHistory.Timestamp">
+            <summary>
+            Timestamp
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.Models.BitfinexTradeDetails">
