@@ -223,7 +223,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, string? affiliateCode = null)
+        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null, string? affiliateCode = null)
         {
             symbol.ValidateBitfinexSymbol();
             _log.Write(LogLevel.Information, "Going to place order");
@@ -232,7 +232,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var affCode = affiliateCode ?? _affCode;
             var query = new BitfinexSocketQuery(clientOrderId.ToString(), BitfinexEventType.OrderNew, new BitfinexNewOrder
             {
-                Amount = quantity,
+                Amount = side == OrderSide.Buy ? quantity : -quantity,
                 OrderType = type,
                 Symbol = symbol,
                 Price = price,
@@ -242,6 +242,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                 PriceAuxiliaryLimit = priceAuxiliaryLimit,
                 PriceOCOStop = priceOcoStop,
                 PriceTrailing = priceTrailing,
+                Leverage = leverage,
+                CancelAfter = cancelTime,
                 Meta = affCode == null ? null : new BitfinexMeta() { AffiliateCode = affCode }
             });
 

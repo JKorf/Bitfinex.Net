@@ -1,6 +1,7 @@
 ﻿using Bitfinex.Net.Converters;
 using Bitfinex.Net.Enums;
 using Newtonsoft.Json;
+using System;
 
 namespace Bitfinex.Net.Objects.Internal
 {
@@ -27,6 +28,10 @@ namespace Bitfinex.Net.Objects.Internal
         public long? GroupId { get; set; }
         [JsonProperty("cid")]
         public long? ClientOrderId { get; set; }
+        [JsonProperty("lev")]
+        public int? Leverage { get; set; }
+        [JsonProperty("tif")]
+        public DateTime? CancelAfter { get; set; }
         [JsonProperty("meta")]
         public BitfinexMeta? Meta { get; set; }
     }

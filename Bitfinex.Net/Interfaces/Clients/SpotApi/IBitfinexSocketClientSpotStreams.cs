@@ -128,9 +128,11 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
         /// <param name="priceOcoStop">Oco stop price of the order</param>
         /// <param name="flags">Additional flags</param>
+        /// <param name="leverage">Leverage</param>
+        /// <param name="cancelAfter">Automatically cancel the order after this time</param>
         /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <returns></returns>
-        Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, string? affiliateCode = null);
+        Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelAfter = null, string? affiliateCode = null);
 
         /// <summary>
         /// Updates an order
