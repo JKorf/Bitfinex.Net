@@ -582,7 +582,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            var placeTask = client.SpotStreams.PlaceOrderAsync(OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
+            var placeTask = client.SpotStreams.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
             socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
@@ -603,7 +603,7 @@ namespace Bitfinex.Net.UnitTests
             var order = new BitfinexOrder() {ClientOrderId = 123};
 
             // act
-            var placeTask = client.SpotStreams.PlaceOrderAsync(OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
+            var placeTask = client.SpotStreams.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
             socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(order)}, 0, \"error\", \"order placing failed\"]]");
@@ -631,7 +631,7 @@ namespace Bitfinex.Net.UnitTests
             });
 
             // act
-            var placeTask = client.SpotStreams.PlaceOrderAsync(OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
+            var placeTask = client.SpotStreams.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
             var result = placeTask.Result;
 
@@ -658,7 +658,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            var placeTask = client.SpotStreams.PlaceOrderAsync(OrderType.ExchangeMarket, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
+            var placeTask = client.SpotStreams.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeMarket, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
             socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
@@ -688,7 +688,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            var placeTask = client.SpotStreams.PlaceOrderAsync(OrderType.ExchangeFillOrKill, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
+            var placeTask = client.SpotStreams.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeFillOrKill, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
             socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
             socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");

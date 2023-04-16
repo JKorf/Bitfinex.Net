@@ -379,7 +379,7 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToFundingUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingOffer}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingCredit}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFunding}}}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.PlaceOrderAsync(Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.String)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.String)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.UpdateOrderAsync(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags})">
@@ -823,6 +823,11 @@
             Close
             </summary>
         </member>
+        <member name="F:Bitfinex.Net.Enums.OrderFlags.ReduceOnly">
+            <summary>
+            Ensures that the executed order does not flip the opened position.
+            </summary>
+        </member>
         <member name="F:Bitfinex.Net.Enums.OrderFlags.PostOnly">
             <summary>
             Only accept if it is a post
@@ -831,6 +836,11 @@
         <member name="F:Bitfinex.Net.Enums.OrderFlags.OneCancelsOther">
             <summary>
             Oco order
+            </summary>
+        </member>
+        <member name="F:Bitfinex.Net.Enums.OrderFlags.NoVarRates">
+            <summary>
+            Excludes variable rate funding offers from matching against this order, if on margin
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Enums.OrderSide">
@@ -2023,11 +2033,12 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.PlaceOrderAsync(Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.String)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.String)">
             <summary>
             Places a new order
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-new" /></para>
             </summary>
+            <param name="side">The order side</param>
             <param name="type">The type of the order</param>
             <param name="symbol">The symbol the order is for</param>
             <param name="quantity">The quantity of the order, positive for buying, negative for selling</param>
@@ -2038,6 +2049,8 @@
             <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
             <param name="priceOcoStop">Oco stop price of the order</param>
             <param name="flags">Additional flags</param>
+            <param name="leverage">Leverage</param>
+            <param name="cancelTime">Automatically cancel the order after this time</param>
             <param name="affiliateCode">Affiliate code for the order</param>
             <returns></returns>
         </member>
