@@ -34,7 +34,7 @@ var symbolData = await bitfinexRestClient.SpotApi.Trading.PlaceOrderAsync(
                 OrderType.ExchangeLimit,
                 0.001m,
                 50000);
-													
+                                                    
 // Place a stop loss order, place a limit order of 0.001 BTC at 39000USDT each when the last trade price drops below 40000USDT
 var orderData = await bitfinexRestClient.SpotApi.Trading.PlaceOrderAsync(
                 "tBTCUST",
@@ -72,7 +72,7 @@ var userTradesResult = await bitfinexRestClient.SpotApi.Trading.GetUserTradesAsy
 ```csharp
 var subscribeResult =  bitfinexSocket.SpotApi.SubscribeToTickerUpdatesAsync("tBTCUST", data =>
 {
-	// Handle ticker data
+    // Handle ticker data
 });
 ```
 
@@ -80,16 +80,16 @@ var subscribeResult =  bitfinexSocket.SpotApi.SubscribeToTickerUpdatesAsync("tBT
 ```csharp
 // Any handler can be passed `null` if you're not interested in that type of update
 var subscribeResult = await bitfinexSocket.SpotApi.SubscribeToUserTradeUpdatesAsync(
-	data =>
-	{
-	  // Handle order updates
-	},
-	data =>
-	{
-	  // Handle trade updates
-	}, 
-	data =>
-	{
-	  // Handle position updates
-	});
+    data =>
+    {
+      // Handle order updates
+    },
+    data =>
+    {
+      // Handle trade updates
+    }, 
+    data =>
+    {
+      // Handle position updates
+    });
 ```
