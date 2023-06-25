@@ -11,4 +11,4 @@ has_children: true
 **void SetApiCredentials(ApiCredentials credentials);**  
 ***
 *Spot streams*  
-**[IBitfinexSocketClientSpotStreams](SpotApi/IBitfinexSocketClientSpotStreams.html) SpotStreams { get; }**  
+**[IBitfinexSocketClientSpotApi](SpotApi/IBitfinexSocketClientSpotApi.html) SpotApi { get; }**  

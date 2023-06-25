@@ -1,5 +1,5 @@
 ---
-title: Rest API documentation
+title: IBitfinexRestClient
 has_children: true
 ---
 *[generated documentation]*  
@@ -8,10 +8,10 @@ has_children: true
   
 ***
 *General endpoints*  
-**[IBitfinexClientGeneralApi](GeneralApi/IBitfinexClientGeneralApi.html) GeneralApi { get; }**  
+**IBitfinexRestClientGeneralApi GeneralApi { get; }**  
 ***
 *Set the API credentials for this client. All Api clients in this client will use the new credentials, regardless of earlier set options.*  
 **void SetApiCredentials(ApiCredentials credentials);**  
 ***
 *Spot endpoints*  
-**[IBitfinexClientSpotApi](SpotApi/IBitfinexClientSpotApi.html) SpotApi { get; }**  
+**IBitfinexRestClientSpotApi SpotApi { get; }**  

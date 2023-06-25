@@ -1,11 +1,11 @@
 ---
-title: IBitfinexClientGeneralApiFunding
+title: IBitfinexRestClientGeneralApiFunding
 has_children: false
 parent: IBitfinexClientGeneralApi
 grand_parent: Rest API documentation
 ---
 *[generated documentation]*  
-`BitfinexClient > GeneralApi > Funding`  
+`BitfinexClient > GeneralApi > IBitfinexRestClientFunding`  
 *Bitfinex funding endpoints.*
   
 
@@ -20,7 +20,7 @@ grand_parent: Rest API documentation
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.CancelFundingOfferAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.CancelFundingOfferAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -45,7 +45,7 @@ Task<WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>>> CancelFundingOffe
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.CancelOfferAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.CancelOfferAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -70,7 +70,7 @@ Task<WebCallResult<BitfinexOffer>> CancelOfferAsync(long offerId, CancellationTo
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.CloseMarginFundingAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.CloseMarginFundingAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -95,7 +95,7 @@ Task<WebCallResult<BitfinexFundingContract>> CloseMarginFundingAsync(long swapId
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.GetActiveFundingOffersAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.GetActiveFundingOffersAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -119,7 +119,7 @@ Task<WebCallResult<IEnumerable<BitfinexFundingOffer>>> GetActiveFundingOffersAsy
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.GetFundingAutoRenewStatusAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.GetFundingAutoRenewStatusAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -144,7 +144,7 @@ Task<WebCallResult<BitfinexFundingAutoRenewStatus>> GetFundingAutoRenewStatusAsy
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.GetFundingCreditsAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.GetFundingCreditsAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -169,7 +169,7 @@ Task<WebCallResult<IEnumerable<BitfinexFundingCredit>>> GetFundingCreditsAsync(s
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.GetFundingCreditsHistoryAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.GetFundingCreditsHistoryAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -197,7 +197,7 @@ Task<WebCallResult<IEnumerable<BitfinexFundingCredit>>> GetFundingCreditsHistory
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.GetFundingInfoAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.GetFundingInfoAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -222,7 +222,7 @@ Task<WebCallResult<BitfinexFundingInfo>> GetFundingInfoAsync(string symbol, Canc
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.GetFundingLoansAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.GetFundingLoansAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -247,7 +247,7 @@ Task<WebCallResult<IEnumerable<BitfinexFunding>>> GetFundingLoansAsync(string sy
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.GetFundingLoansHistoryAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.GetFundingLoansHistoryAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -275,7 +275,7 @@ Task<WebCallResult<IEnumerable<BitfinexFunding>>> GetFundingLoansHistoryAsync(st
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.GetFundingOfferHistoryAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.GetFundingOfferHistoryAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -303,7 +303,7 @@ Task<WebCallResult<IEnumerable<BitfinexFundingOffer>>> GetFundingOfferHistoryAsy
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.GetFundingTradesHistoryAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.GetFundingTradesHistoryAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -331,7 +331,7 @@ Task<WebCallResult<IEnumerable<BitfinexFundingTrade>>> GetFundingTradesHistoryAs
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.GetOfferAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.GetOfferAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -356,7 +356,7 @@ Task<WebCallResult<BitfinexOffer>> GetOfferAsync(long offerId, CancellationToken
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.NewOfferAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.NewOfferAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -384,7 +384,7 @@ Task<WebCallResult<BitfinexOffer>> NewOfferAsync(string asset, decimal quantity,
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.SubmitFundingAutoRenewAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.SubmitFundingAutoRenewAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -413,7 +413,7 @@ Task<WebCallResult<BitfinexFundingAutoRenew>> SubmitFundingAutoRenewAsync(string
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.GeneralApi.Funding.SubmitFundingOfferAsync(/* parameters */);  
+var result = await client.GeneralApi.IBitfinexRestClientFunding.SubmitFundingOfferAsync(/* parameters */);  
 ```  
 
 ```csharp  

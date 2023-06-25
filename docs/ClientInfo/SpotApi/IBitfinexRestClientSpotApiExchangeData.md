@@ -1,11 +1,11 @@
 ---
-title: IBitfinexClientSpotApiExchangeData
+title: IBitfinexRestClientSpotApiExchangeData
 has_children: false
 parent: IBitfinexClientSpotApi
 grand_parent: Rest API documentation
 ---
 *[generated documentation]*  
-`BitfinexClient > SpotApi > ExchangeData`  
+`BitfinexClient > SpotApi > IBitfinexRestClientExchangeData`  
 *Bitfinex exchange data endpoints. Exchange data includes market data (tickers, order books, etc) and system status.*
   
 
@@ -20,7 +20,7 @@ grand_parent: Rest API documentation
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetAssetsAsync();  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetAssetsAsync();  
 ```  
 
 ```csharp  
@@ -44,7 +44,7 @@ Task<WebCallResult<IEnumerable<BitfinexAsset>>> GetAssetsAsync(CancellationToken
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetAveragePriceAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetAveragePriceAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -72,7 +72,7 @@ Task<WebCallResult<BitfinexAveragePrice>> GetAveragePriceAsync(string symbol, de
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetForeignExchangeRateAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetForeignExchangeRateAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -98,7 +98,7 @@ Task<WebCallResult<BitfinexForeignExchangeRate>> GetForeignExchangeRateAsync(str
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetFundingBookAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetFundingBookAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -124,7 +124,7 @@ Task<WebCallResult<BitfinexFundingBook>> GetFundingBookAsync(string asset, int? 
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetKlinesAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetKlinesAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -155,7 +155,7 @@ Task<WebCallResult<IEnumerable<BitfinexKline>>> GetKlinesAsync(string symbol, Kl
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetLastKlineAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetLastKlineAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -182,7 +182,7 @@ Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(string symbol, KlineInterva
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetLendsAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetLendsAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -209,7 +209,7 @@ Task<WebCallResult<IEnumerable<BitfinexLend>>> GetLendsAsync(string asset, DateT
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetOrderBookAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetOrderBookAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -236,7 +236,7 @@ Task<WebCallResult<BitfinexOrderBook>> GetOrderBookAsync(string symbol, Precisio
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetPlatformStatusAsync();  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetPlatformStatusAsync();  
 ```  
 
 ```csharp  
@@ -260,7 +260,7 @@ Task<WebCallResult<BitfinexPlatformStatus>> GetPlatformStatusAsync(CancellationT
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetRawOrderBookAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetRawOrderBookAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -286,7 +286,7 @@ Task<WebCallResult<BitfinexOrderBook>> GetRawOrderBookAsync(string symbol, int? 
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetStatsAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetStatsAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -315,7 +315,7 @@ Task<WebCallResult<IEnumerable<BitfinexStats>>> GetStatsAsync(string symbol, Sta
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetSymbolDetailsAsync();  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetSymbolDetailsAsync();  
 ```  
 
 ```csharp  
@@ -339,7 +339,7 @@ Task<WebCallResult<IEnumerable<BitfinexSymbolDetails>>> GetSymbolDetailsAsync(Ca
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetSymbolsAsync();  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetSymbolsAsync();  
 ```  
 
 ```csharp  
@@ -363,7 +363,7 @@ Task<WebCallResult<IEnumerable<string>>> GetSymbolsAsync(CancellationToken ct = 
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetTickerAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetTickerAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -379,6 +379,33 @@ Task<WebCallResult<BitfinexSymbolOverview>> GetTickerAsync(string symbol, Cancel
 
 ***
 
+## GetTickerHistoryAsync  
+
+<p>
+
+*Get ticker history*  
+
+```csharp  
+var client = new BitfinexClient();  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetTickerHistoryAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexTickerHistory>>> GetTickerHistoryAsync(IEnumerable<string>? symbols = default, int? limit = default, DateTime? startTime = default, DateTime? endTime = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ symbols|Symbols|
+|_[Optional]_ limit|The amount of results|
+|_[Optional]_ startTime|Filter by start time|
+|_[Optional]_ endTime|Filter by end time|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
 ## GetTickersAsync  
 
 [https://docs.bitfinex.com/reference#rest-public-tickers](https://docs.bitfinex.com/reference#rest-public-tickers)  
@@ -388,7 +415,7 @@ Task<WebCallResult<BitfinexSymbolOverview>> GetTickerAsync(string symbol, Cancel
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetTickersAsync();  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetTickersAsync();  
 ```  
 
 ```csharp  
@@ -413,7 +440,7 @@ Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickersAsync(IEnumer
 
 ```csharp  
 var client = new BitfinexClient();  
-var result = await client.SpotApi.ExchangeData.GetTradeHistoryAsync(/* parameters */);  
+var result = await client.SpotApi.IBitfinexRestClientExchangeData.GetTradeHistoryAsync(/* parameters */);  
 ```  
 
 ```csharp  
