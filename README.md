@@ -28,6 +28,14 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
 ## Release notes
+* Version 6.0.0 - 25 Jun 2023
+    * Updated CryptoExchange.Net to version 6.0.0
+    * Renamed BitfinexClient to BitfinexRestClient
+    * Renamed SpotStreams to SpotApi on the BitfinexSocketClient
+    * Updated endpoints to consistently use a base url without any path as basis to make switching environments/base urls clearer
+    * Added IBitfinexOrderBookFactory and implementation for creating order books
+    * Updated dependency injection register method (AddBitfinex)
+
 * Version 5.2.0 - 16 Apr 2023
     * Added GetTickerHistoryAsync endpoint
     * Updated socket PlaceOrderAsync parameters
