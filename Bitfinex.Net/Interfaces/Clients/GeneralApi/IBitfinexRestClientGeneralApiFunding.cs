@@ -12,7 +12,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
     /// <summary>
     /// Bitfinex funding endpoints.
     /// </summary>
-    public interface IBitfinexClientGeneralApiFunding
+    public interface IBitfinexRestClientGeneralApiFunding
     {
         /// <summary>
         /// Get the active funding offers

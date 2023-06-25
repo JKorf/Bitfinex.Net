@@ -20,7 +20,7 @@
         public static BitfinexApiAddresses Default = new BitfinexApiAddresses
         {
             RestClientAddress = "https://api.bitfinex.com",
-            SocketClientAddress = "wss://api.bitfinex.com/ws/2"
+            SocketClientAddress = "wss://api.bitfinex.com"
         };
     }
 }

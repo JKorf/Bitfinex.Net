@@ -7,22 +7,22 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// <summary>
     /// Spot API endpoints
     /// </summary>
-    public interface IBitfinexClientSpotApi : IRestApiClient, IDisposable
+    public interface IBitfinexRestClientSpotApi : IRestApiClient, IDisposable
     {
         /// <summary>
         /// Endpoints related to account settings, info or actions
         /// </summary>
-        public IBitfinexClientSpotApiAccount Account { get; }
+        public IBitfinexRestClientSpotApiAccount Account { get; }
 
         /// <summary>
         /// Endpoints related to retrieving market and system data
         /// </summary>
-        public IBitfinexClientSpotApiExchangeData ExchangeData { get; }
+        public IBitfinexRestClientSpotApiExchangeData ExchangeData { get; }
 
         /// <summary>
         /// Endpoints related to orders and trades
         /// </summary>
-        public IBitfinexClientSpotApiTrading Trading { get; }
+        public IBitfinexRestClientSpotApiTrading Trading { get; }
 
         /// <summary>
         /// Get the ISpotClient for this client. This is a common interface which allows for some basic operations without knowing any details of the exchange.

@@ -18,7 +18,7 @@ using Bitfinex.Net.Interfaces.Clients.SpotApi;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc />
-    public class BitfinexClientSpotApiExchangeData : IBitfinexClientSpotApiExchangeData
+    public class BitfinexRestClientSpotApiExchangeData : IBitfinexRestClientSpotApiExchangeData
     {
         private const string StatusEndpoint = "platform/status";
         private const string SymbolsEndpoint = "symbols";
@@ -38,9 +38,9 @@ namespace Bitfinex.Net.Clients.SpotApi
         private const string FundingCandlesEndpoint = "candles/trade:{}:{}:{}/hist";
         private const string MarketAverageEndpoint = "calc/trade/avg";
 
-        private readonly BitfinexClientSpotApi _baseClient;
+        private readonly BitfinexRestClientSpotApi _baseClient;
 
-        internal BitfinexClientSpotApiExchangeData(BitfinexClientSpotApi baseClient)
+        internal BitfinexRestClientSpotApiExchangeData(BitfinexRestClientSpotApi baseClient)
         {
             _baseClient = baseClient;
         }

@@ -20,7 +20,7 @@ using CryptoExchange.Net.CommonObjects;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc />
-    public class BitfinexClientSpotApiTrading : IBitfinexClientSpotApiTrading
+    public class BitfinexRestClientSpotApiTrading : IBitfinexRestClientSpotApiTrading
     {
         private const string OpenOrdersEndpoint = "auth/r/orders";
         private const string OrderHistorySingleEndpoint = "auth/r/orders/hist";
@@ -39,9 +39,9 @@ namespace Bitfinex.Net.Clients.SpotApi
         private const string PositionAuditEndpoint = "auth/r/positions/audit";
         private const string ActivePositionsEndpoint = "auth/r/positions";
 
-        private readonly BitfinexClientSpotApi _baseClient;
+        private readonly BitfinexRestClientSpotApi _baseClient;
 
-        internal BitfinexClientSpotApiTrading(BitfinexClientSpotApi baseClient)
+        internal BitfinexRestClientSpotApiTrading(BitfinexRestClientSpotApi baseClient)
         {
             _baseClient = baseClient;
         }

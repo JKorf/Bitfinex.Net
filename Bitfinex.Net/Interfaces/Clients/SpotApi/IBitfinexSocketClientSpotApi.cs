@@ -14,7 +14,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// <summary>
     /// Bitfinex spot streams
     /// </summary>
-    public interface IBitfinexSocketClientSpotStreams : ISocketApiClient, IDisposable
+    public interface IBitfinexSocketClientSpotApi : ISocketApiClient, IDisposable
     {
         /// <summary>
         /// Subscribes to ticker updates for a symbol

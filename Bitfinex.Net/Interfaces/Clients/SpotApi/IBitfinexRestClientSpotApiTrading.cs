@@ -12,7 +12,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// <summary>
     /// Bitfinex trading endpoints, placing and mananging orders.
     /// </summary>
-    public interface IBitfinexClientSpotApiTrading
+    public interface IBitfinexRestClientSpotApiTrading
     {
         /// <summary>
         /// Get the active orders

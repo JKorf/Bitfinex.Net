@@ -1,14 +1,11 @@
 ﻿using Bitfinex.Net.Enums;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
-using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.Internal;
-using Bitfinex.Net.Objects.Models;
+using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.CommonObjects;
-using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Interfaces.CommonClients;
-using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -22,13 +19,14 @@ using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
-    /// <inheritdoc cref="IBitfinexClientSpotApi" />
-    public class BitfinexClientSpotApi : RestApiClient, IBitfinexClientSpotApi, ISpotClient
+    /// <inheritdoc cref="IBitfinexRestClientSpotApi" />
+    public class BitfinexRestClientSpotApi : RestApiClient, IBitfinexRestClientSpotApi, ISpotClient
     {
         #region fields
         internal string? AffiliateCode { get; set; }
 
-        private readonly BitfinexClientOptions _options;
+        /// <inheritdoc />
+        public new BitfinexRestOptions ClientOptions => (BitfinexRestOptions)base.ClientOptions;
         #endregion
 
         /// <inheritdoc />
@@ -36,11 +34,11 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Api clients
         /// <inheritdoc />
-        public IBitfinexClientSpotApiAccount Account { get; }
+        public IBitfinexRestClientSpotApiAccount Account { get; }
         /// <inheritdoc />
-        public IBitfinexClientSpotApiExchangeData ExchangeData { get; }
+        public IBitfinexRestClientSpotApiExchangeData ExchangeData { get; }
         /// <inheritdoc />
-        public IBitfinexClientSpotApiTrading Trading { get; }
+        public IBitfinexRestClientSpotApiTrading Trading { get; }
         #endregion
 
         /// <summary>
@@ -54,14 +52,12 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region ctor
 
-        internal BitfinexClientSpotApi(Log log, BitfinexClientOptions options) :
-            base(log, options, options.SpotApiOptions)
+        internal BitfinexRestClientSpotApi(ILogger logger, HttpClient? httpClient, BitfinexRestOptions options) :
+            base(logger, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
         {
-            _options = options;
-
-            Account = new BitfinexClientSpotApiAccount(this);
-            ExchangeData = new BitfinexClientSpotApiExchangeData(this);
-            Trading = new BitfinexClientSpotApiTrading(this);
+            Account = new BitfinexRestClientSpotApiAccount(this);
+            ExchangeData = new BitfinexRestClientSpotApiExchangeData(this);
+            Trading = new BitfinexRestClientSpotApiTrading(this);
 
             AffiliateCode = options.AffiliateCode;
         }
@@ -70,7 +66,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         /// <inheritdoc />
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
-            => new BitfinexAuthenticationProvider(credentials, _options.NonceProvider ?? new BitfinexNonceProvider());
+            => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
         #region common interface
 

@@ -4,18 +4,48 @@
         <name>Bitfinex.Net</name>
     </assembly>
     <members>
+        <member name="T:Bitfinex.Net.BitfinexEnvironment">
+            <summary>
+            Bitfinex environments
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.BitfinexEnvironment.RestAddress">
+            <summary>
+            Rest client address
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.BitfinexEnvironment.SocketAddress">
+            <summary>
+            Socket client address
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.BitfinexEnvironment.Live">
+            <summary>
+            Live environment
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexEnvironment.CreateCustom(System.String,System.String,System.String)">
+            <summary>
+            Create a custom environment
+            </summary>
+            <param name="name"></param>
+            <param name="restAddress"></param>
+            <param name="socketAddress"></param>
+            <returns></returns>
+        </member>
         <member name="T:Bitfinex.Net.BitfinexHelpers">
             <summary>
             Helper functions
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexHelpers.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitfinex.Net.Objects.BitfinexClientOptions,Bitfinex.Net.Objects.BitfinexSocketClientOptions},System.Nullable{Microsoft.Extensions.DependencyInjection.ServiceLifetime})">
+        <member name="M:Bitfinex.Net.BitfinexHelpers.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions},System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions},System.Nullable{Microsoft.Extensions.DependencyInjection.ServiceLifetime})">
             <summary>
             Add the IBitfinexClient and IBitfinexSocketClient to the sevice collection so they can be injected
             </summary>
             <param name="services">The service collection</param>
-            <param name="defaultOptionsCallback">Set default options for the client</param>
-            <param name="socketClientLifeTime">The lifetime of the IBitfinexSocketClient for the service collection. Defaults to Scoped.</param>
+            <param name="defaultRestOptionsDelegate">Set default options for the rest client</param>
+            <param name="defaultSocketOptionsDelegate">Set default options for the socket client</param>
+            <param name="socketClientLifeTime">The lifetime of the IBitfinexSocketClient for the service collection. Defaults to Singleton.</param>
             <returns></returns>
         </member>
         <member name="M:Bitfinex.Net.BitfinexHelpers.ValidateBitfinexSymbol(System.String)">
@@ -24,162 +54,184 @@
             </summary>
             <param name="symbolString">string to validate</param>
         </member>
-        <member name="T:Bitfinex.Net.Clients.BitfinexClient">
-            <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.IBitfinexClient" />
+        <member name="T:Bitfinex.Net.Clients.BitfinexRestClient">
+            <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient" />
         </member>
-        <member name="P:Bitfinex.Net.Clients.BitfinexClient.GeneralApi">
+        <member name="P:Bitfinex.Net.Clients.BitfinexRestClient.GeneralApi">
             <inheritdoc />
         </member>
-        <member name="P:Bitfinex.Net.Clients.BitfinexClient.SpotApi">
+        <member name="P:Bitfinex.Net.Clients.BitfinexRestClient.SpotApi">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.BitfinexClient.#ctor">
+        <member name="M:Bitfinex.Net.Clients.BitfinexRestClient.#ctor(System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions})">
             <summary>
-            Create a new instance of BitfinexClient using the default options
+            Create a new instance of the BitfinexRestClient using provided options
+            </summary>
+            <param name="optionsDelegate">Option configuration delegate</param>
+        </member>
+        <member name="M:Bitfinex.Net.Clients.BitfinexRestClient.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,System.Net.Http.HttpClient)">
+            <summary>
+            Create a new instance of the BitfinexRestClient using provided options
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Clients.BitfinexClient.#ctor(Bitfinex.Net.Objects.BitfinexClientOptions)">
+        <member name="M:Bitfinex.Net.Clients.BitfinexRestClient.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Logging.ILoggerFactory,System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions})">
             <summary>
-            Create a new instance of BitfinexClient using provided options
+            Create a new instance of the BitfinexRestClient using provided options
             </summary>
-            <param name="options">The options to use for this client</param>
+            <param name="optionsDelegate">Option configuration delegate</param>
+            <param name="loggerFactory">The logger factory</param>
+            <param name="httpClient">Http client for this client</param>
         </member>
-        <member name="M:Bitfinex.Net.Clients.BitfinexClient.SetDefaultOptions(Bitfinex.Net.Objects.BitfinexClientOptions)">
+        <member name="M:Bitfinex.Net.Clients.BitfinexRestClient.SetDefaultOptions(System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions})">
             <summary>
             Set the default options to be used when creating new clients
             </summary>
-            <param name="options">Options to use as default</param>
+            <param name="optionsDelegate">Option configuration delegate</param>
         </member>
-        <member name="M:Bitfinex.Net.Clients.BitfinexClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
+        <member name="M:Bitfinex.Net.Clients.BitfinexRestClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.Clients.BitfinexSocketClient">
             <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient" />
         </member>
-        <member name="P:Bitfinex.Net.Clients.BitfinexSocketClient.SpotStreams">
+        <member name="P:Bitfinex.Net.Clients.BitfinexSocketClient.SpotApi">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.#ctor">
+        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.#ctor(Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>
-            Create a new instance of BitfinexSocketClient using the default options
+            Create a new instance of the BitfinexSocketClient
             </summary>
+            <param name="loggerFactory">The logger factory</param>
         </member>
-        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.#ctor(Bitfinex.Net.Objects.BitfinexSocketClientOptions)">
+        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.#ctor(System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions})">
             <summary>
-            Create a new instance of BitfinexSocketClient using provided options
+            Create a new instance of the BitfinexSocketClient
             </summary>
-            <param name="options">The options to use for this client</param>
+            <param name="optionsDelegate">Option configuration delegate</param>
         </member>
-        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.SetDefaultOptions(Bitfinex.Net.Objects.BitfinexSocketClientOptions)">
+        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.#ctor(System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions},Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            Create a new instance of the BitfinexSocketClient
+            </summary>
+            <param name="loggerFactory">The logger factory</param>
+            <param name="optionsDelegate">Option configuration delegate</param>
+        </member>
+        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.SetDefaultOptions(System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions})">
             <summary>
             Set the default options to be used when creating new clients
             </summary>
-            <param name="options">Options to use as default</param>
+            <param name="optionsDelegate">Option configuration delegate</param>
         </member>
         <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
-        <member name="T:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApi">
-            <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApi" />
+        <member name="T:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi">
+            <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApi" />
         </member>
-        <member name="P:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApi.Funding">
+        <member name="P:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.ClientOptions">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
+        <member name="P:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.Funding">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApi.ParseErrorResponse(Newtonsoft.Json.Linq.JToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.ParseErrorResponse(Newtonsoft.Json.Linq.JToken)">
             <summary>
             </summary>
             <param name="data"></param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApi.GetTimeSyncInfo">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.GetTimeSyncInfo">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApi.GetTimeOffset">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.GetTimeOffset">
             <inheritdoc />
         </member>
-        <member name="T:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding">
+        <member name="T:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetActiveFundingOffersAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.GetActiveFundingOffersAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetFundingOfferHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.GetFundingOfferHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.SubmitFundingOfferAsync(Bitfinex.Net.Enums.FundingOrderType,System.String,System.Decimal,System.Decimal,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.SubmitFundingOfferAsync(Bitfinex.Net.Enums.FundingOrderType,System.String,System.Decimal,System.Decimal,System.Int32,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.CancelFundingOfferAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.CancelFundingOfferAsync(System.Int64,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetFundingLoansAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.GetFundingLoansAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetFundingLoansHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.GetFundingLoansHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetFundingCreditsAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.GetFundingCreditsAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetFundingCreditsHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.GetFundingCreditsHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetFundingTradesHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.GetFundingTradesHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.NewOfferAsync(System.String,System.Decimal,System.Decimal,System.Int32,Bitfinex.Net.Enums.FundingType,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.NewOfferAsync(System.String,System.Decimal,System.Decimal,System.Int32,Bitfinex.Net.Enums.FundingType,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.CancelOfferAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.CancelOfferAsync(System.Int64,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetOfferAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.GetOfferAsync(System.Int64,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.CloseMarginFundingAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.CloseMarginFundingAsync(System.Int64,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetFundingInfoAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.GetFundingInfoAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.SubmitFundingAutoRenewAsync(System.String,System.Boolean,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.SubmitFundingAutoRenewAsync(System.String,System.Boolean,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexClientGeneralApiFunding.GetFundingAutoRenewStatusAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding.GetFundingAutoRenewStatusAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi">
-            <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApi" />
+        <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi">
+            <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi" />
         </member>
-        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.ExchangeName">
+        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.ClientOptions">
             <inheritdoc />
         </member>
-        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.Account">
+        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.ExchangeName">
             <inheritdoc />
         </member>
-        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.ExchangeData">
+        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.Account">
             <inheritdoc />
         </member>
-        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.Trading">
+        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.ExchangeData">
             <inheritdoc />
         </member>
-        <member name="E:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.OnOrderPlaced">
+        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.Trading">
+            <inheritdoc />
+        </member>
+        <member name="E:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.OnOrderPlaced">
             <summary>
             Event triggered when an order is placed via this client
             </summary>
         </member>
-        <member name="E:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.OnOrderCanceled">
+        <member name="E:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.OnOrderCanceled">
             <summary>
             Event triggered when an order is canceled via this client
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.GetSymbolName(System.String,System.String)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetSymbolName(System.String,System.String)">
             <summary>
             Get the name of a symbol for Bitfinex based on the base and quote asset
             </summary>
@@ -187,235 +239,238 @@
             <param name="quoteAsset"></param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.GetTimeSyncInfo">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetTimeSyncInfo">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.GetTimeOffset">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetTimeOffset">
             <inheritdoc />
         </member>
-        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.CommonSpotClient">
+        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CommonSpotClient">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApi.ParseErrorResponse(Newtonsoft.Json.Linq.JToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.ParseErrorResponse(Newtonsoft.Json.Linq.JToken)">
             <summary>
             </summary>
             <param name="data"></param>
             <returns></returns>
         </member>
-        <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount">
+        <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetBalancesAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetBalancesAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetBaseMarginInfoAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetBaseMarginInfoAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetSymbolMarginInfoAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetSymbolMarginInfoAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetMovementsAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetMovementsAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetAlertListAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetAlertListAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.SetAlertAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.SetAlertAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.DeleteAlertAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.DeleteAlertAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetAvailableBalanceAsync(System.String,Bitfinex.Net.Enums.OrderSide,System.Decimal,Bitfinex.Net.Enums.WalletType,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetAvailableBalanceAsync(System.String,Bitfinex.Net.Enums.OrderSide,System.Decimal,Bitfinex.Net.Enums.WalletType,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetUserInfoAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetUserInfoAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetAccountInfoAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetAccountInfoAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.Get30DaySummaryAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.Get30DaySummaryAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetDepositAddressAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetDepositAddressAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.WalletTransferAsync(System.String,System.Decimal,Bitfinex.Net.Enums.WithdrawWallet,Bitfinex.Net.Enums.WithdrawWallet,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WalletTransferAsync(System.String,System.Decimal,Bitfinex.Net.Enums.WithdrawWallet,Bitfinex.Net.Enums.WithdrawWallet,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiAccount.GetWithdrawalFeesAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetWithdrawalFeesAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData">
+        <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetPlatformStatusAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetPlatformStatusAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetAssetsAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetAssetsAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetSymbolsAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetSymbolsAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetTickerAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetTickerAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetTickersAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetTickersAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetTickerHistoryAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetTickerHistoryAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetTradeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetTradeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetOrderBookAsync(System.String,Bitfinex.Net.Enums.Precision,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetOrderBookAsync(System.String,Bitfinex.Net.Enums.Precision,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetRawOrderBookAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetRawOrderBookAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetLastKlineAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetLastKlineAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetKlinesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetKlinesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetFundingBookAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetFundingBookAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetSymbolDetailsAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetSymbolDetailsAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetForeignExchangeRateAsync(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetForeignExchangeRateAsync(System.String,System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetLendsAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetLendsAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiExchangeData.GetStatsAsync(System.String,Bitfinex.Net.Enums.StatKey,Bitfinex.Net.Enums.StatSide,Bitfinex.Net.Enums.StatSection,System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetStatsAsync(System.String,Bitfinex.Net.Enums.StatKey,Bitfinex.Net.Enums.StatSide,Bitfinex.Net.Enums.StatSection,System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading">
+        <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.GetOpenOrdersAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.GetClosedOrdersAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetClosedOrdersAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.GetOrderTradesAsync(System.String,System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetOrderTradesAsync(System.String,System.Int64,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.GetUserTradesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetUserTradesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.PlaceOrderAsync(System.String,Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.PlaceOrderAsync(System.String,Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.CancelOrderAsync(System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.CancelOrderAsync(System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.CancelAllOrdersAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.CancelAllOrdersAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.GetOrderAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetOrderAsync(System.Int64,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.GetPositionHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetPositionHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.ClaimPositionAsync(System.Int64,System.Decimal,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.ClaimPositionAsync(System.Int64,System.Decimal,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.ClosePositionAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.ClosePositionAsync(System.Int64,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.GetActivePositionsAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetActivePositionsAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexClientSpotApiTrading.GetPositionsByIdAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetPositionsByIdAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams">
-            <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams" />
+        <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi">
+            <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi" />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
+        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.ClientOptions">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToRawOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeSimple}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToRawOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeSimple}}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToUserTradeUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrder}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexPosition}}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToBalanceUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexWallet}}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToUserTradeUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrder}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexPosition}}}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.SubscribeToFundingUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingOffer}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingCredit}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFunding}}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToBalanceUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexWallet}}}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.String)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToFundingUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingOffer}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingCredit}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFunding}}}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.UpdateOrderAsync(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags})">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.CancelOrderAsync(System.Int64)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.UpdateOrderAsync(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags})">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.CancelOrdersByGroupIdAsync(System.Int64)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CancelOrderAsync(System.Int64)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.CancelOrdersByGroupIdsAsync(System.Collections.Generic.IEnumerable{System.Int64})">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CancelOrdersByGroupIdAsync(System.Int64)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.CancelOrdersAsync(System.Collections.Generic.IEnumerable{System.Int64})">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CancelOrdersByGroupIdsAsync(System.Collections.Generic.IEnumerable{System.Int64})">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.CancelOrdersByClientOrderIdsAsync(System.Collections.Generic.Dictionary{System.Int64,System.DateTime})">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CancelOrdersAsync(System.Collections.Generic.IEnumerable{System.Int64})">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.UnsubscribeAsync(CryptoExchange.Net.Sockets.SocketConnection,CryptoExchange.Net.Sockets.SocketSubscription)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CancelOrdersByClientOrderIdsAsync(System.Collections.Generic.Dictionary{System.Int64,System.DateTime})">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.AuthenticateSocketAsync(CryptoExchange.Net.Sockets.SocketConnection)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.UnsubscribeAsync(CryptoExchange.Net.Sockets.SocketConnection,CryptoExchange.Net.Sockets.SocketSubscription)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.HandleQueryResponse``1(CryptoExchange.Net.Sockets.SocketConnection,System.Object,Newtonsoft.Json.Linq.JToken,CryptoExchange.Net.Objects.CallResult{``0}@)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.AuthenticateSocketAsync(CryptoExchange.Net.Sockets.SocketConnection)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.HandleSubscriptionResponse(CryptoExchange.Net.Sockets.SocketConnection,CryptoExchange.Net.Sockets.SocketSubscription,System.Object,Newtonsoft.Json.Linq.JToken,CryptoExchange.Net.Objects.CallResult{System.Object}@)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.HandleQueryResponse``1(CryptoExchange.Net.Sockets.SocketConnection,System.Object,Newtonsoft.Json.Linq.JToken,CryptoExchange.Net.Objects.CallResult{``0}@)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.MessageMatchesHandler(CryptoExchange.Net.Sockets.SocketConnection,Newtonsoft.Json.Linq.JToken,System.Object)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.HandleSubscriptionResponse(CryptoExchange.Net.Sockets.SocketConnection,CryptoExchange.Net.Sockets.SocketSubscription,System.Object,Newtonsoft.Json.Linq.JToken,CryptoExchange.Net.Objects.CallResult{System.Object}@)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotStreams.MessageMatchesHandler(CryptoExchange.Net.Sockets.SocketConnection,Newtonsoft.Json.Linq.JToken,System.String)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.MessageMatchesHandler(CryptoExchange.Net.Sockets.SocketConnection,Newtonsoft.Json.Linq.JToken,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.MessageMatchesHandler(CryptoExchange.Net.Sockets.SocketConnection,Newtonsoft.Json.Linq.JToken,System.String)">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.Enums.BitfinexEventType">
@@ -1188,22 +1243,22 @@
             Deposit
             </summary>
         </member>
-        <member name="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApi">
+        <member name="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApi">
             <summary>
             General API endpoints
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApi.Funding">
+        <member name="P:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApi.Funding">
             <summary>
             Endpoints related to funding
             </summary>
         </member>
-        <member name="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding">
+        <member name="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding">
             <summary>
             Bitfinex funding endpoints.
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetActiveFundingOffersAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.GetActiveFundingOffersAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get the active funding offers
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-offers" /></para>
@@ -1212,7 +1267,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetFundingOfferHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.GetFundingOfferHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the funding offer history
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-offers-hist" /></para>
@@ -1224,7 +1279,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.SubmitFundingOfferAsync(Bitfinex.Net.Enums.FundingOrderType,System.String,System.Decimal,System.Decimal,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.SubmitFundingOfferAsync(Bitfinex.Net.Enums.FundingOrderType,System.String,System.Decimal,System.Decimal,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Submit a new funding offer.
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-submit-funding-offer" /></para>
@@ -1237,7 +1292,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.CancelFundingOfferAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.CancelFundingOfferAsync(System.Int64,System.Threading.CancellationToken)">
             <summary>
             Cancels an existing Funding Offer based on the offer ID entered.
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-cancel-funding-offer" /></para>
@@ -1246,7 +1301,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetFundingLoansAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.GetFundingLoansAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get the funding loans
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-loans" /></para>
@@ -1255,7 +1310,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetFundingLoansHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.GetFundingLoansHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the funding loan history
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-loans-hist" /></para>
@@ -1267,7 +1322,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetFundingCreditsAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.GetFundingCreditsAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get the funding credits
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-credits" /></para>
@@ -1276,7 +1331,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetFundingCreditsHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.GetFundingCreditsHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the funding credits history
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-credits-hist" /></para>
@@ -1288,7 +1343,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetFundingTradesHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.GetFundingTradesHistoryAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the funding trades history
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-trades-hist" /></para>
@@ -1300,7 +1355,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.NewOfferAsync(System.String,System.Decimal,System.Decimal,System.Int32,Bitfinex.Net.Enums.FundingType,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.NewOfferAsync(System.String,System.Decimal,System.Decimal,System.Int32,Bitfinex.Net.Enums.FundingType,System.Threading.CancellationToken)">
             <summary>
             Submit a new offer
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-new-offer" /></para>
@@ -1313,7 +1368,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.CancelOfferAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.CancelOfferAsync(System.Int64,System.Threading.CancellationToken)">
             <summary>
             Cancel an offer
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-cancel-offer" /></para>
@@ -1322,7 +1377,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetOfferAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.GetOfferAsync(System.Int64,System.Threading.CancellationToken)">
             <summary>
             Cancel an offer
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-offer-status" /></para>
@@ -1331,7 +1386,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.CloseMarginFundingAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.CloseMarginFundingAsync(System.Int64,System.Threading.CancellationToken)">
             <summary>
             Close margin funding
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-close-margin-funding" /></para>
@@ -1340,7 +1395,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetFundingInfoAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.GetFundingInfoAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get funding info for a symbol
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-funding" /></para>
@@ -1349,7 +1404,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.SubmitFundingAutoRenewAsync(System.String,System.Boolean,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.SubmitFundingAutoRenewAsync(System.String,System.Boolean,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Activate or deactivate auto-renew. Allows you to specify the currency, amount, rate, and period.
             </summary>
@@ -1361,7 +1416,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexClientGeneralApiFunding.GetFundingAutoRenewStatusAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding.GetFundingAutoRenewStatusAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Status of auto-renew.
             </summary>
@@ -1369,22 +1424,22 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="T:Bitfinex.Net.Interfaces.Clients.IBitfinexClient">
+        <member name="T:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient">
             <summary>
             Client for accessing the Bitfinex API. 
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Interfaces.Clients.IBitfinexClient.GeneralApi">
+        <member name="P:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.GeneralApi">
             <summary>
             General endpoints
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Interfaces.Clients.IBitfinexClient.SpotApi">
+        <member name="P:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.SpotApi">
             <summary>
             Spot endpoints
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <summary>
             Set the API credentials for this client. All Api clients in this client will use the new credentials, regardless of earlier set options.
             </summary>
@@ -1395,7 +1450,7 @@
             Client for accessing the Bitfinex websocket API
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient.SpotStreams">
+        <member name="P:Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient.SpotApi">
             <summary>
             Spot streams
             </summary>
@@ -1406,38 +1461,38 @@
             </summary>
             <param name="credentials">The credentials to set</param>
         </member>
-        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApi">
+        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi">
             <summary>
             Spot API endpoints
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApi.Account">
+        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.Account">
             <summary>
             Endpoints related to account settings, info or actions
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApi.ExchangeData">
+        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.ExchangeData">
             <summary>
             Endpoints related to retrieving market and system data
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApi.Trading">
+        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.Trading">
             <summary>
             Endpoints related to orders and trades
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApi.CommonSpotClient">
+        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.CommonSpotClient">
             <summary>
             Get the ISpotClient for this client. This is a common interface which allows for some basic operations without knowing any details of the exchange.
             </summary>
             <returns></returns>
         </member>
-        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount">
+        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount">
             <summary>
             Bitfinex account endpoints. Account endpoints include balance info, withdraw/deposit info and requesting and account settings
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetBalancesAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetBalancesAsync(System.Threading.CancellationToken)">
             <summary>
             Get all balances
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-wallets" /></para>
@@ -1445,7 +1500,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetBaseMarginInfoAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetBaseMarginInfoAsync(System.Threading.CancellationToken)">
             <summary>
             Get the base margin info
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /></para>
@@ -1453,7 +1508,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetSymbolMarginInfoAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetSymbolMarginInfoAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get the margin info for a symbol
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /></para>
@@ -1462,7 +1517,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetMovementsAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetMovementsAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get the withdrawal/deposit history
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-movements" /></para>
@@ -1471,7 +1526,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetAlertListAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetAlertListAsync(System.Threading.CancellationToken)">
             <summary>
             Get the list of alerts
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-alerts" /></para>
@@ -1479,7 +1534,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.SetAlertAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.SetAlertAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
             <summary>
             Set an alert
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-alert-set" /></para>
@@ -1489,7 +1544,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.DeleteAlertAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.DeleteAlertAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
             <summary>
             Delete an existing alert
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-alert-del" /></para>
@@ -1499,7 +1554,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetAvailableBalanceAsync(System.String,Bitfinex.Net.Enums.OrderSide,System.Decimal,Bitfinex.Net.Enums.WalletType,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetAvailableBalanceAsync(System.String,Bitfinex.Net.Enums.OrderSide,System.Decimal,Bitfinex.Net.Enums.WalletType,System.Threading.CancellationToken)">
             <summary>
             Calculates the available balance for a symbol at a specific rate
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-calc-order-avail" /></para>
@@ -1511,7 +1566,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get changes in your balance for an asset
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-ledgers" /></para>
@@ -1524,7 +1579,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetUserInfoAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetUserInfoAsync(System.Threading.CancellationToken)">
             <summary>
             Gets information about the user associated with the api key/secret
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-user" /></para>
@@ -1532,7 +1587,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetAccountInfoAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetAccountInfoAsync(System.Threading.CancellationToken)">
             <summary>
             Get information about your account
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-account-info" /></para>
@@ -1540,7 +1595,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetWithdrawalFeesAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetWithdrawalFeesAsync(System.Threading.CancellationToken)">
             <summary>
             Get withdrawal fees for this account
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-fees" /></para>
@@ -1548,7 +1603,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.Get30DaySummaryAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.Get30DaySummaryAsync(System.Threading.CancellationToken)">
             <summary>
             Get 30-day summary on trading volume and margin funding
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-summary" /></para>
@@ -1556,7 +1611,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.GetDepositAddressAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetDepositAddressAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <summary>
             Gets a deposit address for an asset
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-deposit" /></para>
@@ -1567,7 +1622,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.WalletTransferAsync(System.String,System.Decimal,Bitfinex.Net.Enums.WithdrawWallet,Bitfinex.Net.Enums.WithdrawWallet,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.WalletTransferAsync(System.String,System.Decimal,Bitfinex.Net.Enums.WithdrawWallet,Bitfinex.Net.Enums.WithdrawWallet,System.Threading.CancellationToken)">
             <summary>
             Transfers funds from one wallet to another
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-transfer-between-wallets" /></para>
@@ -1579,7 +1634,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
             All withdrawals need the withdrawType, wallet and quantity parameters
@@ -1610,12 +1665,12 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData">
+        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData">
             <summary>
             Bitfinex exchange data endpoints. Exchange data includes market data (tickers, order books, etc) and system status.
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetPlatformStatusAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetPlatformStatusAsync(System.Threading.CancellationToken)">
             <summary>
             Gets the platform status
             <para><a href="https://docs.bitfinex.com/reference#rest-public-platform-status" /></para>
@@ -1623,7 +1678,7 @@
             <param name="ct">Cancellation token</param>
             <returns>Whether Bitfinex platform is running normally or not</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetAssetsAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetsAsync(System.Threading.CancellationToken)">
             <summary>
             Gets a list of supported assets
             <para><a href="https://docs.bitfinex.com/reference#rest-public-conf" /></para>
@@ -1631,7 +1686,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetTickerAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetTickerAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Returns basic market data for the provided symbols
             <para><a href="https://docs.bitfinex.com/reference#rest-public-ticker" /></para>
@@ -1640,7 +1695,7 @@
             <param name="ct">Cancellation token</param>
             <returns>Symbol data</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetTickersAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetTickersAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
             <summary>
             Returns basic market data for the provided symbols
             <para><a href="https://docs.bitfinex.com/reference#rest-public-tickers" /></para>
@@ -1649,7 +1704,7 @@
             <param name="ct">Cancellation token</param>
             <returns>Symbol data</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetTickerHistoryAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetTickerHistoryAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <summary>
             Get ticker history
             </summary>
@@ -1660,7 +1715,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetTradeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetTradeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get recent trades for a symbol
             <para><a href="https://docs.bitfinex.com/reference#rest-public-trades" /></para>
@@ -1673,7 +1728,7 @@
             <param name="ct">Cancellation token</param>
             <returns>Trades for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetOrderBookAsync(System.String,Bitfinex.Net.Enums.Precision,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetOrderBookAsync(System.String,Bitfinex.Net.Enums.Precision,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets the order book for a symbol
             <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
@@ -1684,7 +1739,7 @@
             <param name="ct">Cancellation token</param>
             <returns>The order book for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetRawOrderBookAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetRawOrderBookAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the raw order book for a symbol
             <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
@@ -1694,7 +1749,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetStatsAsync(System.String,Bitfinex.Net.Enums.StatKey,Bitfinex.Net.Enums.StatSide,Bitfinex.Net.Enums.StatSection,System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetStatsAsync(System.String,Bitfinex.Net.Enums.StatKey,Bitfinex.Net.Enums.StatSide,Bitfinex.Net.Enums.StatSection,System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get various stats for the symbol
             <para><a href="https://docs.bitfinex.com/reference#rest-public-stats1" /></para>
@@ -1707,7 +1762,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetLastKlineAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastKlineAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.String,System.Threading.CancellationToken)">
             <summary>
             Get the last kline for a symbol
             <para><a href="https://docs.bitfinex.com/reference#rest-public-candles" /></para>
@@ -1718,7 +1773,7 @@
             <param name="ct">Cancellation token</param>
             <returns>The last kline for the symbol</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetKlinesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetKlinesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Gets klines for a symbol
             <para><a href="https://docs.bitfinex.com/reference#rest-public-candles" /></para>
@@ -1733,7 +1788,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Calculate the average execution price
             <para><a href="https://docs.bitfinex.com/reference#rest-public-calc-market-average-price" /></para>
@@ -1745,7 +1800,7 @@
             <param name="ct">Cancellation token</param>
             <returns>The average price at which the execution would happen</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetForeignExchangeRateAsync(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetForeignExchangeRateAsync(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Returns the exchange rate for the assets
             <para><a href="https://docs.bitfinex.com/reference#rest-public-calc-foreign-exchange-rate" /></para>
@@ -1755,7 +1810,7 @@
             <param name="ct">Cancellation token</param>
             <returns>Exchange rate</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetFundingBookAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetFundingBookAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets the margin funding book
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-public-fundingbook" /></para>
@@ -1765,7 +1820,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetLendsAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLendsAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets the most recent lends
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-public-lends" /></para>
@@ -1776,7 +1831,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetSymbolsAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetSymbolsAsync(System.Threading.CancellationToken)">
             <summary>
             Gets a list of all symbols
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-public-symbols" /></para>
@@ -1784,7 +1839,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiExchangeData.GetSymbolDetailsAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetSymbolDetailsAsync(System.Threading.CancellationToken)">
             <summary>
             Gets details of all symbols
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-public-symbol-details" /></para>
@@ -1792,12 +1847,12 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading">
+        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading">
             <summary>
             Bitfinex trading endpoints, placing and mananging orders.
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.GetOpenOrdersAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.Threading.CancellationToken)">
             <summary>
             Get the active orders
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-orders" /></para>
@@ -1805,7 +1860,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.GetClosedOrdersAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetClosedOrdersAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the order history for a symbol for this account
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-orders-history" /></para>
@@ -1817,7 +1872,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.GetOrderTradesAsync(System.String,System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetOrderTradesAsync(System.String,System.Int64,System.Threading.CancellationToken)">
             <summary>
             Get the individual trades for an order
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-order-trades" /></para>
@@ -1827,7 +1882,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.GetUserTradesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetUserTradesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the trade history for a symbol
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-trades" /></para>
@@ -1839,7 +1894,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.GetPositionHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetPositionHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get a list of historical positions
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-positions-hist" /></para>
@@ -1850,7 +1905,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.PlaceOrderAsync(System.String,Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.PlaceOrderAsync(System.String,Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.Decimal,System.Decimal,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
             <summary>
             Place a new order
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-submit-order" /></para>
@@ -1872,7 +1927,7 @@
             <param name="cancelTime">datetime for automatic order cancelation</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.CancelOrderAsync(System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.CancelOrderAsync(System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <summary>
             Cancel a specific order
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-cancel-order" /></para>
@@ -1883,14 +1938,14 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.CancelAllOrdersAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.CancelAllOrdersAsync(System.Threading.CancellationToken)">
             <summary>
             Cancels all open orders
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-cancel-all-orders" /></para>
             </summary>
             <param name="ct">Cancellation token</param><returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.GetOrderAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetOrderAsync(System.Int64,System.Threading.CancellationToken)">
             <summary>
             Get the status of a specific order
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-order-status" /></para>
@@ -1899,7 +1954,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.ClaimPositionAsync(System.Int64,System.Decimal,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.ClaimPositionAsync(System.Int64,System.Decimal,System.Threading.CancellationToken)">
             <summary>
             Claim a position
             <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-claim-position" /></para>
@@ -1909,7 +1964,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.ClosePositionAsync(System.Int64,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.ClosePositionAsync(System.Int64,System.Threading.CancellationToken)">
             <summary>
             Close a position
             <para><a href="https://docs.bitfinex.com/v1/reference#close-position" /></para>
@@ -1918,7 +1973,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.GetActivePositionsAsync(System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetActivePositionsAsync(System.Threading.CancellationToken)">
             <summary>
             Get the active positions
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-positions" /></para>
@@ -1926,7 +1981,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexClientSpotApiTrading.GetPositionsByIdAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetPositionsByIdAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get positions by id
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-positions-audit" /></para>
@@ -1938,12 +1993,12 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams">
+        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi">
             <summary>
             Bitfinex spot streams
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamSymbolOverview}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to ticker updates for a symbol
             <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
@@ -1953,7 +2008,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.SubscribeToOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to order book updates for a symbol
             <para><a href="https://docs.bitfinex.com/reference#ws-public-books" /></para>
@@ -1967,7 +2022,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.SubscribeToRawOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToRawOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to raw order book updates for a symbol
             <para><a href="https://docs.bitfinex.com/reference#ws-public-raw-books" /></para>
@@ -1979,7 +2034,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeSimple}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeSimple}}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to public trade updates for a symbol
             <para><a href="https://docs.bitfinex.com/reference#ws-public-trades" /></para>
@@ -1989,7 +2044,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to kline updates for a symbol
             <para><a href="https://docs.bitfinex.com/reference#ws-public-candles" /></para>
@@ -2000,7 +2055,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.SubscribeToUserTradeUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrder}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexPosition}}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToUserTradeUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrder}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexPosition}}}},System.Threading.CancellationToken)">
             <summary>
             Subscribe to trading information updates
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-trades" /></para>
@@ -2011,7 +2066,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.SubscribeToBalanceUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexWallet}}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToBalanceUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexWallet}}}},System.Threading.CancellationToken)">
             <summary>
             Subscribe to wallet information updates
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-wallets" /></para>
@@ -2020,7 +2075,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.SubscribeToFundingUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingOffer}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingCredit}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFunding}}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToFundingUpdatesAsync(System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingOffer}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingCredit}}}},System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFunding}}}},System.Threading.CancellationToken)">
             <summary>
             Subscribe to funding information updates
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-funding-offers" /></para>
@@ -2033,7 +2088,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.String)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.String)">
             <summary>
             Places a new order
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-new" /></para>
@@ -2054,7 +2109,7 @@
             <param name="affiliateCode">Affiliate code for the order</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.UpdateOrderAsync(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags})">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.UpdateOrderAsync(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags})">
             <summary>
             Updates an order
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-update" /></para>
@@ -2068,7 +2123,7 @@
             <param name="flags">The new flags</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.CancelOrderAsync(System.Int64)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.CancelOrderAsync(System.Int64)">
             <summary>
             Cancels an order
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel" /></para>
@@ -2076,7 +2131,7 @@
             <param name="orderId">The id of the order to cancel</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.CancelOrdersByGroupIdAsync(System.Int64)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.CancelOrdersByGroupIdAsync(System.Int64)">
             <summary>
             Cancels multiple orders based on their groupId
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel" /></para>
@@ -2084,7 +2139,7 @@
             <param name="groupOrderId">The group id to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.CancelOrdersByGroupIdsAsync(System.Collections.Generic.IEnumerable{System.Int64})">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.CancelOrdersByGroupIdsAsync(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Cancels multiple orders based on their groupIds
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
@@ -2092,7 +2147,7 @@
             <param name="groupOrderIds">The group ids to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.CancelOrdersAsync(System.Collections.Generic.IEnumerable{System.Int64})">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.CancelOrdersAsync(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Cancels multiple orders based on their order ids
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
@@ -2100,13 +2155,26 @@
             <param name="orderIds">The order ids to cancel</param>
             <returns>True if successfully committed on server</returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotStreams.CancelOrdersByClientOrderIdsAsync(System.Collections.Generic.Dictionary{System.Int64,System.DateTime})">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.CancelOrdersByClientOrderIdsAsync(System.Collections.Generic.Dictionary{System.Int64,System.DateTime})">
             <summary>
             Cancels multiple orders based on their clientOrderIds
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
             </summary>
             <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
             <returns>True if successfully committed on server</returns>
+        </member>
+        <member name="T:Bitfinex.Net.Interfaces.IBitfinexOrderBookFactory">
+            <summary>
+            Bitfinex order book factory
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexOrderBookFactory.Create(System.String,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions})">
+            <summary>
+            Create a SymbolOrderBook
+            </summary>
+            <param name="symbol">The symbol</param>
+            <param name="options">Book options</param>
+            <returns></returns>
         </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexApiAddresses">
             <summary>
@@ -2126,103 +2194,6 @@
         <member name="F:Bitfinex.Net.Objects.BitfinexApiAddresses.Default">
             <summary>
             The default addresses to connect to the Bitfinex.com API
-            </summary>
-        </member>
-        <member name="T:Bitfinex.Net.Objects.BitfinexClientOptions">
-            <summary>
-            Options for the BitfinexClient
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexClientOptions.Default">
-            <summary>
-            Default options for the client
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexClientOptions.AffiliateCode">
-            <summary>
-            Default affiliate code to use when placing orders
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexClientOptions.NonceProvider">
-            <summary>
-            Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexClientOptions.SpotApiOptions">
-            <summary>
-            Options for the spot API
-            </summary>
-        </member>
-        <member name="M:Bitfinex.Net.Objects.BitfinexClientOptions.#ctor">
-            <summary>
-            ctor
-            </summary>
-        </member>
-        <member name="M:Bitfinex.Net.Objects.BitfinexClientOptions.#ctor(Bitfinex.Net.Objects.BitfinexClientOptions)">
-            <summary>
-            ctor
-            </summary>
-            <param name="baseOn">Base the new options on other options</param>
-        </member>
-        <member name="T:Bitfinex.Net.Objects.BitfinexSocketClientOptions">
-            <summary>
-            Options for the BitfinexSocketClient
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexSocketClientOptions.Default">
-            <summary>
-            Default options for the client
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexSocketClientOptions.AffiliateCode">
-            <summary>
-            Default affiliate code to use when placing orders
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexSocketClientOptions.NonceProvider">
-            <summary>
-            Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexSocketClientOptions.SpotStreamsOptions">
-            <summary>
-            Options for the spot streams
-            </summary>
-        </member>
-        <member name="M:Bitfinex.Net.Objects.BitfinexSocketClientOptions.#ctor">
-            <summary>
-            ctor
-            </summary>
-        </member>
-        <member name="M:Bitfinex.Net.Objects.BitfinexSocketClientOptions.#ctor(Bitfinex.Net.Objects.BitfinexSocketClientOptions)">
-            <summary>
-            ctor
-            </summary>
-            <param name="baseOn">Base the new options on other options</param>
-        </member>
-        <member name="T:Bitfinex.Net.Objects.BitfinexOrderBookOptions">
-            <summary>
-            Options for the BitfinexSymbolOrderBook
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookOptions.SocketClient">
-            <summary>
-            The client to use for the socket connection. When using the same client for multiple order books the connection can be shared.
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookOptions.Precision">
-            <summary>
-            The precision level of the order book
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookOptions.Limit">
-            <summary>
-            The limit of entries in the order book, either 1, 25, 100 or 250
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.BitfinexOrderBookOptions.InitialDataTimeout">
-            <summary>
-            After how much time we should consider the connection dropped if no data is received for this time after the initial subscriptions
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.Internal.BitfinexMeta">
@@ -4259,17 +4230,115 @@
             The fees paid
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions">
+            <summary>
+            Options for the Bitfinex SymbolOrderBook
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions.Default">
+            <summary>
+            Default options for new order books
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions.Precision">
+            <summary>
+            The precision level of the order book
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions.Limit">
+            <summary>
+            The limit of entries in the order book, either 1, 25, 100 or 250
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions.InitialDataTimeout">
+            <summary>
+            After how much time we should consider the connection dropped if no data is received for this time after the initial subscriptions
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Options.BitfinexRestOptions">
+            <summary>
+            Options for the BitfinexRestClient
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexRestOptions.Default">
+            <summary>
+            Default options for new clients
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexRestOptions.AffiliateCode">
+            <summary>
+            Default affiliate code to use when placing orders
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexRestOptions.NonceProvider">
+            <summary>
+            Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexRestOptions.SpotOptions">
+            <summary>
+            Spot API options
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Options.BitfinexSocketOptions">
+            <summary>
+            Options for the BinanceSocketClient
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.Default">
+            <summary>
+            Default options for new clients
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.AffiliateCode">
+            <summary>
+            Default affiliate code to use when placing orders
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.NonceProvider">
+            <summary>
+            Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.SpotOptions">
+            <summary>
+            Spot API options
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory">
+            <summary>
+            Bitfinex order book factory
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory.#ctor(System.IServiceProvider)">
+            <summary>
+            ctor
+            </summary>
+            <param name="serviceProvider">Service provider for resolving logging and clients</param>
+        </member>
+        <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory.Create(System.String,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions})">
+            <inheritdoc />
+        </member>
         <member name="T:Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook">
             <summary>
             Live order book implementation
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook.#ctor(System.String,Bitfinex.Net.Objects.BitfinexOrderBookOptions)">
+        <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook.#ctor(System.String,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions})">
             <summary>
             Create a new order book instance
             </summary>
             <param name="symbol">The symbol the order book is for</param>
-            <param name="options">Options for the order book</param>
+            <param name="optionsDelegate">Option configuration delegate</param>
+        </member>
+        <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook.#ctor(System.String,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions},Microsoft.Extensions.Logging.ILogger{Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook},Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient)">
+            <summary>
+            Create a new order book instance
+            </summary>
+            <param name="symbol">The symbol the order book is for</param>
+            <param name="optionsDelegate">Option configuration delegate</param>
+            <param name="logger">Logger</param>
+            <param name="socketClient">Socket client instance</param>
         </member>
         <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook.DoStartAsync(System.Threading.CancellationToken)">
             <inheritdoc />

@@ -12,7 +12,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// <summary>
     /// Bitfinex exchange data endpoints. Exchange data includes market data (tickers, order books, etc) and system status.
     /// </summary>
-    public interface IBitfinexClientSpotApiExchangeData
+    public interface IBitfinexRestClientSpotApiExchangeData
     {
         /// <summary>
         /// Gets the platform status

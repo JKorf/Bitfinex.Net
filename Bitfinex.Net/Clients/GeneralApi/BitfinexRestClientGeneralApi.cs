@@ -1,11 +1,8 @@
-﻿using Bitfinex.Net.Clients.SpotApi;
-using Bitfinex.Net.Interfaces.Clients.GeneralApi;
-using Bitfinex.Net.Objects;
+﻿using Bitfinex.Net.Interfaces.Clients.GeneralApi;
 using Bitfinex.Net.Objects.Internal;
+using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
-using CryptoExchange.Net.Interfaces;
-using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -17,29 +14,27 @@ using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Clients.GeneralApi
 {
-    /// <inheritdoc cref="IBitfinexClientGeneralApi" />
-    public class BitfinexClientGeneralApi : RestApiClient, IBitfinexClientGeneralApi
+    /// <inheritdoc cref="IBitfinexRestClientGeneralApi" />
+    public class BitfinexRestClientGeneralApi : RestApiClient, IBitfinexRestClientGeneralApi
     {
         #region fields
         internal string? AffiliateCode { get; set; }
 
-        private readonly BitfinexClientOptions _options;
+        /// <inheritdoc />
+        public new BitfinexRestOptions ClientOptions => (BitfinexRestOptions)base.ClientOptions;
         #endregion
 
         #region Api clients
         /// <inheritdoc />
-        public IBitfinexClientGeneralApiFunding Funding { get; }
+        public IBitfinexRestClientGeneralApiFunding Funding { get; }
         #endregion
 
         #region ctor
 
-        internal BitfinexClientGeneralApi(Log log, BitfinexClientOptions options) :
-            base(log, options, options.SpotApiOptions)
+        internal BitfinexRestClientGeneralApi(ILogger logger, HttpClient? httpClient, BitfinexRestOptions options) :
+            base(logger, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
         {
-            _log = log;
-            _options = options;
-
-            Funding = new BitfinexClientGeneralApiFunding(this);
+            Funding = new BitfinexRestClientGeneralApiFunding(this);
 
             AffiliateCode = options.AffiliateCode;
         }
@@ -48,7 +43,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
 
         /// <inheritdoc />
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
-            => new BitfinexAuthenticationProvider(credentials, _options.NonceProvider ?? new BitfinexNonceProvider());
+            => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
         internal Task<WebCallResult<T>> SendRequestAsync<T>(
             Uri uri,

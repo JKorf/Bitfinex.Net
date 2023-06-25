@@ -19,7 +19,7 @@ namespace Bitfinex.Net.Enums
         /// <summary>
         /// Ensures that the executed order does not flip the opened position.
         /// </summary>
-        ReduceOnly,
+        ReduceOnly = 1024,
         /// <summary>
         /// Only accept if it is a post
         /// </summary>
