@@ -1,10 +1,10 @@
 ---
 title: IBitfinexSocketClientSpotApi
 has_children: true
-parent: Rest API documentation
+parent: Socket API documentation
 ---
 *[generated documentation]*  
-`BitfinexClient > SpotApi`  
+`BitfinexSocketClient > SpotApi`  
 *Bitfinex spot streams*
   
 
@@ -18,7 +18,7 @@ parent: Rest API documentation
 *Cancels an order*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.CancelOrderAsync(/* parameters */);  
 ```  
 
@@ -42,7 +42,7 @@ Task<CallResult<BitfinexOrder>> CancelOrderAsync(long orderId);
 *Cancels multiple orders based on their order ids*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.CancelOrdersAsync(/* parameters */);  
 ```  
 
@@ -66,7 +66,7 @@ Task<CallResult<bool>> CancelOrdersAsync(IEnumerable<long> orderIds);
 *Cancels multiple orders based on their clientOrderIds*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.CancelOrdersByClientOrderIdsAsync(/* parameters */);  
 ```  
 
@@ -90,7 +90,7 @@ Task<CallResult<bool>> CancelOrdersByClientOrderIdsAsync(Dictionary<long,DateTim
 *Cancels multiple orders based on their groupId*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.CancelOrdersByGroupIdAsync(/* parameters */);  
 ```  
 
@@ -114,7 +114,7 @@ Task<CallResult<bool>> CancelOrdersByGroupIdAsync(long groupOrderId);
 *Cancels multiple orders based on their groupIds*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.CancelOrdersByGroupIdsAsync(/* parameters */);  
 ```  
 
@@ -138,7 +138,7 @@ Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderI
 *Places a new order*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.PlaceOrderAsync(/* parameters */);  
 ```  
 
@@ -175,7 +175,7 @@ Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, 
 *Subscribe to wallet information updates*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.SubscribeToBalanceUpdatesAsync(/* parameters */);  
 ```  
 
@@ -202,7 +202,7 @@ Task<CallResult<UpdateSubscription>> SubscribeToBalanceUpdatesAsync(Action<DataE
 *Subscribe to funding information updates*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.SubscribeToFundingUpdatesAsync(/* parameters */);  
 ```  
 
@@ -229,7 +229,7 @@ Task<CallResult<UpdateSubscription>> SubscribeToFundingUpdatesAsync(Action<DataE
 *Subscribes to kline updates for a symbol*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.SubscribeToKlineUpdatesAsync(/* parameters */);  
 ```  
 
@@ -256,7 +256,7 @@ Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol,
 *Subscribes to order book updates for a symbol*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.SubscribeToOrderBookUpdatesAsync(/* parameters */);  
 ```  
 
@@ -286,7 +286,7 @@ Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(string sym
 *Subscribes to raw order book updates for a symbol*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.SubscribeToRawOrderBookUpdatesAsync(/* parameters */);  
 ```  
 
@@ -314,7 +314,7 @@ Task<CallResult<UpdateSubscription>> SubscribeToRawOrderBookUpdatesAsync(string 
 *Subscribes to ticker updates for a symbol*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.SubscribeToTickerUpdatesAsync(/* parameters */);  
 ```  
 
@@ -340,7 +340,7 @@ Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol
 *Subscribes to public trade updates for a symbol*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.SubscribeToTradeUpdatesAsync(/* parameters */);  
 ```  
 
@@ -366,7 +366,7 @@ Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol,
 *Subscribe to trading information updates*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.SubscribeToUserTradeUpdatesAsync(/* parameters */);  
 ```  
 
@@ -393,7 +393,7 @@ Task<CallResult<UpdateSubscription>> SubscribeToUserTradeUpdatesAsync(Action<Dat
 *Updates an order*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexSocketClient();  
 var result = await client.SpotApi.UpdateOrderAsync(/* parameters */);  
 ```  
 

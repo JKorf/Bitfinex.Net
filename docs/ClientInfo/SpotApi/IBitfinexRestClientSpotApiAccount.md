@@ -1,11 +1,11 @@
 ---
 title: IBitfinexRestClientSpotApiAccount
 has_children: false
-parent: IBitfinexClientSpotApi
+parent: IBitfinexRestClientSpotApi
 grand_parent: Rest API documentation
 ---
 *[generated documentation]*  
-`BitfinexClient > SpotApi > IBitfinexRestClientAccount`  
+`BitfinexRestClient > SpotApi > Account`  
 *Bitfinex account endpoints. Account endpoints include balance info, withdraw/deposit info and requesting and account settings*
   
 
@@ -19,8 +19,8 @@ grand_parent: Rest API documentation
 *Delete an existing alert*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.DeleteAlertAsync(/* parameters */);  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.DeleteAlertAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -45,8 +45,8 @@ Task<WebCallResult<BitfinexSuccessResult>> DeleteAlertAsync(string symbol, decim
 *Get 30-day summary on trading volume and margin funding*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.Get30DaySummaryAsync();  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.Get30DaySummaryAsync();  
 ```  
 
 ```csharp  
@@ -69,8 +69,8 @@ Task<WebCallResult<Bitfinex30DaySummary>> Get30DaySummaryAsync(CancellationToken
 *Get information about your account*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetAccountInfoAsync();  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetAccountInfoAsync();  
 ```  
 
 ```csharp  
@@ -93,8 +93,8 @@ Task<WebCallResult<BitfinexAccountInfo>> GetAccountInfoAsync(CancellationToken c
 *Get the list of alerts*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetAlertListAsync();  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetAlertListAsync();  
 ```  
 
 ```csharp  
@@ -117,8 +117,8 @@ Task<WebCallResult<IEnumerable<BitfinexAlert>>> GetAlertListAsync(CancellationTo
 *Calculates the available balance for a symbol at a specific rate*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetAvailableBalanceAsync(/* parameters */);  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetAvailableBalanceAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -145,8 +145,8 @@ Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string sy
 *Get all balances*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetBalancesAsync();  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetBalancesAsync();  
 ```  
 
 ```csharp  
@@ -169,8 +169,8 @@ Task<WebCallResult<IEnumerable<BitfinexWallet>>> GetBalancesAsync(CancellationTo
 *Get the base margin info*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetBaseMarginInfoAsync();  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetBaseMarginInfoAsync();  
 ```  
 
 ```csharp  
@@ -193,8 +193,8 @@ Task<WebCallResult<BitfinexMarginBase>> GetBaseMarginInfoAsync(CancellationToken
 *Gets a deposit address for an asset*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetDepositAddressAsync(/* parameters */);  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetDepositAddressAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -220,8 +220,8 @@ Task<WebCallResult<BitfinexDepositAddress>> GetDepositAddressAsync(string asset,
 *Get changes in your balance for an asset*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetLedgerEntriesAsync();  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetLedgerEntriesAsync();  
 ```  
 
 ```csharp  
@@ -249,8 +249,8 @@ Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(stri
 *Get the withdrawal/deposit history*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetMovementsAsync();  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetMovementsAsync();  
 ```  
 
 ```csharp  
@@ -274,8 +274,8 @@ Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? sym
 *Get the margin info for a symbol*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetSymbolMarginInfoAsync(/* parameters */);  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetSymbolMarginInfoAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -299,8 +299,8 @@ Task<WebCallResult<BitfinexMarginSymbol>> GetSymbolMarginInfoAsync(string symbol
 *Gets information about the user associated with the api key/secret*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetUserInfoAsync();  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetUserInfoAsync();  
 ```  
 
 ```csharp  
@@ -323,8 +323,8 @@ Task<WebCallResult<BitfinexUserInfo>> GetUserInfoAsync(CancellationToken ct = de
 *Get withdrawal fees for this account*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.GetWithdrawalFeesAsync();  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetWithdrawalFeesAsync();  
 ```  
 
 ```csharp  
@@ -347,8 +347,8 @@ Task<WebCallResult<BitfinexWithdrawalFees>> GetWithdrawalFeesAsync(CancellationT
 *Set an alert*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.SetAlertAsync(/* parameters */);  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.SetAlertAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -373,8 +373,8 @@ Task<WebCallResult<BitfinexAlert>> SetAlertAsync(string symbol, decimal price, C
 *Transfers funds from one wallet to another*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.WalletTransferAsync(/* parameters */);  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.WalletTransferAsync(/* parameters */);  
 ```  
 
 ```csharp  
@@ -404,8 +404,8 @@ Task<WebCallResult<BitfinexTransferResult>> WalletTransferAsync(string asset, de
 *Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.*  
 
 ```csharp  
-var client = new BitfinexClient();  
-var result = await client.SpotApi.IBitfinexRestClientAccount.WithdrawAsync(/* parameters */);  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.WithdrawAsync(/* parameters */);  
 ```  
 
 ```csharp  

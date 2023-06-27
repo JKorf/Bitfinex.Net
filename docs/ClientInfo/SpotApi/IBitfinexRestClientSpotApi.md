@@ -1,11 +1,10 @@
 ---
 title: IBitfinexRestClientSpotApi
 has_children: true
-parent: IBitfinexClientSpotApi
-grand_parent: Rest API documentation
+parent: Rest API documentation
 ---
 *[generated documentation]*  
-`BitfinexClient > SpotApi > IBitfinexRestClient`  
+`BitfinexRestClient > SpotApi`  
 *Spot API endpoints*
   
 ***
@@ -13,10 +12,10 @@ grand_parent: Rest API documentation
 **ISpotClient CommonSpotClient { get; }**  
 ***
 *Endpoints related to account settings, info or actions*  
-**IBitfinexRestClientSpotApiAccount Account { get; }**  
+**[IBitfinexRestClientSpotApiAccount](IBitfinexRestClientSpotApiAccount.html) Account { get; }**  
 ***
 *Endpoints related to retrieving market and system data*  
-**IBitfinexRestClientSpotApiExchangeData ExchangeData { get; }**  
+**[IBitfinexRestClientSpotApiExchangeData](IBitfinexRestClientSpotApiExchangeData.html) ExchangeData { get; }**  
 ***
 *Endpoints related to orders and trades*  
-**IBitfinexRestClientSpotApiTrading Trading { get; }**  
+**[IBitfinexRestClientSpotApiTrading](IBitfinexRestClientSpotApiTrading.html) Trading { get; }**  
