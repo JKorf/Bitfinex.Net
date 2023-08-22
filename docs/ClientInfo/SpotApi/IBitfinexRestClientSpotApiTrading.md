@@ -1,11 +1,11 @@
 ---
-title: IBitfinexClientSpotApiTrading
+title: IBitfinexRestClientSpotApiTrading
 has_children: false
-parent: IBitfinexClientSpotApi
+parent: IBitfinexRestClientSpotApi
 grand_parent: Rest API documentation
 ---
 *[generated documentation]*  
-`BitfinexClient > SpotApi > Trading`  
+`BitfinexRestClient > SpotApi > Trading`  
 *Bitfinex trading endpoints, placing and mananging orders.*
   
 
@@ -19,7 +19,7 @@ grand_parent: Rest API documentation
 *Cancels all open orders*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.CancelAllOrdersAsync();  
 ```  
 
@@ -43,7 +43,7 @@ Task<WebCallResult<BitfinexResult>> CancelAllOrdersAsync(CancellationToken ct = 
 *Cancel a specific order*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.CancelOrderAsync();  
 ```  
 
@@ -70,7 +70,7 @@ Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> CancelOrderAsync(long? o
 *Claim a position*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.ClaimPositionAsync(/* parameters */);  
 ```  
 
@@ -96,7 +96,7 @@ Task<WebCallResult<BitfinexPositionV1>> ClaimPositionAsync(long id, decimal quan
 *Close a position*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.ClosePositionAsync(/* parameters */);  
 ```  
 
@@ -121,7 +121,7 @@ Task<WebCallResult<BitfinexClosePositionResult>> ClosePositionAsync(long positio
 *Get the active positions*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.GetActivePositionsAsync();  
 ```  
 
@@ -145,7 +145,7 @@ Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetActivePositionsAsync(Cance
 *Get the order history for a symbol for this account*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.GetClosedOrdersAsync();  
 ```  
 
@@ -173,7 +173,7 @@ Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetClosedOrdersAsync(string? sym
 *Get the active orders*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.GetOpenOrdersAsync();  
 ```  
 
@@ -197,7 +197,7 @@ Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOpenOrdersAsync(CancellationT
 *Get the status of a specific order*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.GetOrderAsync(/* parameters */);  
 ```  
 
@@ -222,7 +222,7 @@ Task<WebCallResult<BitfinexPlacedOrder>> GetOrderAsync(long orderId, Cancellatio
 *Get the individual trades for an order*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.GetOrderTradesAsync(/* parameters */);  
 ```  
 
@@ -248,7 +248,7 @@ Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetOrderTradesAsync(strin
 *Get a list of historical positions*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.GetPositionHistoryAsync();  
 ```  
 
@@ -275,7 +275,7 @@ Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionHistoryAsy
 *Get positions by id*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.GetPositionsByIdAsync(/* parameters */);  
 ```  
 
@@ -303,7 +303,7 @@ Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionsByIdAsync
 *Get the trade history for a symbol*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.GetUserTradesAsync();  
 ```  
 
@@ -331,7 +331,7 @@ Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetUserTradesAsync(string
 *Place a new order*  
 
 ```csharp  
-var client = new BitfinexClient();  
+var client = new BitfinexRestClient();  
 var result = await client.SpotApi.Trading.PlaceOrderAsync(/* parameters */);  
 ```  
 

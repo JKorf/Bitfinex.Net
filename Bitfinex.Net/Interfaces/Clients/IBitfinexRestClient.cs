@@ -8,17 +8,17 @@ namespace Bitfinex.Net.Interfaces.Clients
     /// <summary>
     /// Client for accessing the Bitfinex API. 
     /// </summary>
-    public interface IBitfinexClient : IRestClient
+    public interface IBitfinexRestClient : IRestClient
     {
         /// <summary>
         /// General endpoints
         /// </summary>
-        IBitfinexClientGeneralApi GeneralApi { get; }
+        IBitfinexRestClientGeneralApi GeneralApi { get; }
 
         /// <summary>
         /// Spot endpoints
         /// </summary>
-        IBitfinexClientSpotApi SpotApi { get; }
+        IBitfinexRestClientSpotApi SpotApi { get; }
 
         /// <summary>
         /// Set the API credentials for this client. All Api clients in this client will use the new credentials, regardless of earlier set options.

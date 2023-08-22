@@ -12,7 +12,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// <summary>
     /// Bitfinex account endpoints. Account endpoints include balance info, withdraw/deposit info and requesting and account settings
     /// </summary>
-    public interface IBitfinexClientSpotApiAccount
+    public interface IBitfinexRestClientSpotApiAccount
     {
         /// <summary>
         /// Get all balances

@@ -9,6 +9,7 @@ using Bitfinex.Net.Enums;
 using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.Models;
+using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
@@ -23,38 +24,57 @@ namespace Bitfinex.Net.SymbolOrderBooks
     /// </summary>
     public class BitfinexSymbolOrderBook: SymbolOrderBook
     {
-        private readonly IBitfinexSocketClient socketClient;
-        private readonly Precision precision;
+        private readonly IBitfinexSocketClient _socketClient;
+        private readonly Precision _precision;
         private readonly TimeSpan _initialDataTimeout;
         private bool _initial = true;
-        private readonly bool _socketOwner;
+        private readonly bool _clientOwner;
 
         /// <summary>
         /// Create a new order book instance
         /// </summary>
         /// <param name="symbol">The symbol the order book is for</param>
-        /// <param name="options">Options for the order book</param>
-        public BitfinexSymbolOrderBook(string symbol, BitfinexOrderBookOptions? options = null) : base("Bitfinex", symbol, options ?? new BitfinexOrderBookOptions())
+        /// <param name="optionsDelegate">Option configuration delegate</param>
+        public BitfinexSymbolOrderBook(string symbol, Action<BitfinexOrderBookOptions>? optionsDelegate = null)
+            : this(symbol, optionsDelegate, null, null)
+        {
+            _clientOwner = true;
+        }
+
+        /// <summary>
+        /// Create a new order book instance
+        /// </summary>
+        /// <param name="symbol">The symbol the order book is for</param>
+        /// <param name="optionsDelegate">Option configuration delegate</param>
+        /// <param name="logger">Logger</param>
+        /// <param name="socketClient">Socket client instance</param>
+        public BitfinexSymbolOrderBook(string symbol, 
+            Action<BitfinexOrderBookOptions>? optionsDelegate, 
+            ILogger<BitfinexSymbolOrderBook>? logger,
+            IBitfinexSocketClient? socketClient) : base(logger, "Bitfinex", symbol)
         {
             symbol.ValidateBitfinexSymbol();
-            socketClient = options?.SocketClient ?? new BitfinexSocketClient(new BitfinexSocketClientOptions
-            {
-                LogLevel = options?.LogLevel ?? LogLevel.Information
-            });
-            _socketOwner = options?.SocketClient == null;
+
+            var options = BitfinexOrderBookOptions.Default.Copy();
+            if (optionsDelegate != null)
+                optionsDelegate(options);
+            Initialize(options);
+
+            _socketClient = socketClient ?? new BitfinexSocketClient();
+            _clientOwner = socketClient == null;
             _initialDataTimeout = options?.InitialDataTimeout ?? TimeSpan.FromSeconds(30);
 
             Levels = options?.Limit ?? 25;
-            precision = options?.Precision ?? Precision.PrecisionLevel0;
+            _precision = options?.Precision ?? Precision.PrecisionLevel0;
         }
 
         /// <inheritdoc />
         protected override async Task<CallResult<UpdateSubscription>> DoStartAsync(CancellationToken ct)
         {
-            if(precision == Precision.R0)
+            if(_precision == Precision.R0)
                 throw new ArgumentException("Invalid precision: R0");
 
-            var result = await socketClient.SpotStreams.SubscribeToOrderBookUpdatesAsync(Symbol, precision, Frequency.Realtime, Levels!.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
+            var result = await _socketClient.SpotApi.SubscribeToOrderBookUpdatesAsync(Symbol, _precision, Frequency.Realtime, Levels!.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
             if (!result)
                 return result;
 
@@ -146,30 +166,30 @@ namespace Bitfinex.Net.SymbolOrderBooks
             var checksumValues = new List<string>();
             for (var i = 0; i < 25; i++)
             {
-                if (bids.Count > i)
+                if (_bids.Count > i)
                 {
-                    var bid = (BitfinexOrderBookEntry)bids.ElementAt(i).Value;
+                    var bid = (BitfinexOrderBookEntry)_bids.ElementAt(i).Value;
                     checksumValues.Add(bid.RawPrice);
                     checksumValues.Add(bid.RawQuantity);
                 }
                 else
-                    log.Write(LogLevel.Trace, $"Skipping checksum bid level {i}, no data");
+                    _logger.Log(LogLevel.Trace, $"Skipping checksum bid level {i}, no data");
 
-                if (asks.Count > i)
+                if (_asks.Count > i)
                 {
-                    var ask = (BitfinexOrderBookEntry)asks.ElementAt(i).Value;
+                    var ask = (BitfinexOrderBookEntry)_asks.ElementAt(i).Value;
                     checksumValues.Add(ask.RawPrice);
                     checksumValues.Add(ask.RawQuantity);
                 }
                 else
-                    log.Write(LogLevel.Trace, $"Skipping checksum ask level {i}, no data");
+                    _logger.Log(LogLevel.Trace, $"Skipping checksum ask level {i}, no data");
             }
             var checksumString = string.Join(":", checksumValues);
             var ourChecksumUtf = (int)Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(checksumString));
 
             if (ourChecksumUtf != checksum)
             {
-                log.Write(LogLevel.Warning, $"{Symbol} Invalid checksum. Received from server: {checksum}, calculated local: {ourChecksumUtf}");
+                _logger.Log(LogLevel.Warning, $"{Symbol} Invalid checksum. Received from server: {checksum}, calculated local: {ourChecksumUtf}");
                 return false;
             }
             
@@ -187,8 +207,8 @@ namespace Bitfinex.Net.SymbolOrderBooks
         /// </summary>
         protected override void Dispose(bool disposing)
         {
-            if(_socketOwner)
-                socketClient?.Dispose();
+            if(_clientOwner)
+                _socketClient?.Dispose();
 
             base.Dispose(disposing);
         }

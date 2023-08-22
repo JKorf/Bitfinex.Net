@@ -17,9 +17,8 @@ Sign up using the following referral link to pay a small percentage of the tradi
 ### Donate
 Make a one time donation in a crypto currency of your choice. If you prefer to donate a currency not listed here please contact me.
 
-**Btc**:  12KwZk3r2Y3JZ2uMULcjqqBvXmpDwjhhQS  
-**Eth**:  0x069176ca1a4b1d6e0b7901a6bc0dbf3bb0bf5cc2  
-**Nano**: xrb_1ocs3hbp561ef76eoctjwg85w5ugr8wgimkj8mfhoyqbx4s1pbc74zggw7gs  
+**Btc**:  bc1qz0jv0my7fc60rxeupr23e75x95qmlq6489n8gh  
+**Eth**:  0x8E21C4d955975cB645589745ac0c46ECA8FAE504  
 
 ### Sponsor
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
@@ -28,6 +27,22 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
 ## Release notes
+* Version 6.0.0 - 25 Jun 2023
+    * Updated CryptoExchange.Net to version 6.0.0
+    * Renamed BitfinexClient to BitfinexRestClient
+    * Renamed SpotStreams to SpotApi on the BitfinexSocketClient
+    * Updated endpoints to consistently use a base url without any path as basis to make switching environments/base urls clearer
+    * Added IBitfinexOrderBookFactory and implementation for creating order books
+    * Updated dependency injection register method (AddBitfinex)
+
+* Version 5.2.0 - 16 Apr 2023
+    * Added GetTickerHistoryAsync endpoint
+    * Updated socket PlaceOrderAsync parameters
+    * Added missing order flag values
+
+* Version 5.1.2 - 18 Mar 2023
+    * Updated CryptoExchange.Net
+
 * Version 5.1.1 - 14 Feb 2023
     * Updated CryptoExchange.Net
 

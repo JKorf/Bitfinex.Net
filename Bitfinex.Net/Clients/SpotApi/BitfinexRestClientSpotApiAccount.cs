@@ -18,7 +18,7 @@ using Bitfinex.Net.Interfaces.Clients.SpotApi;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc />
-    public class BitfinexClientSpotApiAccount : IBitfinexClientSpotApiAccount
+    public class BitfinexRestClientSpotApiAccount : IBitfinexRestClientSpotApiAccount
     {
         private const string WalletsEndpoint = "auth/r/wallets";
         private const string CalcAvailableBalanceEndpoint = "auth/calc/order/avail";
@@ -40,9 +40,9 @@ namespace Bitfinex.Net.Clients.SpotApi
         private const string SummaryEndpoint = "summary";
         private const string WithdrawalFeeEndpoint = "account_fees";
 
-        private readonly BitfinexClientSpotApi _baseClient;
+        private readonly BitfinexRestClientSpotApi _baseClient;
 
-        internal BitfinexClientSpotApiAccount(BitfinexClientSpotApi baseClient)
+        internal BitfinexRestClientSpotApiAccount(BitfinexRestClientSpotApi baseClient)
         {
             _baseClient = baseClient;
         }

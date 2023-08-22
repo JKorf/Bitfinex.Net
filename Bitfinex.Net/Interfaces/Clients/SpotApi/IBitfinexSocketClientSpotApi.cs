@@ -14,7 +14,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// <summary>
     /// Bitfinex spot streams
     /// </summary>
-    public interface IBitfinexSocketClientSpotStreams : ISocketApiClient, IDisposable
+    public interface IBitfinexSocketClientSpotApi : ISocketApiClient, IDisposable
     {
         /// <summary>
         /// Subscribes to ticker updates for a symbol
@@ -130,6 +130,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Places a new order
         /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-new" /></para>
         /// </summary>
+        /// <param name="side">The order side</param>
         /// <param name="type">The type of the order</param>
         /// <param name="symbol">The symbol the order is for</param>
         /// <param name="quantity">The quantity of the order, positive for buying, negative for selling</param>
@@ -140,9 +141,11 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
         /// <param name="priceOcoStop">Oco stop price of the order</param>
         /// <param name="flags">Additional flags</param>
+        /// <param name="leverage">Leverage</param>
+        /// <param name="cancelTime">Automatically cancel the order after this time</param>
         /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <returns></returns>
-        Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, string? affiliateCode = null);
+        Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null, string? affiliateCode = null);
 
         /// <summary>
         /// Updates an order

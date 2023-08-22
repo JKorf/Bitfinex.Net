@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Objects;
+using Bitfinex.Net.Converters;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
@@ -17,28 +16,27 @@ using System.Threading;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
-using CryptoExchange.Net.Logging;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
+using Bitfinex.Net.Objects.Options;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
-    /// <inheritdoc cref="IBitfinexSocketClientSpotStreams" />
-    public class BitfinexSocketClientSpotStreams : SocketApiClient, IBitfinexSocketClientSpotStreams
+    /// <inheritdoc cref="IBitfinexSocketClientSpotApi" />
+    public class BitfinexSocketClientSpotApi : SocketApiClient, IBitfinexSocketClientSpotApi
     {
         #region fields
-        private readonly BitfinexSocketClientOptions _options;
-
         private readonly JsonSerializer _bookSerializer = new JsonSerializer();
         private readonly Random _random = new Random();
         private readonly string? _affCode;
+
+        /// <inheritdoc />
+        public new BitfinexSocketOptions ClientOptions => (BitfinexSocketOptions)base.ClientOptions;
         #endregion
 
         #region ctor
-        internal BitfinexSocketClientSpotStreams(Log log, BitfinexSocketClientOptions options) :
-            base(log, options, options.SpotStreamsOptions)
+        internal BitfinexSocketClientSpotApi(ILogger logger, BitfinexSocketOptions options) :
+            base(logger, options.Environment.SocketAddress, options, options.SpotOptions)
         {
-            _options = options;
-
             ContinueOnQueryResponse = true;
             UnhandledMessageExpected = true;
 
@@ -52,7 +50,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
         /// <inheritdoc />
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
-            => new BitfinexAuthenticationProvider(credentials, _options.NonceProvider ?? new BitfinexNonceProvider());
+            => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
         #region public methods
 
@@ -64,7 +62,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 HandleData("Ticker", (JArray)data.Data[1]!, symbol, data, handler);
             });
-            return await SubscribeAsync( new BitfinexSubscriptionRequest("ticker", symbol), null, false, internalHandler, ct).ConfigureAwait(false);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexSubscriptionRequest("ticker", symbol), null, false, internalHandler, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -105,7 +103,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 JsonConvert.SerializeObject(precision, new PrecisionConverter(false)),
                 JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)),
                 length);
-            return await SubscribeAsync( sub, null, false, internalHandler, ct).ConfigureAwait(false);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), sub, null, false, internalHandler, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -128,7 +126,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         HandleSingleToArrayData("Raw book update", dataArray, symbol, data, handler);
                 }
             });
-            return await SubscribeAsync( new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), null, false, internalHandler, ct).ConfigureAwait(false);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), null, false, internalHandler, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -146,14 +144,14 @@ namespace Bitfinex.Net.Clients.SpotApi
                     var desResult = Deserialize<BitfinexTradeSimple>(arr[2]);
                     if (!desResult)
                     {
-                        _log.Write(LogLevel.Warning, "Failed to deserialize trade object: " + desResult.Error);
+                        _logger.Log(LogLevel.Warning, "Failed to deserialize trade object: " + desResult.Error);
                         return;
                     }
                     desResult.Data.UpdateType = BitfinexEvents.EventMapping[arr[1].ToString()];
                     handler(data.As<IEnumerable<BitfinexTradeSimple>>(new[] { desResult.Data }, symbol));
                 }
             });
-            return await SubscribeAsync( new BitfinexSubscriptionRequest("trades", symbol), null, false, internalHandler, ct).ConfigureAwait(false);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexSubscriptionRequest("trades", symbol), null, false, internalHandler, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -165,7 +163,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 var dataArray = (JArray)data.Data[1]!;
                 if (dataArray.Count == 0)
                 {
-                    _log.Write(LogLevel.Warning, "No data in kline update, check if the symbol is correct");
+                    _logger.Log(LogLevel.Warning, "No data in kline update, check if the symbol is correct");
                     return;
                 }
 
@@ -174,7 +172,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 else
                     HandleSingleToArrayData("Kline update", dataArray, symbol, data, handler);
             });
-            return await SubscribeAsync( new BitfinexKlineSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))), null, false, internalHandler, ct).ConfigureAwait(false);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexKlineSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))), null, false, internalHandler, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -186,7 +184,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 var dataArray = (JArray)data.Data[1]!;
                 if (dataArray.Count == 0)
                 {
-                    _log.Write(LogLevel.Warning, "No data in kline update, check if the symbol is correct");
+                    _logger.Log(LogLevel.Warning, "No data in kline update, check if the symbol is correct");
                     return;
                 }
 
@@ -212,7 +210,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 HandleAuthUpdate(tokenData, positionHandler, "Positions");
             });
 
-            return await SubscribeAsync( null, "Orders|Trades|Positions", true, tokenHandler, ct).ConfigureAwait(false);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), null, "Orders|Trades|Positions", true, tokenHandler, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -223,7 +221,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 HandleAuthUpdate(tokenData, walletHandler, "Wallet");
             });
 
-            return await SubscribeAsync( null, "Wallet", true, tokenHandler, ct).ConfigureAwait(false);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), null, "Wallet", true, tokenHandler, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -240,20 +238,20 @@ namespace Bitfinex.Net.Clients.SpotApi
                 HandleAuthUpdate(tokenData, fundingLoanHandler, "FundingLoans");
             });
 
-            return await SubscribeAsync( null, "FundingOffers|FundingCredits|FundingLoans", true, tokenHandler, ct).ConfigureAwait(false);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), null, "FundingOffers|FundingCredits|FundingLoans", true, tokenHandler, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, string? affiliateCode = null)
+        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null, string? affiliateCode = null)
         {
             symbol.ValidateBitfinexSymbol();
-            _log.Write(LogLevel.Information, "Going to place order");
+            _logger.Log(LogLevel.Information, "Going to place order");
             clientOrderId ??= GenerateClientOrderId();
 
             var affCode = affiliateCode ?? _affCode;
             var query = new BitfinexSocketQuery(clientOrderId.ToString(), BitfinexEventType.OrderNew, new BitfinexNewOrder
             {
-                Amount = quantity,
+                Amount = side == OrderSide.Buy ? quantity : -quantity,
                 OrderType = type,
                 Symbol = symbol,
                 Price = price,
@@ -263,16 +261,18 @@ namespace Bitfinex.Net.Clients.SpotApi
                 PriceAuxiliaryLimit = priceAuxiliaryLimit,
                 PriceOCOStop = priceOcoStop,
                 PriceTrailing = priceTrailing,
+                Leverage = leverage,
+                CancelAfter = cancelTime,
                 Meta = affCode == null ? null : new BitfinexMeta() { AffiliateCode = affCode }
             });
 
-            return await QueryAsync<BitfinexOrder>(query, true).ConfigureAwait(false);
+            return await QueryAsync<BitfinexOrder>(BaseAddress.AppendPath("ws/2"), query, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<BitfinexOrder>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? quantity = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null)
         {
-            _log.Write(LogLevel.Information, "Going to update order " + orderId);
+            _logger.Log(LogLevel.Information, "Going to update order " + orderId);
             var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderUpdate, new BitfinexUpdateOrder
             {
                 OrderId = orderId,
@@ -283,7 +283,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 PriceTrailing = priceTrailing?.ToString(CultureInfo.InvariantCulture)
             });
 
-            return await QueryAsync<BitfinexOrder>(query, true).ConfigureAwait(false);
+            return await QueryAsync<BitfinexOrder>(BaseAddress.AppendPath("ws/2"), query, true).ConfigureAwait(false);
         }
 
         ///// <summary>
@@ -307,10 +307,10 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<BitfinexOrder>> CancelOrderAsync(long orderId)
         {
-            _log.Write(LogLevel.Information, "Going to cancel order " + orderId);
+            _logger.Log(LogLevel.Information, "Going to cancel order " + orderId);
             var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderCancel, new JObject { ["id"] = orderId });
 
-            return await QueryAsync<BitfinexOrder>(query, true).ConfigureAwait(false);
+            return await QueryAsync<BitfinexOrder>(BaseAddress.AppendPath("ws/2"), query, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -346,7 +346,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var desResult = Deserialize<T>(dataArray, serializer: serializer);
             if (!desResult)
             {
-                _log.Write(LogLevel.Warning, $"Failed to Deserialize {name} object: " + desResult.Error);
+                _logger.Log(LogLevel.Warning, $"Failed to Deserialize {name} object: " + desResult.Error);
                 return;
             }
 
@@ -360,7 +360,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var desResult = Deserialize<IEnumerable<T>>(wrapperArray, serializer: serializer);
             if (!desResult)
             {
-                _log.Write(LogLevel.Warning, $"Failed to Deserialize  {name} object: " + desResult.Error);
+                _logger.Log(LogLevel.Warning, $"Failed to Deserialize  {name} object: " + desResult.Error);
                 return;
             }
 
@@ -372,7 +372,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (orderIds == null && clientOrderIds == null && groupOrderIds == null)
                 throw new ArgumentException("Either orderIds, clientOrderIds or groupOrderIds should be provided");
 
-            _log.Write(LogLevel.Information, "Going to cancel multiple orders");
+            _logger.Log(LogLevel.Information, "Going to cancel multiple orders");
             var cancelObject = new BitfinexMultiCancel { OrderIds = orderIds };
             if (clientOrderIds != null)
             {
@@ -406,7 +406,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             if (action == null)
             {
-                _log.Write(LogLevel.Debug, $"Ignoring {evnt.EventType} event because not subscribed");
+                _logger.Log(LogLevel.Debug, $"Ignoring {evnt.EventType} event because not subscribed");
                 return;
             }
 
@@ -416,7 +416,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 var result = Deserialize<T>(token.Data[2]!);
                 if (!result)
                 {
-                    _log.Write(LogLevel.Warning, "Failed to Deserialize data: " + result.Error);
+                    _logger.Log(LogLevel.Warning, "Failed to Deserialize data: " + result.Error);
                     return;
                 }
                 data = new[] { result.Data };
@@ -426,7 +426,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 var result = Deserialize<IEnumerable<T>>(token.Data[2]!);
                 if (!result)
                 {
-                    _log.Write(LogLevel.Warning, "Failed to Deserialize data: " + result.Error);
+                    _logger.Log(LogLevel.Warning, "Failed to Deserialize data: " + result.Error);
                     return;
                 }
                 data = result.Data;
@@ -458,7 +458,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!infoEvent)
                 return;
 
-            _log.Write(LogLevel.Debug, $"Socket {messageEvent.Connection.SocketId} Info event received: {messageEvent.JsonData}");
+            _logger.Log(LogLevel.Debug, $"Socket {messageEvent.Connection.SocketId} Info event received: {messageEvent.JsonData}");
             if (messageEvent.JsonData["code"] == null)
             {
                 // welcome event, send a config message for receiving checsum updates for order book subscriptions
@@ -470,20 +470,20 @@ namespace Bitfinex.Net.Clients.SpotApi
             switch (code)
             {
                 case 20051:
-                    _log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, reconnecting socket");
+                    _logger.Log(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, reconnecting socket");
                     messageEvent.Connection.PausedActivity = true; // Prevent new operations to be send
                     _ = messageEvent.Connection.TriggerReconnectAsync();
                     break;
                 case 20060:
-                    _log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, entering maintenance mode");
+                    _logger.Log(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, entering maintenance mode");
                     messageEvent.Connection.PausedActivity = true;
                     break;
                 case 20061:
-                    _log.Write(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
+                    _logger.Log(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
                     _ = messageEvent.Connection.TriggerReconnectAsync(); // Closing it via socket will automatically reconnect
                     break;
                 default:
-                    _log.Write(LogLevel.Warning, $"Socket {messageEvent.Connection.SocketId} Unknown info code received: {code}");
+                    _logger.Log(LogLevel.Warning, $"Socket {messageEvent.Connection.SocketId} Unknown info code received: {code}");
                     break;
             }
         }
@@ -502,7 +502,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var channelId = ((BitfinexSubscriptionRequest)subscription.Request!).ChannelId;
             var unsub = new BitfinexUnsubscribeRequest(channelId);
             var result = false;
-            await connection.SendAndWaitAsync(unsub, Options.SocketResponseTimeout, null, data =>
+            await connection.SendAndWaitAsync(unsub, ClientOptions.RequestTimeout, null, data =>
             {
                 if (data.Type != JTokenType.Object)
                     return false;
@@ -523,17 +523,18 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         private static BitfinexAuthentication GetAuthObject(SocketApiClient apiClient, params string[] filter)
         {
-            var n = ((BitfinexAuthenticationProvider)apiClient.AuthenticationProvider!).GetNonce().ToString();
+            var authProvider = (BitfinexAuthenticationProvider)apiClient.AuthenticationProvider!;
+            var n = authProvider.GetNonce().ToString();
             var authentication = new BitfinexAuthentication
             {
                 Event = "auth",
-                ApiKey = apiClient.AuthenticationProvider!.Credentials.Key!.GetString(),
+                ApiKey = authProvider.GetApiKey(),
                 Nonce = n,
                 Payload = "AUTH" + n
             };
             if (filter.Any())
                 authentication.Filter = filter;
-            authentication.Signature = apiClient.AuthenticationProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
+            authentication.Signature = authProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
             return authentication;
         }
 
@@ -547,7 +548,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var authObject = GetAuthObject(s.ApiClient);
             var result = new CallResult<bool>(new ServerError("No response from server"));
-            await s.SendAndWaitAsync(authObject, Options.SocketResponseTimeout, null, tokenData =>
+            await s.SendAndWaitAsync(authObject, ClientOptions.RequestTimeout, null, tokenData =>
             {
                 if (tokenData.Type != JTokenType.Object)
                     return false;
@@ -558,7 +559,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 var authResponse = Deserialize<BitfinexAuthenticationResponse>(tokenData);
                 if (!authResponse)
                 {
-                    _log.Write(LogLevel.Warning, $"Socket {s.SocketId} authentication failed: " + authResponse.Error);
+                    _logger.Log(LogLevel.Warning, $"Socket {s.SocketId} authentication failed: " + authResponse.Error);
                     result = new CallResult<bool>(authResponse.Error!);
                     return false;
                 }
@@ -567,11 +568,11 @@ namespace Bitfinex.Net.Clients.SpotApi
                 {
                     var error = new ServerError(authResponse.Data.ErrorCode, authResponse.Data.ErrorMessage ?? "-");
                     result = new CallResult<bool>(error);
-                    _log.Write(LogLevel.Debug, $"Socket {s.SocketId} authentication failed: " + error);
+                    _logger.Log(LogLevel.Debug, $"Socket {s.SocketId} authentication failed: " + error);
                     return false;
                 }
 
-                _log.Write(LogLevel.Debug, $"Socket {s.SocketId} authentication completed");
+                _logger.Log(LogLevel.Debug, $"Socket {s.SocketId} authentication completed");
                 result = new CallResult<bool>(true);
                 return true;
             }).ConfigureAwait(false);
@@ -708,7 +709,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 if (!subResponse)
                 {
                     callResult = new CallResult<object>(subResponse.Error!);
-                    _log.Write(LogLevel.Warning, $"Socket {s.SocketId} subscription failed: " + subResponse.Error);
+                    _logger.Log(LogLevel.Warning, $"Socket {s.SocketId} subscription failed: " + subResponse.Error);
                     return false;
                 }
 
@@ -726,13 +727,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                 if (!subResponse)
                 {
                     callResult = new CallResult<object>(subResponse.Error!);
-                    _log.Write(LogLevel.Warning, $"Socket {s.SocketId} subscription failed: " + subResponse.Error);
+                    _logger.Log(LogLevel.Warning, $"Socket {s.SocketId} subscription failed: " + subResponse.Error);
                     return false;
                 }
 
                 var error = new ServerError(subResponse.Data.Code, subResponse.Data.Message);
                 callResult = new CallResult<object>(error);
-                _log.Write(LogLevel.Debug, $"Socket {s.SocketId} subscription failed: " + error);
+                _logger.Log(LogLevel.Debug, $"Socket {s.SocketId} subscription failed: " + error);
                 return true;
             }
         }

@@ -13,14 +13,11 @@ namespace Bitfinex.Net.UnitTests
     [TestFixture]
     public class JsonTests
     {
-        private JsonToObjectComparer<IBitfinexClient> _comparer = new JsonToObjectComparer<IBitfinexClient>((json) => TestHelpers.CreateResponseClient(json, new BitfinexClientOptions()
-        { 
-            ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "123"), 
-            SpotApiOptions = new CryptoExchange.Net.Objects.RestApiClientOptions
-            {
-                RateLimiters = new List<IRateLimiter>(),
-                OutputOriginalData = true,
-            }
+        private JsonToObjectComparer<IBitfinexRestClient> _comparer = new JsonToObjectComparer<IBitfinexRestClient>((json) => TestHelpers.CreateResponseClient(json, x =>
+        {
+            x.ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "123");
+            x.SpotOptions.RateLimiters = new List<IRateLimiter>();
+            x.SpotOptions.OutputOriginalData = true;
         }, System.Net.HttpStatusCode.OK));
 
         [Test]

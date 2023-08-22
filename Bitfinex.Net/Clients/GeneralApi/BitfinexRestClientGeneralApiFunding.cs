@@ -17,7 +17,7 @@ using Bitfinex.Net.Interfaces.Clients.GeneralApi;
 namespace Bitfinex.Net.Clients.GeneralApi
 {
     /// <inheritdoc />
-    public class BitfinexClientGeneralApiFunding : IBitfinexClientGeneralApiFunding
+    public class BitfinexRestClientGeneralApiFunding : IBitfinexRestClientGeneralApiFunding
     {
         private const string ActiveFundingOffersEndpoint = "auth/r/funding/offers/{}";
         private const string FundingOfferHistoryEndpoint = "auth/r/funding/offers/{}/hist";
@@ -37,9 +37,9 @@ namespace Bitfinex.Net.Clients.GeneralApi
         private const string GetOfferEndpoint = "offer/status";
         private const string CloseMarginFundingEndpoint = "funding/close";
 
-        private readonly BitfinexClientGeneralApi _baseClient;
+        private readonly BitfinexRestClientGeneralApi _baseClient;
 
-        internal BitfinexClientGeneralApiFunding(BitfinexClientGeneralApi baseClient)
+        internal BitfinexRestClientGeneralApiFunding(BitfinexRestClientGeneralApi baseClient)
         {
             _baseClient = baseClient;
         }

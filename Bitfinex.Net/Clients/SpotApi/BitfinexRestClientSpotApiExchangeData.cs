@@ -18,7 +18,7 @@ using Bitfinex.Net.Interfaces.Clients.SpotApi;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc />
-    public class BitfinexClientSpotApiExchangeData : IBitfinexClientSpotApiExchangeData
+    public class BitfinexRestClientSpotApiExchangeData : IBitfinexRestClientSpotApiExchangeData
     {
         private const string StatusEndpoint = "platform/status";
         private const string SymbolsEndpoint = "symbols";
@@ -38,9 +38,9 @@ namespace Bitfinex.Net.Clients.SpotApi
         private const string FundingCandlesEndpoint = "candles/trade:{}:{}:{}/hist";
         private const string MarketAverageEndpoint = "calc/trade/avg";
 
-        private readonly BitfinexClientSpotApi _baseClient;
+        private readonly BitfinexRestClientSpotApi _baseClient;
 
-        internal BitfinexClientSpotApiExchangeData(BitfinexClientSpotApi baseClient)
+        internal BitfinexRestClientSpotApiExchangeData(BitfinexRestClientSpotApi baseClient)
         {
             _baseClient = baseClient;
         }
@@ -88,6 +88,20 @@ namespace Bitfinex.Net.Clients.SpotApi
             };
 
             return await _baseClient.SendRequestAsync<IEnumerable<BitfinexSymbolOverview>>(_baseClient.GetUrl(TickersEndpoint, "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<IEnumerable<BitfinexTickerHistory>>> GetTickerHistoryAsync(IEnumerable<string>? symbols = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
+            };
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTickerHistory>>(_baseClient.GetUrl("tickers/hist", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
 
         /// <inheritdoc />

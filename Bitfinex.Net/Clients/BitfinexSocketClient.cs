@@ -16,6 +16,7 @@ using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Clients.SpotApi;
 using CryptoExchange.Net.Authentication;
+using Bitfinex.Net.Objects.Options;
 
 namespace Bitfinex.Net.Clients
 {
@@ -25,44 +26,59 @@ namespace Bitfinex.Net.Clients
         #region Api clients
 
         /// <inheritdoc />
-        public IBitfinexSocketClientSpotStreams SpotStreams { get; }
+        public IBitfinexSocketClientSpotApi SpotApi { get; }
 
         #endregion
 
         #region ctor
+
         /// <summary>
-        /// Create a new instance of BitfinexSocketClient using the default options
+        /// Create a new instance of the BitfinexSocketClient
         /// </summary>
-        public BitfinexSocketClient() : this(BitfinexSocketClientOptions.Default)
+        /// <param name="loggerFactory">The logger factory</param>
+        public BitfinexSocketClient(ILoggerFactory? loggerFactory = null) : this((x) => { }, loggerFactory)
         {
         }
 
         /// <summary>
-        /// Create a new instance of BitfinexSocketClient using provided options
+        /// Create a new instance of the BitfinexSocketClient
         /// </summary>
-        /// <param name="options">The options to use for this client</param>
-        public BitfinexSocketClient(BitfinexSocketClientOptions options) : base("Bitfinex", options)
+        /// <param name="optionsDelegate">Option configuration delegate</param>
+        public BitfinexSocketClient(Action<BitfinexSocketOptions> optionsDelegate) : this(optionsDelegate, null)
         {
-            if (options == null)
-                throw new ArgumentException("Cant pass null options, use empty constructor for default");
-
-            SpotStreams = AddApiClient(new BitfinexSocketClientSpotStreams(log, options));
         }
+
+        /// <summary>
+        /// Create a new instance of the BitfinexSocketClient
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory</param>
+        /// <param name="optionsDelegate">Option configuration delegate</param>
+        public BitfinexSocketClient(Action<BitfinexSocketOptions> optionsDelegate, ILoggerFactory? loggerFactory = null) : base(loggerFactory, "Bitfinex")
+        {
+            var options = BitfinexSocketOptions.Default.Copy();
+            optionsDelegate(options);
+            Initialize(options);
+
+            SpotApi = AddApiClient(new BitfinexSocketClientSpotApi(_logger, options));
+        }
+
         #endregion
 
         /// <summary>
         /// Set the default options to be used when creating new clients
         /// </summary>
-        /// <param name="options">Options to use as default</param>
-        public static void SetDefaultOptions(BitfinexSocketClientOptions options)
+        /// <param name="optionsDelegate">Option configuration delegate</param>
+        public static void SetDefaultOptions(Action<BitfinexSocketOptions> optionsDelegate)
         {
-            BitfinexSocketClientOptions.Default = options;
+            var options = BitfinexSocketOptions.Default.Copy();
+            optionsDelegate(options);
+            BitfinexSocketOptions.Default = options;
         }
 
         /// <inheritdoc />
         public void SetApiCredentials(ApiCredentials credentials)
         {
-            SpotStreams.SetApiCredentials(credentials);
+            SpotApi.SetApiCredentials(credentials);
         }
     }
 }

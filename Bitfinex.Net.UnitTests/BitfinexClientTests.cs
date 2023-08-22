@@ -43,8 +43,7 @@ namespace Bitfinex.Net.UnitTests
             var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"), null);
 
             // assert
-            Assert.AreEqual(authProvider.Credentials.Key.GetString(), "TestKey");
-            Assert.AreEqual(authProvider.Credentials.Secret.GetString(), "TestSecret");
+            Assert.AreEqual(authProvider.GetApiKey(), "TestKey");
         }
 
         [Test]
@@ -64,8 +63,8 @@ namespace Bitfinex.Net.UnitTests
         public async Task MakingAuthv2Call_Should_SendAuthHeaders()
         {
             // arrange
-            var client = TestHelpers.CreateClient(new BitfinexClientOptions(){ ApiCredentials = new ApiCredentials("TestKey", "t")});
-            var request = TestHelpers.SetResponse((BitfinexClient)client, "{}");
+            var client = TestHelpers.CreateClient(x => { x.ApiCredentials = new ApiCredentials("TestKey", "t"); });
+            var request = TestHelpers.SetResponse((BitfinexRestClient)client, "{}");
 
             // act
             await client.SpotApi.Trading.GetOpenOrdersAsync();
@@ -80,8 +79,8 @@ namespace Bitfinex.Net.UnitTests
         public async Task MakingAuthv1Call_Should_SendAuthHeaders()
         {
             // arrange
-            var client = TestHelpers.CreateClient(new BitfinexClientOptions() { ApiCredentials = new ApiCredentials("TestKey", "t") });
-            var request = TestHelpers.SetResponse((BitfinexClient)client, "{}");
+            var client = TestHelpers.CreateClient(x => { x.ApiCredentials = new ApiCredentials("TestKey", "t"); });
+            var request = TestHelpers.SetResponse((BitfinexRestClient)client, "{}");
 
             // act
             await client.SpotApi.Account.GetAccountInfoAsync();
@@ -116,7 +115,7 @@ namespace Bitfinex.Net.UnitTests
         [Test]
         public void CheckRestInterfaces()
         {
-            var assembly = Assembly.GetAssembly(typeof(BitfinexClient));
+            var assembly = Assembly.GetAssembly(typeof(BitfinexRestClient));
             var ignore = new string[] { "IBitfinexClient" };
             var clientInterfaces = assembly.GetTypes().Where(t => t.Name.StartsWith("IBitfinexClient") && !ignore.Contains(t.Name));
 
