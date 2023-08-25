@@ -441,7 +441,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (messageEvent.JsonData["code"] == null)
             {
                 // welcome event, send a config message for receiving checsum updates for order book subscriptions
-                messageEvent.Connection.Send(new BitfinexSocketConfig { Event = "conf", Flags = 131072 });
+                messageEvent.Connection.Send(ExchangeHelpers.NextId(), new BitfinexSocketConfig { Event = "conf", Flags = 131072 }, 1);
                 return;
             }
 
@@ -481,7 +481,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var channelId = ((BitfinexSubscriptionRequest)subscription.Request!).ChannelId;
             var unsub = new BitfinexUnsubscribeRequest(channelId);
             var result = false;
-            await connection.SendAndWaitAsync(unsub, ClientOptions.RequestTimeout, null, data =>
+            await connection.SendAndWaitAsync(unsub, ClientOptions.RequestTimeout, null, 1, data =>
             {
                 if (data.Type != JTokenType.Object)
                     return false;
@@ -527,7 +527,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var authObject = GetAuthObject(s.ApiClient);
             var result = new CallResult<bool>(new ServerError("No response from server"));
-            await s.SendAndWaitAsync(authObject, ClientOptions.RequestTimeout, null, tokenData =>
+            await s.SendAndWaitAsync(authObject, ClientOptions.RequestTimeout, null, 1, tokenData =>
             {
                 if (tokenData.Type != JTokenType.Object)
                     return false;

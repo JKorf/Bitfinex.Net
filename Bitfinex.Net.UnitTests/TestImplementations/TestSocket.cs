@@ -19,6 +19,7 @@ namespace Binance.Net.UnitTests.TestImplementations
         public event Action<Exception> OnError;
         public event Action OnOpen;
         public event Action OnReconnecting;
+        public event Action<int> OnRequestSent;
         public event Action OnReconnected;
 #pragma warning restore 8618
 
@@ -55,10 +56,12 @@ namespace Binance.Net.UnitTests.TestImplementations
             return true;
         }
 
-        public void Send(string data)
+        public void Send(int requestId, string data, int weight)
         {
             if(!Connected)
                 throw new Exception("Socket not connected");
+
+            OnRequestSent?.Invoke(requestId);
         }
 
         public void Reset()

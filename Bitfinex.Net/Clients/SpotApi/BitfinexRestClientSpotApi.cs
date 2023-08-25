@@ -412,25 +412,25 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
         #endregion
 
-        /// <summary>
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        protected override Error ParseErrorResponse(JToken data)
+        /// <inheritdoc />
+        protected override Error ParseErrorResponse(int httpStatusCode, IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders, string data)
         {
-            if (!(data is JArray))
+            var errorData = ValidateJson(data);
+            if (!errorData)
+                return new ServerError(data);
+
+            if (!(errorData.Data is JArray))
             {
-                if (data["error"] != null && data["code"] != null && data["error_description"] != null)
-                    return new ServerError((int)data["code"]!, data["error"] + ": " + data["error_description"]);
-                if (data["message"] != null)
-                    return new ServerError(data["message"]!.ToString());
+                if (errorData.Data["error"] != null && errorData.Data["code"] != null && errorData.Data["error_description"] != null)
+                    return new ServerError((int)errorData.Data["code"]!, errorData.Data["error"] + ": " + errorData.Data["error_description"]);
+                if (errorData.Data["message"] != null)
+                    return new ServerError(errorData.Data["message"]!.ToString());
                 else
-                    return new ServerError(data.ToString());
+                    return new ServerError(errorData.Data.ToString());
             }
 
-            var error = data.ToObject<BitfinexError>();
+            var error = errorData.Data.ToObject<BitfinexError>();
             return new ServerError(error!.ErrorCode, error.ErrorMessage);
-
         }
     }
 }
