@@ -1,11 +1,14 @@
 # Bitfinex.Net
-[![.NET](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml/badge.svg)](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml) ![Nuget version](https://img.shields.io/nuget/v/bitfinex.net.svg)  ![Nuget downloads](https://img.shields.io/nuget/dt/Bitfinex.Net.svg)
+[![.NET](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml/badge.svg)](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml) [![Nuget version](https://img.shields.io/nuget/v/bitfinex.net.svg)](https://www.nuget.org/packages/Bitfinex.Net)  [![Nuget downloads](https://img.shields.io/nuget/dt/Bitfinex.Net.svg)](https://www.nuget.org/packages/Bitfinex.Net)
 
 Bitfinex.Net is a wrapper around the Bitfinex API as described on [Bitfinex](https://docs.bitfinex.com/docs), including all features the API provides using clear and readable objects, both for the REST  as the websocket API's.
 
 **If you think something is broken, something is missing or have any questions, please open an [Issue](https://github.com/JKorf/Bitfinex.Net/issues)**
 
 [Documentation](https://jkorf.github.io/Bitfinex.Net/)
+
+## Installation
+`dotnet add package Bitfinex.Net`
 
 ## Support the project
 I develop and maintain this package on my own for free in my spare time, any support is greatly appreciated.
