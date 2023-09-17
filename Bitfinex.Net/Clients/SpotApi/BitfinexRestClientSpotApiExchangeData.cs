@@ -228,7 +228,9 @@ namespace Bitfinex.Net.Clients.SpotApi
         #region Get Ticker
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexTicker>> GetTickerAsync(string symbol, CancellationToken ct = default)
-        { 
+        {
+            symbol.ValidateBitfinexTradingSymbol();
+
             var ticker = await GetTickersAsync(new[] { symbol }, ct).ConfigureAwait(false);
             if(!ticker)
                 return ticker.As<BitfinexTicker>(null);
@@ -244,6 +246,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexFundingTicker>> GetFundingTickerAsync(string symbol, CancellationToken ct = default)
         {
+            symbol.ValidateBitfinexFundingSymbol();
+
             var ticker = await GetFundingTickersAsync(new[] { symbol }, ct).ConfigureAwait(false);
             if (!ticker)
                 return ticker.As<BitfinexFundingTicker>(null);
@@ -317,7 +321,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexOrderBook>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol.ValidateBitfinexTradingSymbol();
             limit?.ValidateIntValues("limit", 1, 25, 100);
             if (precision == Precision.R0)
                 throw new ArgumentException("Precision can not be R0. Use PrecisionLevel0 to get aggregated trades for each price point or GetRawOrderBook to get the raw order book instead");
@@ -347,7 +351,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexFundingOrderBook>> GetFundingOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol.ValidateBitfinexFundingSymbol();
             limit?.ValidateIntValues("limit", 1, 25, 100);
             if (precision == Precision.R0)
                 throw new ArgumentException("Precision can not be R0. Use PrecisionLevel0 to get aggregated trades for each price point or GetRawOrderBook to get the raw order book instead");
@@ -377,7 +381,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexRawOrderBook>> GetRawOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol.ValidateBitfinexTradingSymbol();
             limit?.ValidateIntValues("limit", 25, 100);
 
             var parameters = new Dictionary<string, object>();
@@ -405,7 +409,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexRawFundingOrderBook>> GetRawFundingOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol.ValidateBitfinexFundingSymbol();
             limit?.ValidateIntValues("limit", 25, 100);
 
             var parameters = new Dictionary<string, object>();

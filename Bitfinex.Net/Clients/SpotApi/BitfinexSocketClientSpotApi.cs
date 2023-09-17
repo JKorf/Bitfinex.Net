@@ -60,7 +60,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexTicker>> handler, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol.ValidateBitfinexTradingSymbol();
             var internalHandler = new Action<DataEvent<JToken>>(data =>
             {
                 HandleData("Ticker", (JArray)data.Data[1]!, symbol, data, handler);
@@ -71,7 +71,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToFundingTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamFundingTicker>> handler, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol.ValidateBitfinexFundingSymbol();
             var internalHandler = new Action<DataEvent<JToken>>(data =>
             {
                 HandleData("Ticker", (JArray)data.Data[1]!, symbol, data, handler);
@@ -82,7 +82,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<DataEvent<IEnumerable<BitfinexOrderBookEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol.ValidateBitfinexTradingSymbol();
             length.ValidateIntValues(nameof(length), 1, 25, 100, 250);
             if (precision == Precision.R0)
                 throw new ArgumentException("Invalid precision R0, use SubscribeToRawBookUpdatesAsync instead");
@@ -123,7 +123,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToFundingOrderBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<DataEvent<IEnumerable<BitfinexOrderBookFundingEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol.ValidateBitfinexFundingSymbol();
             length.ValidateIntValues(nameof(length), 1, 25, 100, 250);
             if (precision == Precision.R0)
                 throw new ArgumentException("Invalid precision R0, use SubscribeToFundingRawOrderBookUpdatesAsync instead");
@@ -164,7 +164,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToRawOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol.ValidateBitfinexTradingSymbol();
             var internalHandler = new Action<DataEvent<JToken>>(data =>
             {
                 if (data.Data[1]?.ToString() == "cs")
@@ -187,7 +187,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToRawFundingOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookFundingEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
+            symbol.ValidateBitfinexFundingSymbol();
             var internalHandler = new Action<DataEvent<JToken>>(data =>
             {
                 if (data.Data[1]?.ToString() == "cs")

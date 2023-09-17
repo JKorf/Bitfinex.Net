@@ -54,6 +54,18 @@
             </summary>
             <param name="symbolString">string to validate</param>
         </member>
+        <member name="M:Bitfinex.Net.BitfinexHelpers.ValidateBitfinexFundingSymbol(System.String)">
+            <summary>
+            Validate the string is a valid Bitfinex symbol.
+            </summary>
+            <param name="symbolString">string to validate</param>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexHelpers.ValidateBitfinexTradingSymbol(System.String)">
+            <summary>
+            Validate the string is a valid Bitfinex symbol.
+            </summary>
+            <param name="symbolString">string to validate</param>
+        </member>
         <member name="T:Bitfinex.Net.Clients.BitfinexRestClient">
             <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient" />
         </member>
