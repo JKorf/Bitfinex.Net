@@ -7,9 +7,9 @@
   <PropertyGroup>
     <PackageId>Bitfinex.Net</PackageId>
     <Authors>JKorf</Authors>
-    <PackageVersion>6.0.1</PackageVersion>
-    <AssemblyVersion>6.0.1</AssemblyVersion>
-    <FileVersion>6.0.1</FileVersion>
+    <PackageVersion>7.0.0</PackageVersion>
+    <AssemblyVersion>7.0.0</AssemblyVersion>
+    <FileVersion>7.0.0</FileVersion>
     <Description>Bitfinex.Net is a .Net wrapper for the Bitfinex API. It includes all features the API provides, REST API and Websocket, using clear and readable objects including but not limited to Reading market info, Placing and managing orders and Reading balances and funds</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Bitfinex Bitfinex.Net C# .Net CryptoCurrency Exchange API wrapper</PackageTags>
@@ -20,7 +20,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>6.0.1 - Updated CryptoExchange.Net</PackageReleaseNotes>
+    <PackageReleaseNotes>7.0.0 - Updated all endpoints to V2 API (expect for Account.WithdrawAsync), Updated all parameters and response models, Created endpoints for all possible requests for the Configs and Stats endpoints, Split the endpoints and subscriptions for trading symbols and funding symbols where necesarry, Added Account.GetMovementsDetailsAsync endpoint, Added Account.GetLoginHistoryAsync endpoint, Added Account.GetApiKeyPermissionsAsync endpoint, Added Account.GetAccountChangeLogAsync endpoint, Added ExchangeData.GetDerivativesStatusAsync endpoint, Added ExchangeData.GetLiquidationsAsync endpoint, Added ExchangeData.GetFundingStatisticsAsync endpoint, Added Trading.IncreasePositionAsync endpoint, Added Trading.GetIncreasePositionInfoAsync endpoint, Added Trading.GetPositionSnapshotsAsync endpoint, Added SubscribeToLiquidationUpdatesAsync stream, Added SubscribeToDerivativesUpdatesAsync stream, Added SubmitFundingOfferAsync socket request, Added CancelFundingOfferAsync socket request</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup>
     <DocumentationFile>Bitfinex.Net.xml</DocumentationFile>

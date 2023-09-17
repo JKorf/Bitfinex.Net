@@ -30,6 +30,26 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
 ## Release notes
+* Version 7.0.0 - 17 Sep 2023
+    * Updated all endpoints to V2 API (expect for Account.WithdrawAsync)
+    * Updated all parameters and response models
+    * Created endpoints for all possible requests for the Configs and Stats endpoints
+    * Split the endpoints and subscriptions for trading symbols and funding symbols where necesarry
+    * Added Account.GetMovementsDetailsAsync endpoint
+    * Added Account.GetLoginHistoryAsync endpoint
+    * Added Account.GetApiKeyPermissionsAsync endpoint
+    * Added Account.GetAccountChangeLogAsync endpoint
+    * Added ExchangeData.GetDerivativesStatusAsync endpoint
+    * Added ExchangeData.GetLiquidationsAsync endpoint
+    * Added ExchangeData.GetFundingStatisticsAsync endpoint
+    * Added Trading.IncreasePositionAsync endpoint
+    * Added Trading.GetIncreasePositionInfoAsync endpoint
+    * Added Trading.GetPositionSnapshotsAsync endpoint
+    * Added SubscribeToLiquidationUpdatesAsync stream
+    * Added SubscribeToDerivativesUpdatesAsync stream
+    * Added SubmitFundingOfferAsync socket request
+    * Added CancelFundingOfferAsync socket request
+
 * Version 6.0.1 - 25 Aug 2023
     * Updated CryptoExchange.Net
 
