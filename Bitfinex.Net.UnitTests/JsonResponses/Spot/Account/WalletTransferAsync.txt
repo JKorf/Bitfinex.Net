@@ -1,4 +1,1 @@
-[{
-  "status":"success",
-  "message":"1.0 USD transfered from Exchange to Deposit"
-}]
+[1568736745789,"acc_tf",null,null,[1568736745790,"margin","exchange",null,"USD",null,null,50],null,"SUCCESS","50.0 US Dollar transferred from Margin to Exchange"]

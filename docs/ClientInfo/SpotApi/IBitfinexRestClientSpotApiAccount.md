@@ -37,20 +37,20 @@ Task<WebCallResult<BitfinexSuccessResult>> DeleteAlertAsync(string symbol, decim
 
 ***
 
-## Get30DaySummaryAsync  
+## Get30DaySummaryAndFeesAsync  
 
-[https://docs.bitfinex.com/v1/reference#rest-auth-summary](https://docs.bitfinex.com/v1/reference#rest-auth-summary)  
+[https://docs.bitfinex.com/reference/rest-auth-summary](https://docs.bitfinex.com/reference/rest-auth-summary)  
 <p>
 
-*Get 30-day summary on trading volume and margin funding*  
+*Provides an overview of the different fee rates for the account as well as the LEO discount level and the average amount of LEO held over the last 30 days.*  
 
 ```csharp  
 var client = new BitfinexRestClient();  
-var result = await client.SpotApi.Account.Get30DaySummaryAsync();  
+var result = await client.SpotApi.Account.Get30DaySummaryAndFeesAsync();  
 ```  
 
 ```csharp  
-Task<WebCallResult<Bitfinex30DaySummary>> Get30DaySummaryAsync(CancellationToken ct = default);  
+Task<WebCallResult<BitfinexSummary>> Get30DaySummaryAndFeesAsync(CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
@@ -61,20 +61,20 @@ Task<WebCallResult<Bitfinex30DaySummary>> Get30DaySummaryAsync(CancellationToken
 
 ***
 
-## GetAccountInfoAsync  
+## GetAccountChangeLogAsync  
 
-[https://docs.bitfinex.com/v1/reference#rest-auth-account-info](https://docs.bitfinex.com/v1/reference#rest-auth-account-info)  
+[https://docs.bitfinex.com/reference/rest-auth-audit-hist](https://docs.bitfinex.com/reference/rest-auth-audit-hist)  
 <p>
 
-*Get information about your account*  
+*Get account change log*  
 
 ```csharp  
 var client = new BitfinexRestClient();  
-var result = await client.SpotApi.Account.GetAccountInfoAsync();  
+var result = await client.SpotApi.Account.GetAccountChangeLogAsync();  
 ```  
 
 ```csharp  
-Task<WebCallResult<BitfinexAccountInfo>> GetAccountInfoAsync(CancellationToken ct = default);  
+Task<WebCallResult<IEnumerable<BitfinexChangeLog>>> GetAccountChangeLogAsync(CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
@@ -109,6 +109,30 @@ Task<WebCallResult<IEnumerable<BitfinexAlert>>> GetAlertListAsync(CancellationTo
 
 ***
 
+## GetApiKeyPermissionsAsync  
+
+[https://docs.bitfinex.com/reference/key-permissions](https://docs.bitfinex.com/reference/key-permissions)  
+<p>
+
+*Get api key permissions*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetApiKeyPermissionsAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexPermission>>> GetApiKeyPermissionsAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
 ## GetAvailableBalanceAsync  
 
 [https://docs.bitfinex.com/reference#rest-auth-calc-order-avail](https://docs.bitfinex.com/reference#rest-auth-calc-order-avail)  
@@ -122,7 +146,7 @@ var result = await client.SpotApi.Account.GetAvailableBalanceAsync(/* parameters
 ```  
 
 ```csharp  
-Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal rate, WalletType type, CancellationToken ct = default);  
+Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal rate, WalletType type, decimal? leverage = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
@@ -131,6 +155,7 @@ Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string sy
 |side|Buy or sell|
 |rate|The rate/price|
 |type|The wallet type|
+|_[Optional]_ leverage|Leverage that you want to use in calculating the max order amount (DERIV only)|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
@@ -198,12 +223,12 @@ var result = await client.SpotApi.Account.GetDepositAddressAsync(/* parameters *
 ```  
 
 ```csharp  
-Task<WebCallResult<BitfinexDepositAddress>> GetDepositAddressAsync(string asset, WithdrawWallet toWallet, bool? forceNew = default, CancellationToken ct = default);  
+Task<WebCallResult<BitfinexWriteResult<BitfinexDepositAddress>>> GetDepositAddressAsync(string method, WithdrawWallet toWallet, bool? forceNew = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
 |---|---|
-|asset|The asset to get address for|
+|method|The method to get address for. Methods can be retrieved via ExchangeData.GetAssetDepositWithdrawalMethodsAsync|
 |toWallet|The type of wallet the deposit is for|
 |_[Optional]_ forceNew|If true a new address will be generated (previous addresses will still be valid)|
 |_[Optional]_ ct|Cancellation token|
@@ -241,6 +266,33 @@ Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(stri
 
 ***
 
+## GetLoginHistoryAsync  
+
+[https://docs.bitfinex.com/reference/rest-auth-logins-hist](https://docs.bitfinex.com/reference/rest-auth-logins-hist)  
+<p>
+
+*Get login history*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetLoginHistoryAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexLogin>>> GetLoginHistoryAsync(DateTime? startTime = default, DateTime? endTime = default, int? limit = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ startTime|Start time of the data to return|
+|_[Optional]_ endTime|End time of the data to return|
+|_[Optional]_ limit|Max amount of results|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
 ## GetMovementsAsync  
 
 [https://docs.bitfinex.com/reference#rest-auth-movements](https://docs.bitfinex.com/reference#rest-auth-movements)  
@@ -254,12 +306,42 @@ var result = await client.SpotApi.Account.GetMovementsAsync();
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? symbol = default, CancellationToken ct = default);  
+Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? symbol = default, IEnumerable<long>? ids = default, string? address = default, DateTime? startTime = default, DateTime? endTime = default, int? limit = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
 |---|---|
 |_[Optional]_ symbol|Symbol to get history for|
+|_[Optional]_ ids|Filter by ids|
+|_[Optional]_ address|Filter by deposit address|
+|_[Optional]_ startTime|Start time of the data to return|
+|_[Optional]_ endTime|End time of the data to return|
+|_[Optional]_ limit|Max amount of results|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetMovementsDetailsAsync  
+
+[https://docs.bitfinex.com/reference/movement-info](https://docs.bitfinex.com/reference/movement-info)  
+<p>
+
+*Get detailed information about a deposit/withdrawal*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Account.GetMovementsDetailsAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<BitfinexMovementDetails>> GetMovementsDetailsAsync(long id, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|id|Id of the movement|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
@@ -315,30 +397,6 @@ Task<WebCallResult<BitfinexUserInfo>> GetUserInfoAsync(CancellationToken ct = de
 
 ***
 
-## GetWithdrawalFeesAsync  
-
-[https://docs.bitfinex.com/v1/reference#rest-auth-fees](https://docs.bitfinex.com/v1/reference#rest-auth-fees)  
-<p>
-
-*Get withdrawal fees for this account*  
-
-```csharp  
-var client = new BitfinexRestClient();  
-var result = await client.SpotApi.Account.GetWithdrawalFeesAsync();  
-```  
-
-```csharp  
-Task<WebCallResult<BitfinexWithdrawalFees>> GetWithdrawalFeesAsync(CancellationToken ct = default);  
-```  
-
-|Parameter|Description|
-|---|---|
-|_[Optional]_ ct|Cancellation token|
-
-</p>
-
-***
-
 ## SetAlertAsync  
 
 [https://docs.bitfinex.com/reference#rest-auth-alert-set](https://docs.bitfinex.com/reference#rest-auth-alert-set)  
@@ -367,7 +425,7 @@ Task<WebCallResult<BitfinexAlert>> SetAlertAsync(string symbol, decimal price, C
 
 ## WalletTransferAsync  
 
-[https://docs.bitfinex.com/v1/reference#rest-auth-transfer-between-wallets](https://docs.bitfinex.com/v1/reference#rest-auth-transfer-between-wallets)  
+[https://docs.bitfinex.com/reference/rest-auth-transfer](https://docs.bitfinex.com/reference/rest-auth-transfer)  
 <p>
 
 *Transfers funds from one wallet to another*  
@@ -378,7 +436,7 @@ var result = await client.SpotApi.Account.WalletTransferAsync(/* parameters */);
 ```  
 
 ```csharp  
-Task<WebCallResult<BitfinexTransferResult>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, CancellationToken ct = default);  
+Task<WebCallResult<BitfinexWriteResult<BitfinexTransfer>>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, string? toAsset = default, string? emailDestination = default, long? userIdDestination = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
@@ -387,6 +445,9 @@ Task<WebCallResult<BitfinexTransferResult>> WalletTransferAsync(string asset, de
 |quantity|The quantity to transfer|
 |fromWallet|The wallet to remove funds from|
 |toWallet|The wallet to add funds to|
+|_[Optional]_ toAsset|The asset that you would like to exchange to (USTF0 === USDT for derivatives pairs)|
+|_[Optional]_ emailDestination|Allows transfer of funds to a sub- or master-account identified by the associated email address.|
+|_[Optional]_ userIdDestination|Allows transfer of funds to a sub- or master-account identified by the associated user id.|
 |_[Optional]_ ct|Cancellation token|
 
 </p>

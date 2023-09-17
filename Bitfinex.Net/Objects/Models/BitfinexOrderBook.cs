@@ -12,10 +12,10 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// List of bids
         /// </summary>
-        public IEnumerable<ISymbolOrderBookEntry> Bids { get; set; } = Array.Empty<ISymbolOrderBookEntry>();
+        public IEnumerable<BitfinexOrderBookEntry> Bids { get; set; } = Array.Empty<BitfinexOrderBookEntry>();
         /// <summary>
         /// List of asks
         /// </summary>
-        public IEnumerable<ISymbolOrderBookEntry> Asks { get; set; } = Array.Empty<ISymbolOrderBookEntry>();
+        public IEnumerable<BitfinexOrderBookEntry> Asks { get; set; } = Array.Empty<BitfinexOrderBookEntry>();
     }
 }

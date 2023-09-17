@@ -56,16 +56,6 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// 
         /// </summary>
-        [ArrayProperty(7)]
-        public string PlaceHolder1 { get; set; } = string.Empty;
-        /// <summary>
-        /// 
-        /// </summary>
-        [ArrayProperty(8)]
-        public string PlaceHolder2 { get; set; } = string.Empty;
-        /// <summary>
-        /// 
-        /// </summary>
         [ArrayProperty(9)]
         public int? Flags { get; set; }
         /// <summary>
@@ -78,21 +68,6 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(10)]
         public string StatusString { get; set; } = string.Empty;
-        /// <summary>
-        /// 
-        /// </summary>
-        [ArrayProperty(11)]
-        public string PlaceHolder3 { get; set; } = string.Empty;
-        /// <summary>
-        /// 
-        /// </summary>
-        [ArrayProperty(12)]
-        public string PlaceHolder4 { get; set; } = string.Empty;
-        /// <summary>
-        /// 
-        /// </summary>
-        [ArrayProperty(13)]
-        public string PlaceHolder5 { get; set; } = string.Empty;
 
         /// <summary>
         /// The rate of the order
@@ -121,11 +96,6 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// 
         /// </summary>
-        [ArrayProperty(18)]
-        public string PlaceHolder6 { get; set; } = string.Empty;
-        /// <summary>
-        /// 
-        /// </summary>
         [ArrayProperty(19), JsonConverter(typeof(BoolToIntConverter))]
         public bool Renew { get; set; }
 
@@ -133,6 +103,6 @@ namespace Bitfinex.Net.Objects.Models
         /// The calculated rate
         /// </summary>
         [ArrayProperty(20)]
-        public decimal RateReal { get; set; }
+        public decimal? RateReal { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
@@ -8,8 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Result V2.
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexWriteResult<T>
-        where T: class
+    public class BitfinexWriteResult
     {
         /// <summary>
         /// Millisecond Time Stamp of the update.
@@ -35,12 +35,6 @@ namespace Bitfinex.Net.Objects.Models
         public string? Placeholder1 { get; set; }
 
         /// <summary>
-        /// Data object.
-        /// </summary>
-        [ArrayProperty(4)]
-        public T? Data { get; set; }
-
-        /// <summary>
         /// Work in progress.
         /// </summary>
         [ArrayProperty(5)]
@@ -57,5 +51,20 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(7)]
         public string? Text { get; set; }
+    }
+
+    /// <summary>
+    /// Result V2.
+    /// </summary>
+    [JsonConverter(typeof(ArrayConverter))]
+    public class BitfinexWriteResult<T> : BitfinexWriteResult
+        where T : class
+    {
+        /// <summary>
+        /// Data object.
+        /// </summary>
+        [ArrayProperty(4)]
+        [JsonConversion]
+        public T? Data { get; set; }
     }
 }

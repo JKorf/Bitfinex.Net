@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Objects.Models;
-using Bitfinex.Net.Objects.Models.V1;
 
 namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 {
@@ -28,7 +27,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexAsset>>> GetAssetsAsync(CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexAsset>>> GetAssetsListAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Returns basic market data for the provided symbols
@@ -37,7 +36,16 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbol">The symbol to get data for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Symbol data</returns>
-        Task<WebCallResult<BitfinexSymbolOverview>> GetTickerAsync(string symbol, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexTicker>> GetTickerAsync(string symbol, CancellationToken ct = default);
+
+        /// <summary>
+        /// Returns basic market data for the provided funding symbols
+        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-ticker" /></para>
+        /// </summary>
+        /// <param name="symbol">The symbol to get data for</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>Symbol data</returns>
+        Task<WebCallResult<BitfinexFundingTicker>> GetFundingTickerAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Returns basic market data for the provided symbols
@@ -46,7 +54,16 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbols">The symbols to get data for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Symbol data</returns>
-        Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexTicker>>> GetTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Returns basic market data for the provided funding symbols
+        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-tickers" /></para>
+        /// </summary>
+        /// <param name="symbols">The symbols to get data for</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>Symbol data</returns>
+        Task<WebCallResult<IEnumerable<BitfinexFundingTicker>>> GetFundingTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get ticker history
@@ -73,7 +90,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         Task<WebCallResult<IEnumerable<BitfinexTradeSimple>>> GetTradeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets the order book for a symbol
+        /// Gets the order book for a trading symbol
         /// <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get the order book for</param>
@@ -84,27 +101,35 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         Task<WebCallResult<BitfinexOrderBook>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
-        /// Get the raw order book for a symbol
+        /// Gets the order book for a funding symbol
+        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
+        /// </summary>
+        /// <param name="symbol">The symbol to get the order book for</param>
+        /// <param name="precision">The precision of the data</param>
+        /// <param name="limit">The amount of results in the book</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The order book for the symbol</returns>
+        Task<WebCallResult<BitfinexFundingOrderBook>> GetFundingOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get the raw order book for a trading symbol
         /// <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
         /// </summary>
         /// <param name="symbol">The symbol</param>
         /// <param name="limit">The amount of results in the book</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexOrderBook>> GetRawOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexRawOrderBook>> GetRawOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
-        /// Get various stats for the symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-stats1" /></para>
+        /// Get the raw order book for a funding symbol
+        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to request stats for</param>
-        /// <param name="key">The type of stats</param>
-        /// <param name="side">Side of the stats</param>
-        /// <param name="section">Section of the stats</param>
-        /// <param name="sorting">The way the result should be sorted</param>
+        /// <param name="symbol">The symbol</param>
+        /// <param name="limit">The amount of results in the book</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetStatsAsync(string symbol, StatKey key, StatSide side, StatSection section, Sorting? sorting = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexRawFundingOrderBook>> GetRawFundingOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the last kline for a symbol
@@ -155,40 +180,256 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         Task<WebCallResult<BitfinexForeignExchangeRate>> GetForeignExchangeRateAsync(string asset1, string asset2, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets the margin funding book
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-public-fundingbook" /></para>
+        /// Get derivatives status info
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-derivatives-status" /></para>
         /// </summary>
-        /// <param name="asset">Asset to get the book for</param>
-        /// <param name="limit">Limit of the results</param>
+        /// <param name="symbols">Filter symbols</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingBook>> GetFundingBookAsync(string asset, int? limit = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexDerivativesStatus>>> GetDerivativesStatusAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets the most recent lends
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-public-lends" /></para>
+        /// Get derivatives status info history
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-derivatives-status-history" /></para>
         /// </summary>
-        /// <param name="asset">Asset to get the book for</param>
-        /// <param name="startTime">Return data after this time</param>
-        /// <param name="limit">Limit of the results</param>
+        /// <param name="symbol">The symbol</param>
+        /// <param name="limit">The amount of results</param>
+        /// <param name="startTime">The start time of the data</param>
+        /// <param name="endTime">The end time of the data</param>
+        /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexLend>>> GetLendsAsync(string asset, DateTime? startTime = null, int? limit = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexDerivativesStatus>>> GetDerivativesStatusHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets a list of all symbols
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-public-symbols" /></para>
+        /// Get liquidation history
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-liquidations" /></para>
         /// </summary>
+        /// <param name="limit">The amount of results</param>
+        /// <param name="startTime">The start time of the data</param>
+        /// <param name="endTime">The end time of the data</param>
+        /// <param name="sorting">The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<string>>> GetSymbolsAsync(CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexLiquidation>>> GetLiquidationsAsync(int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets details of all symbols
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-public-symbol-details" /></para>
+        /// Get a list of the most recent funding data for the given asset: FRR, average period, total amount provided, total amount used
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-funding-stats" /></para>
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="limit"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexFundingStats>>> GetFundingStatisticsAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get total active funding in specified asset
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="asset">The asset</param>
+        /// <param name="section">Section of data</param>
+        /// <param name="limit">Max number of results</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
+        /// <param name="sorting">Sorting</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetFundingSizeAsync(string asset, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get total funding used in positions in specified asset
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="asset">The asset</param>
+        /// <param name="section">Section of data</param>
+        /// <param name="limit">Max number of results</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
+        /// <param name="sorting">Sorting</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetCreditSizeAsync(string asset, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get total funding used in positions on a specific symbol in specified asset
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="asset">The asset</param>
+        /// <param name="symbol">The symbol</param>
+        /// <param name="section">Section of data</param>
+        /// <param name="limit">Max number of results</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
+        /// <param name="sorting">Sorting</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetCreditSizeAsync(string asset, string symbol, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="symbol">The symbol</param>
+        /// <param name="side">Position side</param>
+        /// <param name="section">Section of data</param>
+        /// <param name="limit">Max number of results</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
+        /// <param name="sorting">Sorting</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetLongsShortsTotalsAsync(string symbol, StatSide side, StatSection section,int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get trading volume on the platform
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="period">The period in days to get the data for. 1, 7 or 30</param>
+        /// <param name="section">Section of data</param>
+        /// <param name="limit">Max number of results</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
+        /// <param name="sorting">Sorting</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetTradingVolumeAsync(int period, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get volume weighted average price for the day
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="symbol">The symbol</param>
+        /// <param name="section">Section of data</param>
+        /// <param name="limit">Max number of results</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
+        /// <param name="sorting">Sorting</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetVolumeWeightedAveragePriceAsync(string symbol, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get symbol names
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="type">The types of symbol</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<string>>> GetSymbolNamesAsync(SymbolType type, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get asset names
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexSymbolDetails>>> GetSymbolDetailsAsync(CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<string>>> GetAssetNamesAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get mapping of assets to their API symbol
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<Dictionary<string, string>>> GetAssetSymbolsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get mapping of assets to their full name
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<Dictionary<string, string>>> GetAssetFullNamesAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get mapping of assets to their unit of measure where applicable
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<Dictionary<string, string>>> GetAssetUnitsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get mapping of derivative assets to their underlying asset
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<Dictionary<string, string>>> GetAssetUnderlyingsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get mapping of assets to the network they operate on
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<Dictionary<string, string>>> GetAssetNetworksAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get mapping of assets to their block explorer urls
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<Dictionary<string, IEnumerable<string>>>> GetAssetBlockExplorerUrlsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get mapping of assets to their withdrawal fees
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<Dictionary<string, IEnumerable<decimal>>>> GetAssetWithdrawalFeesAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get mapping of assets to their withdrwal methods
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<Dictionary<string, IEnumerable<string>>>> GetAssetDepositWithdrawalMethodsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get list of market information for each trading pair
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<Dictionary<string, BitfinexSymbolInfo>>> GetSymbolsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get list of market information for each derivative trading pair
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<Dictionary<string, BitfinexSymbolInfo>>> GetFuturesSymbolsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get deposit/withdrawal status info for assets
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexAssetInfo>>> GetDepositWithdrawalStatusAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get lists of active haircuts and risk coefficients on margin pairs
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexMarginInfo>> GetMarginInfoAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get derivatives fees config
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexDerivativesFees>> GetDerivativesFeesAsync(CancellationToken ct = default);
     }
 }

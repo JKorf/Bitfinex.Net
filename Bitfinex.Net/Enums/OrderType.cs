@@ -52,6 +52,14 @@
         /// <summary>
         /// Exchange fill or kill order
         /// </summary>
-        ExchangeFillOrKill
+        ExchangeFillOrKill,
+        /// <summary>
+        /// Immediate or cancel order
+        /// </summary>
+        ImmediateOrCancel,
+        /// <summary>
+        /// Immediate or cancel order
+        /// </summary>
+        ExchangeImmediateOrCancel
     }
 }

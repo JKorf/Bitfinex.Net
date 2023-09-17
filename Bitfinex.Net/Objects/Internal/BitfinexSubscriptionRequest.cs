@@ -134,4 +134,48 @@ namespace Bitfinex.Net.Objects.Internal
             return true;
         }
     }
+
+    internal class BitfinexLiquidationSubscriptionRequest : BitfinexSubscriptionRequest
+    {
+        [JsonProperty("key")]
+        public string Key { get; set; }
+
+        public BitfinexLiquidationSubscriptionRequest() : base("status", null)
+        {
+            Key = "liq:global";
+        }
+
+        public override bool CheckResponse(JToken responseMessage)
+        {
+            if (responseMessage["channel"] == null || responseMessage["channel"]!.ToString() != Channel)
+                return false;
+
+            if (responseMessage["key"] == null || responseMessage["key"]!.ToString() != Key)
+                return false;
+
+            return true;
+        }
+    }
+
+    internal class BitfinexDerivativesStatusSubscriptionRequest : BitfinexSubscriptionRequest
+    {
+        [JsonProperty("key")]
+        public string Key { get; set; }
+
+        public BitfinexDerivativesStatusSubscriptionRequest(string symbol) : base("status", null)
+        {
+            Key = "deriv:" + symbol;
+        }
+
+        public override bool CheckResponse(JToken responseMessage)
+        {
+            if (responseMessage["channel"] == null || responseMessage["channel"]!.ToString() != Channel)
+                return false;
+
+            if (responseMessage["key"] == null || responseMessage["key"]!.ToString() != Key)
+                return false;
+
+            return true;
+        }
+    }
 }

@@ -10,6 +10,30 @@ parent: Socket API documentation
 
 ***
 
+## CancelFundingOfferAsync  
+
+[https://docs.bitfinex.com/reference/ws-auth-input-offer-cancel](https://docs.bitfinex.com/reference/ws-auth-input-offer-cancel)  
+<p>
+
+*Cancel a funding offer*  
+
+```csharp  
+var client = new BitfinexSocketClient();  
+var result = await client.SpotApi.CancelFundingOfferAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<CallResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long id);  
+```  
+
+|Parameter|Description|
+|---|---|
+|id|Id of the offer to cancel|
+
+</p>
+
+***
+
 ## CancelOrderAsync  
 
 [https://docs.bitfinex.com/reference#ws-auth-input-order-cancel](https://docs.bitfinex.com/reference#ws-auth-input-order-cancel)  
@@ -167,6 +191,35 @@ Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, 
 
 ***
 
+## SubmitFundingOfferAsync  
+
+[https://docs.bitfinex.com/reference/ws-auth-input-offer-new](https://docs.bitfinex.com/reference/ws-auth-input-offer-new)  
+<p>
+
+*Submit a new funding offer*  
+
+```csharp  
+var client = new BitfinexSocketClient();  
+var result = await client.SpotApi.SubmitFundingOfferAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<CallResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(FundingOfferType type, string symbol, decimal quantity, decimal price, int period, int? flags = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|type|Offer type|
+|symbol|Symbol|
+|quantity|Amount (more than 0 for offer, less than 0 for bid)|
+|price|Rate (or offset for FRRDELTA offers)|
+|period|Time period of offer. Minimum 2 days. Maximum 120 days.|
+|_[Optional]_ flags|Flags|
+
+</p>
+
+***
+
 ## SubscribeToBalanceUpdatesAsync  
 
 [https://docs.bitfinex.com/reference#ws-auth-wallets](https://docs.bitfinex.com/reference#ws-auth-wallets)  
@@ -186,6 +239,88 @@ Task<CallResult<UpdateSubscription>> SubscribeToBalanceUpdatesAsync(Action<DataE
 |Parameter|Description|
 |---|---|
 |walletHandler|Data handler for wallet updates|
+|_[Optional]_ ct|Cancellation token for closing this subscription|
+
+</p>
+
+***
+
+## SubscribeToDerivativesUpdatesAsync  
+
+[https://docs.bitfinex.com/reference/ws-public-status](https://docs.bitfinex.com/reference/ws-public-status)  
+<p>
+
+*Subscribe to derivatives status updates*  
+
+```csharp  
+var client = new BitfinexSocketClient();  
+var result = await client.SpotApi.SubscribeToDerivativesUpdatesAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<CallResult<UpdateSubscription>> SubscribeToDerivativesUpdatesAsync(string symbol, Action<DataEvent<BitfinexDerivativesStatusUpdate>> handler, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol|The derivatives symbol, tBTCF0:USTF0 for example|
+|handler|The handler for the data|
+|_[Optional]_ ct|Cancellation token for closing this subscription|
+
+</p>
+
+***
+
+## SubscribeToFundingOrderBookUpdatesAsync  
+
+[https://docs.bitfinex.com/reference#ws-public-books](https://docs.bitfinex.com/reference#ws-public-books)  
+<p>
+
+*Subscribes to funding order book updates for a symbol. Use SubscribeToOrderBookUpdatesAsync for trade symbol ticker updates*  
+
+```csharp  
+var client = new BitfinexSocketClient();  
+var result = await client.SpotApi.SubscribeToFundingOrderBookUpdatesAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<CallResult<UpdateSubscription>> SubscribeToFundingOrderBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<DataEvent<IEnumerable<BitfinexOrderBookFundingEntry>>> handler, Action<DataEvent<int>>? checksumHandler = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol|The symbol to subscribe to|
+|precision|The precision of the updates|
+|frequency|The frequency of updates|
+|length|The range for the order book updates, either 25 or 100|
+|handler|The handler for the data|
+|_[Optional]_ checksumHandler|The handler for the checksum, can be used to validate a order book implementation|
+|_[Optional]_ ct|Cancellation token for closing this subscription|
+
+</p>
+
+***
+
+## SubscribeToFundingTickerUpdatesAsync  
+
+[https://docs.bitfinex.com/reference#ws-public-ticker](https://docs.bitfinex.com/reference#ws-public-ticker)  
+<p>
+
+*Subscribes to funding ticker updates a symbol. Use SubscribeToTickerUpdatesAsync for trade symbol ticker updates*  
+
+```csharp  
+var client = new BitfinexSocketClient();  
+var result = await client.SpotApi.SubscribeToFundingTickerUpdatesAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<CallResult<UpdateSubscription>> SubscribeToFundingTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamFundingTicker>> handler, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol|The symbol to subscribe to|
+|handler|The handler for the data|
 |_[Optional]_ ct|Cancellation token for closing this subscription|
 
 </p>
@@ -239,8 +374,33 @@ Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol,
 
 |Parameter|Description|
 |---|---|
-|symbol|The symbol to subscribe to|
+|symbol|The symbol to subscribe to. For funding klines use {symbol}:p{period}, for example fUSD:p30|
 |interval|The interval of the klines|
+|handler|The handler for the data|
+|_[Optional]_ ct|Cancellation token for closing this subscription|
+
+</p>
+
+***
+
+## SubscribeToLiquidationUpdatesAsync  
+
+[https://docs.bitfinex.com/reference/ws-public-status](https://docs.bitfinex.com/reference/ws-public-status)  
+<p>
+
+*Subscribe to liquidation updates*  
+
+```csharp  
+var client = new BitfinexSocketClient();  
+var result = await client.SpotApi.SubscribeToLiquidationUpdatesAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<CallResult<UpdateSubscription>> SubscribeToLiquidationUpdatesAsync(Action<DataEvent<IEnumerable<BitfinexLiquidation>>> handler, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
 |handler|The handler for the data|
 |_[Optional]_ ct|Cancellation token for closing this subscription|
 
@@ -253,7 +413,7 @@ Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol,
 [https://docs.bitfinex.com/reference#ws-public-books](https://docs.bitfinex.com/reference#ws-public-books)  
 <p>
 
-*Subscribes to order book updates for a symbol*  
+*Subscribes to order book updates for a symbol. Use SubscribeToFundingOrderBookUpdatesAsync for funding symbol ticker updates*  
 
 ```csharp  
 var client = new BitfinexSocketClient();  
@@ -278,12 +438,40 @@ Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(string sym
 
 ***
 
+## SubscribeToRawFundingOrderBookUpdatesAsync  
+
+[https://docs.bitfinex.com/reference#ws-public-raw-books](https://docs.bitfinex.com/reference#ws-public-raw-books)  
+<p>
+
+*Subscribes to raw order book updates for a symbol. Use SubscribeToRawOrderBookUpdatesAsync for trade symbol ticker updates*  
+
+```csharp  
+var client = new BitfinexSocketClient();  
+var result = await client.SpotApi.SubscribeToRawFundingOrderBookUpdatesAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<CallResult<UpdateSubscription>> SubscribeToRawFundingOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookFundingEntry>>> handler, Action<DataEvent<int>>? checksumHandler = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol|The symbol to subscribe to|
+|limit|The range for the order book updates|
+|handler|The handler for the data|
+|_[Optional]_ checksumHandler|The handler for the checksum, can be used to validate a order book implementation|
+|_[Optional]_ ct|Cancellation token for closing this subscription|
+
+</p>
+
+***
+
 ## SubscribeToRawOrderBookUpdatesAsync  
 
 [https://docs.bitfinex.com/reference#ws-public-raw-books](https://docs.bitfinex.com/reference#ws-public-raw-books)  
 <p>
 
-*Subscribes to raw order book updates for a symbol*  
+*Subscribes to raw order book updates for a symbol. Use SubscribeToRawFundingOrderBookUpdatesAsync for funding symbol ticker updates*  
 
 ```csharp  
 var client = new BitfinexSocketClient();  
@@ -311,7 +499,7 @@ Task<CallResult<UpdateSubscription>> SubscribeToRawOrderBookUpdatesAsync(string 
 [https://docs.bitfinex.com/reference#ws-public-ticker](https://docs.bitfinex.com/reference#ws-public-ticker)  
 <p>
 
-*Subscribes to ticker updates for a symbol*  
+*Subscribes to ticker updates for a symbol. Use SubscribeToFundingTickerUpdatesAsync for funding symbol ticker updates*  
 
 ```csharp  
 var client = new BitfinexSocketClient();  
@@ -319,7 +507,7 @@ var result = await client.SpotApi.SubscribeToTickerUpdatesAsync(/* parameters */
 ```  
 
 ```csharp  
-Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamSymbolOverview>> handler, CancellationToken ct = default);  
+Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexTicker>> handler, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|

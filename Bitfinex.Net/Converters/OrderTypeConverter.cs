@@ -22,7 +22,9 @@ namespace Bitfinex.Net.Converters
             new KeyValuePair<OrderType, string>(OrderType.ExchangeStopLimit, "EXCHANGE STOP LIMIT"),
             new KeyValuePair<OrderType, string>(OrderType.ExchangeTrailingStop, "EXCHANGE TRAILING STOP"),
             new KeyValuePair<OrderType, string>(OrderType.FillOrKill, "FOK"),
-            new KeyValuePair<OrderType, string>(OrderType.ExchangeFillOrKill, "EXCHANGE FOK")
+            new KeyValuePair<OrderType, string>(OrderType.ExchangeFillOrKill, "EXCHANGE FOK"),
+            new KeyValuePair<OrderType, string>(OrderType.ImmediateOrCancel, "IOC"),
+            new KeyValuePair<OrderType, string>(OrderType.ExchangeImmediateOrCancel, "EXCHANGE IOC"),
         };
     }
 }

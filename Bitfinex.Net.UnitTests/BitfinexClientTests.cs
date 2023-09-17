@@ -26,7 +26,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient("Error message", null, HttpStatusCode.BadRequest);
 
             // act
-            var result = await client.SpotApi.ExchangeData.GetAssetsAsync();
+            var result = await client.SpotApi.ExchangeData.GetAssetFullNamesAsync();
 
             // assert
             Assert.AreEqual(false, result.Success);
@@ -73,22 +73,6 @@ namespace Bitfinex.Net.UnitTests
             request.Verify(r => r.AddHeader("bfx-nonce", It.IsAny<string>()));
             request.Verify(r => r.AddHeader("bfx-signature", It.IsAny<string>()));
             request.Verify(r => r.AddHeader("bfx-apikey", "TestKey"));
-        }
-
-        [Test]
-        public async Task MakingAuthv1Call_Should_SendAuthHeaders()
-        {
-            // arrange
-            var client = TestHelpers.CreateClient(x => { x.ApiCredentials = new ApiCredentials("TestKey", "t"); });
-            var request = TestHelpers.SetResponse((BitfinexRestClient)client, "{}");
-
-            // act
-            await client.SpotApi.Account.GetAccountInfoAsync();
-
-            // assert
-            request.Verify(r => r.AddHeader("X-BFX-SIGNATURE", It.IsAny<string>()));
-            request.Verify(r => r.AddHeader("X-BFX-PAYLOAD", It.IsAny<string>()));
-            request.Verify(r => r.AddHeader("X-BFX-APIKEY", "TestKey"));
         }
 
         [TestCase("tBTCUSD", true)]

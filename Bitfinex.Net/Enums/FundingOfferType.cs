@@ -1,4 +1,6 @@
-﻿namespace Bitfinex.Net.Enums
+﻿using CryptoExchange.Net.Attributes;
+
+namespace Bitfinex.Net.Enums
 {
     /// <summary>
     /// Funding type
@@ -8,14 +10,17 @@
         /// <summary>
         /// Lend
         /// </summary>
+        [Map("LIMIT")]
         Limit,
         /// <summary>
         /// FFR delta var
         /// </summary>
+        [Map("FRRDELTAVAR")]
         FlashReturnRateDeltaVariable,
         /// <summary>
         /// FFR delta fix
         /// </summary>
+        [Map("FRRDELTAFIX")]
         FlashReturnRateDeltaFixed
     }
 }

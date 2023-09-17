@@ -216,7 +216,7 @@ namespace Bitfinex.Net.UnitTests
             socket.CanConnect = true;
             var client = TestHelpers.CreateSocketClient(socket);
 
-            BitfinexStreamSymbolOverview result = null;
+            BitfinexTicker result = null;
             var subTask = client.SpotApi.SubscribeToTickerUpdatesAsync("tBTCUSD", data => result = data.Data);
 
             var subResponse = new TickerSubscriptionResponse()
@@ -229,7 +229,7 @@ namespace Bitfinex.Net.UnitTests
             };
             socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
-            BitfinexStreamSymbolOverview expected = new BitfinexStreamSymbolOverview();
+            BitfinexTicker expected = new BitfinexTicker();
 
             // act
             socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
@@ -571,7 +571,7 @@ namespace Bitfinex.Net.UnitTests
             var expected = new BitfinexOrder()
             {
                 Price = 0.1m,
-                Quantity = 0.2m,
+                QuantityRaw = 0.2m,
                 Symbol = "tBTCUSD",
                 Type = OrderType.ExchangeLimit,
                 ClientOrderId = 1234,
@@ -643,7 +643,7 @@ namespace Bitfinex.Net.UnitTests
             var expected = new BitfinexOrder()
             {
                 Price = 0.1m,
-                Quantity = 0.2m,
+                QuantityRaw = 0.2m,
                 Symbol = "tBTCUSD",
                 Type = OrderType.ExchangeMarket,
                 ClientOrderId = 1234,
@@ -673,7 +673,7 @@ namespace Bitfinex.Net.UnitTests
             var expected = new BitfinexOrder()
             {
                 Price = 0.1m,
-                Quantity = 0.2m,
+                QuantityRaw = 0.2m,
                 Symbol = "tBTCUSD",
                 Type = OrderType.ExchangeFillOrKill,
                 ClientOrderId = 1234,
@@ -691,6 +691,37 @@ namespace Bitfinex.Net.UnitTests
             Assert.IsTrue(result.Success);
             Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
         }
+
+        [Test]
+        public void PlacingAnFundingOffer_Should_SucceedIfSuccessResponse()
+        {
+            // arrange
+            var socket = new TestSocket();
+            socket.CanConnect = true;
+            var client = TestHelpers.CreateAuthenticatedSocketClient(socket);
+
+            var expected = new BitfinexFundingOffer()
+            {
+                Rate = 0.1m,
+                Period = 1,
+                Symbol = "fUSD",
+                Quantity = 1,
+                QuantityOriginal = 1,
+                StatusString = "CANCELED"
+            };
+
+            // act
+            var placeTask = client.SpotApi.SubmitFundingOfferAsync(FundingOfferType.Limit, "fUSD", 1, 1, 1);
+            socket.InvokeMessage(new BitfinexAuthenticationResponse() { Event = "auth", Status = "OK" });
+            Thread.Sleep(100);
+            socket.InvokeMessage($"[0, \"n\", [0, \"fon-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
+            var result = placeTask.Result;
+
+            // assert
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
+        }
+
 
         [Test]
         public void ReceivingAReconnectMessage_Should_ReconnectWebsocket()

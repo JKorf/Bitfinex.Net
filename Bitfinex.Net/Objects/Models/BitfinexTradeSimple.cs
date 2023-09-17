@@ -31,6 +31,11 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(3)]
         public decimal Price { get; set; }
+        /// <summary>
+        /// Amount of time the funding transaction was for
+        /// </summary>
+        [ArrayProperty(4)]
+        public int? Period { get; set; }
 
         /// <summary>
         /// The type of update

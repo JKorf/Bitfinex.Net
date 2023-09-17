@@ -11,7 +11,127 @@ grand_parent: Rest API documentation
 
 ***
 
-## GetAssetsAsync  
+## GetAssetBlockExplorerUrlsAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get mapping of assets to their block explorer urls*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetAssetBlockExplorerUrlsAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<Dictionary<string, IEnumerable<string>>>> GetAssetBlockExplorerUrlsAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetAssetDepositWithdrawalMethodsAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get mapping of assets to their withdrwal methods*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetAssetDepositWithdrawalMethodsAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<Dictionary<string, IEnumerable<string>>>> GetAssetDepositWithdrawalMethodsAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetAssetFullNamesAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get mapping of assets to their full name*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetAssetFullNamesAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<Dictionary<string, string>>> GetAssetFullNamesAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetAssetNamesAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get asset names*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetAssetNamesAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<string>>> GetAssetNamesAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetAssetNetworksAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get mapping of assets to the network they operate on*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetAssetNetworksAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<Dictionary<string, string>>> GetAssetNetworksAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetAssetsListAsync  
 
 [https://docs.bitfinex.com/reference#rest-public-conf](https://docs.bitfinex.com/reference#rest-public-conf)  
 <p>
@@ -20,11 +140,107 @@ grand_parent: Rest API documentation
 
 ```csharp  
 var client = new BitfinexRestClient();  
-var result = await client.SpotApi.ExchangeData.GetAssetsAsync();  
+var result = await client.SpotApi.ExchangeData.GetAssetsListAsync();  
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<BitfinexAsset>>> GetAssetsAsync(CancellationToken ct = default);  
+Task<WebCallResult<IEnumerable<BitfinexAsset>>> GetAssetsListAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetAssetSymbolsAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get mapping of assets to their API symbol*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetAssetSymbolsAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<Dictionary<string, string>>> GetAssetSymbolsAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetAssetUnderlyingsAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get mapping of derivative assets to their underlying asset*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetAssetUnderlyingsAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<Dictionary<string, string>>> GetAssetUnderlyingsAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetAssetUnitsAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get mapping of assets to their unit of measure where applicable*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetAssetUnitsAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<Dictionary<string, string>>> GetAssetUnitsAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetAssetWithdrawalFeesAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get mapping of assets to their withdrawal fees*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetAssetWithdrawalFeesAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<Dictionary<string, IEnumerable<decimal>>>> GetAssetWithdrawalFeesAsync(CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
@@ -63,6 +279,169 @@ Task<WebCallResult<BitfinexAveragePrice>> GetAveragePriceAsync(string symbol, de
 
 ***
 
+## GetCreditSizeAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get total funding used in positions in specified asset*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetCreditSizeAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexStats>>> GetCreditSizeAsync(string asset, StatSection section, int? limit = default, DateTime? startTime = default, DateTime? endTime = default, Sorting? sorting = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|asset|The asset|
+|section|Section of data|
+|_[Optional]_ limit|Max number of results|
+|_[Optional]_ startTime|Filter by start time|
+|_[Optional]_ endTime|Filter by end time|
+|_[Optional]_ sorting|Sorting|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetCreditSizeAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get total funding used in positions on a specific symbol in specified asset*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetCreditSizeAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexStats>>> GetCreditSizeAsync(string asset, string symbol, StatSection section, int? limit = default, DateTime? startTime = default, DateTime? endTime = default, Sorting? sorting = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|asset|The asset|
+|symbol|The symbol|
+|section|Section of data|
+|_[Optional]_ limit|Max number of results|
+|_[Optional]_ startTime|Filter by start time|
+|_[Optional]_ endTime|Filter by end time|
+|_[Optional]_ sorting|Sorting|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetDepositWithdrawalStatusAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get deposit/withdrawal status info for assets*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetDepositWithdrawalStatusAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexAssetInfo>>> GetDepositWithdrawalStatusAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetDerivativesFeesAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get derivatives fees config*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetDerivativesFeesAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<BitfinexDerivativesFees>> GetDerivativesFeesAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetDerivativesStatusAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-derivatives-status](https://docs.bitfinex.com/reference/rest-public-derivatives-status)  
+<p>
+
+*Get derivatives status info*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetDerivativesStatusAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexDerivativesStatus>>> GetDerivativesStatusAsync(IEnumerable<string>? symbols = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ symbols|Filter symbols|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetDerivativesStatusHistoryAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-derivatives-status-history](https://docs.bitfinex.com/reference/rest-public-derivatives-status-history)  
+<p>
+
+*Get derivatives status info history*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetDerivativesStatusHistoryAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexDerivativesStatus>>> GetDerivativesStatusHistoryAsync(string symbol, int? limit = default, DateTime? startTime = default, DateTime? endTime = default, Sorting? sorting = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol|The symbol|
+|_[Optional]_ limit|The amount of results|
+|_[Optional]_ startTime|The start time of the data|
+|_[Optional]_ endTime|The end time of the data|
+|_[Optional]_ sorting|The way the result is sorted|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
 ## GetForeignExchangeRateAsync  
 
 [https://docs.bitfinex.com/reference#rest-public-calc-foreign-exchange-rate](https://docs.bitfinex.com/reference#rest-public-calc-foreign-exchange-rate)  
@@ -89,26 +468,159 @@ Task<WebCallResult<BitfinexForeignExchangeRate>> GetForeignExchangeRateAsync(str
 
 ***
 
-## GetFundingBookAsync  
+## GetFundingOrderBookAsync  
 
-[https://docs.bitfinex.com/v1/reference#rest-public-fundingbook](https://docs.bitfinex.com/v1/reference#rest-public-fundingbook)  
+[https://docs.bitfinex.com/reference#rest-public-book](https://docs.bitfinex.com/reference#rest-public-book)  
 <p>
 
-*Gets the margin funding book*  
+*Gets the order book for a funding symbol*  
 
 ```csharp  
 var client = new BitfinexRestClient();  
-var result = await client.SpotApi.ExchangeData.GetFundingBookAsync(/* parameters */);  
+var result = await client.SpotApi.ExchangeData.GetFundingOrderBookAsync(/* parameters */);  
 ```  
 
 ```csharp  
-Task<WebCallResult<BitfinexFundingBook>> GetFundingBookAsync(string asset, int? limit = default, CancellationToken ct = default);  
+Task<WebCallResult<BitfinexFundingOrderBook>> GetFundingOrderBookAsync(string symbol, Precision precision, int? limit = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
 |---|---|
-|asset|Asset to get the book for|
-|_[Optional]_ limit|Limit of the results|
+|symbol|The symbol to get the order book for|
+|precision|The precision of the data|
+|_[Optional]_ limit|The amount of results in the book|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetFundingSizeAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get total active funding in specified asset*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetFundingSizeAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexStats>>> GetFundingSizeAsync(string asset, StatSection section, int? limit = default, DateTime? startTime = default, DateTime? endTime = default, Sorting? sorting = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|asset|The asset|
+|section|Section of data|
+|_[Optional]_ limit|Max number of results|
+|_[Optional]_ startTime|Filter by start time|
+|_[Optional]_ endTime|Filter by end time|
+|_[Optional]_ sorting|Sorting|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetFundingStatisticsAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-funding-stats](https://docs.bitfinex.com/reference/rest-public-funding-stats)  
+<p>
+
+*Get a list of the most recent funding data for the given asset: FRR, average period, total amount provided, total amount used*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetFundingStatisticsAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexFundingStats>>> GetFundingStatisticsAsync(string symbol, int? limit = default, DateTime? startTime = default, DateTime? endTime = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol||
+|_[Optional]_ limit||
+|_[Optional]_ startTime||
+|_[Optional]_ endTime||
+|_[Optional]_ ct||
+
+</p>
+
+***
+
+## GetFundingTickerAsync  
+
+[https://docs.bitfinex.com/reference#rest-public-ticker](https://docs.bitfinex.com/reference#rest-public-ticker)  
+<p>
+
+*Returns basic market data for the provided funding symbols*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetFundingTickerAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<BitfinexFundingTicker>> GetFundingTickerAsync(string symbol, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol|The symbol to get data for|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetFundingTickersAsync  
+
+[https://docs.bitfinex.com/reference#rest-public-tickers](https://docs.bitfinex.com/reference#rest-public-tickers)  
+<p>
+
+*Returns basic market data for the provided funding symbols*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetFundingTickersAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexFundingTicker>>> GetFundingTickersAsync(IEnumerable<string>? symbols = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ symbols|The symbols to get data for|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetFuturesSymbolsAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get list of market information for each derivative trading pair*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetFuturesSymbolsAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<Dictionary<string, BitfinexSymbolInfo>>> GetFuturesSymbolsAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
@@ -173,27 +685,83 @@ Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(string symbol, KlineInterva
 
 ***
 
-## GetLendsAsync  
+## GetLiquidationsAsync  
 
-[https://docs.bitfinex.com/v1/reference#rest-public-lends](https://docs.bitfinex.com/v1/reference#rest-public-lends)  
+[https://docs.bitfinex.com/reference/rest-public-liquidations](https://docs.bitfinex.com/reference/rest-public-liquidations)  
 <p>
 
-*Gets the most recent lends*  
+*Get liquidation history*  
 
 ```csharp  
 var client = new BitfinexRestClient();  
-var result = await client.SpotApi.ExchangeData.GetLendsAsync(/* parameters */);  
+var result = await client.SpotApi.ExchangeData.GetLiquidationsAsync();  
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<BitfinexLend>>> GetLendsAsync(string asset, DateTime? startTime = default, int? limit = default, CancellationToken ct = default);  
+Task<WebCallResult<IEnumerable<BitfinexLiquidation>>> GetLiquidationsAsync(int? limit = default, DateTime? startTime = default, DateTime? endTime = default, Sorting? sorting = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
 |---|---|
-|asset|Asset to get the book for|
-|_[Optional]_ startTime|Return data after this time|
-|_[Optional]_ limit|Limit of the results|
+|_[Optional]_ limit|The amount of results|
+|_[Optional]_ startTime|The start time of the data|
+|_[Optional]_ endTime|The end time of the data|
+|_[Optional]_ sorting|The way the result is sorted|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetLongsShortsTotalsAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetLongsShortsTotalsAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexStats>>> GetLongsShortsTotalsAsync(string symbol, StatSide side, StatSection section, int? limit = default, DateTime? startTime = default, DateTime? endTime = default, Sorting? sorting = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol|The symbol|
+|side|Position side|
+|section|Section of data|
+|_[Optional]_ limit|Max number of results|
+|_[Optional]_ startTime|Filter by start time|
+|_[Optional]_ endTime|Filter by end time|
+|_[Optional]_ sorting|Sorting|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetMarginInfoAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get lists of active haircuts and risk coefficients on margin pairs*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetMarginInfoAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<BitfinexMarginInfo>> GetMarginInfoAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
@@ -205,7 +773,7 @@ Task<WebCallResult<IEnumerable<BitfinexLend>>> GetLendsAsync(string asset, DateT
 [https://docs.bitfinex.com/reference#rest-public-book](https://docs.bitfinex.com/reference#rest-public-book)  
 <p>
 
-*Gets the order book for a symbol*  
+*Gets the order book for a trading symbol*  
 
 ```csharp  
 var client = new BitfinexRestClient();  
@@ -251,20 +819,20 @@ Task<WebCallResult<BitfinexPlatformStatus>> GetPlatformStatusAsync(CancellationT
 
 ***
 
-## GetRawOrderBookAsync  
+## GetRawFundingOrderBookAsync  
 
 [https://docs.bitfinex.com/reference#rest-public-book](https://docs.bitfinex.com/reference#rest-public-book)  
 <p>
 
-*Get the raw order book for a symbol*  
+*Get the raw order book for a funding symbol*  
 
 ```csharp  
 var client = new BitfinexRestClient();  
-var result = await client.SpotApi.ExchangeData.GetRawOrderBookAsync(/* parameters */);  
+var result = await client.SpotApi.ExchangeData.GetRawFundingOrderBookAsync(/* parameters */);  
 ```  
 
 ```csharp  
-Task<WebCallResult<BitfinexOrderBook>> GetRawOrderBookAsync(string symbol, int? limit = default, CancellationToken ct = default);  
+Task<WebCallResult<BitfinexRawFundingOrderBook>> GetRawFundingOrderBookAsync(string symbol, int? limit = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
@@ -277,53 +845,51 @@ Task<WebCallResult<BitfinexOrderBook>> GetRawOrderBookAsync(string symbol, int? 
 
 ***
 
-## GetStatsAsync  
+## GetRawOrderBookAsync  
 
-[https://docs.bitfinex.com/reference#rest-public-stats1](https://docs.bitfinex.com/reference#rest-public-stats1)  
+[https://docs.bitfinex.com/reference#rest-public-book](https://docs.bitfinex.com/reference#rest-public-book)  
 <p>
 
-*Get various stats for the symbol*  
+*Get the raw order book for a trading symbol*  
 
 ```csharp  
 var client = new BitfinexRestClient();  
-var result = await client.SpotApi.ExchangeData.GetStatsAsync(/* parameters */);  
+var result = await client.SpotApi.ExchangeData.GetRawOrderBookAsync(/* parameters */);  
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<BitfinexStats>>> GetStatsAsync(string symbol, StatKey key, StatSide side, StatSection section, Sorting? sorting = default, CancellationToken ct = default);  
+Task<WebCallResult<BitfinexRawOrderBook>> GetRawOrderBookAsync(string symbol, int? limit = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
 |---|---|
-|symbol|The symbol to request stats for|
-|key|The type of stats|
-|side|Side of the stats|
-|section|Section of the stats|
-|_[Optional]_ sorting|The way the result should be sorted|
+|symbol|The symbol|
+|_[Optional]_ limit|The amount of results in the book|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
 
 ***
 
-## GetSymbolDetailsAsync  
+## GetSymbolNamesAsync  
 
-[https://docs.bitfinex.com/v1/reference#rest-public-symbol-details](https://docs.bitfinex.com/v1/reference#rest-public-symbol-details)  
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
 <p>
 
-*Gets details of all symbols*  
+*Get symbol names*  
 
 ```csharp  
 var client = new BitfinexRestClient();  
-var result = await client.SpotApi.ExchangeData.GetSymbolDetailsAsync();  
+var result = await client.SpotApi.ExchangeData.GetSymbolNamesAsync(/* parameters */);  
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<BitfinexSymbolDetails>>> GetSymbolDetailsAsync(CancellationToken ct = default);  
+Task<WebCallResult<IEnumerable<string>>> GetSymbolNamesAsync(SymbolType type, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
 |---|---|
+|type|The types of symbol|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
@@ -332,10 +898,10 @@ Task<WebCallResult<IEnumerable<BitfinexSymbolDetails>>> GetSymbolDetailsAsync(Ca
 
 ## GetSymbolsAsync  
 
-[https://docs.bitfinex.com/v1/reference#rest-public-symbols](https://docs.bitfinex.com/v1/reference#rest-public-symbols)  
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
 <p>
 
-*Gets a list of all symbols*  
+*Get list of market information for each trading pair*  
 
 ```csharp  
 var client = new BitfinexRestClient();  
@@ -343,7 +909,7 @@ var result = await client.SpotApi.ExchangeData.GetSymbolsAsync();
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<string>>> GetSymbolsAsync(CancellationToken ct = default);  
+Task<WebCallResult<Dictionary<string, BitfinexSymbolInfo>>> GetSymbolsAsync(CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
@@ -367,7 +933,7 @@ var result = await client.SpotApi.ExchangeData.GetTickerAsync(/* parameters */);
 ```  
 
 ```csharp  
-Task<WebCallResult<BitfinexSymbolOverview>> GetTickerAsync(string symbol, CancellationToken ct = default);  
+Task<WebCallResult<BitfinexTicker>> GetTickerAsync(string symbol, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
@@ -419,7 +985,7 @@ var result = await client.SpotApi.ExchangeData.GetTickersAsync();
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<BitfinexSymbolOverview>>> GetTickersAsync(IEnumerable<string>? symbols = default, CancellationToken ct = default);  
+Task<WebCallResult<IEnumerable<BitfinexTicker>>> GetTickersAsync(IEnumerable<string>? symbols = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
@@ -454,6 +1020,66 @@ Task<WebCallResult<IEnumerable<BitfinexTradeSimple>>> GetTradeHistoryAsync(strin
 |_[Optional]_ startTime|The start time to return trades for|
 |_[Optional]_ endTime|The end time to return trades for|
 |_[Optional]_ sorting|The way the result is sorted|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetTradingVolumeAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get trading volume on the platform*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetTradingVolumeAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexStats>>> GetTradingVolumeAsync(int period, StatSection section, int? limit = default, DateTime? startTime = default, DateTime? endTime = default, Sorting? sorting = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|period|The period in days to get the data for. 1, 7 or 30|
+|section|Section of data|
+|_[Optional]_ limit|Max number of results|
+|_[Optional]_ startTime|Filter by start time|
+|_[Optional]_ endTime|Filter by end time|
+|_[Optional]_ sorting|Sorting|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetVolumeWeightedAveragePriceAsync  
+
+[https://docs.bitfinex.com/reference/rest-public-conf](https://docs.bitfinex.com/reference/rest-public-conf)  
+<p>
+
+*Get volume weighted average price for the day*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.ExchangeData.GetVolumeWeightedAveragePriceAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexStats>>> GetVolumeWeightedAveragePriceAsync(string symbol, StatSection section, int? limit = default, DateTime? startTime = default, DateTime? endTime = default, Sorting? sorting = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol|The symbol|
+|section|Section of data|
+|_[Optional]_ limit|Max number of results|
+|_[Optional]_ startTime|Filter by start time|
+|_[Optional]_ endTime|Filter by end time|
+|_[Optional]_ sorting|Sorting|
 |_[Optional]_ ct|Cancellation token|
 
 </p>

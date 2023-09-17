@@ -50,6 +50,6 @@ namespace Bitfinex.Net.Objects.Models
         /// Whether the offer took liquidity off the funding book
         /// </summary>
         [ArrayProperty(7), JsonConverter(typeof(BoolToIntConverter))]
-        public bool Maker { get; set; }
+        public bool? Maker { get; set; }
     }
 }

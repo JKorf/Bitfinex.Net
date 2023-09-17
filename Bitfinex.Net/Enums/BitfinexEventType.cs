@@ -128,6 +128,10 @@
         /// </summary>
         FundingOfferNew,
         /// <summary>
+        /// New funding offer request
+        /// </summary>
+        FundingOfferNewRequest,
+        /// <summary>
         /// Funding offer update
         /// </summary>
         FundingOfferUpdate,
@@ -135,6 +139,10 @@
         /// Funding offer canceled
         /// </summary>
         FundingOfferCancel,
+        /// <summary>
+        /// Funding offer cancel request
+        /// </summary>
+        FundingOfferCancelRequest,
 
         /// <summary>
         /// Historical funding offer snapshot

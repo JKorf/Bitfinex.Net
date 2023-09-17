@@ -44,9 +44,23 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-movements" /></para>
         /// </summary>
         /// <param name="symbol">Symbol to get history for</param>
+        /// <param name="ids">Filter by ids</param>
+        /// <param name="address">Filter by deposit address</param>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? symbol = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? symbol = null, IEnumerable<long>? ids = null, string? address = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get detailed information about a deposit/withdrawal
+        /// <para><a href="https://docs.bitfinex.com/reference/movement-info" /></para>
+        /// </summary>
+        /// <param name="id">Id of the movement</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexMovementDetails>> GetMovementsDetailsAsync(long id, CancellationToken ct = default);
 
         /// <summary>
         /// Get the list of alerts
@@ -84,9 +98,10 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="side">Buy or sell</param>
         /// <param name="rate">The rate/price</param>
         /// <param name="type">The wallet type</param>
+        /// <param name="leverage">Leverage that you want to use in calculating the max order amount (DERIV only)</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal rate, WalletType type, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal rate, WalletType type, decimal? leverage = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get changes in your balance for an asset
@@ -110,52 +125,38 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         Task<WebCallResult<BitfinexUserInfo>> GetUserInfoAsync(CancellationToken ct = default);
 
         /// <summary>
-        /// Get information about your account
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-account-info" /></para>
+        /// Provides an overview of the different fee rates for the account as well as the LEO discount level and the average amount of LEO held over the last 30 days.
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-summary" /></para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexAccountInfo>> GetAccountInfoAsync(CancellationToken ct = default);
-
-        /// <summary>
-        /// Get withdrawal fees for this account
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-fees" /></para>
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        Task<WebCallResult<BitfinexWithdrawalFees>> GetWithdrawalFeesAsync(CancellationToken ct = default);
-
-        /// <summary>
-        /// Get 30-day summary on trading volume and margin funding
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-summary" /></para>
-        /// </summary>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        Task<WebCallResult<Bitfinex30DaySummary>> Get30DaySummaryAsync(CancellationToken ct = default);
-
+        Task<WebCallResult<BitfinexSummary>> Get30DaySummaryAndFeesAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Gets a deposit address for an asset
         /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-deposit" /></para>
         /// </summary>
-        /// <param name="asset">The asset to get address for</param>
+        /// <param name="method">The method to get address for. Methods can be retrieved via ExchangeData.GetAssetDepositWithdrawalMethodsAsync</param>
         /// <param name="toWallet">The type of wallet the deposit is for</param>
         /// <param name="forceNew">If true a new address will be generated (previous addresses will still be valid)</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexDepositAddress>> GetDepositAddressAsync(string asset, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexWriteResult<BitfinexDepositAddress>>> GetDepositAddressAsync(string method, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default);
 
         /// <summary>
         /// Transfers funds from one wallet to another
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-transfer-between-wallets" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-transfer" /></para>
         /// </summary>
         /// <param name="asset">The asset to transfer</param>
         /// <param name="fromWallet">The wallet to remove funds from</param>
         /// <param name="toWallet">The wallet to add funds to</param>
         /// <param name="quantity">The quantity to transfer</param>
+        /// <param name="toAsset">The asset that you would like to exchange to (USTF0 === USDT for derivatives pairs)</param>
+        /// <param name="emailDestination">Allows transfer of funds to a sub- or master-account identified by the associated email address.</param>
+        /// <param name="userIdDestination">Allows transfer of funds to a sub- or master-account identified by the associated user id.</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexTransferResult>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexWriteResult<BitfinexTransfer>>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, string? toAsset = null, string? emailDestination = null, long? userIdDestination = null, CancellationToken ct = default);
 
         /// <summary>
         /// Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
@@ -207,5 +208,32 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
             string? accountName = null,
             string? paymentId = null,
             CancellationToken ct = default);
+
+        /// <summary>
+        /// Get login history
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-logins-hist" /></para>
+        /// </summary>
+        /// <param name="startTime">Start time of the data to return</param>
+        /// <param name="endTime">End time of the data to return</param>
+        /// <param name="limit">Max amount of results</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexLogin>>> GetLoginHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get api key permissions
+        /// <para><a href="https://docs.bitfinex.com/reference/key-permissions" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexPermission>>> GetApiKeyPermissionsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get account change log
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-audit-hist" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<BitfinexChangeLog>>> GetAccountChangeLogAsync(CancellationToken ct = default);
     }
 }

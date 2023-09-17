@@ -11,7 +11,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Objects.Models;
-using Bitfinex.Net.Objects.Models.V1;
 using Bitfinex.Net.Interfaces.Clients.GeneralApi;
 
 namespace Bitfinex.Net.Clients.GeneralApi
@@ -31,11 +30,6 @@ namespace Bitfinex.Net.Clients.GeneralApi
         private const string FundingInfoEndpoint = "auth/r/info/funding/{}";
         private const string FundingAutoRenewEndpoint = "auth/w/funding/auto";
         private const string FundingAutoRenewStatusEndpoint = "auth/r/funding/auto/status";
-
-        private const string NewOfferEndpoint = "offer/new";
-        private const string CancelOfferEndpoint = "offer/cancel";
-        private const string GetOfferEndpoint = "offer/status";
-        private const string CloseMarginFundingEndpoint = "funding/close";
 
         private readonly BitfinexRestClientGeneralApi _baseClient;
 
@@ -65,7 +59,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal quantity, decimal rate, int period, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal quantity, decimal rate, int period, int? flags = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             var parameters = new Dictionary<string, object>()
@@ -76,9 +70,20 @@ namespace Bitfinex.Net.Clients.GeneralApi
                 { "rate", rate.ToString(CultureInfo.InvariantCulture) },
                 { "period", period },
             };
+            parameters.AddOptionalParameter("flags", flags);
 
             return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexFundingOffer>>(_baseClient.GetUrl(FundingOfferSubmitEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
 
+        /// <inheritdoc />
+        public async Task<WebCallResult<BitfinexWriteResult>> CloseFundingAsync(int id, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "id", id }
+            };
+
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult>(_baseClient.GetUrl("auth/w/funding/close", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -92,6 +97,26 @@ namespace Bitfinex.Net.Clients.GeneralApi
             return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexFundingOffer>>(_baseClient.GetUrl(FundingOfferCancelEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
+        public async Task<WebCallResult<BitfinexWriteResult>> KeepFundingAsync(FundType type, IEnumerable<long>? ids = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "type", EnumConverter.GetString(type) }
+            };
+            parameters.AddOptionalParameter("id", ids);
+
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult>(_baseClient.GetUrl("auth/w/funding/keep", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BitfinexWriteResult>> CancelAllFundingOffersAsync(string? asset = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("currency", asset);
+
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult>(_baseClient.GetUrl("auth/w/funding/offer/cancel/all", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexFunding>>> GetFundingLoansAsync(string symbol, CancellationToken ct = default)
         {
@@ -146,51 +171,6 @@ namespace Bitfinex.Net.Clients.GeneralApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexOffer>> NewOfferAsync(string asset, decimal quantity, decimal price, int period, FundingType direction, CancellationToken ct = default)
-        {
-            asset.ValidateNotNull(nameof(asset));
-            var parameters = new Dictionary<string, object>
-            {
-                { "currency", asset },
-                { "amount", quantity.ToString(CultureInfo.InvariantCulture) },
-                { "rate", price.ToString(CultureInfo.InvariantCulture) },
-                { "period", period },
-                { "direction", JsonConvert.SerializeObject(direction, new FundingTypeConverter(false)) },
-            };
-            return await _baseClient.SendRequestAsync<BitfinexOffer>(_baseClient.GetUrl(NewOfferEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
-        }
-
-        /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexOffer>> CancelOfferAsync(long offerId, CancellationToken ct = default)
-        {
-            var parameters = new Dictionary<string, object>
-            {
-                { "offer_id", offerId }
-            };
-            return await _baseClient.SendRequestAsync<BitfinexOffer>(_baseClient.GetUrl(CancelOfferEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
-        }
-
-        /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexOffer>> GetOfferAsync(long offerId, CancellationToken ct = default)
-        {
-            var parameters = new Dictionary<string, object>
-            {
-                { "offer_id", offerId }
-            };
-            return await _baseClient.SendRequestAsync<BitfinexOffer>(_baseClient.GetUrl(GetOfferEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
-        }
-
-        /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexFundingContract>> CloseMarginFundingAsync(long swapId, CancellationToken ct = default)
-        {
-            var parameters = new Dictionary<string, object>
-            {
-                { "swap_id", swapId }
-            };
-            return await _baseClient.SendRequestAsync<BitfinexFundingContract>(_baseClient.GetUrl(CloseMarginFundingEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
-        }
-
-        /// <inheritdoc />
         public async Task<WebCallResult<BitfinexFundingInfo>> GetFundingInfoAsync(string symbol, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
@@ -198,7 +178,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexFundingAutoRenew>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWriteResult<BitfinexFundingAutoRenew>>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>()
             {
@@ -209,7 +189,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
             parameters.AddOptionalParameter("rate", rate?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("period", period?.ToString(CultureInfo.InvariantCulture));
 
-            return await _baseClient.SendRequestAsync<BitfinexFundingAutoRenew>(_baseClient.GetUrl(FundingAutoRenewEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexFundingAutoRenew>>(_baseClient.GetUrl(FundingAutoRenewEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />

@@ -18,6 +18,7 @@ using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Objects.Options;
+using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -26,6 +27,7 @@ namespace Bitfinex.Net.Clients.SpotApi
     {
         #region fields
         private readonly JsonSerializer _bookSerializer = new JsonSerializer();
+        private readonly JsonSerializer _fundingBookSerializer = new JsonSerializer();
         private readonly Random _random = new Random();
         private readonly string? _affCode;
 
@@ -46,6 +48,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             _affCode = options.AffiliateCode;
             _bookSerializer.Converters.Add(new OrderBookEntryConverter());
+            _fundingBookSerializer.Converters.Add(new OrderBookFundingEntryConverter());
         }
         #endregion
         /// <inheritdoc />
@@ -55,7 +58,18 @@ namespace Bitfinex.Net.Clients.SpotApi
         #region public methods
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamSymbolOverview>> handler, CancellationToken ct = default)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexTicker>> handler, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexSymbol();
+            var internalHandler = new Action<DataEvent<JToken>>(data =>
+            {
+                HandleData("Ticker", (JArray)data.Data[1]!, symbol, data, handler);
+            });
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexSubscriptionRequest("ticker", symbol), null, false, internalHandler, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToFundingTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamFundingTicker>> handler, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<DataEvent<JToken>>(data =>
@@ -107,7 +121,71 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToFundingOrderBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<DataEvent<IEnumerable<BitfinexOrderBookFundingEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexSymbol();
+            length.ValidateIntValues(nameof(length), 1, 25, 100, 250);
+            if (precision == Precision.R0)
+                throw new ArgumentException("Invalid precision R0, use SubscribeToFundingRawOrderBookUpdatesAsync instead");
+
+            var internalHandler = new Action<DataEvent<JToken>>(data =>
+            {
+                if (data.Data[1]?.ToString() == "cs")
+                {
+                    // Process
+                    checksumHandler?.Invoke(data.As(data.Data[2]!.Value<int>(), symbol));
+                }
+                else
+                {
+                    var dataArray = (JArray)data.Data[1]!;
+                    if (dataArray.Count == 0)
+                        // Empty array
+                        return;
+
+                    if (dataArray[0].Type == JTokenType.Array)
+                    {
+                        HandleData("Book snapshot", dataArray, symbol, data, handler, _fundingBookSerializer);
+                    }
+                    else
+                    {
+                        HandleSingleToArrayData("Book update", dataArray, symbol, data, handler, _fundingBookSerializer);
+                    }
+                }
+            });
+
+            var sub = new BitfinexBookSubscriptionRequest(
+                symbol,
+                JsonConvert.SerializeObject(precision, new PrecisionConverter(false)),
+                JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)),
+                length);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), sub, null, false, internalHandler, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToRawOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexSymbol();
+            var internalHandler = new Action<DataEvent<JToken>>(data =>
+            {
+                if (data.Data[1]?.ToString() == "cs")
+                {
+                    // Process
+                    checksumHandler?.Invoke(data.As(data.Data[2]!.Value<int>(), symbol));
+                }
+                else
+                {
+                    var dataArray = (JArray)data.Data[1]!;
+                    if (dataArray[0].Type == JTokenType.Array)
+                        HandleData("Raw book snapshot", dataArray, symbol, data, handler);
+                    else
+                        HandleSingleToArrayData("Raw book update", dataArray, symbol, data, handler);
+                }
+            });
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), null, false, internalHandler, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToRawFundingOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookFundingEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<DataEvent<JToken>>(data =>
@@ -157,7 +235,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, KlineInterval interval, Action<DataEvent<IEnumerable<BitfinexKline>>> handler, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
             var internalHandler = new Action<DataEvent<JToken>>(data =>
             {
                 var dataArray = (JArray)data.Data[1]!;
@@ -173,6 +250,26 @@ namespace Bitfinex.Net.Clients.SpotApi
                     HandleSingleToArrayData("Kline update", dataArray, symbol, data, handler);
             });
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexKlineSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))), null, false, internalHandler, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToLiquidationUpdatesAsync(Action<DataEvent<IEnumerable<BitfinexLiquidation>>> handler, CancellationToken ct = default)
+        {
+            var internalHandler = new Action<DataEvent<JToken>>(data =>
+            {
+                HandleData("Liquidation", (JArray)data.Data[1]!, null, data, handler);
+            });
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexLiquidationSubscriptionRequest(), null, false, internalHandler, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToDerivativesUpdatesAsync(string symbol, Action<DataEvent<BitfinexDerivativesStatusUpdate>> handler, CancellationToken ct = default)
+        {
+            var internalHandler = new Action<DataEvent<JToken>>(data =>
+            {
+                HandleData("DerivativeUpdate", (JArray)data.Data[1]!, symbol, data, handler);
+            });
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexDerivativesStatusSubscriptionRequest(symbol), null, false, internalHandler, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -316,6 +413,35 @@ namespace Bitfinex.Net.Clients.SpotApi
         public async Task<CallResult<bool>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds)
         {
             return await CancelOrdersAsync(null, clientOrderIds).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<CallResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(FundingOfferType type, string symbol, decimal quantity, decimal price, int period, int? flags = null)
+        {
+            var parameters = new Dictionary<string, object>
+                {
+                    { "type", EnumConverter.GetString(type) },
+                    { "symbol", symbol },
+                    { "amount", quantity },
+                    { "rate", price },
+                    { "period", period },
+                };
+            parameters.AddOptionalParameter("flags", flags);
+
+            var query = new BitfinexSocketQuery(ExchangeHelpers.NextId().ToString(CultureInfo.InvariantCulture), BitfinexEventType.FundingOfferNew, parameters);
+            return await QueryAsync<BitfinexFundingOffer>(BaseAddress.AppendPath("ws/2"), query, true).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<CallResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long id)
+        {
+            var parameters = new Dictionary<string, object>
+                {
+                    { "id", id }
+                };
+
+            var query = new BitfinexSocketQuery(id.ToString(CultureInfo.InvariantCulture), BitfinexEventType.FundingOfferCancel, parameters);
+            return await QueryAsync<BitfinexFundingOffer>(BaseAddress.AppendPath("ws/2"), query, true).ConfigureAwait(false);
         }
         #endregion
 
@@ -584,7 +710,9 @@ namespace Bitfinex.Net.Clients.SpotApi
                 if (notificationType != BitfinexEventType.OrderNewRequest
                     && notificationType != BitfinexEventType.OrderCancelRequest
                     && notificationType != BitfinexEventType.OrderUpdateRequest
-                    && notificationType != BitfinexEventType.OrderCancelMultiRequest)
+                    && notificationType != BitfinexEventType.OrderCancelMultiRequest
+                    && notificationType != BitfinexEventType.FundingOfferNewRequest
+                    && notificationType != BitfinexEventType.FundingOfferCancelRequest)
                 {
                     return false;
                 }
@@ -626,6 +754,22 @@ namespace Bitfinex.Net.Clients.SpotApi
                         callResult = new CallResult<T>(new ServerError(notificationData[7].ToString()));
                         return true;
                     }
+
+                    if (bfRequest.QueryType == BitfinexEventType.FundingOfferNew && notificationType == BitfinexEventType.FundingOfferNewRequest)
+                    {
+                        callResult = new CallResult<T>(new ServerError(notificationData[7].ToString()));
+                        return true;
+                    }
+
+                    if (bfRequest.QueryType == BitfinexEventType.FundingOfferCancel && notificationType == BitfinexEventType.FundingOfferCancelRequest)
+                    {
+                        var fundingData = notificationData[4];
+                        if (fundingData[0]?.ToString() != bfRequest.Id)
+                            return false;
+
+                        callResult = new CallResult<T>(new ServerError(notificationData[7].ToString()));
+                        return true;
+                    }
                 }
 
                 if (notificationType == BitfinexEventType.OrderNewRequest
@@ -658,6 +802,41 @@ namespace Bitfinex.Net.Clients.SpotApi
                 {
                     callResult = new CallResult<T>(Deserialize<T>(JToken.Parse("true")).Data);
                     return true;
+                }
+
+                if (notificationType == BitfinexEventType.FundingOfferNewRequest
+                    || notificationType == BitfinexEventType.FundingOfferCancelRequest)
+                {
+                    if (bfRequest.QueryType == BitfinexEventType.FundingOfferCancelRequest)
+                    {
+                        var fundingData = notificationData[4];
+                        var dataOrderId = fundingData[0]?.ToString();
+                        if (dataOrderId == bfRequest.Id)
+                        {
+                            var desResult = Deserialize<T>(fundingData);
+                            if (!desResult)
+                            {
+                                callResult = new CallResult<T>(desResult.Error!);
+                                return true;
+                            }
+
+                            callResult = new CallResult<T>(desResult.Data);
+                            return true;
+                        }
+                    }
+                    else if(bfRequest.QueryType == BitfinexEventType.FundingOfferNew)
+                    {
+                        var fundingData = notificationData[4];
+                        var desResult = Deserialize<T>(fundingData);
+                        if (!desResult)
+                        {
+                            callResult = new CallResult<T>(desResult.Error!);
+                            return true;
+                        }
+
+                        callResult = new CallResult<T>(desResult.Data);
+                        return true;
+                    }
                 }
             }
 

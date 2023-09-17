@@ -1,6 +1,5 @@
 ﻿using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Models;
-using Bitfinex.Net.Objects.Models.V1;
 using CryptoExchange.Net.Objects;
 using System;
 using System.Collections.Generic;
@@ -44,9 +43,19 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="quantity">Quantity (positive for offer, negative for bid).</param>
         /// <param name="rate">Daily rate.</param>
         /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+        /// <param name="flags">Funding flags</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal quantity, decimal rate, int period, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal quantity, decimal rate, int period, int? flags = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Return Taken "Used" or "Unused" funding.
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-close" /></para>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexWriteResult>> CloseFundingAsync(int id, CancellationToken ct = default);
 
         /// <summary>
         /// Cancels an existing Funding Offer based on the offer ID entered.
@@ -56,6 +65,15 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<BitfinexWriteResult<BitfinexFundingOffer>>> CancelFundingOfferAsync(long offerId, CancellationToken ct = default);
+
+        /// <summary>
+        /// Cancel all funding offers
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-cancel-all-funding-offers" /></para>
+        /// </summary>
+        /// <param name="asset">Only cancel funding offers in this asset</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexWriteResult>> CancelAllFundingOffersAsync(string? asset = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the funding loans
@@ -112,46 +130,6 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         Task<WebCallResult<IEnumerable<BitfinexFundingTrade>>> GetFundingTradesHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
-        /// Submit a new offer
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-new-offer" /></para>
-        /// </summary>
-        /// <param name="asset">The asset</param>
-        /// <param name="quantity">The quantity</param>
-        /// <param name="price">Rate to lend or borrow at in percent per 365 days (0 for FRR)</param>
-        /// <param name="period">Number of days</param>
-        /// <param name="direction">Direction of the offer</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        Task<WebCallResult<BitfinexOffer>> NewOfferAsync(string asset, decimal quantity, decimal price, int period, FundingType direction, CancellationToken ct = default);
-
-        /// <summary>
-        /// Cancel an offer
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-cancel-offer" /></para>
-        /// </summary>
-        /// <param name="offerId">The id of the offer to cancel</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        Task<WebCallResult<BitfinexOffer>> CancelOfferAsync(long offerId, CancellationToken ct = default);
-
-        /// <summary>
-        /// Cancel an offer
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-offer-status" /></para>
-        /// </summary>
-        /// <param name="offerId">The id of the offer to cancel</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        Task<WebCallResult<BitfinexOffer>> GetOfferAsync(long offerId, CancellationToken ct = default);
-
-        /// <summary>
-        /// Close margin funding
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-close-margin-funding" /></para>
-        /// </summary>
-        /// <param name="swapId">The id to close</param>
-        /// <param name="ct">Cancellation token</param>
-        /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingContract>> CloseMarginFundingAsync(long swapId, CancellationToken ct = default);
-
-        /// <summary>
         /// Get funding info for a symbol
         /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-funding" /></para>
         /// </summary>
@@ -162,6 +140,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 
         /// <summary>
         /// Activate or deactivate auto-renew. Allows you to specify the currency, amount, rate, and period.
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-auto-renew" /></para>
         /// </summary>
         /// <param name="asset">Currency for which to enable auto-renew</param>
         /// <param name="status">1 to activate, 0 to deactivate.</param>
@@ -170,7 +149,17 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="period">Period in days.</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingAutoRenew>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexWriteResult<BitfinexFundingAutoRenew>>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Toggle to keep funding taken. Specify loan for unused funding and credit for used funding.
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-keep-funding" /></para>
+        /// </summary>
+        /// <param name="type">Funding type</param>
+        /// <param name="ids">Ids</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexWriteResult>> KeepFundingAsync(FundType type, IEnumerable<long>? ids = null, CancellationToken ct = default);
 
         /// <summary>
         /// Status of auto-renew.

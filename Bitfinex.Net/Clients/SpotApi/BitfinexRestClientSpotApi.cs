@@ -175,22 +175,29 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!long.TryParse(orderId, out var id))
                 throw new ArgumentException($"Invalid orderId provided for Bitfinex {nameof(ISpotClient.GetOrderAsync)}", nameof(orderId));
 
-            var result = await Trading.GetOrderAsync(id, ct: ct).ConfigureAwait(false);
+            var result = await Trading.GetOpenOrdersAsync(symbol, new[] { id }, ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.As<Order>(null);
 
+            if (!result.Data.Any())
+                result = await Trading.GetClosedOrdersAsync(symbol, new[] { id }, ct: ct).ConfigureAwait(false);
+
+            if (!result.Data.Any())
+                return result.AsError<Order>(new ServerError("Order with id not found"));
+
+            var order = result.Data.FirstOrDefault();
             return result.As(new Order
             {
-                SourceObject = result.Data,
-                Id = result.Data.Id.ToString(CultureInfo.InvariantCulture),
-                Symbol = result.Data.Symbol,
-                Timestamp = result.Data.Timestamp,
-                Price = result.Data.Price,
-                Quantity = result.Data.Quantity,
-                QuantityFilled = result.Data.QuantityFilled,                
-                Side = result.Data.Side == OrderSide.Buy ? CommonOrderSide.Buy: CommonOrderSide.Sell,
-                Status = result.Data.Canceled ? CommonOrderStatus.Canceled: result.Data.QuantityRemaining == 0 ? CommonOrderStatus.Filled: CommonOrderStatus.Active,
-                Type = result.Data.Type == OrderTypeV1.ExchangeLimit ? CommonOrderType.Limit : result.Data.Type == OrderTypeV1.ExchangeMarket ? CommonOrderType.Market: CommonOrderType.Other
+                SourceObject = order,
+                Id = order.Id.ToString(CultureInfo.InvariantCulture),
+                Symbol = order.Symbol,
+                Timestamp = order.CreateTime,
+                Price = order.Price,
+                Quantity = order.Quantity,
+                QuantityFilled = order.Quantity - order.QuantityRemaining,                
+                Side = order.Side == OrderSide.Buy ? CommonOrderSide.Buy: CommonOrderSide.Sell,
+                Status = order.Status == OrderStatus.Canceled ? CommonOrderStatus.Canceled: order.Status == OrderStatus.Executed ? CommonOrderStatus.Filled: CommonOrderStatus.Active,
+                Type = order.Type == OrderType.ExchangeLimit ? CommonOrderType.Limit : order.Type == OrderType.ExchangeMarket ? CommonOrderType.Market: CommonOrderType.Other
             });
         }
 
@@ -284,7 +291,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         async Task<WebCallResult<IEnumerable<Symbol>>> IBaseRestClient.GetSymbolsAsync(CancellationToken ct)
         {
-            var symbols = await ExchangeData.GetSymbolDetailsAsync(ct: ct).ConfigureAwait(false);
+            var symbols = await ExchangeData.GetSymbolsAsync(ct: ct).ConfigureAwait(false);
             if (!symbols)
                 return symbols.As<IEnumerable<Symbol>>(null);
 
@@ -292,9 +299,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                 new Symbol
                 {
                     SourceObject = s,
-                    Name = s.Symbol,
-                    PriceDecimals = s.PricePrecision,
-                    MinTradeQuantity = s.MinimumOrderQuantity
+                    Name = s.Key,
+                    MinTradeQuantity = s.Value.MinOrderQuantity
                 }));
         }
 

@@ -22,7 +22,6 @@ namespace Bitfinex.Net.Clients.SpotApi
     /// <inheritdoc />
     public class BitfinexRestClientSpotApiTrading : IBitfinexRestClientSpotApiTrading
     {
-        private const string OpenOrdersEndpoint = "auth/r/orders";
         private const string OrderHistorySingleEndpoint = "auth/r/orders/hist";
         private const string OrderHistoryEndpoint = "auth/r/orders/{}/hist";
         private const string OrderTradesEndpoint = "auth/r/order/{}:{}/trades";
@@ -30,12 +29,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         private const string MyTradesEndpoint = "auth/r/trades/{}/hist";
         private const string PlaceOrderEndpoint = "auth/w/order/submit";
         private const string CancelOrderEndpoint = "auth/w/order/cancel";
-        private const string CancelAllOrderEndpoint = "order/cancel/all";
-        private const string OrderStatusEndpoint = "order/status";
 
         private const string PositionHistoryEndpoint = "auth/r/positions/hist";
-        private const string ClaimPositionEndpoint = "position/claim";
-        private const string ClosePositionEndpoint = "position/close";
         private const string PositionAuditEndpoint = "auth/r/positions/audit";
         private const string ActivePositionsEndpoint = "auth/r/positions";
 
@@ -48,13 +43,20 @@ namespace Bitfinex.Net.Clients.SpotApi
 
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOpenOrdersAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOpenOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrder>>(_baseClient.GetUrl(OpenOrdersEndpoint, "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            var url = "auth/r/orders";
+            if (symbol != null)
+                url += "/" + symbol;
+
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("id", orderIds);
+
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrder>>(_baseClient.GetUrl(url, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetClosedOrdersAsync(string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetClosedOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             symbol?.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
@@ -63,6 +65,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.AddOptionalParameter("id", orderIds);
 
             var url = string.IsNullOrEmpty(symbol)
                 ? OrderHistorySingleEndpoint : OrderHistoryEndpoint.FillPathParameters(symbol!);
@@ -96,11 +99,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> PlaceOrderAsync(
             string symbol,
-            Enums.OrderSide side,
-            Enums.OrderType type,
+            OrderSide side,
+            OrderType type,
             decimal quantity,
             decimal price,
-            int? flags = null,
+            OrderFlags? flags = null,
             int? leverage = null,
             int? groupId = null,
             int? clientOrderId = null,
@@ -113,7 +116,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             symbol.ValidateBitfinexSymbol();
 
-            if (side == Enums.OrderSide.Sell)
+            if (side == OrderSide.Sell)
                 quantity = -quantity;
 
             var parameters = new Dictionary<string, object>
@@ -179,26 +182,20 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexResult>> CancelAllOrdersAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWriteResult<IEnumerable<BitfinexOrder>>>> CancelOrdersAsync(IEnumerable<long>? orderIds = null, IEnumerable<long>? groupIds = null, Dictionary<long, DateTime>? clientOrderIds = null, bool? all = null, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<BitfinexResult>(_baseClient.GetUrl(CancelAllOrderEndpoint, "1"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("id", orderIds);
+            parameters.AddOptionalParameter("gid", groupIds);
+            parameters.AddOptionalParameter("all", all == true ? (bool?)true : null);
+            if (clientOrderIds != null)
+                parameters.Add("cid", clientOrderIds.ToDictionary(c => c.Key, c => c.Value.ToString("yyyy-MM-dd")));
+
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult<IEnumerable<BitfinexOrder>>>(_baseClient.GetUrl("auth/w/order/cancel/multi", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexPlacedOrder>> GetOrderAsync(long orderId, CancellationToken ct = default)
-        {
-            var parameters = new Dictionary<string, object>
-            {
-                { "order_id", orderId }
-            };
-
-            return await _baseClient.SendRequestAsync<BitfinexPlacedOrder>(_baseClient.GetUrl(OrderStatusEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
-        }
-
-
-
-        /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 50);
             var parameters = new Dictionary<string, object>();
@@ -206,38 +203,61 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPositionExtended>>(_baseClient.GetUrl(PositionHistoryEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl(PositionHistoryEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexPositionV1>> ClaimPositionAsync(long id, decimal quantity, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWriteResult<BitfinexPosition>>> ClaimPositionAsync(long id, decimal quantity, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>
             {
-                { "position_id", id },
+                { "id", id },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-            return await _baseClient.SendRequestAsync<BitfinexPositionV1>(_baseClient.GetUrl(ClaimPositionEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexPosition>>(_baseClient.GetUrl("auth/w/position/claim", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexClosePositionResult>> ClosePositionAsync(long positionId, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWriteResult<BitfinexPositionBasic>>> IncreasePositionAsync(string symbol, decimal quantity, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>
             {
-                { "position_id", positionId }
+                { "symbol", symbol },
+                { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-            return await _baseClient.SendRequestAsync<BitfinexClosePositionResult>(_baseClient.GetUrl(ClosePositionEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexPositionBasic>>(_baseClient.GetUrl("auth/w/position/increase", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetActivePositionsAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexIncreasePositionInfo>> GetIncreasePositionInfoAsync(string symbol, decimal quantity, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "symbol", symbol },
+                { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
+            };
+            return await _baseClient.SendRequestAsync<BitfinexIncreasePositionInfo>(_baseClient.GetUrl("auth/r/position/increase/info", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionsAsync(CancellationToken ct = default)
         {
             return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl(ActivePositionsEndpoint, "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionsByIdAsync(IEnumerable<string> ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionSnapshotsAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl("auth/r/positions/snap", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionsByIdAsync(IEnumerable<string> ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             ids.ValidateNotNull(nameof(ids));
             limit?.ValidateIntBetween(nameof(limit), 1, 250);
@@ -249,7 +269,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPositionExtended>>(_baseClient.GetUrl(PositionAuditEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl(PositionAuditEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
     }
 }

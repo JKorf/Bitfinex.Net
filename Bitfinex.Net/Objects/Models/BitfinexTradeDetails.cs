@@ -39,8 +39,14 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The executed quantity
         /// </summary>
+        [JsonIgnore]
+        public decimal Quantity => Math.Abs(QuantityRaw);
+
+        /// <summary>
+        /// The quantity as returned by the API, will be negative if it's a sell
+        /// </summary>
         [ArrayProperty(4)]
-        public decimal Quantity { get; set; }
+        public decimal QuantityRaw { get; set; }
 
         /// <summary>
         /// The price of the trade
@@ -77,5 +83,11 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(10)]
         public string FeeAsset { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The client order id
+        /// </summary>
+        [ArrayProperty(11)]
+        public long? ClientOrderId { get; set; }
     }
 }

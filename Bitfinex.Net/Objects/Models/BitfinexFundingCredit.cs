@@ -62,18 +62,6 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(7)]
         public string StatusString { get; set; } = string.Empty;
-        /// <summary>
-        /// </summary>
-        [ArrayProperty(8)]
-        public string PlaceHolder1 { get; set; } = string.Empty;
-        /// <summary>
-        /// </summary>
-        [ArrayProperty(9)]
-        public string PlaceHolder2 { get; set; } = string.Empty;
-        /// <summary>
-        /// </summary>
-        [ArrayProperty(10)]
-        public string PlaceHolder3 { get; set; } = string.Empty;
 
         /// <summary>
         /// The price of the offer
@@ -110,10 +98,7 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(16), JsonConverter(typeof(BoolToIntConverter))]
         public bool Hidden { get; set; }
-        /// <summary>
-        /// </summary>
-        [ArrayProperty(17)]
-        public string PlaceHolder6 { get; set; } = string.Empty;
+
         /// <summary>
         /// </summary>
         [ArrayProperty(18), JsonConverter(typeof(BoolToIntConverter))]
@@ -123,7 +108,7 @@ namespace Bitfinex.Net.Objects.Models
         /// The calculated rate
         /// </summary>
         [ArrayProperty(19)]
-        public decimal RateReal { get; set; }
+        public decimal? RateReal { get; set; }
 
         /// <summary>
         /// Whether the funding should be closed when position is closed

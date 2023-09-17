@@ -27,18 +27,12 @@ namespace Bitfinex.Net.Clients.SpotApi
         private const string LedgerEntriesEndpoint = "auth/r/ledgers/{}/hist";
         private const string AllMovementsEndpoint = "auth/r/movements/hist";
         private const string MovementsEndpoint = "auth/r/movements/{}/hist";
-        private const string DailyPerformanceEndpoint = "auth/r/stats/perf:1D/hist";
         private const string AlertListEndpoint = "auth/r/alerts";
         private const string SetAlertEndpoint = "auth/w/alert/set";
         private const string DeleteAlertEndpoint = "auth/w/alert/price:{}:{}/del";
-        private const string AccountInfoEndpoint = "account_infos";
-        private const string DepositAddressEndpoint = "deposit/new";
-        private const string TransferEndpoint = "transfer";
         private const string WithdrawEndpoint = "withdraw";
         private const string MarginInfoBaseEndpoint = "auth/r/info/margin/base";
         private const string MarginInfoSymbolEndpoint = "auth/r/info/margin/{}";
-        private const string SummaryEndpoint = "summary";
-        private const string WithdrawalFeeEndpoint = "account_fees";
 
         private readonly BitfinexRestClientSpotApi _baseClient;
 
@@ -69,10 +63,35 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? symbol = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? symbol = null, IEnumerable<long>? ids = null, string? address = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("id", ids);
+            parameters.AddOptionalParameter("address", address);
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+
             var url = _baseClient.GetUrl(symbol == null ? AllMovementsEndpoint : MovementsEndpoint.FillPathParameters(symbol), "2");
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexMovement>>(url, HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexMovement>>(url, HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<BitfinexMovementDetails>> GetMovementsDetailsAsync(long id, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "id", id }
+            };
+
+            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexMovementDetails>>(_baseClient.GetUrl("auth/r/movements/info", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            if (!result)
+                return result.As<BitfinexMovementDetails>(null);
+
+            if (!result.Data.Any())
+                return result.AsError<BitfinexMovementDetails>(new ServerError("No movement found with id"));
+
+            return result.As<BitfinexMovementDetails>(result.Data.First());
         }
 
         /// <inheritdoc />
@@ -110,7 +129,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal price, WalletType type, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal price, WalletType type, decimal? leverage = null, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexSymbol();
             var parameters = new Dictionary<string, object>
@@ -120,6 +139,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 { "rate", price.ToString(CultureInfo.InvariantCulture) },
                 { "type", JsonConvert.SerializeObject(type, new WalletTypeConverter(false)).ToUpper() }
             };
+            parameters.AddOptionalParameter("lev", leverage?.ToString(CultureInfo.InvariantCulture));
 
             return await _baseClient.SendRequestAsync<BitfinexAvailableBalance>(_baseClient.GetUrl(CalcAvailableBalanceEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
@@ -148,52 +168,40 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexAccountInfo>> GetAccountInfoAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexSummary>> Get30DaySummaryAndFeesAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexAccountInfo>>(_baseClient.GetUrl(AccountInfoEndpoint, "1"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
-            return result ? result.As(result.Data.First()) : result.As<BitfinexAccountInfo>(default);
+            return await _baseClient.SendRequestAsync<BitfinexSummary>(_baseClient.GetUrl("auth/r/summary", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<Bitfinex30DaySummary>> Get30DaySummaryAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWriteResult<BitfinexDepositAddress>>> GetDepositAddressAsync(string method, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<Bitfinex30DaySummary>(_baseClient.GetUrl(SummaryEndpoint, "1"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
-        }
-
-
-        /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexDepositAddress>> GetDepositAddressAsync(string asset, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default)
-        {
-            asset.ValidateNotNull(nameof(asset));
             var parameters = new Dictionary<string, object>
             {
-                { "method", asset },
-                { "wallet_name", JsonConvert.SerializeObject(toWallet, new WithdrawWalletConverter(false)) }
+                { "method", method },
+                { "wallet", JsonConvert.SerializeObject(toWallet, new WithdrawWalletConverter(false)) }
             };
-            parameters.AddOptionalParameter("renew", forceNew.HasValue ? JsonConvert.SerializeObject(toWallet, new BoolToIntConverter(false)) : null);
+            parameters.AddOptionalParameter("op_renew", forceNew.HasValue ? JsonConvert.SerializeObject(toWallet, new BoolToIntConverter(false)) : null);
 
-            return await _baseClient.SendRequestAsync<BitfinexDepositAddress>(_baseClient.GetUrl(DepositAddressEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexDepositAddress>>(_baseClient.GetUrl("auth/w/deposit/address", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexTransferResult>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWriteResult<BitfinexTransfer>>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, string? toAsset = null, string? emailDestination = null, long? userIdDestination = null, CancellationToken ct = default)
         {
             asset.ValidateNotNull(nameof(asset));
             var parameters = new Dictionary<string, object>
             {
                 { "currency", asset },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) },
-                { "walletfrom", JsonConvert.SerializeObject(fromWallet, new WithdrawWalletConverter(false)) },
-                { "walletto", JsonConvert.SerializeObject(toWallet, new WithdrawWalletConverter(false)) },
+                { "from", JsonConvert.SerializeObject(fromWallet, new WithdrawWalletConverter(false)) },
+                { "to", JsonConvert.SerializeObject(toWallet, new WithdrawWalletConverter(false)) },
             };
-            var result = await _baseClient.SendRequestAsync<BitfinexTransferResult[]>(_baseClient.GetUrl(TransferEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
-            if (!result)
-                return result.As((BitfinexTransferResult)null!);
+            parameters.AddOptionalParameter("currency_to", toAsset);
+            parameters.AddOptionalParameter("email_dst", emailDestination);
+            parameters.AddOptionalParameter("user_id_dst", userIdDestination);
 
-            if (!result.Data.First().Success)
-                return result.AsError<BitfinexTransferResult>(new ServerError(result.Data.First().Message));
-
-            return result.As(result.Data.First());
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexTransfer>>(_baseClient.GetUrl("auth/w/transfe", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -255,9 +263,28 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexWithdrawalFees>> GetWithdrawalFeesAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitfinexLogin>>> GetLoginHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<BitfinexWithdrawalFees>(_baseClient.GetUrl(WithdrawalFeeEndpoint, "1"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            limit?.ValidateIntBetween(nameof(limit), 1, 250);
+
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexLogin>>(_baseClient.GetUrl("auth/r/logins/hist", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<IEnumerable<BitfinexPermission>>> GetApiKeyPermissionsAsync(CancellationToken ct = default)
+        {
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPermission>>(_baseClient.GetUrl("auth/r/permissions", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<IEnumerable<BitfinexChangeLog>>> GetAccountChangeLogAsync(CancellationToken ct = default)
+        {
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexChangeLog>>(_baseClient.GetUrl("auth/r/audit/hist", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
     }
 }

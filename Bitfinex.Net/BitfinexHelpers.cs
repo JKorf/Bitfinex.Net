@@ -1,6 +1,5 @@
 ﻿using Bitfinex.Net.Clients;
 using Bitfinex.Net.Interfaces.Clients;
-using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System;

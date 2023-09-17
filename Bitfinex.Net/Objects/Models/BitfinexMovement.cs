@@ -56,9 +56,19 @@ namespace Bitfinex.Net.Objects.Models
         [ArrayProperty(16)]
         public string Address { get; set; } = string.Empty;
         /// <summary>
+        /// The payment id
+        /// </summary>
+        [ArrayProperty(17)]
+        public string? PaymentId { get; set; } = string.Empty;
+        /// <summary>
         /// The transaction id
         /// </summary>
         [ArrayProperty(20)]
         public string TransactionId { get; set; } = string.Empty;
+        /// <summary>
+        /// Withdraw transaction note
+        /// </summary>
+        [ArrayProperty(21)]
+        public string? WithdrawTransactionNote { get; set; } = string.Empty;
     }
 }

@@ -77,23 +77,34 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(11)]
         public long Id { get; set; }
-    }
 
-    /// <summary>
-    /// Extended position info
-    /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexPositionExtended: BitfinexPosition
-    {
         /// <summary>
         /// The creation time
         /// </summary>
         [ArrayProperty(12), JsonConverter(typeof(DateTimeConverter))]
         public DateTime CreateTime { get; set; }
+
         /// <summary>
         /// The update time
         /// </summary>
         [ArrayProperty(13), JsonConverter(typeof(DateTimeConverter))]
         public DateTime UpdateTime { get; set; }
+
+        /// <summary>
+        /// Type of position
+        /// </summary>
+        [ArrayProperty(15), JsonConverter(typeof(EnumConverter))]
+        public PositionType Type { get; set; }
+
+        /// <summary>
+        /// The amount of collateral applied to the open position
+        /// </summary>
+        [ArrayProperty(17)]
+        public decimal? Collateral { get; set; }
+        /// <summary>
+        /// The minimum amount of collateral required for the position
+        /// </summary>
+        [ArrayProperty(18)]
+        public decimal? MinCollateral { get; set; }
     }
 }

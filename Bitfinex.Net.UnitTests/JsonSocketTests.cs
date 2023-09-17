@@ -18,7 +18,7 @@ namespace Bitfinex.Net.UnitTests
         [Test]
         public async Task ValidateTickerUpdateStreamJson()
         {
-            await TestFileToObject<BitfinexStreamSymbolOverview>(@"JsonResponses/Spot/Socket/TickerUpdate.txt");
+            await TestFileToObject<BitfinexTicker>(@"JsonResponses/Spot/Socket/TickerUpdate.txt");
         }
 
         [Test]

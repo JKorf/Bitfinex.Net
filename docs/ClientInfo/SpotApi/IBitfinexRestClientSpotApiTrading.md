@@ -11,30 +11,6 @@ grand_parent: Rest API documentation
 
 ***
 
-## CancelAllOrdersAsync  
-
-[https://docs.bitfinex.com/v1/reference#rest-auth-cancel-all-orders](https://docs.bitfinex.com/v1/reference#rest-auth-cancel-all-orders)  
-<p>
-
-*Cancels all open orders*  
-
-```csharp  
-var client = new BitfinexRestClient();  
-var result = await client.SpotApi.Trading.CancelAllOrdersAsync();  
-```  
-
-```csharp  
-Task<WebCallResult<BitfinexResult>> CancelAllOrdersAsync(CancellationToken ct = default);  
-```  
-
-|Parameter|Description|
-|---|---|
-|_[Optional]_ ct|Cancellation token<returns></returns>|
-
-</p>
-
-***
-
 ## CancelOrderAsync  
 
 [https://docs.bitfinex.com/reference#rest-auth-cancel-order](https://docs.bitfinex.com/reference#rest-auth-cancel-order)  
@@ -62,12 +38,40 @@ Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> CancelOrderAsync(long? o
 
 ***
 
-## ClaimPositionAsync  
+## CancelOrdersAsync  
 
-[https://docs.bitfinex.com/v1/reference#rest-auth-claim-position](https://docs.bitfinex.com/v1/reference#rest-auth-claim-position)  
+[https://docs.bitfinex.com/reference/rest-auth-cancel-orders-multiple](https://docs.bitfinex.com/reference/rest-auth-cancel-orders-multiple)  
 <p>
 
-*Claim a position*  
+*Cancels open orders*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Trading.CancelOrdersAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<BitfinexWriteResult<IEnumerable<BitfinexOrder>>>> CancelOrdersAsync(IEnumerable<long>? orderIds = default, IEnumerable<long>? groupIds = default, Dictionary<long,DateTime>? clientOrderIds = default, bool? all = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|_[Optional]_ orderIds|Ids of orders to cancel|
+|_[Optional]_ groupIds|Group ids to cancel|
+|_[Optional]_ clientOrderIds|Client order ids to cancel|
+|_[Optional]_ all|Cancel all orders|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## ClaimPositionAsync  
+
+[https://docs.bitfinex.com/reference/rest-auth-position-claim](https://docs.bitfinex.com/reference/rest-auth-position-claim)  
+<p>
+
+*The claim feature allows the use of funds you have in your Margin Wallet to settle a leveraged position as an exchange buy or sale*  
 
 ```csharp  
 var client = new BitfinexRestClient();  
@@ -75,62 +79,13 @@ var result = await client.SpotApi.Trading.ClaimPositionAsync(/* parameters */);
 ```  
 
 ```csharp  
-Task<WebCallResult<BitfinexPositionV1>> ClaimPositionAsync(long id, decimal quantity, CancellationToken ct = default);  
+Task<WebCallResult<BitfinexWriteResult<BitfinexPosition>>> ClaimPositionAsync(long id, decimal quantity, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
 |---|---|
 |id|The id of the position to claim|
 |quantity|The (partial) quantity to be claimed|
-|_[Optional]_ ct|Cancellation token|
-
-</p>
-
-***
-
-## ClosePositionAsync  
-
-[https://docs.bitfinex.com/v1/reference#close-position](https://docs.bitfinex.com/v1/reference#close-position)  
-<p>
-
-*Close a position*  
-
-```csharp  
-var client = new BitfinexRestClient();  
-var result = await client.SpotApi.Trading.ClosePositionAsync(/* parameters */);  
-```  
-
-```csharp  
-Task<WebCallResult<BitfinexClosePositionResult>> ClosePositionAsync(long positionId, CancellationToken ct = default);  
-```  
-
-|Parameter|Description|
-|---|---|
-|positionId|The id to close|
-|_[Optional]_ ct|Cancellation token|
-
-</p>
-
-***
-
-## GetActivePositionsAsync  
-
-[https://docs.bitfinex.com/reference#rest-auth-positions](https://docs.bitfinex.com/reference#rest-auth-positions)  
-<p>
-
-*Get the active positions*  
-
-```csharp  
-var client = new BitfinexRestClient();  
-var result = await client.SpotApi.Trading.GetActivePositionsAsync();  
-```  
-
-```csharp  
-Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetActivePositionsAsync(CancellationToken ct = default);  
-```  
-
-|Parameter|Description|
-|---|---|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
@@ -150,15 +105,42 @@ var result = await client.SpotApi.Trading.GetClosedOrdersAsync();
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetClosedOrdersAsync(string? symbol = default, DateTime? startTime = default, DateTime? endTime = default, int? limit = default, CancellationToken ct = default);  
+Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetClosedOrdersAsync(string? symbol = default, IEnumerable<long>? orderIds = default, DateTime? startTime = default, DateTime? endTime = default, int? limit = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
 |---|---|
 |_[Optional]_ symbol|The symbol to get the history for|
+|_[Optional]_ orderIds|Filter by specific order ids|
 |_[Optional]_ startTime|Start time of the data to return|
 |_[Optional]_ endTime|End time of the data to return|
 |_[Optional]_ limit|Max amount of results|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetIncreasePositionInfoAsync  
+
+[https://docs.bitfinex.com/reference/rest-auth-increase-position-info](https://docs.bitfinex.com/reference/rest-auth-increase-position-info)  
+<p>
+
+*Returns information relevant to the increase position endpoint.*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Trading.GetIncreasePositionInfoAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<BitfinexIncreasePositionInfo>> GetIncreasePositionInfoAsync(string symbol, decimal quantity, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol|The symbol|
+|quantity|Quantity|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
@@ -178,36 +160,13 @@ var result = await client.SpotApi.Trading.GetOpenOrdersAsync();
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOpenOrdersAsync(CancellationToken ct = default);  
+Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOpenOrdersAsync(string? symbol = default, IEnumerable<long>? orderIds = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
 |---|---|
-|_[Optional]_ ct|Cancellation token|
-
-</p>
-
-***
-
-## GetOrderAsync  
-
-[https://docs.bitfinex.com/v1/reference#rest-auth-order-status](https://docs.bitfinex.com/v1/reference#rest-auth-order-status)  
-<p>
-
-*Get the status of a specific order*  
-
-```csharp  
-var client = new BitfinexRestClient();  
-var result = await client.SpotApi.Trading.GetOrderAsync(/* parameters */);  
-```  
-
-```csharp  
-Task<WebCallResult<BitfinexPlacedOrder>> GetOrderAsync(long orderId, CancellationToken ct = default);  
-```  
-
-|Parameter|Description|
-|---|---|
-|orderId|The order id of the order to get|
+|_[Optional]_ symbol|Filter by symbol|
+|_[Optional]_ orderIds|Filter by specific order ids|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
@@ -253,7 +212,7 @@ var result = await client.SpotApi.Trading.GetPositionHistoryAsync();
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionHistoryAsync(DateTime? startTime = default, DateTime? endTime = default, int? limit = default, CancellationToken ct = default);  
+Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionHistoryAsync(DateTime? startTime = default, DateTime? endTime = default, int? limit = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
@@ -261,6 +220,30 @@ Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionHistoryAsy
 |_[Optional]_ startTime|Start time of the data to return|
 |_[Optional]_ endTime|End time of the data to return|
 |_[Optional]_ limit|Max amount of results|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetPositionsAsync  
+
+[https://docs.bitfinex.com/reference#rest-auth-positions](https://docs.bitfinex.com/reference#rest-auth-positions)  
+<p>
+
+*Get the active positions*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Trading.GetPositionsAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionsAsync(CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
 |_[Optional]_ ct|Cancellation token|
 
 </p>
@@ -280,12 +263,39 @@ var result = await client.SpotApi.Trading.GetPositionsByIdAsync(/* parameters */
 ```  
 
 ```csharp  
-Task<WebCallResult<IEnumerable<BitfinexPositionExtended>>> GetPositionsByIdAsync(IEnumerable<string> ids, DateTime? startTime = default, DateTime? endTime = default, int? limit = default, CancellationToken ct = default);  
+Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionsByIdAsync(IEnumerable<string> ids, DateTime? startTime = default, DateTime? endTime = default, int? limit = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
 |---|---|
 |ids|The id's of positions to return|
+|_[Optional]_ startTime|Start time of the data to return|
+|_[Optional]_ endTime|End time of the data to return|
+|_[Optional]_ limit|Max amount of results|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
+## GetPositionSnapshotsAsync  
+
+[https://docs.bitfinex.com/reference/rest-auth-positions-snap](https://docs.bitfinex.com/reference/rest-auth-positions-snap)  
+<p>
+
+*Returns position snapshots of user positions between the specified start and end perimiters. Snapshots are taken daily.*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Trading.GetPositionSnapshotsAsync();  
+```  
+
+```csharp  
+Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionSnapshotsAsync(DateTime? startTime = default, DateTime? endTime = default, int? limit = default, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
 |_[Optional]_ startTime|Start time of the data to return|
 |_[Optional]_ endTime|End time of the data to return|
 |_[Optional]_ limit|Max amount of results|
@@ -323,6 +333,32 @@ Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetUserTradesAsync(string
 
 ***
 
+## IncreasePositionAsync  
+
+[https://docs.bitfinex.com/reference/rest-auth-position-increase](https://docs.bitfinex.com/reference/rest-auth-position-increase)  
+<p>
+
+*Essentially a reverse of the Claim Position feature, the Increase Position feature allows you to create a new position using the funds in your margin wallet*  
+
+```csharp  
+var client = new BitfinexRestClient();  
+var result = await client.SpotApi.Trading.IncreasePositionAsync(/* parameters */);  
+```  
+
+```csharp  
+Task<WebCallResult<BitfinexWriteResult<BitfinexPositionBasic>>> IncreasePositionAsync(string symbol, decimal quantity, CancellationToken ct = default);  
+```  
+
+|Parameter|Description|
+|---|---|
+|symbol|The symbol|
+|quantity|Quantity|
+|_[Optional]_ ct|Cancellation token|
+
+</p>
+
+***
+
 ## PlaceOrderAsync  
 
 [https://docs.bitfinex.com/reference#rest-auth-submit-order](https://docs.bitfinex.com/reference#rest-auth-submit-order)  
@@ -336,7 +372,7 @@ var result = await client.SpotApi.Trading.PlaceOrderAsync(/* parameters */);
 ```  
 
 ```csharp  
-Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> PlaceOrderAsync(string symbol, OrderSide side, OrderType type, decimal quantity, decimal price, int? flags = default, int? leverage = default, int? groupId = default, int? clientOrderId = default, decimal? priceTrailing = default, decimal? priceAuxLimit = default, decimal? priceOcoStop = default, DateTime? cancelTime = default, string? affiliateCode = default, CancellationToken ct = default);  
+Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> PlaceOrderAsync(string symbol, OrderSide side, OrderType type, decimal quantity, decimal price, OrderFlags? flags = default, int? leverage = default, int? groupId = default, int? clientOrderId = default, decimal? priceTrailing = default, decimal? priceAuxLimit = default, decimal? priceOcoStop = default, DateTime? cancelTime = default, string? affiliateCode = default, CancellationToken ct = default);  
 ```  
 
 |Parameter|Description|
