@@ -58,7 +58,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         #region public methods
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexTicker>> handler, CancellationToken ct = default)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamTicker>> handler, CancellationToken ct = default)
         {
             symbol.ValidateBitfinexTradingSymbol();
             var internalHandler = new Action<DataEvent<JToken>>(data =>

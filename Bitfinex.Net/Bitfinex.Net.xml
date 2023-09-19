@@ -494,7 +494,7 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexTicker}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToFundingTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexStreamFundingTicker}},System.Threading.CancellationToken)">
@@ -2460,7 +2460,7 @@
             Bitfinex spot streams
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexTicker}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to ticker updates for a symbol. Use SubscribeToFundingTickerUpdatesAsync for funding symbol ticker updates
             <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
@@ -5186,6 +5186,61 @@
             </summary>
             <param name="type"></param>
             <param name="data"></param>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker">
+            <summary>
+            Ticker information
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker.BestBidPrice">
+            <summary>
+            The best bid price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker.BestBidQuantity">
+            <summary>
+            The best bid quantity
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker.BestAskPrice">
+            <summary>
+            The best ask price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker.BestAskQuantity">
+            <summary>
+            The best ask quantity
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker.DailyChange">
+            <summary>
+            Change versus 24 hours ago
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker.DailyChangePercentage">
+            <summary>
+            Change percentage versus 24 hours ago
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker.LastPrice">
+            <summary>
+            The last trade price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker.Volume">
+            <summary>
+            The 24 hour volume
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker.HighPrice">
+            <summary>
+            The 24 hour high price
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker.LowPrice">
+            <summary>
+            The 24 hour low price
+            </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.Models.BitfinexStreamFundingTicker">
             <summary>
