@@ -140,7 +140,7 @@ namespace Bitfinex.Net.Objects.Internal
         [JsonProperty("key")]
         public string Key { get; set; }
 
-        public BitfinexLiquidationSubscriptionRequest() : base("status", null)
+        public BitfinexLiquidationSubscriptionRequest() : base("status", null!)
         {
             Key = "liq:global";
         }
@@ -162,7 +162,7 @@ namespace Bitfinex.Net.Objects.Internal
         [JsonProperty("key")]
         public string Key { get; set; }
 
-        public BitfinexDerivativesStatusSubscriptionRequest(string symbol) : base("status", null)
+        public BitfinexDerivativesStatusSubscriptionRequest(string symbol) : base("status", null!)
         {
             Key = "deriv:" + symbol;
         }

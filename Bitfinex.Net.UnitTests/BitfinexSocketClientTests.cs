@@ -216,7 +216,7 @@ namespace Bitfinex.Net.UnitTests
             socket.CanConnect = true;
             var client = TestHelpers.CreateSocketClient(socket);
 
-            BitfinexTicker result = null;
+            BitfinexStreamTicker result = null;
             var subTask = client.SpotApi.SubscribeToTickerUpdatesAsync("tBTCUSD", data => result = data.Data);
 
             var subResponse = new TickerSubscriptionResponse()
@@ -229,7 +229,7 @@ namespace Bitfinex.Net.UnitTests
             };
             socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
-            BitfinexTicker expected = new BitfinexTicker();
+            BitfinexStreamTicker expected = new BitfinexStreamTicker();
 
             // act
             socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");

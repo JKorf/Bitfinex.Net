@@ -24,7 +24,7 @@ namespace Bitfinex.Net.Objects.Models
         /// Ip
         /// </summary>
         [ArrayProperty(4)]
-        public string Ip { get; set; }
+        public string Ip { get; set; } = string.Empty;
         /// <summary>
         /// Extra info object
         /// </summary>
