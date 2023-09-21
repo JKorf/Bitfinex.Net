@@ -201,7 +201,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("email_dst", emailDestination);
             parameters.AddOptionalParameter("user_id_dst", userIdDestination);
 
-            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexTransfer>>(_baseClient.GetUrl("auth/w/transfe", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexTransfer>>(_baseClient.GetUrl("auth/w/transfer", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
