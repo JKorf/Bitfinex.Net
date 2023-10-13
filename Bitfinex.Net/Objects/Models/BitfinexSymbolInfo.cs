@@ -10,6 +10,11 @@ namespace Bitfinex.Net.Objects.Models
     public class BitfinexSymbolInfo
     {
         /// <summary>
+        /// Maximum number of significant digits for price in this pair
+        /// </summary>
+        [ArrayProperty(1)]
+        public int PricePrecision { get; set; }
+        /// <summary>
         /// Min order quantity
         /// </summary>
         [ArrayProperty(3)]
