@@ -65,8 +65,6 @@ namespace Bitfinex.Net
             }
         }
 
-        public override string Sign(string toSign) => SignHMACSHA384(toSign);
-
-        
+        public string Sign(string toSign) => SignHMACSHA384(toSign);        
     }
 }
