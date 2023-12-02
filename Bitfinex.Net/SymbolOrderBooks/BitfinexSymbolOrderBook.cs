@@ -12,6 +12,7 @@ using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
 using Force.Crc32;
@@ -71,23 +72,24 @@ namespace Bitfinex.Net.SymbolOrderBooks
         /// <inheritdoc />
         protected override async Task<CallResult<UpdateSubscription>> DoStartAsync(CancellationToken ct)
         {
-            if(_precision == Precision.R0)
-                throw new ArgumentException("Invalid precision: R0");
+            return new CallResult<UpdateSubscription>(new ServerError(null));
+            //if(_precision == Precision.R0)
+            //    throw new ArgumentException("Invalid precision: R0");
 
-            var result = await _socketClient.SpotApi.SubscribeToOrderBookUpdatesAsync(Symbol, _precision, Frequency.Realtime, Levels!.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
-            if (!result)
-                return result;
+            //var result = await _socketClient.SpotApi.SubscribeToOrderBookUpdatesAsync(Symbol, _precision, Frequency.Realtime, Levels!.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
+            //if (!result)
+            //    return result;
 
-            if (ct.IsCancellationRequested)
-            {
-                await result.Data.CloseAsync().ConfigureAwait(false);
-                return result.AsError<UpdateSubscription>(new CancellationRequestedError());
-            }
+            //if (ct.IsCancellationRequested)
+            //{
+            //    await result.Data.CloseAsync().ConfigureAwait(false);
+            //    return result.AsError<UpdateSubscription>(new CancellationRequestedError());
+            //}
 
-            Status = OrderBookStatus.Syncing;
+            //Status = OrderBookStatus.Syncing;
             
-            var setResult = await WaitForSetOrderBookAsync(_initialDataTimeout, ct).ConfigureAwait(false);
-            return setResult ? result : new CallResult<UpdateSubscription>(setResult.Error!);
+            //var setResult = await WaitForSetOrderBookAsync(_initialDataTimeout, ct).ConfigureAwait(false);
+            //return setResult ? result : new CallResult<UpdateSubscription>(setResult.Error!);
         }
 
         /// <inheritdoc />
