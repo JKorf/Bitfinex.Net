@@ -1,9 +1,6 @@
 ﻿using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects.Sockets;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Bitfinex.Net.Objects.Sockets
 {
@@ -26,6 +23,9 @@ namespace Bitfinex.Net.Objects.Sockets
             }
 
             var evnt = accessor.GetStringValue("event");
+            if (evnt == "info")
+                return "info";
+
             var channel = accessor.GetStringValue("channel");
             var symbol = accessor.GetStringValue("symbol");
             return evnt + channel + symbol;

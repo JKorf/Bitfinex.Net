@@ -497,6 +497,9 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToFundingTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexStreamFundingTicker}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="T:Bitfinex.Net.Enums.BitfinexEventType">
             <summary>
             Socket event types
@@ -2382,6 +2385,16 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to ticker updates for a symbol. Use SubscribeToFundingTickerUpdatesAsync for funding symbol ticker updates
+            <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="handler">The handler for the data</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToFundingTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexStreamFundingTicker}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribes to funding ticker updates a symbol. Use SubscribeToTickerUpdatesAsync for trade symbol ticker updates
             <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
             </summary>
             <param name="symbol">The symbol to subscribe to</param>

@@ -27,15 +27,15 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <returns></returns>
         Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamTicker>> handler, CancellationToken ct = default);
 
-        ///// <summary>
-        ///// Subscribes to funding ticker updates a symbol. Use SubscribeToTickerUpdatesAsync for trade symbol ticker updates
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
-        ///// </summary>
-        ///// <param name="symbol">The symbol to subscribe to</param>
-        ///// <param name="handler">The handler for the data</param>
-        ///// <param name="ct">Cancellation token for closing this subscription</param>
-        ///// <returns></returns>
-        //Task<CallResult<UpdateSubscription>> SubscribeToFundingTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamFundingTicker>> handler, CancellationToken ct = default);
+        /// <summary>
+        /// Subscribes to funding ticker updates a symbol. Use SubscribeToTickerUpdatesAsync for trade symbol ticker updates
+        /// <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
+        /// </summary>
+        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="handler">The handler for the data</param>
+        /// <param name="ct">Cancellation token for closing this subscription</param>
+        /// <returns></returns>
+        Task<CallResult<UpdateSubscription>> SubscribeToFundingTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamFundingTicker>> handler, CancellationToken ct = default);
 
         ///// <summary>
         ///// Subscribes to order book updates for a symbol. Use SubscribeToFundingOrderBookUpdatesAsync for funding symbol ticker updates
