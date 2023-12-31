@@ -9,16 +9,14 @@ using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
-    internal class BitfinexInfoSubscription : SystemSubscription
+    internal class BitfinexInfoSubscription : SystemSubscription<BitfinexSocketInfo>
     {
-        public override List<string> Identifiers { get; } = new List<string> { "info" };
-
-        public override Type ExpectedMessageType => typeof(BitfinexSocketInfo);
+        public override List<string> StreamIdentifiers { get; } = new List<string> { "info" };
 
         public BitfinexInfoSubscription(ILogger logger) : base(logger, false)
         {
         }
 
-        public override Task<CallResult> DoHandleMessageAsync(SocketConnection connection, DataEvent<BaseParsedMessage> message) => Task.FromResult(new CallResult(null));
+        public override Task<CallResult> HandleMessageAsync(SocketConnection connection, DataEvent<ParsedMessage<BitfinexSocketInfo>> message) => Task.FromResult(new CallResult(null));
     }
 }

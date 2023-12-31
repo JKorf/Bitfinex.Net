@@ -16,6 +16,13 @@ using CryptoExchange.Net.Objects.Sockets;
 using Bitfinex.Net.Objects.Sockets;
 using Bitfinex.Net.Objects.Sockets.Subscriptions;
 using Bitfinex.Net.Objects.Models;
+using Bitfinex.Net.Enums;
+using System.Collections.Generic;
+using System.Linq;
+using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Sockets;
+using System.Globalization;
+using Bitfinex.Net.Objects.Sockets.Queries;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -31,7 +38,12 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public new BitfinexSocketOptions ClientOptions => (BitfinexSocketOptions)base.ClientOptions;
 
-        public override SocketConverter StreamConverter => new BitfinexSocketConverter();
+        /// <inheritdoc />
+        public override MessageInterpreterPipeline Pipeline { get; } = new MessageInterpreterPipeline
+        {
+            GetStreamIdentifier = GetStreamIdentifier,
+            GetTypeIdentifier = GetTypeIdentifier
+        };
         #endregion
 
         #region ctor
@@ -44,7 +56,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             //AddGenericHandler("Conf", ConfHandler);
 
             AddSystemSubscription(new BitfinexInfoSubscription(_logger));
-            AddSystemSubscription(new BitfinexHeartbeatSubscription(_logger));
 
             _affCode = options.AffiliateCode;
             _bookSerializer.Converters.Add(new OrderBookEntryConverter());
@@ -55,6 +66,23 @@ namespace Bitfinex.Net.Clients.SpotApi
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
+        protected override BaseQuery GetAuthenticationRequest()
+        {
+            var authProvider = (BitfinexAuthenticationProvider)AuthenticationProvider!;
+            var n = authProvider.GetNonce().ToString();
+            var authentication = new BitfinexAuthentication
+            {
+                Event = "auth",
+                ApiKey = authProvider.GetApiKey(),
+                Nonce = n,
+                Payload = "AUTH" + n
+            };
+            //if (filter.Any())
+            //    authentication.Filter = filter;
+            authentication.Signature = authProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
+            return new BitfinexAuthQuery(authentication);
+        }
+
         //#region public methods
 
         /// <inheritdoc />
@@ -62,7 +90,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             symbol.ValidateBitfinexTradingSymbol();
 
-            var subscription = new BitfinexSubscription<BitfinexStreamTicker>(_logger, "ticker", symbol, handler, false);
+            var subscription = new BitfinexSubscription<BitfinexStreamTicker>(_logger, "ticker", symbol, x => handler(x.As(x.Data.First())));
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 
@@ -71,225 +99,99 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             symbol.ValidateBitfinexFundingSymbol();
 
-            var subscription = new BitfinexSubscription<BitfinexStreamFundingTicker>(_logger, "ticker", symbol, handler, false);
+            var subscription = new BitfinexSubscription<BitfinexStreamFundingTicker>(_logger, "ticker", symbol, x => handler(x.As(x.Data.First())));
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
-
-            //var internalHandler = new Action<DataEvent<JToken>>(data =>
-            //{
-            //    HandleData("Ticker", (JArray)data.Data[1]!, symbol, data, handler);
-            //});
-            //return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexSubscriptionRequest("ticker", symbol), null, false, internalHandler, ct).ConfigureAwait(false);
         }
 
-        //        /// <inheritdoc />
-        //        public async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<DataEvent<IEnumerable<BitfinexOrderBookEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
-        //        {
-        //            symbol.ValidateBitfinexTradingSymbol();
-        //            length.ValidateIntValues(nameof(length), 1, 25, 100, 250);
-        //            if (precision == Precision.R0)
-        //                throw new ArgumentException("Invalid precision R0, use SubscribeToRawBookUpdatesAsync instead");
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<DataEvent<IEnumerable<BitfinexOrderBookEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexTradingSymbol();
+            length.ValidateIntValues(nameof(length), 1, 25, 100, 250);
+            if (precision == Precision.R0)
+                throw new ArgumentException("Invalid precision R0, use SubscribeToRawBookUpdatesAsync instead");
 
-        //            var internalHandler = new Action<DataEvent<JToken>>(data =>
-        //            {
-        //                if (data.Data[1]?.ToString() == "cs")
-        //                {
-        //                    // Process
-        //                    checksumHandler?.Invoke(data.As(data.Data[2]!.Value<int>(), symbol));
-        //                }
-        //                else
-        //                {
-        //                    var dataArray = (JArray)data.Data[1]!;
-        //                    if (dataArray.Count == 0)
-        //                        // Empty array
-        //                        return;
+            var subscription = new BitfinexSubscription<BitfinexOrderBookEntry>(_logger, "book", symbol, handler, checksumHandler, false, precision, frequency, length);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
+        }
 
-        //                    if (dataArray[0].Type == JTokenType.Array)
-        //                    {
-        //                        HandleData("Book snapshot", dataArray, symbol, data, handler, _bookSerializer);
-        //                    }
-        //                    else
-        //                    {
-        //                        HandleSingleToArrayData("Book update", dataArray, symbol, data, handler, _bookSerializer);
-        //                    }
-        //                }
-        //            });
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToFundingOrderBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<DataEvent<IEnumerable<BitfinexOrderBookFundingEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexFundingSymbol();
+            length.ValidateIntValues(nameof(length), 1, 25, 100, 250);
+            if (precision == Precision.R0)
+                throw new ArgumentException("Invalid precision R0, use SubscribeToFundingRawOrderBookUpdatesAsync instead");
 
-        //            var sub = new BitfinexBookSubscriptionRequest(
-        //                symbol,
-        //                JsonConvert.SerializeObject(precision, new PrecisionConverter(false)),
-        //                JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)),
-        //                length);
-        //            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), sub, null, false, internalHandler, ct).ConfigureAwait(false);
-        //        }
+            var subscription = new BitfinexSubscription<BitfinexOrderBookFundingEntry>(_logger, "book", symbol, handler, checksumHandler, false, precision, frequency, length);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
+        }
 
-        //        /// <inheritdoc />
-        //        public async Task<CallResult<UpdateSubscription>> SubscribeToFundingOrderBookUpdatesAsync(string symbol, Precision precision, Frequency frequency, int length, Action<DataEvent<IEnumerable<BitfinexOrderBookFundingEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
-        //        {
-        //            symbol.ValidateBitfinexFundingSymbol();
-        //            length.ValidateIntValues(nameof(length), 1, 25, 100, 250);
-        //            if (precision == Precision.R0)
-        //                throw new ArgumentException("Invalid precision R0, use SubscribeToFundingRawOrderBookUpdatesAsync instead");
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToRawOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexTradingSymbol();
 
-        //            var internalHandler = new Action<DataEvent<JToken>>(data =>
-        //            {
-        //                if (data.Data[1]?.ToString() == "cs")
-        //                {
-        //                    // Process
-        //                    checksumHandler?.Invoke(data.As(data.Data[2]!.Value<int>(), symbol));
-        //                }
-        //                else
-        //                {
-        //                    var dataArray = (JArray)data.Data[1]!;
-        //                    if (dataArray.Count == 0)
-        //                        // Empty array
-        //                        return;
+            var subscription = new BitfinexSubscription<BitfinexRawOrderBookEntry>(_logger, "book", symbol, handler, checksumHandler, false, Precision.R0, Frequency.Realtime, limit);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
+        }
 
-        //                    if (dataArray[0].Type == JTokenType.Array)
-        //                    {
-        //                        HandleData("Book snapshot", dataArray, symbol, data, handler, _fundingBookSerializer);
-        //                    }
-        //                    else
-        //                    {
-        //                        HandleSingleToArrayData("Book update", dataArray, symbol, data, handler, _fundingBookSerializer);
-        //                    }
-        //                }
-        //            });
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToRawFundingOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookFundingEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
+        {
+            symbol.ValidateBitfinexFundingSymbol();
 
-        //            var sub = new BitfinexBookSubscriptionRequest(
-        //                symbol,
-        //                JsonConvert.SerializeObject(precision, new PrecisionConverter(false)),
-        //                JsonConvert.SerializeObject(frequency, new FrequencyConverter(false)),
-        //                length);
-        //            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), sub, null, false, internalHandler, ct).ConfigureAwait(false);
-        //        }
+            var subscription = new BitfinexSubscription<BitfinexRawOrderBookFundingEntry>(_logger, "book", symbol, handler, checksumHandler, false, Precision.R0, Frequency.Realtime, limit);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
+        }
 
-        //        /// <inheritdoc />
-        //        public async Task<CallResult<UpdateSubscription>> SubscribeToRawOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
-        //        {
-        //            symbol.ValidateBitfinexTradingSymbol();
-        //            var internalHandler = new Action<DataEvent<JToken>>(data =>
-        //            {
-        //                if (data.Data[1]?.ToString() == "cs")
-        //                {
-        //                    // Process
-        //                    checksumHandler?.Invoke(data.As(data.Data[2]!.Value<int>(), symbol));
-        //                }
-        //                else
-        //                {
-        //                    var dataArray = (JArray)data.Data[1]!;
-        //                    if (dataArray[0].Type == JTokenType.Array)
-        //                        HandleData("Raw book snapshot", dataArray, symbol, data, handler);
-        //                    else
-        //                        HandleSingleToArrayData("Raw book update", dataArray, symbol, data, handler);
-        //                }
-        //            });
-        //            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), null, false, internalHandler, ct).ConfigureAwait(false);
-        //        }
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<IEnumerable<BitfinexTradeSimple>>> handler, CancellationToken ct = default)
+        {
+            var subscription = new BitfinexSubscription<BitfinexTradeSimple>(_logger, "trades", symbol, handler);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
+        }
 
-        //        /// <inheritdoc />
-        //        public async Task<CallResult<UpdateSubscription>> SubscribeToRawFundingOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<IEnumerable<BitfinexRawOrderBookFundingEntry>>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
-        //        {
-        //            symbol.ValidateBitfinexFundingSymbol();
-        //            var internalHandler = new Action<DataEvent<JToken>>(data =>
-        //            {
-        //                if (data.Data[1]?.ToString() == "cs")
-        //                {
-        //                    // Process
-        //                    checksumHandler?.Invoke(data.As(data.Data[2]!.Value<int>(), symbol));
-        //                }
-        //                else
-        //                {
-        //                    var dataArray = (JArray)data.Data[1]!;
-        //                    if (dataArray[0].Type == JTokenType.Array)
-        //                        HandleData("Raw book snapshot", dataArray, symbol, data, handler);
-        //                    else
-        //                        HandleSingleToArrayData("Raw book update", dataArray, symbol, data, handler);
-        //                }
-        //            });
-        //            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexRawBookSubscriptionRequest(symbol, "R0", limit), null, false, internalHandler, ct).ConfigureAwait(false);
-        //        }
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, KlineInterval interval, Action<DataEvent<IEnumerable<BitfinexKline>>> handler, CancellationToken ct = default)
+        {
+            var subscription = new BitfinexSubscription<BitfinexKline>(_logger, "candles", null, handler, key: $"trade:{JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))}:" + symbol);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
+        }
 
-        //        /// <inheritdoc />
-        //        public async Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<IEnumerable<BitfinexTradeSimple>>> handler, CancellationToken ct = default)
-        //        {
-        //            var internalHandler = new Action<DataEvent<JToken>>(data =>
-        //            {
-        //                var arr = (JArray)data.Data;
-        //                if (arr[1].Type == JTokenType.Array)
-        //                {
-        //                    HandleData("Trade snapshot", (JArray)arr[1], symbol, data, handler);
-        //                }
-        //                else
-        //                {
-        //                    var desResult = Deserialize<BitfinexTradeSimple>(arr[2]);
-        //                    if (!desResult)
-        //                    {
-        //                        _logger.Log(LogLevel.Warning, "Failed to deserialize trade object: " + desResult.Error);
-        //                        return;
-        //                    }
-        //                    desResult.Data.UpdateType = BitfinexEvents.EventMapping[arr[1].ToString()];
-        //                    handler(data.As<IEnumerable<BitfinexTradeSimple>>(new[] { desResult.Data }, symbol));
-        //                }
-        //            });
-        //            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexSubscriptionRequest("trades", symbol), null, false, internalHandler, ct).ConfigureAwait(false);
-        //        }
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToLiquidationUpdatesAsync(Action<DataEvent<IEnumerable<BitfinexLiquidation>>> handler, CancellationToken ct = default)
+        {
+            var subscription = new BitfinexSubscription<BitfinexLiquidation>(_logger, "status", null, handler, key: $"liq:global");
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
+        }
 
-        //        /// <inheritdoc />
-        //        public async Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, KlineInterval interval, Action<DataEvent<IEnumerable<BitfinexKline>>> handler, CancellationToken ct = default)
-        //        {
-        //            var internalHandler = new Action<DataEvent<JToken>>(data =>
-        //            {
-        //                var dataArray = (JArray)data.Data[1]!;
-        //                if (dataArray.Count == 0)
-        //                {
-        //                    _logger.Log(LogLevel.Warning, "No data in kline update, check if the symbol is correct");
-        //                    return;
-        //                }
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToDerivativesUpdatesAsync(string symbol, Action<DataEvent<BitfinexDerivativesStatusUpdate>> handler, CancellationToken ct = default)
+        {
+            var subscription = new BitfinexSubscription<BitfinexDerivativesStatusUpdate>(_logger, "candles", null, x => handler(x.As(x.Data.Single())), key: $"deriv:" + symbol);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
+        }
 
-        //                if (dataArray[0].Type == JTokenType.Array)
-        //                    HandleData("Kline snapshot", dataArray, symbol, data, handler);
-        //                else
-        //                    HandleSingleToArrayData("Kline update", dataArray, symbol, data, handler);
-        //            });
-        //            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexKlineSubscriptionRequest(symbol, JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))), null, false, internalHandler, ct).ConfigureAwait(false);
-        //        }
+        /// <inheritdoc />
+        public async Task<CallResult<UpdateSubscription>> SubscribeToUserTradeUpdatesAsync(
+            Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexOrder>>>> orderHandler,
+            Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexTradeDetails>>>> tradeHandler,
+             Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexPosition>>>> positionHandler,
+             CancellationToken ct = default)
+        {
+            var subscription = new BitfinexUserSubscription(_logger);
+            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
 
-        //        /// <inheritdoc />
-        //        public async Task<CallResult<UpdateSubscription>> SubscribeToLiquidationUpdatesAsync(Action<DataEvent<IEnumerable<BitfinexLiquidation>>> handler, CancellationToken ct = default)
-        //        {
-        //            var internalHandler = new Action<DataEvent<JToken>>(data =>
-        //            {
-        //                HandleData("Liquidation", (JArray)data.Data[1]!, null, data, handler);
-        //            });
-        //            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexLiquidationSubscriptionRequest(), null, false, internalHandler, ct).ConfigureAwait(false);
-        //        }
+            //var tokenHandler = new Action<DataEvent<JToken>>(tokenData =>
+            //{
+            //    HandleAuthUpdate(tokenData, orderHandler, "Orders");
+            //    HandleAuthUpdate(tokenData, tradeHandler, "Trades");
+            //    HandleAuthUpdate(tokenData, positionHandler, "Positions");
+            //});
 
-        //        /// <inheritdoc />
-        //        public async Task<CallResult<UpdateSubscription>> SubscribeToDerivativesUpdatesAsync(string symbol, Action<DataEvent<BitfinexDerivativesStatusUpdate>> handler, CancellationToken ct = default)
-        //        {
-        //            var internalHandler = new Action<DataEvent<JToken>>(data =>
-        //            {
-        //                HandleData("DerivativeUpdate", (JArray)data.Data[1]!, symbol, data, handler);
-        //            });
-        //            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), new BitfinexDerivativesStatusSubscriptionRequest(symbol), null, false, internalHandler, ct).ConfigureAwait(false);
-        //        }
-
-        //        /// <inheritdoc />
-        //        public async Task<CallResult<UpdateSubscription>> SubscribeToUserTradeUpdatesAsync(
-        //            Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexOrder>>>> orderHandler,
-        //            Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexTradeDetails>>>> tradeHandler,
-        //             Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexPosition>>>> positionHandler,
-        //             CancellationToken ct = default)
-        //        {
-        //            var tokenHandler = new Action<DataEvent<JToken>>(tokenData =>
-        //            {
-        //                HandleAuthUpdate(tokenData, orderHandler, "Orders");
-        //                HandleAuthUpdate(tokenData, tradeHandler, "Trades");
-        //                HandleAuthUpdate(tokenData, positionHandler, "Positions");
-        //            });
-
-        //            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), null, "Orders|Trades|Positions", true, tokenHandler, ct).ConfigureAwait(false);
-        //        }
+            //return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), null, "Orders|Trades|Positions", true, tokenHandler, ct).ConfigureAwait(false);
+        }
 
         //        /// <inheritdoc />
         //        public async Task<CallResult<UpdateSubscription>> SubscribeToBalanceUpdatesAsync(Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexWallet>>>> walletHandler, CancellationToken ct = default)
@@ -446,6 +348,40 @@ namespace Bitfinex.Net.Clients.SpotApi
         //            return await QueryAsync<BitfinexFundingOffer>(BaseAddress.AppendPath("ws/2"), query, true).ConfigureAwait(false);
         //        }
         //        #endregion
+
+        private static string? GetStreamIdentifier(IMessageAccessor accessor)
+        {
+            if (!accessor.IsObject(null))
+            {
+                return accessor.GetArrayIntValue(null, 0).ToString();
+            }
+
+            var evnt = accessor.GetStringValue("event");
+            if (evnt == "info")
+                return "info";
+
+            var channel = accessor.GetStringValue("channel");
+            var symbol = accessor.GetStringValue("symbol");
+            var prec = accessor.GetStringValue("prec");
+            var freq = accessor.GetStringValue("freq");
+            var len = accessor.GetStringValue("len");
+            var key = accessor.GetStringValue("key");
+            return evnt + channel + symbol + prec + freq + len + key;
+        }
+
+        private static string? GetTypeIdentifier(IMessageAccessor accessor)
+        {
+            if (accessor.IsObject(null))
+                return null;
+
+            var topic = accessor.GetArrayStringValue(null, 1);
+            var dataIndex = topic == null ? 1 : 2;
+            var x = topic + "-single";
+            if (accessor.IsArray(new[] { dataIndex, 0 }))
+                x = topic + "-array";
+
+            return x;
+        }
 
         //        #region private methods
         //        private void HandleData<T>(string name, JArray dataArray, string? symbol, DataEvent<JToken> dataEvent, Action<DataEvent<T>> handler, JsonSerializer? serializer = null)

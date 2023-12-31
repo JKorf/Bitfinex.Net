@@ -13,6 +13,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Order book entry
     /// </summary>
+    [JsonConverter(typeof(ArrayConverter))]
     public class BitfinexOrderBookEntry: BitfinexOrderBookBase, ISymbolOrderBookEntry
     {
         /// <summary>

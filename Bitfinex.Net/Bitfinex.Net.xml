@@ -491,6 +491,9 @@
         <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.ClientOptions">
             <inheritdoc />
         </member>
+        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.Pipeline">
+            <inheritdoc />
+        </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
@@ -498,6 +501,33 @@
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToFundingTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexStreamFundingTicker}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToFundingOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookFundingEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToRawOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToRawFundingOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookFundingEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeSimple}}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToLiquidationUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexLiquidation}}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToDerivativesUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexDerivativesStatusUpdate}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToUserTradeUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrder}}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexPosition}}}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.Enums.BitfinexEventType">
@@ -2399,6 +2429,109 @@
             </summary>
             <param name="symbol">The symbol to subscribe to</param>
             <param name="handler">The handler for the data</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribes to order book updates for a symbol. Use SubscribeToFundingOrderBookUpdatesAsync for funding symbol ticker updates
+            <para><a href="https://docs.bitfinex.com/reference#ws-public-books" /></para>
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="precision">The precision of the updates</param>
+            <param name="frequency">The frequency of updates</param>
+            <param name="length">The range for the order book updates, either 25 or 100</param>
+            <param name="handler">The handler for the data</param>
+            <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToFundingOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookFundingEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribes to funding order book updates for a symbol. Use SubscribeToOrderBookUpdatesAsync for trade symbol ticker updates
+            <para><a href="https://docs.bitfinex.com/reference#ws-public-books" /></para>
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="precision">The precision of the updates</param>
+            <param name="frequency">The frequency of updates</param>
+            <param name="length">The range for the order book updates, either 25 or 100</param>
+            <param name="handler">The handler for the data</param>
+            <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToRawOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribes to raw order book updates for a symbol. Use SubscribeToRawFundingOrderBookUpdatesAsync for funding symbol ticker updates
+            <para><a href="https://docs.bitfinex.com/reference#ws-public-raw-books" /></para>
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="limit">The range for the order book updates</param>
+            <param name="handler">The handler for the data</param>
+            <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToRawFundingOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookFundingEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribes to raw order book updates for a symbol. Use SubscribeToRawOrderBookUpdatesAsync for trade symbol ticker updates
+            <para><a href="https://docs.bitfinex.com/reference#ws-public-raw-books" /></para>
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="limit">The range for the order book updates</param>
+            <param name="handler">The handler for the data</param>
+            <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeSimple}}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribes to public trade updates for a symbol
+            <para><a href="https://docs.bitfinex.com/reference#ws-public-trades" /></para>
+            </summary>
+            <param name="symbol">The symbol to subscribe to</param>
+            <param name="handler">The handler for the data</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribes to kline updates for a symbol
+            <para><a href="https://docs.bitfinex.com/reference#ws-public-candles" /></para>
+            </summary>
+            <param name="symbol">The symbol to subscribe to. For funding klines use {symbol}:p{period}, for example fUSD:p30</param>
+            <param name="interval">The interval of the klines</param>
+            <param name="handler">The handler for the data</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToLiquidationUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexLiquidation}}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribe to liquidation updates
+            <para><a href="https://docs.bitfinex.com/reference/ws-public-status" /></para>
+            </summary>
+            <param name="handler">The handler for the data</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToDerivativesUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexDerivativesStatusUpdate}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribe to derivatives status updates
+            <para><a href="https://docs.bitfinex.com/reference/ws-public-status" /></para>
+            </summary>
+            <param name="symbol">The derivatives symbol, tBTCF0:USTF0 for example</param>
+            <param name="handler">The handler for the data</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToUserTradeUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrder}}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexPosition}}}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribe to trading information updates
+            <para><a href="https://docs.bitfinex.com/reference#ws-auth-trades" /></para>
+            </summary>
+            <param name="orderHandler">Data handler for order updates. Can be null if not interested</param>
+            <param name="tradeHandler">Data handler for trade execution updates. Can be null if not interested</param>
+            <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
