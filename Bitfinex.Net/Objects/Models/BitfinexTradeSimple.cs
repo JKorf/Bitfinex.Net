@@ -36,11 +36,5 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(4)]
         public int? Period { get; set; }
-
-        /// <summary>
-        /// The type of update
-        /// </summary>
-        [JsonIgnore]
-        public BitfinexEventType UpdateType { get; set; } = BitfinexEventType.TradeSnapshot;
     }
 }

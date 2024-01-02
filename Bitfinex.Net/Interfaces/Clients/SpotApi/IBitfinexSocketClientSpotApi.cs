@@ -138,132 +138,120 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
         /// <returns></returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToUserTradeUpdatesAsync(
-            Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexOrder>>>> orderHandler,
-            Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexTradeDetails>>>> tradeHandler,
-            Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexPosition>>>> positionHandler,
-            CancellationToken ct = default);
+        Task<CallResult<UpdateSubscription>> SubscribeToUserUpdatesAsync(
+             Action<DataEvent<IEnumerable<BitfinexOrder>>> orderHandler,
+             Action<DataEvent<IEnumerable<BitfinexPosition>>> positionHandler,
+             Action<DataEvent<IEnumerable<BitfinexFundingOffer>>> fundingOfferHandler,
+             Action<DataEvent<IEnumerable<BitfinexFundingCredit>>> fundingCreditHandler,
+             Action<DataEvent<IEnumerable<BitfinexFunding>>> fundingLoanHandler,
+             Action<DataEvent<IEnumerable<BitfinexWallet>>> walletHandler,
+             Action<DataEvent<BitfinexBalance>> balanceHandler,
+             Action<DataEvent<BitfinexTradeDetails>> tradeHandler,
+             Action<DataEvent<BitfinexFundingTrade>> fundingTradeHandler,
+             Action<DataEvent<BitfinexFundingInfo>> fundingInfoHandler,
+             CancellationToken ct = default);
 
-        ///// <summary>
-        ///// Subscribe to wallet information updates
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-wallets" /></para>
-        ///// </summary>
-        ///// <param name="walletHandler">Data handler for wallet updates</param>
-        ///// <param name="ct">Cancellation token for closing this subscription</param>
-        ///// <returns></returns>
-        //Task<CallResult<UpdateSubscription>> SubscribeToBalanceUpdatesAsync(Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexWallet>>>> walletHandler, CancellationToken ct = default);
+        /// <summary>
+        /// Places a new order
+        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-new" /></para>
+        /// </summary>
+        /// <param name="side">The order side</param>
+        /// <param name="type">The type of the order</param>
+        /// <param name="symbol">The symbol the order is for</param>
+        /// <param name="quantity">The quantity of the order, positive for buying, negative for selling</param>
+        /// <param name="groupId">Group id to assign to the order</param>
+        /// <param name="clientOrderId">Client order id to assign to the order</param>
+        /// <param name="price">Price of the order</param>
+        /// <param name="priceTrailing">Trailing price of the order</param>
+        /// <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
+        /// <param name="priceOcoStop">Oco stop price of the order</param>
+        /// <param name="flags">Additional flags</param>
+        /// <param name="leverage">Leverage</param>
+        /// <param name="cancelTime">Automatically cancel the order after this time</param>
+        /// <param name="affiliateCode">Affiliate code for the order</param>
+        /// <returns></returns>
+        Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null, string? affiliateCode = null);
 
-        ///// <summary>
-        ///// Subscribe to funding information updates
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-funding-offers" /></para>
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-funding-credits" /></para>
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-funding-loans" /></para>
-        ///// </summary>
-        ///// <param name="fundingOfferHandler">Subscribe to funding offer updates. Can be null if not interested</param>
-        ///// <param name="fundingCreditHandler">Subscribe to funding credit updates. Can be null if not interested</param>
-        ///// <param name="fundingLoanHandler">Subscribe to funding loan updates. Can be null if not interested</param>
-        ///// <param name="ct">Cancellation token for closing this subscription</param>
-        ///// <returns></returns>
-        //Task<CallResult<UpdateSubscription>> SubscribeToFundingUpdatesAsync(
-        //    Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexFundingOffer>>>> fundingOfferHandler,
-        //    Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexFundingCredit>>>> fundingCreditHandler,
-        //    Action<DataEvent<BitfinexSocketEvent<IEnumerable<BitfinexFunding>>>> fundingLoanHandler,
-        //    CancellationToken ct = default);
+        /// <summary>
+        /// Cancel all orders
+        ///// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-cancel-multi" /></para>
+        /// </summary>
+        /// <returns></returns>
+        Task<CallResult<IEnumerable<BitfinexOrder>>> CancelAllOrdersAsync();
 
-        ///// <summary>
-        ///// Places a new order
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-new" /></para>
-        ///// </summary>
-        ///// <param name="side">The order side</param>
-        ///// <param name="type">The type of the order</param>
-        ///// <param name="symbol">The symbol the order is for</param>
-        ///// <param name="quantity">The quantity of the order, positive for buying, negative for selling</param>
-        ///// <param name="groupId">Group id to assign to the order</param>
-        ///// <param name="clientOrderId">Client order id to assign to the order</param>
-        ///// <param name="price">Price of the order</param>
-        ///// <param name="priceTrailing">Trailing price of the order</param>
-        ///// <param name="priceAuxiliaryLimit">Auxiliary limit price of the order</param>
-        ///// <param name="priceOcoStop">Oco stop price of the order</param>
-        ///// <param name="flags">Additional flags</param>
-        ///// <param name="leverage">Leverage</param>
-        ///// <param name="cancelTime">Automatically cancel the order after this time</param>
-        ///// <param name="affiliateCode">Affiliate code for the order</param>
-        ///// <returns></returns>
-        //Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null, string? affiliateCode = null);
+        /// <summary>
+        /// Updates an order
+        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-update" /></para>
+        /// </summary>
+        /// <param name="orderId">The id of the order to update</param>
+        /// <param name="price">The new price of the order</param>
+        /// <param name="quantity">The new quantity of the order</param>
+        /// <param name="delta">The delta to change</param>
+        /// <param name="priceAuxiliaryLimit">the new aux limit price</param>
+        /// <param name="priceTrailing">The new trailing price</param>
+        /// <param name="flags">The new flags</param>
+        /// <returns></returns>
+        Task<CallResult<BitfinexOrder>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? quantity = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null);
 
-        ///// <summary>
-        ///// Updates an order
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-update" /></para>
-        ///// </summary>
-        ///// <param name="orderId">The id of the order to update</param>
-        ///// <param name="price">The new price of the order</param>
-        ///// <param name="quantity">The new quantity of the order</param>
-        ///// <param name="delta">The delta to change</param>
-        ///// <param name="priceAuxiliaryLimit">the new aux limit price</param>
-        ///// <param name="priceTrailing">The new trailing price</param>
-        ///// <param name="flags">The new flags</param>
-        ///// <returns></returns>
-        //Task<CallResult<BitfinexOrder>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? quantity = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null);
+        /// <summary>
+        /// Cancels an order
+        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel" /></para>
+        /// </summary>
+        /// <param name="orderId">The id of the order to cancel</param>
+        /// <returns></returns>
+        Task<CallResult<BitfinexOrder>> CancelOrderAsync(long orderId);
 
-        ///// <summary>
-        ///// Cancels an order
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel" /></para>
-        ///// </summary>
-        ///// <param name="orderId">The id of the order to cancel</param>
-        ///// <returns></returns>
-        //Task<CallResult<BitfinexOrder>> CancelOrderAsync(long orderId);
+        /// <summary>
+        /// Cancels multiple orders based on their groupId
+        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel" /></para>
+        /// </summary>
+        /// <param name="groupOrderId">The group id to cancel</param>
+        /// <returns>True if successfully committed on server</returns>
+        Task<CallResult<IEnumerable<BitfinexOrder>>> CancelOrdersByGroupIdAsync(long groupOrderId);
 
-        ///// <summary>
-        ///// Cancels multiple orders based on their groupId
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel" /></para>
-        ///// </summary>
-        ///// <param name="groupOrderId">The group id to cancel</param>
-        ///// <returns>True if successfully committed on server</returns>
-        //Task<CallResult<bool>> CancelOrdersByGroupIdAsync(long groupOrderId);
+        /// <summary>
+        /// Cancels multiple orders based on their groupIds
+        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
+        /// </summary>
+        /// <param name="groupOrderIds">The group ids to cancel</param>
+        /// <returns>True if successfully committed on server</returns>
+        Task<CallResult<IEnumerable<BitfinexOrder>>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderIds);
 
-        ///// <summary>
-        ///// Cancels multiple orders based on their groupIds
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
-        ///// </summary>
-        ///// <param name="groupOrderIds">The group ids to cancel</param>
-        ///// <returns>True if successfully committed on server</returns>
-        //Task<CallResult<bool>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderIds);
+        /// <summary>
+        /// Cancels multiple orders based on their order ids
+        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
+        /// </summary>
+        /// <param name="orderIds">The order ids to cancel</param>
+        /// <returns>True if successfully committed on server</returns>
+        Task<CallResult<IEnumerable<BitfinexOrder>>> CancelOrdersAsync(IEnumerable<long> orderIds);
 
-        ///// <summary>
-        ///// Cancels multiple orders based on their order ids
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
-        ///// </summary>
-        ///// <param name="orderIds">The order ids to cancel</param>
-        ///// <returns>True if successfully committed on server</returns>
-        //Task<CallResult<bool>> CancelOrdersAsync(IEnumerable<long> orderIds);
+        /// <summary>
+        /// Cancels multiple orders based on their clientOrderIds
+        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
+        /// </summary>
+        /// <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
+        /// <returns>True if successfully committed on server</returns>
+        Task<CallResult<IEnumerable<BitfinexOrder>>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds);
 
-        ///// <summary>
-        ///// Cancels multiple orders based on their clientOrderIds
-        ///// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
-        ///// </summary>
-        ///// <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
-        ///// <returns>True if successfully committed on server</returns>
-        //Task<CallResult<bool>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds);
+        /// <summary>
+        /// Submit a new funding offer
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-offer-new" /></para>
+        /// </summary>
+        /// <param name="type">Offer type</param>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="quantity">Amount (more than 0 for offer, less than 0 for bid)</param>
+        /// <param name="price">Rate (or offset for FRRDELTA offers)</param>
+        /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
+        /// <param name="flags">Flags</param>
+        /// <returns></returns>
+        Task<CallResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(FundingOfferType type, string symbol, decimal quantity, decimal price, int period, int? flags = null);
 
-        ///// <summary>
-        ///// Submit a new funding offer
-        ///// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-offer-new" /></para>
-        ///// </summary>
-        ///// <param name="type">Offer type</param>
-        ///// <param name="symbol">Symbol</param>
-        ///// <param name="quantity">Amount (more than 0 for offer, less than 0 for bid)</param>
-        ///// <param name="price">Rate (or offset for FRRDELTA offers)</param>
-        ///// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
-        ///// <param name="flags">Flags</param>
-        ///// <returns></returns>
-        //Task<CallResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(FundingOfferType type, string symbol, decimal quantity, decimal price, int period, int? flags = null);
-
-        ///// <summary>
-        ///// Cancel a funding offer
-        ///// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-offer-cancel" /></para>
-        ///// </summary>
-        ///// <param name="id">Id of the offer to cancel</param>
-        ///// <returns></returns>
-        //Task<CallResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long id);
+        /// <summary>
+        /// Cancel a funding offer
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-offer-cancel" /></para>
+        /// </summary>
+        /// <param name="id">Id of the offer to cancel</param>
+        /// <returns></returns>
+        Task<CallResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long id);
     }
 }

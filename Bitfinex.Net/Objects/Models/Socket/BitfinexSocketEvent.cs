@@ -1,4 +1,5 @@
 ﻿using Bitfinex.Net.Enums;
+using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 
@@ -19,12 +20,15 @@ namespace Bitfinex.Net.Objects.Models.Socket
         /// <summary>
         /// The type of the event
         /// </summary>
+        [ArrayProperty(1)]
+        [JsonConverter(typeof(EnumConverter))]
         public BitfinexEventType EventType { get; set; }
 
         /// <summary>
         /// The data
         /// </summary>
-        [ArrayProperty(2), JsonConverter(typeof(ArrayConverter))]
+        [ArrayProperty(2)]
+        [JsonConversion]
         public T Data { get; set; } = default!;
 
         /// <summary>

@@ -2,6 +2,7 @@
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Models;
+using Bitfinex.Net.Objects.Models.Socket;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
@@ -16,58 +17,90 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
     internal class BitfinexUserSubscription : Subscription<BitfinexResponse, BitfinexResponse>
     {
-        private bool _firstUpdate;
+        private readonly Action<DataEvent<IEnumerable<BitfinexPosition>>> _positionHandler;
+        private readonly Action<DataEvent<IEnumerable<BitfinexWallet>>> _walletHandler;
+        private readonly Action<DataEvent<IEnumerable<BitfinexOrder>>> _orderHandler;
+        private readonly Action<DataEvent<IEnumerable<BitfinexFundingOffer>>> _fundingOfferHandler;
+        private readonly Action<DataEvent<IEnumerable<BitfinexFundingCredit>>> _fundingCreditHandler;
+        private readonly Action<DataEvent<IEnumerable<BitfinexFunding>>> _fundingLoanHandler;
+        private readonly Action<DataEvent<BitfinexBalance>> _balanceHandler;
+        private readonly Action<DataEvent<BitfinexTradeDetails>> _tradeHandler;
+        private readonly Action<DataEvent<BitfinexFundingTrade>> _fundingTradeHandler;
+        private readonly Action<DataEvent<BitfinexMarginBase>> _marginInfoHandler; // TODO
+        private readonly Action<DataEvent<BitfinexFundingInfo>> _fundingInfoHandler;
 
         public override Dictionary<string, Type> TypeMapping { get; } = new Dictionary<string, Type>
         {
-            { "hb-single", typeof(BitfinexUpdate3<string>) },
+            { "hb-single", typeof(BitfinexSocketEvent<string>) },
 
-            { "ps-array", typeof(BitfinexUpdate3<IEnumerable<BitfinexPosition>>) },
-            { "pn-single", typeof(BitfinexUpdate3<BitfinexPosition>) },
-            { "pu-single", typeof(BitfinexUpdate3<BitfinexPosition>) },
-            { "pc-single", typeof(BitfinexUpdate3<BitfinexPosition>) },
+            { "ps-array", typeof(BitfinexSocketEvent<List<BitfinexPosition>>) },
+            { "pn-single", typeof(BitfinexSocketEvent<BitfinexPosition>) },
+            { "pu-single", typeof(BitfinexSocketEvent<BitfinexPosition>) },
+            { "pc-single", typeof(BitfinexSocketEvent<BitfinexPosition>) },
 
-            { "bu-single", typeof(BitfinexUpdate3<IEnumerable<decimal>>) },
+            { "bu-single", typeof(BitfinexSocketEvent<BitfinexBalance>) },
 
-            { "miu-single", typeof(BitfinexUpdate3<string>) },
+            { "miu-single", typeof(BitfinexSocketEvent<string>) },
 
-            { "fiu-single", typeof(BitfinexUpdate3<string>) },
+            { "fiu-single", typeof(BitfinexSocketEvent<BitfinexFundingInfo>) },
 
-            { "ws-array", typeof(BitfinexUpdate3<IEnumerable<BitfinexWallet>>) },
-            { "wu-single", typeof(BitfinexUpdate3<BitfinexWallet>) },
+            { "ws-array", typeof(BitfinexSocketEvent<List<BitfinexWallet>>) },
+            { "wu-single", typeof(BitfinexSocketEvent<BitfinexWallet>) },
 
-            { "os-array", typeof(BitfinexUpdate3<IEnumerable<BitfinexOrder>>) },
-            { "on-single", typeof(BitfinexUpdate3<BitfinexOrder>) },
-            { "ou-single", typeof(BitfinexUpdate3<BitfinexOrder>) },
-            { "oc-single", typeof(BitfinexUpdate3<BitfinexOrder>) },
+            { "os-array", typeof(BitfinexSocketEvent<List<BitfinexOrder>>) },
+            { "on-single", typeof(BitfinexSocketEvent<BitfinexOrder>) },
+            { "ou-single", typeof(BitfinexSocketEvent<BitfinexOrder>) },
+            { "oc-single", typeof(BitfinexSocketEvent<BitfinexOrder>) },
 
-            { "te-single", typeof(BitfinexUpdate3<BitfinexTradeDetails>) },
-            { "tu-single", typeof(BitfinexUpdate3<BitfinexTradeDetails>) },
+            { "te-single", typeof(BitfinexSocketEvent<BitfinexTradeDetails>) },
+            { "tu-single", typeof(BitfinexSocketEvent<BitfinexTradeDetails>) },
 
-            { "fte-single", typeof(BitfinexUpdate3<string>) },
-            { "ftu-single", typeof(BitfinexUpdate3<string>) },
+            { "fte-single", typeof(BitfinexSocketEvent<BitfinexFundingTrade>) },
+            { "ftu-single", typeof(BitfinexSocketEvent<BitfinexFundingTrade>) },
 
-            { "fos-array", typeof(BitfinexUpdate3<IEnumerable<BitfinexFundingOffer>>) },
-            { "fon-single", typeof(BitfinexUpdate3<BitfinexFundingOffer>) },
-            { "fou-single", typeof(BitfinexUpdate3<BitfinexFundingOffer>) },
-            { "foc-single", typeof(BitfinexUpdate3<BitfinexFundingOffer>) },
+            { "fos-array", typeof(BitfinexSocketEvent<List<BitfinexFundingOffer>>) },
+            { "fon-single", typeof(BitfinexSocketEvent<BitfinexFundingOffer>) },
+            { "fou-single", typeof(BitfinexSocketEvent<BitfinexFundingOffer>) },
+            { "foc-single", typeof(BitfinexSocketEvent<BitfinexFundingOffer>) },
 
-            { "fcs-array", typeof(BitfinexUpdate3<IEnumerable<BitfinexFundingCredit>>) },
-            { "fcc-single", typeof(BitfinexUpdate3<BitfinexFundingCredit>) },
-            { "fcn-single", typeof(BitfinexUpdate3<BitfinexFundingCredit>) },
-            { "fcu-single", typeof(BitfinexUpdate3<BitfinexFundingCredit>) },
+            { "fcs-array", typeof(BitfinexSocketEvent<List<BitfinexFundingCredit>>) },
+            { "fcc-single", typeof(BitfinexSocketEvent<BitfinexFundingCredit>) },
+            { "fcn-single", typeof(BitfinexSocketEvent<BitfinexFundingCredit>) },
+            { "fcu-single", typeof(BitfinexSocketEvent<BitfinexFundingCredit>) },
 
-            { "fls-array", typeof(BitfinexUpdate3<IEnumerable<BitfinexFunding>>) },
-            { "flc-single", typeof(BitfinexUpdate3<BitfinexFunding>) },
-            { "fln-single", typeof(BitfinexUpdate3<BitfinexFunding>) },
-            { "flu-single", typeof(BitfinexUpdate3<BitfinexFunding>) },
+            { "fls-array", typeof(BitfinexSocketEvent<List<BitfinexFunding>>) },
+            { "flc-single", typeof(BitfinexSocketEvent<BitfinexFunding>) },
+            { "fln-single", typeof(BitfinexSocketEvent<BitfinexFunding>) },
+            { "flu-single", typeof(BitfinexSocketEvent<BitfinexFunding>) },
         };
 
         public override List<string> StreamIdentifiers { get; } = new List<string>() { "0" };
 
-        public BitfinexUserSubscription(ILogger logger)
+        public BitfinexUserSubscription(ILogger logger, 
+            Action<DataEvent<IEnumerable<BitfinexPosition>>> positionHandler,
+            Action<DataEvent<IEnumerable<BitfinexWallet>>> walletHandler,
+            Action<DataEvent<IEnumerable<BitfinexOrder>>> orderHandler,
+            Action<DataEvent<IEnumerable<BitfinexFundingOffer>>> fundingOfferHandler,
+            Action<DataEvent<IEnumerable<BitfinexFundingCredit>>> fundingCreditHandler,
+            Action<DataEvent<IEnumerable<BitfinexFunding>>> fundingLoanHandler,
+            Action<DataEvent<BitfinexBalance>> balanceHandler,
+            Action<DataEvent<BitfinexTradeDetails>> tradeHandler,
+            Action<DataEvent<BitfinexFundingTrade>> fundingTradeHandler,
+            Action<DataEvent<BitfinexFundingInfo>> fundingInfoHandler
+            //Action<DataEvent<BitfinexMarginBase>> marginInfoHandler
+            )
             : base(logger, true)
         {
+            _positionHandler = positionHandler;
+            _walletHandler = walletHandler;
+            _orderHandler = orderHandler;
+            _fundingOfferHandler = fundingOfferHandler;
+            _fundingCreditHandler = fundingCreditHandler;
+            _fundingLoanHandler = fundingLoanHandler;
+            _balanceHandler = balanceHandler;
+            _tradeHandler = tradeHandler;
+            _fundingTradeHandler = fundingTradeHandler;
+            _fundingInfoHandler = fundingInfoHandler;
         }
 
         public override BaseQuery? GetSubQuery(SocketConnection connection) => null;
@@ -78,15 +111,69 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         {
             Debug.WriteLine($"{message.Data.Data.GetType()}; {message.Data.OriginalData}");
 
-            if (message.Data.TypeIdentifier == "hb-single")
-                return Task.FromResult(new CallResult(null));
-            //if (message.Data.TypeIdentifier == "bu-single")
-            //    return Task.FromResult(new CallResult(null));
-            //if (message.Data.TypeIdentifier == "ws-array")
-            //    return Task.FromResult(new CallResult(null));
-            //if (message.Data.TypeIdentifier == "wu-single")
-            //    return Task.FromResult(new CallResult(null));
+            return message.Data.TypeIdentifier switch
+            {
+                "hb-single" => Task.FromResult(new CallResult(null)),
 
+                "ps-array" => InvokeAndReturnSnapshot(_positionHandler, message),
+                "pn-single" => InvokeAndReturnUpdate(_positionHandler, message),
+                "pu-single" => InvokeAndReturnUpdate(_positionHandler, message),
+                "pc-single" => InvokeAndReturnUpdate(_positionHandler, message),
+
+                "bu-single" => InvokeAndReturnSingleUpdate(_balanceHandler, message),
+
+                "fiu-single" => InvokeAndReturnSingleUpdate(_fundingInfoHandler, message),
+
+                "ws-array" => InvokeAndReturnSnapshot(_walletHandler, message),
+                "wu-single" => InvokeAndReturnUpdate(_walletHandler, message),
+
+                "os-array" => InvokeAndReturnSnapshot(_orderHandler, message),
+                "on-single" => InvokeAndReturnUpdate(_orderHandler, message),
+                "ou-single" => InvokeAndReturnUpdate(_orderHandler, message),
+                "oc-single" => InvokeAndReturnUpdate(_orderHandler, message),
+
+                "te-single" => InvokeAndReturnSingleUpdate(_tradeHandler, message),
+                "tu-single" => InvokeAndReturnSingleUpdate(_tradeHandler, message),
+
+                "fte-single" => InvokeAndReturnSingleUpdate(_fundingTradeHandler, message),
+                "ftu-single" => InvokeAndReturnSingleUpdate(_fundingTradeHandler, message),
+
+                "fos-array" => InvokeAndReturnSnapshot(_fundingOfferHandler, message),
+                "fon-single" => InvokeAndReturnUpdate(_fundingOfferHandler, message),
+                "fou-single" => InvokeAndReturnUpdate(_fundingOfferHandler, message),
+                "foc-single" => InvokeAndReturnUpdate(_fundingOfferHandler, message),
+
+                "fcs-array" => InvokeAndReturnSnapshot(_fundingCreditHandler, message),
+                "fcn-single" => InvokeAndReturnUpdate(_fundingCreditHandler, message),
+                "fcu-single" => InvokeAndReturnUpdate(_fundingCreditHandler, message),
+                "fcc-single" => InvokeAndReturnUpdate(_fundingCreditHandler, message),
+
+                "fls-array" => InvokeAndReturnSnapshot(_fundingLoanHandler, message),
+                "fln-single" => InvokeAndReturnUpdate(_fundingLoanHandler, message),
+                "flu-single" => InvokeAndReturnUpdate(_fundingLoanHandler, message),
+                "flc-single" => InvokeAndReturnUpdate(_fundingLoanHandler, message),
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        private Task<CallResult> InvokeAndReturnSnapshot<T>(Action<DataEvent<IEnumerable<T>>> handler, DataEvent<BaseParsedMessage> message)
+        {
+            var data = (BitfinexSocketEvent<List<T>>)message.Data.Data;
+            handler?.Invoke(message.As<IEnumerable<T>>(data.Data, null, SocketUpdateType.Snapshot));
+            return Task.FromResult(new CallResult(null));
+        }
+
+        private Task<CallResult> InvokeAndReturnUpdate<T>(Action<DataEvent<IEnumerable<T>>> handler, DataEvent<BaseParsedMessage> message)
+        {
+            var data = (BitfinexSocketEvent<T>)message.Data.Data;
+            handler?.Invoke(message.As<IEnumerable<T>>(new[] { data.Data }, null, SocketUpdateType.Update));
+            return Task.FromResult(new CallResult(null));
+        }
+
+        private Task<CallResult> InvokeAndReturnSingleUpdate<T>(Action<DataEvent<T>> handler, DataEvent<BaseParsedMessage> message)
+        {
+            var data = (BitfinexSocketEvent<T>)message.Data.Data;
+            handler?.Invoke(message.As(data.Data, null, SocketUpdateType.Update));
             return Task.FromResult(new CallResult(null));
         }
     }
