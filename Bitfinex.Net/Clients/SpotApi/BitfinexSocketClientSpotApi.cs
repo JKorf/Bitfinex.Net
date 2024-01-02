@@ -77,13 +77,10 @@ namespace Bitfinex.Net.Clients.SpotApi
                 Nonce = n,
                 Payload = "AUTH" + n
             };
-            //if (filter.Any())
-            //    authentication.Filter = filter;
+
             authentication.Signature = authProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
             return new BitfinexAuthQuery(authentication);
         }
-
-        //#region public methods
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamTicker>> handler, CancellationToken ct = default)
@@ -240,10 +237,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             return result.As(result.Data?.Data.Data);
         }
 
-        /// <summary>
-        /// Cancel all open orders
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public async Task<CallResult<IEnumerable<BitfinexOrder>>> CancelAllOrdersAsync()
         {
             var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, new BitfinexMultiCancel { All = true });
@@ -347,7 +341,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
             return result.As(result.Data?.Data.Data);
         }
-        //        #endregion
 
         private static string? GetStreamIdentifier(IMessageAccessor accessor)
         {
@@ -366,7 +359,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             var freq = accessor.GetStringValue("freq");
             var len = accessor.GetStringValue("len");
             var key = accessor.GetStringValue("key");
-            return evnt + channel + symbol + prec + freq + len + key;
+            var chanId = evnt == "unsubscribed" ? accessor.GetStringValue("chanId") : "";
+            return chanId + evnt + channel + symbol + prec + freq + len + key;
         }
 
         private static string? GetTypeIdentifier(IMessageAccessor accessor)
@@ -380,81 +374,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (accessor.IsArray(new[] { dataIndex, 0 }) || accessor.IsEmptyArray(new[] { dataIndex }))
                 x = topic + "-array";
 
-            if (x == "os-array")
-            {
-            }
-
             return x;
         }
-
-        //        #region private methods
-        //        private void HandleData<T>(string name, JArray dataArray, string? symbol, DataEvent<JToken> dataEvent, Action<DataEvent<T>> handler, JsonSerializer? serializer = null)
-        //        {
-        //            var desResult = Deserialize<T>(dataArray, serializer: serializer);
-        //            if (!desResult)
-        //            {
-        //                _logger.Log(LogLevel.Warning, $"Failed to Deserialize {name} object: " + desResult.Error);
-        //                return;
-        //            }
-
-        //            handler(dataEvent.As(desResult.Data, symbol));
-        //        }
-
-        //        private void HandleSingleToArrayData<T>(string name, JArray dataArray, string? symbol, DataEvent<JToken> dataEvent, Action<DataEvent<IEnumerable<T>>> handler, JsonSerializer? serializer = null)
-        //        {
-        //            var wrapperArray = new JArray { dataArray };
-
-        //            var desResult = Deserialize<IEnumerable<T>>(wrapperArray, serializer: serializer);
-        //            if (!desResult)
-        //            {
-        //                _logger.Log(LogLevel.Warning, $"Failed to Deserialize  {name} object: " + desResult.Error);
-        //                return;
-        //            }
-
-        //            handler(dataEvent.As(desResult.Data, symbol));
-        //        }
-
-        //        private void HandleAuthUpdate<T>(DataEvent<JToken> token, Action<DataEvent<BitfinexSocketEvent<IEnumerable<T>>>> action, string category)
-        //        {
-        //            var evntStr = token.Data[1]?.ToString();
-        //            if (evntStr == null)
-        //                return;
-
-        //            var evntType = BitfinexEvents.EventMapping[evntStr];
-        //            var evnt = BitfinexEvents.Events.Single(e => e.EventType == evntType);
-        //            if (evnt.Category != category)
-        //                return;
-
-        //            if (action == null)
-        //            {
-        //                _logger.Log(LogLevel.Debug, $"Ignoring {evnt.EventType} event because not subscribed");
-        //                return;
-        //            }
-
-        //            IEnumerable<T> data;
-        //            if (evnt.Single)
-        //            {
-        //                var result = Deserialize<T>(token.Data[2]!);
-        //                if (!result)
-        //                {
-        //                    _logger.Log(LogLevel.Warning, "Failed to Deserialize data: " + result.Error);
-        //                    return;
-        //                }
-        //                data = new[] { result.Data };
-        //            }
-        //            else
-        //            {
-        //                var result = Deserialize<IEnumerable<T>>(token.Data[2]!);
-        //                if (!result)
-        //                {
-        //                    _logger.Log(LogLevel.Warning, "Failed to Deserialize data: " + result.Error);
-        //                    return;
-        //                }
-        //                data = result.Data;
-        //            }
-
-        //            action(token.As(new BitfinexSocketEvent<IEnumerable<T>>(evntType, data)));
-        //        }
 
         private long GenerateClientOrderId()
         {
@@ -462,16 +383,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             _random.NextBytes(buffer);
             return (long)Math.Round(Math.Abs(BitConverter.ToInt32(buffer, 0)) / 1000m);
         }
-
-
-        //        private void ConfHandler(MessageEvent messageEvent)
-        //        {
-        //            var confEvent = messageEvent.JsonData.Type == JTokenType.Object && messageEvent.JsonData["event"]?.ToString() == "conf";
-        //            if (!confEvent)
-        //                return;
-
-        //            // Could check conf result;
-        //        }
 
         //        private void InfoHandler(MessageEvent messageEvent)
         //        {
@@ -507,370 +418,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         //                    _logger.Log(LogLevel.Warning, $"Socket {messageEvent.Connection.SocketId} Unknown info code received: {code}");
         //                    break;
         //            }
-        //        }
-
-
-        //        /// <inheritdoc />
-        //        protected override async Task<bool> UnsubscribeAsync(SocketConnection connection, SocketSubscription subscription)
-        //        {
-        //            if (subscription.Request == null)
-        //            {
-        //                // If we don't have a request object we can't unsubscribe it. Probably is an auth subscription which gets pushed regardless
-        //                // Just returning true here will remove the handler and close the socket if there are no other handlers left on the socket, which is the best we can do
-        //                return true;
-        //            }
-
-        //            var channelId = ((BitfinexSubscriptionRequest)subscription.Request!).ChannelId;
-        //            var unsub = new BitfinexUnsubscribeRequest(channelId);
-        //            var result = false;
-        //            await connection.SendAndWaitAsync(unsub, ClientOptions.RequestTimeout, null, 1, data =>
-        //            {
-        //                if (data.Type != JTokenType.Object)
-        //                    return false;
-
-        //                var evnt = data["event"]?.ToString();
-        //                var channel = data["chanId"]?.ToString();
-        //                if (evnt == null || channel == null)
-        //                    return false;
-
-        //                if (!int.TryParse(channel, out var chan))
-        //                    return false;
-
-        //                result = evnt == "unsubscribed" && channelId == chan;
-        //                return result;
-        //            }).ConfigureAwait(false);
-        //            return result;
-        //        }
-
-        //        private static BitfinexAuthentication GetAuthObject(SocketApiClient apiClient, params string[] filter)
-        //        {
-        //            var authProvider = (BitfinexAuthenticationProvider)apiClient.AuthenticationProvider!;
-        //            var n = authProvider.GetNonce().ToString();
-        //            var authentication = new BitfinexAuthentication
-        //            {
-        //                Event = "auth",
-        //                ApiKey = authProvider.GetApiKey(),
-        //                Nonce = n,
-        //                Payload = "AUTH" + n
-        //            };
-        //            if (filter.Any())
-        //                authentication.Filter = filter;
-        //            authentication.Signature = authProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
-        //            return authentication;
-        //        }
-
-        //        #endregion
-
-        //        /// <inheritdoc />
-        //        protected override async Task<CallResult<bool>> AuthenticateSocketAsync(SocketConnection s)
-        //        {
-        //            if (s.ApiClient.AuthenticationProvider == null)
-        //                return new CallResult<bool>(new NoApiCredentialsError());
-
-        //            var authObject = GetAuthObject(s.ApiClient);
-        //            var result = new CallResult<bool>(new ServerError("No response from server"));
-        //            await s.SendAndWaitAsync(authObject, ClientOptions.RequestTimeout, null, 1, tokenData =>
-        //            {
-        //                if (tokenData.Type != JTokenType.Object)
-        //                    return false;
-
-        //                if (tokenData["event"]?.ToString() != "auth")
-        //                    return false;
-
-        //                var authResponse = Deserialize<BitfinexAuthenticationResponse>(tokenData);
-        //                if (!authResponse)
-        //                {
-        //                    _logger.Log(LogLevel.Warning, $"Socket {s.SocketId} authentication failed: " + authResponse.Error);
-        //                    result = new CallResult<bool>(authResponse.Error!);
-        //                    return false;
-        //                }
-
-        //                if (authResponse.Data.Status != "OK")
-        //                {
-        //                    var error = new ServerError(authResponse.Data.ErrorCode, authResponse.Data.ErrorMessage ?? "-");
-        //                    result = new CallResult<bool>(error);
-        //                    _logger.Log(LogLevel.Debug, $"Socket {s.SocketId} authentication failed: " + error);
-        //                    return false;
-        //                }
-
-        //                _logger.Log(LogLevel.Debug, $"Socket {s.SocketId} authentication completed");
-        //                result = new CallResult<bool>(true);
-        //                return true;
-        //            }).ConfigureAwait(false);
-
-        //            return result;
-        //        }
-
-        //        /// <inheritdoc />
-        //#pragma warning disable 8765
-        //        protected override bool HandleQueryResponse<T>(SocketConnection s, object request, JToken data, out CallResult<T>? callResult)
-        //#pragma warning restore 8765
-        //        {
-        //            callResult = null;
-        //            if (data.Type != JTokenType.Array)
-        //                return false;
-
-        //            var array = (JArray)data;
-        //            if (array.Count < 3)
-        //                return false;
-
-        //            var bfRequest = (BitfinexSocketQuery)request;
-        //            var evntString = data[1]!.ToString();
-        //            if (!BitfinexEvents.EventMapping.TryGetValue(evntString, out var eventType))
-        //                return false;
-
-        //            if (eventType == BitfinexEventType.Notification)
-        //            {
-        //                var notificationData = (JArray)data[2]!;
-        //                var notificationType = BitfinexEvents.EventMapping[notificationData[1].ToString()];
-        //                if (notificationType != BitfinexEventType.OrderNewRequest
-        //                    && notificationType != BitfinexEventType.OrderCancelRequest
-        //                    && notificationType != BitfinexEventType.OrderUpdateRequest
-        //                    && notificationType != BitfinexEventType.OrderCancelMultiRequest
-        //                    && notificationType != BitfinexEventType.FundingOfferNewRequest
-        //                    && notificationType != BitfinexEventType.FundingOfferCancelRequest)
-        //                {
-        //                    return false;
-        //                }
-
-        //                var statusString = (notificationData[6].ToString()).ToLower(CultureInfo.InvariantCulture);
-        //                if (statusString == "error")
-        //                {
-        //                    if (bfRequest.QueryType == BitfinexEventType.OrderNew && notificationType == BitfinexEventType.OrderNewRequest)
-        //                    {
-        //                        var orderData = notificationData[4];
-        //                        if (orderData[2]?.ToString() != bfRequest.Id)
-        //                            return false;
-
-        //                        callResult = new CallResult<T>(new ServerError(notificationData[7].ToString()));
-        //                        return true;
-        //                    }
-
-        //                    if (bfRequest.QueryType == BitfinexEventType.OrderCancel && notificationType == BitfinexEventType.OrderCancelRequest)
-        //                    {
-        //                        var orderData = notificationData[4];
-        //                        if (orderData[0]?.ToString() != bfRequest.Id)
-        //                            return false;
-
-        //                        callResult = new CallResult<T>(new ServerError(notificationData[7].ToString()));
-        //                        return true;
-        //                    }
-
-        //                    if (bfRequest.QueryType == BitfinexEventType.OrderUpdate && notificationType == BitfinexEventType.OrderUpdateRequest)
-        //                    {
-        //                        // OrderUpdateRequest not found notification doesn't carry the order id, where as OrderCancelRequest not found notification does..
-        //                        // Anyway, can't check for ids, so just assume its for this one
-
-        //                        callResult = new CallResult<T>(new ServerError(notificationData[7].ToString()));
-        //                        return true;
-        //                    }
-
-        //                    if (bfRequest.QueryType == BitfinexEventType.OrderCancelMulti && notificationType == BitfinexEventType.OrderCancelMultiRequest)
-        //                    {
-        //                        callResult = new CallResult<T>(new ServerError(notificationData[7].ToString()));
-        //                        return true;
-        //                    }
-
-        //                    if (bfRequest.QueryType == BitfinexEventType.FundingOfferNew && notificationType == BitfinexEventType.FundingOfferNewRequest)
-        //                    {
-        //                        callResult = new CallResult<T>(new ServerError(notificationData[7].ToString()));
-        //                        return true;
-        //                    }
-
-        //                    if (bfRequest.QueryType == BitfinexEventType.FundingOfferCancel && notificationType == BitfinexEventType.FundingOfferCancelRequest)
-        //                    {
-        //                        var fundingData = notificationData[4];
-        //                        if (fundingData[0]?.ToString() != bfRequest.Id)
-        //                            return false;
-
-        //                        callResult = new CallResult<T>(new ServerError(notificationData[7].ToString()));
-        //                        return true;
-        //                    }
-        //                }
-
-        //                if (notificationType == BitfinexEventType.OrderNewRequest
-        //                || notificationType == BitfinexEventType.OrderUpdateRequest
-        //                || notificationType == BitfinexEventType.OrderCancelRequest)
-        //                {
-        //                    if (bfRequest.QueryType == BitfinexEventType.OrderNew
-        //                    || bfRequest.QueryType == BitfinexEventType.OrderUpdate
-        //                    || bfRequest.QueryType == BitfinexEventType.OrderCancel)
-        //                    {
-        //                        var orderData = notificationData[4];
-        //                        var dataOrderId = orderData[0]?.ToString();
-        //                        var dataOrderClientId = orderData[2]?.ToString();
-        //                        if (dataOrderId == bfRequest.Id || dataOrderClientId == bfRequest.Id)
-        //                        {
-        //                            var desResult = Deserialize<T>(orderData);
-        //                            if (!desResult)
-        //                            {
-        //                                callResult = new CallResult<T>(desResult.Error!);
-        //                                return true;
-        //                            }
-
-        //                            callResult = new CallResult<T>(desResult.Data);
-        //                            return true;
-        //                        }
-        //                    }
-        //                }
-
-        //                if (notificationType == BitfinexEventType.OrderCancelMultiRequest)
-        //                {
-        //                    callResult = new CallResult<T>(Deserialize<T>(JToken.Parse("true")).Data);
-        //                    return true;
-        //                }
-
-        //                if (notificationType == BitfinexEventType.FundingOfferNewRequest
-        //                    || notificationType == BitfinexEventType.FundingOfferCancelRequest)
-        //                {
-        //                    if (bfRequest.QueryType == BitfinexEventType.FundingOfferCancelRequest)
-        //                    {
-        //                        var fundingData = notificationData[4];
-        //                        var dataOrderId = fundingData[0]?.ToString();
-        //                        if (dataOrderId == bfRequest.Id)
-        //                        {
-        //                            var desResult = Deserialize<T>(fundingData);
-        //                            if (!desResult)
-        //                            {
-        //                                callResult = new CallResult<T>(desResult.Error!);
-        //                                return true;
-        //                            }
-
-        //                            callResult = new CallResult<T>(desResult.Data);
-        //                            return true;
-        //                        }
-        //                    }
-        //                    else if(bfRequest.QueryType == BitfinexEventType.FundingOfferNew)
-        //                    {
-        //                        var fundingData = notificationData[4];
-        //                        var desResult = Deserialize<T>(fundingData);
-        //                        if (!desResult)
-        //                        {
-        //                            callResult = new CallResult<T>(desResult.Error!);
-        //                            return true;
-        //                        }
-
-        //                        callResult = new CallResult<T>(desResult.Data);
-        //                        return true;
-        //                    }
-        //                }
-        //            }
-
-        //            if (bfRequest.QueryType == BitfinexEventType.OrderCancelMulti && eventType == BitfinexEventType.OrderCancel)
-        //            {
-        //                callResult = new CallResult<T>(Deserialize<T>(JToken.Parse("true")).Data);
-        //                return true;
-        //            }
-
-        //            return false;
-        //        }
-
-        //        /// <inheritdoc />
-        //        protected override bool HandleSubscriptionResponse(SocketConnection s, SocketSubscription subscription, object request, JToken data, out CallResult<object>? callResult)
-        //        {
-        //            callResult = null;
-        //            if (data.Type != JTokenType.Object)
-        //                return false;
-
-        //            var infoEvent = data["event"]?.ToString() == "subscribed";
-        //            var errorEvent = data["event"]?.ToString() == "error";
-        //            if (!infoEvent && !errorEvent)
-        //                return false;
-
-        //            if (infoEvent)
-        //            {
-        //                var subResponse = Deserialize<BitfinexSubscribeResponse>(data);
-        //                if (!subResponse)
-        //                {
-        //                    callResult = new CallResult<object>(subResponse.Error!);
-        //                    _logger.Log(LogLevel.Warning, $"Socket {s.SocketId} subscription failed: " + subResponse.Error);
-        //                    return false;
-        //                }
-
-        //                var bRequest = (BitfinexSubscriptionRequest)request;
-        //                if (!bRequest.CheckResponse(data))
-        //                    return false;
-
-        //                bRequest.ChannelId = subResponse.Data.ChannelId;
-        //                callResult = subResponse.As<object>(subResponse.Data);
-        //                return true;
-        //            }
-        //            else
-        //            {
-        //                var subResponse = Deserialize<BitfinexErrorResponse>(data);
-        //                if (!subResponse)
-        //                {
-        //                    callResult = new CallResult<object>(subResponse.Error!);
-        //                    _logger.Log(LogLevel.Warning, $"Socket {s.SocketId} subscription failed: " + subResponse.Error);
-        //                    return false;
-        //                }
-
-        //                var error = new ServerError(subResponse.Data.Code, subResponse.Data.Message);
-        //                callResult = new CallResult<object>(error);
-        //                _logger.Log(LogLevel.Debug, $"Socket {s.SocketId} subscription failed: " + error);
-        //                return true;
-        //            }
-        //        }
-
-        //        /// <inheritdoc />
-        //        protected override bool MessageMatchesHandler(SocketConnection socketConnection, JToken message, object request)
-        //        {
-        //            if (message.Type != JTokenType.Array)
-        //                return false;
-
-        //            var array = (JArray)message;
-        //            if (array.Count < 2)
-        //                return false;
-
-        //            if (!int.TryParse(array[0].ToString(), out var channelId))
-        //                return false;
-
-        //            if (channelId == 0)
-        //                return false;
-
-        //            var subId = ((BitfinexSubscriptionRequest)request).ChannelId;
-        //            return channelId == subId && array[1].ToString() != "hb";
-        //        }
-
-        //        /// <inheritdoc />
-        //        protected override bool MessageMatchesHandler(SocketConnection socketConnection, JToken message, string identifier)
-        //        {
-        //            if (message.Type == JTokenType.Object)
-        //            {
-        //                if (identifier == "Info")
-        //                    return message["event"]?.ToString() == "info";
-        //                if (identifier == "Conf")
-        //                    return message["event"]?.ToString() == "conf";
-        //            }
-
-        //            else if (message.Type == JTokenType.Array)
-        //            {
-        //                var array = (JArray)message;
-        //                if (array.Count < 2)
-        //                    return false;
-
-        //                if (identifier == "HB")
-        //                    return array[1].ToString() == "hb";
-
-        //                if (!int.TryParse(array[0].ToString(), out var channelId))
-        //                    return false;
-
-        //                if (channelId != 0)
-        //                    return false;
-
-        //                var split = identifier.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
-        //                foreach (var id in split)
-        //                {
-        //                    var events = BitfinexEvents.GetEventsForCategory(id);
-        //                    var eventTypeString = array[1].ToString();
-        //                    var eventType = BitfinexEvents.EventMapping[eventTypeString];
-        //                    var evnt = events.SingleOrDefault(e => e.EventType == eventType);
-        //                    if (evnt != null)
-        //                        return true;
-        //                }
-        //            }
-
-        //            return false;
         //        }
     }
 }

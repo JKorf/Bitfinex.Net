@@ -80,7 +80,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         }
         public override BaseQuery? GetUnsubQuery()
         {
-            return new BitfinexSubQuery("unsubscribe", _channel, _symbol, _precision, _frequency, _length, _key);
+            return new BitfinexUnsubQuery(_channelId);
         }
 
         public override Task<CallResult> DoHandleMessageAsync(SocketConnection connection, DataEvent<BaseParsedMessage> message)
