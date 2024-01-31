@@ -13,22 +13,32 @@ using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Objects.Sockets;
-using Bitfinex.Net.Objects.Sockets;
 using Bitfinex.Net.Objects.Sockets.Subscriptions;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Enums;
 using System.Collections.Generic;
 using System.Linq;
-using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Sockets;
 using System.Globalization;
 using Bitfinex.Net.Objects.Sockets.Queries;
+using CryptoExchange.Net.Sockets.MessageParsing;
+using CryptoExchange.Net.Sockets.MessageParsing.Interfaces;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc cref="IBitfinexSocketClientSpotApi" />
     public class BitfinexSocketClientSpotApi : SocketApiClient, IBitfinexSocketClientSpotApi
     {
+        private static readonly MessagePath _0Path = MessagePath.Get().Index(0);
+        private static readonly MessagePath _eventPath = MessagePath.Get().Property("event");
+        private static readonly MessagePath _channelPath = MessagePath.Get().Property("channel");
+        private static readonly MessagePath _symbolPath = MessagePath.Get().Property("symbol");
+        private static readonly MessagePath _precPath = MessagePath.Get().Property("prec");
+        private static readonly MessagePath _freqPath = MessagePath.Get().Property("freq");
+        private static readonly MessagePath _lenPath = MessagePath.Get().Property("len");
+        private static readonly MessagePath _keyPath = MessagePath.Get().Property("key");
+        private static readonly MessagePath _chanIdPath = MessagePath.Get().Property("chanId");
+
         #region fields
         private readonly JsonSerializer _bookSerializer = new JsonSerializer();
         private readonly JsonSerializer _fundingBookSerializer = new JsonSerializer();
@@ -38,19 +48,12 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public new BitfinexSocketOptions ClientOptions => (BitfinexSocketOptions)base.ClientOptions;
 
-        /// <inheritdoc />
-        public override MessageInterpreterPipeline Pipeline { get; } = new MessageInterpreterPipeline
-        {
-            GetStreamIdentifier = GetStreamIdentifier,
-            GetTypeIdentifier = GetTypeIdentifier
-        };
         #endregion
 
         #region ctor
         internal BitfinexSocketClientSpotApi(ILogger logger, BitfinexSocketOptions options) :
             base(logger, options.Environment.SocketAddress, options, options.SpotOptions)
         {
-            ContinueOnQueryResponse = true;
             UnhandledMessageExpected = true;
 
             //AddGenericHandler("Conf", ConfHandler);
@@ -62,11 +65,13 @@ namespace Bitfinex.Net.Clients.SpotApi
             _fundingBookSerializer.Converters.Add(new OrderBookFundingEntryConverter());
         }
         #endregion
+
         /// <inheritdoc />
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
-        protected override BaseQuery GetAuthenticationRequest()
+        /// <inheritdoc />
+        protected override Query GetAuthenticationRequest()
         {
             var authProvider = (BitfinexAuthenticationProvider)AuthenticationProvider!;
             var n = authProvider.GetNonce().ToString();
@@ -172,19 +177,21 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToUserUpdatesAsync(
-             Action<DataEvent<IEnumerable<BitfinexOrder>>> orderHandler,
-             Action<DataEvent<IEnumerable<BitfinexPosition>>> positionHandler,
-             Action<DataEvent<IEnumerable<BitfinexFundingOffer>>> fundingOfferHandler,
-             Action<DataEvent<IEnumerable<BitfinexFundingCredit>>> fundingCreditHandler,
-             Action<DataEvent<IEnumerable<BitfinexFunding>>> fundingLoanHandler,
-             Action<DataEvent<IEnumerable<BitfinexWallet>>> walletHandler,
-             Action<DataEvent<BitfinexBalance>> balanceHandler,
-             Action<DataEvent<BitfinexTradeDetails>> tradeHandler,
-             Action<DataEvent<BitfinexFundingTrade>> fundingTradeHandler,
-             Action<DataEvent<BitfinexFundingInfo>> fundingInfoHandler,
+             Action<DataEvent<IEnumerable<BitfinexOrder>>>? orderHandler,
+             Action<DataEvent<IEnumerable<BitfinexPosition>>>? positionHandler,
+             Action<DataEvent<IEnumerable<BitfinexFundingOffer>>>? fundingOfferHandler,
+             Action<DataEvent<IEnumerable<BitfinexFundingCredit>>>? fundingCreditHandler,
+             Action<DataEvent<IEnumerable<BitfinexFunding>>>? fundingLoanHandler,
+             Action<DataEvent<IEnumerable<BitfinexWallet>>>? walletHandler,
+             Action<DataEvent<BitfinexBalance>>? balanceHandler,
+             Action<DataEvent<BitfinexTradeDetails>>? tradeHandler,
+             Action<DataEvent<BitfinexFundingTrade>>? fundingTradeHandler,
+             Action<DataEvent<BitfinexFundingInfo>>? fundingInfoHandler,
+             Action<DataEvent<BitfinexMarginBase>>? marginBaseHandler,
+             Action<DataEvent<BitfinexMarginSymbol>>? marginSymbolHandler,
              CancellationToken ct = default)
         {
-            var subscription = new BitfinexUserSubscription(_logger, positionHandler, walletHandler, orderHandler, fundingOfferHandler, fundingCreditHandler, fundingLoanHandler, balanceHandler, tradeHandler, fundingTradeHandler, fundingInfoHandler);
+            var subscription = new BitfinexUserSubscription(_logger, positionHandler, walletHandler, orderHandler, fundingOfferHandler, fundingCreditHandler, fundingLoanHandler, balanceHandler, tradeHandler, fundingTradeHandler, fundingInfoHandler, marginBaseHandler, marginSymbolHandler);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 
@@ -215,7 +222,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var bitfinexQuery = new BitfinexQuery<BitfinexOrder>(query);
             var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
-            return result.As(result.Data?.Data.Data);
+            return result.As<BitfinexOrder>(result.Data?.Data.Data);
         }
 
         /// <inheritdoc />
@@ -234,7 +241,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var bitfinexQuery = new BitfinexQuery<BitfinexOrder>(query);
             var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
-            return result.As(result.Data?.Data.Data);
+            return result.As<BitfinexOrder>(result.Data?.Data.Data);
         }
 
         /// <inheritdoc />
@@ -252,7 +259,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderCancel, new Dictionary<string, long> { ["id"] = orderId });
             var bitfinexQuery = new BitfinexQuery<BitfinexOrder>(query);
             var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
-            return result.As(result.Data?.Data.Data);
+            return result.As<BitfinexOrder>(result.Data?.Data.Data);
         }
 
         /// <inheritdoc />
@@ -325,7 +332,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var query = new BitfinexSocketQuery(ExchangeHelpers.NextId().ToString(CultureInfo.InvariantCulture), BitfinexEventType.FundingOfferNew, parameters);
             var bitfinexQuery = new BitfinexQuery<BitfinexFundingOffer>(query);
             var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
-            return result.As(result.Data?.Data.Data);
+            return result.As<BitfinexFundingOffer>(result.Data?.Data.Data);
         }
 
         /// <inheritdoc />
@@ -339,42 +346,28 @@ namespace Bitfinex.Net.Clients.SpotApi
             var query = new BitfinexSocketQuery(id.ToString(CultureInfo.InvariantCulture), BitfinexEventType.FundingOfferCancel, parameters);
             var bitfinexQuery = new BitfinexQuery<BitfinexFundingOffer>(query);
             var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
-            return result.As(result.Data?.Data.Data);
+            return result.As<BitfinexFundingOffer>(result.Data?.Data.Data);
         }
 
-        private static string? GetStreamIdentifier(IMessageAccessor accessor)
+        /// <inheritdoc />
+        public override string? GetListenerIdentifier(IMessageAccessor message)
         {
-            if (!accessor.IsObject(null))
-            {
-                return accessor.GetArrayIntValue(null, 0).ToString();
-            }
+            var type = message.GetNodeType();
+            if (type == NodeType.Array)
+                return message.GetValue<int>(_0Path).ToString();
 
-            var evnt = accessor.GetStringValue("event");
+            var evnt = message.GetValue<string>(_eventPath);
             if (evnt == "info")
                 return "info";
 
-            var channel = accessor.GetStringValue("channel");
-            var symbol = accessor.GetStringValue("symbol");
-            var prec = accessor.GetStringValue("prec");
-            var freq = accessor.GetStringValue("freq");
-            var len = accessor.GetStringValue("len");
-            var key = accessor.GetStringValue("key");
-            var chanId = evnt == "unsubscribed" ? accessor.GetStringValue("chanId") : "";
+            var channel = message.GetValue<string>(_channelPath);
+            var symbol = message.GetValue<string>(_symbolPath);
+            var prec = message.GetValue<string>(_precPath);
+            var freq = message.GetValue<string>(_freqPath);
+            var len = message.GetValue<string>(_lenPath);
+            var key = message.GetValue<string>(_keyPath);
+            var chanId = evnt == "unsubscribed" ? message.GetValue<string>(_chanIdPath) : "";
             return chanId + evnt + channel + symbol + prec + freq + len + key;
-        }
-
-        private static string? GetTypeIdentifier(IMessageAccessor accessor)
-        {
-            if (accessor.IsObject(null))
-                return null;
-
-            var topic = accessor.GetArrayStringValue(null, 1);
-            var dataIndex = topic == null ? 1 : 2;
-            var x = topic + "-single";
-            if (accessor.IsArray(new[] { dataIndex, 0 }) || accessor.IsEmptyArray(new[] { dataIndex }))
-                x = topic + "-array";
-
-            return x;
         }
 
         private long GenerateClientOrderId()
@@ -383,41 +376,5 @@ namespace Bitfinex.Net.Clients.SpotApi
             _random.NextBytes(buffer);
             return (long)Math.Round(Math.Abs(BitConverter.ToInt32(buffer, 0)) / 1000m);
         }
-
-        //        private void InfoHandler(MessageEvent messageEvent)
-        //        {
-        //            var infoEvent = messageEvent.JsonData.Type == JTokenType.Object && messageEvent.JsonData["event"]?.ToString() == "info";
-        //            if (!infoEvent)
-        //                return;
-
-        //            _logger.Log(LogLevel.Debug, $"Socket {messageEvent.Connection.SocketId} Info event received: {messageEvent.JsonData}");
-        //            if (messageEvent.JsonData["code"] == null)
-        //            {
-        //                // welcome event, send a config message for receiving checsum updates for order book subscriptions
-        //                messageEvent.Connection.Send(ExchangeHelpers.NextId(), new BitfinexSocketConfig { Event = "conf", Flags = 131072 }, 1);
-        //                return;
-        //            }
-
-        //            var code = messageEvent.JsonData["code"]?.Value<int>();
-        //            switch (code)
-        //            {
-        //                case 20051:
-        //                    _logger.Log(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, reconnecting socket");
-        //                    messageEvent.Connection.PausedActivity = true; // Prevent new operations to be send
-        //                    _ = messageEvent.Connection.TriggerReconnectAsync();
-        //                    break;
-        //                case 20060:
-        //                    _logger.Log(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, entering maintenance mode");
-        //                    messageEvent.Connection.PausedActivity = true;
-        //                    break;
-        //                case 20061:
-        //                    _logger.Log(LogLevel.Information, $"Socket {messageEvent.Connection.SocketId} Code {code} received, leaving maintenance mode. Reconnecting/Resubscribing socket.");
-        //                    _ = messageEvent.Connection.TriggerReconnectAsync(); // Closing it via socket will automatically reconnect
-        //                    break;
-        //                default:
-        //                    _logger.Log(LogLevel.Warning, $"Socket {messageEvent.Connection.SocketId} Unknown info code received: {code}");
-        //                    break;
-        //            }
-        //        }
     }
 }

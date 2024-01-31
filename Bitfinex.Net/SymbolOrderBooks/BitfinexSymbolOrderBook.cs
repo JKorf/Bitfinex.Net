@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 using Bitfinex.Net.Clients;
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Interfaces.Clients;
-using Bitfinex.Net.Objects;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.OrderBook;
-using CryptoExchange.Net.Sockets;
 using Force.Crc32;
 using Microsoft.Extensions.Logging;
 
@@ -72,24 +70,23 @@ namespace Bitfinex.Net.SymbolOrderBooks
         /// <inheritdoc />
         protected override async Task<CallResult<UpdateSubscription>> DoStartAsync(CancellationToken ct)
         {
-            return new CallResult<UpdateSubscription>(new ServerError(null));
-            //if(_precision == Precision.R0)
-            //    throw new ArgumentException("Invalid precision: R0");
+            if (_precision == Precision.R0)
+                throw new ArgumentException("Invalid precision: R0");
 
-            //var result = await _socketClient.SpotApi.SubscribeToOrderBookUpdatesAsync(Symbol, _precision, Frequency.Realtime, Levels!.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
-            //if (!result)
-            //    return result;
+            var result = await _socketClient.SpotApi.SubscribeToOrderBookUpdatesAsync(Symbol, _precision, Frequency.Realtime, Levels!.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
+            if (!result)
+                return result;
 
-            //if (ct.IsCancellationRequested)
-            //{
-            //    await result.Data.CloseAsync().ConfigureAwait(false);
-            //    return result.AsError<UpdateSubscription>(new CancellationRequestedError());
-            //}
+            if (ct.IsCancellationRequested)
+            {
+                await result.Data.CloseAsync().ConfigureAwait(false);
+                return result.AsError<UpdateSubscription>(new CancellationRequestedError());
+            }
 
-            //Status = OrderBookStatus.Syncing;
-            
-            //var setResult = await WaitForSetOrderBookAsync(_initialDataTimeout, ct).ConfigureAwait(false);
-            //return setResult ? result : new CallResult<UpdateSubscription>(setResult.Error!);
+            Status = OrderBookStatus.Syncing;
+
+            var setResult = await WaitForSetOrderBookAsync(_initialDataTimeout, ct).ConfigureAwait(false);
+            return setResult ? result : new CallResult<UpdateSubscription>(setResult.Error!);
         }
 
         /// <inheritdoc />
@@ -138,7 +135,9 @@ namespace Bitfinex.Net.SymbolOrderBooks
                             askEntries.Add(entry);
                         }
                         else
+                        {
                             bidEntries.Add(entry);
+                        }
                     }
                 }
 
@@ -175,7 +174,9 @@ namespace Bitfinex.Net.SymbolOrderBooks
                     checksumValues.Add(bid.RawQuantity);
                 }
                 else
+                {
                     _logger.Log(LogLevel.Trace, $"Skipping checksum bid level {i}, no data");
+                }
 
                 if (_asks.Count > i)
                 {
@@ -184,7 +185,9 @@ namespace Bitfinex.Net.SymbolOrderBooks
                     checksumValues.Add(ask.RawQuantity);
                 }
                 else
+                {
                     _logger.Log(LogLevel.Trace, $"Skipping checksum ask level {i}, no data");
+                }
             }
             var checksumString = string.Join(":", checksumValues);
             var ourChecksumUtf = (int)Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(checksumString));

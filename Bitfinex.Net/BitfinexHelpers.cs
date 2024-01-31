@@ -8,8 +8,6 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.SymbolOrderBooks;
-using CryptoExchange.Net.Interfaces.CommonClients;
-using Bitfinex.Net.Clients.SpotApi;
 
 namespace Bitfinex.Net
 {

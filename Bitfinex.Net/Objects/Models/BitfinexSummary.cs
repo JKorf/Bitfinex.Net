@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Objects.Models.V1;
-using CryptoExchange.Net.Attributes;
+﻿using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 using System.Collections.Generic;

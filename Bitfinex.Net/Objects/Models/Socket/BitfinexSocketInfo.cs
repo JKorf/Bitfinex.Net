@@ -9,11 +9,15 @@ namespace Bitfinex.Net.Objects.Models.Socket
         [JsonProperty("event")]
         public string Event { get; set; } = string.Empty;
         [JsonProperty("version")]
-        public int Version { get; set; }
+        public int? Version { get; set; }
         [JsonProperty("serverId")]
-        public string ServerId { get; set; } = string.Empty;
+        public string? ServerId { get; set; } = string.Empty;
         [JsonProperty("platform")]
-        public BitfinexSocketInfoDetails Platform { get; set; } = null!;
+        public BitfinexSocketInfoDetails? Platform { get; set; } = null!;
+        [JsonProperty("code")]
+        public int? Code { get; set; }
+        [JsonProperty("msg")]
+        public string? Message { get; set; }
     }
 
     internal class BitfinexSocketInfoDetails

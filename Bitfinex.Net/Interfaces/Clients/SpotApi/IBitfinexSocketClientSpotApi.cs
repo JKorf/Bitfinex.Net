@@ -8,7 +8,6 @@ using Bitfinex.Net.Objects.Models.Socket;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
-using CryptoExchange.Net.Sockets;
 
 namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 {
@@ -136,19 +135,30 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="orderHandler">Data handler for order updates. Can be null if not interested</param>
         /// <param name="tradeHandler">Data handler for trade execution updates. Can be null if not interested</param>
         /// <param name="positionHandler">Data handler for position updates. Can be null if not interested</param>
+        /// <param name="fundingOfferHandler">Data handler for funding offer updates. Can be null if not interested</param>
+        /// <param name="fundingCreditHandler">Data handler for funding credit updates. Can be null if not interested</param>
+        /// <param name="fundingLoanHandler">Data handler for funding loan updates. Can be null if not interested</param>
+        /// <param name="walletHandler">Data handler for wallet updates. Can be null if not interested</param>
+        /// <param name="balanceHandler">Data handler for balance updates. Can be null if not interested</param>
+        /// <param name="fundingTradeHandler">Data handler for funding trade updates. Can be null if not interested</param>
+        /// <param name="fundingInfoHandler">Data handler for funding info updates. Can be null if not interested</param>
+        /// <param name="marginBaseHandler">Data handler for margin base updates. Can be null if not interested</param>
+        /// <param name="marginSymbolHandler">Data handler for margin symbol updates. Can be null if not interested</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
         /// <returns></returns>
         Task<CallResult<UpdateSubscription>> SubscribeToUserUpdatesAsync(
-             Action<DataEvent<IEnumerable<BitfinexOrder>>> orderHandler,
-             Action<DataEvent<IEnumerable<BitfinexPosition>>> positionHandler,
-             Action<DataEvent<IEnumerable<BitfinexFundingOffer>>> fundingOfferHandler,
-             Action<DataEvent<IEnumerable<BitfinexFundingCredit>>> fundingCreditHandler,
-             Action<DataEvent<IEnumerable<BitfinexFunding>>> fundingLoanHandler,
-             Action<DataEvent<IEnumerable<BitfinexWallet>>> walletHandler,
-             Action<DataEvent<BitfinexBalance>> balanceHandler,
-             Action<DataEvent<BitfinexTradeDetails>> tradeHandler,
-             Action<DataEvent<BitfinexFundingTrade>> fundingTradeHandler,
-             Action<DataEvent<BitfinexFundingInfo>> fundingInfoHandler,
+             Action<DataEvent<IEnumerable<BitfinexOrder>>>? orderHandler,
+             Action<DataEvent<IEnumerable<BitfinexPosition>>>? positionHandler,
+             Action<DataEvent<IEnumerable<BitfinexFundingOffer>>>? fundingOfferHandler,
+             Action<DataEvent<IEnumerable<BitfinexFundingCredit>>>? fundingCreditHandler,
+             Action<DataEvent<IEnumerable<BitfinexFunding>>>? fundingLoanHandler,
+             Action<DataEvent<IEnumerable<BitfinexWallet>>>? walletHandler,
+             Action<DataEvent<BitfinexBalance>>? balanceHandler,
+             Action<DataEvent<BitfinexTradeDetails>>? tradeHandler,
+             Action<DataEvent<BitfinexFundingTrade>>? fundingTradeHandler,
+             Action<DataEvent<BitfinexFundingInfo>>? fundingInfoHandler,
+             Action<DataEvent<BitfinexMarginBase>>? marginBaseHandler,
+             Action<DataEvent<BitfinexMarginSymbol>>? marginSymbolHandler,
              CancellationToken ct = default);
 
         /// <summary>
@@ -174,7 +184,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Cancel all orders
-        ///// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-cancel-multi" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-cancel-multi" /></para>
         /// </summary>
         /// <returns></returns>
         Task<CallResult<IEnumerable<BitfinexOrder>>> CancelAllOrdersAsync();

@@ -14,6 +14,7 @@ using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using Moq;
