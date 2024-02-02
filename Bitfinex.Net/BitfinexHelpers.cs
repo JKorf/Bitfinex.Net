@@ -8,6 +8,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.SymbolOrderBooks;
+using CryptoExchange.Net.Clients;
 
 namespace Bitfinex.Net
 {
@@ -57,8 +58,8 @@ namespace Bitfinex.Net
                 return handler;
             });
 
+            services.AddTransient<ICryptoExchangeClient, CryptoExchangeClient>();
             services.AddSingleton<IBitfinexOrderBookFactory, BitfinexOrderBookFactory>();
-            services.AddTransient<IBitfinexRestClient, BitfinexRestClient>();
             services.AddTransient(x => x.GetRequiredService<IBitfinexRestClient>().SpotApi.CommonSpotClient);
             if (socketClientLifeTime == null)
                 services.AddSingleton<IBitfinexSocketClient, BitfinexSocketClient>();
