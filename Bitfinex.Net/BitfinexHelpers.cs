@@ -58,7 +58,7 @@ namespace Bitfinex.Net
                 return handler;
             });
 
-            services.AddTransient<ICryptoExchangeClient, CryptoExchangeClient>();
+            services.AddTransient<ICryptoRestClient, CryptoRestClient>();
             services.AddSingleton<IBitfinexOrderBookFactory, BitfinexOrderBookFactory>();
             services.AddTransient(x => x.GetRequiredService<IBitfinexRestClient>().SpotApi.CommonSpotClient);
             if (socketClientLifeTime == null)

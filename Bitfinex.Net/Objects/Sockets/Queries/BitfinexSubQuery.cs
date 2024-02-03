@@ -1,5 +1,8 @@
-﻿using CryptoExchange.Net.Sockets;
+﻿using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Sockets;
+using CryptoExchange.Net.Sockets;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Objects.Sockets.Queries
 {
@@ -21,7 +24,19 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             if (evnt == "subscribe" || evnt == "unsubscribe")
                 evnt += "d";
 
-            ListenerIdentifiers = new HashSet<string> { evnt + channel + symbol + precision + frequency + length + key };
+            ListenerIdentifiers = new HashSet<string> 
+            { 
+                evnt + channel + symbol + precision + frequency + length + key, 
+                "error" + channel + symbol + precision + frequency + length + key 
+            };
+        }
+
+        public override Task<CallResult<BitfinexResponse>> HandleMessageAsync(SocketConnection connection, DataEvent<BitfinexResponse> message)
+        {
+            if (message.Data.Event == "error")
+                return Task.FromResult(new CallResult<BitfinexResponse>(new ServerError(message.Data.Message!)));
+
+            return Task.FromResult(new CallResult<BitfinexResponse>(message.Data));
         }
     }
 }

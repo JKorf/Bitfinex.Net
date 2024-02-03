@@ -19,7 +19,6 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
     {
         private static readonly MessagePath _1Path = MessagePath.Get().Index(1);
         private static readonly MessagePath _10Path = MessagePath.Get().Index(1).Index(0);
-        private static readonly MessagePath _2Path = MessagePath.Get().Index(2);
         private static readonly MessagePath _20Path = MessagePath.Get().Index(2).Index(0);
 
         private string _channel;
@@ -75,7 +74,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             }
 
             var nodeType = message.GetNodeType(_20Path);
-            return nodeType == NodeType.Array ? typeof(BitfinexUpdate3<IEnumerable<T>>) : typeof(BitfinexUpdate3<T>);
+            return nodeType == NodeType.Array ? typeof(BitfinexTopicUpdate<IEnumerable<T>>) : typeof(BitfinexTopicUpdate<T>);
         }
 
         public override void HandleSubQueryResponse(BitfinexResponse message)
@@ -102,9 +101,9 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 _handler?.Invoke(message.As(arrayUpdate.Data, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
             else if (message.Data is BitfinexUpdate<T> singleUpdate)
                 _handler?.Invoke(message.As<IEnumerable<T>>(new[] { singleUpdate.Data }, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
-            else if (message.Data is BitfinexUpdate3<IEnumerable<T>> array3Update)
+            else if (message.Data is BitfinexTopicUpdate<IEnumerable<T>> array3Update)
                 _handler?.Invoke(message.As(array3Update.Data, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
-            else if (message.Data is BitfinexUpdate3<T> single3Update)
+            else if (message.Data is BitfinexTopicUpdate<T> single3Update)
                 _handler?.Invoke(message.As<IEnumerable<T>>(new[] { single3Update.Data }, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
 
             _firstUpdate = false;

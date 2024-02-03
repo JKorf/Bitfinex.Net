@@ -15,7 +15,7 @@ namespace Bitfinex.Net.Objects.Sockets
     }
 
     [JsonConverter(typeof(ArrayConverter))]
-    internal class BitfinexUpdate3<T>
+    internal class BitfinexTopicUpdate<T>
     {
         [ArrayProperty(0)]
         public int ChannelId { get; set; }

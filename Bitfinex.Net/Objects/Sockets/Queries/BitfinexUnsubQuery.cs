@@ -10,7 +10,10 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
 
         public BitfinexUnsubQuery(int channelId) : base(new BitfinexUnsubscribeRequest(channelId), false, 1)
         {
-            ListenerIdentifiers = new HashSet<string> { channelId.ToString() + "unsubscribed" };
+            ListenerIdentifiers = new HashSet<string>
+            { 
+                channelId.ToString() + "unsubscribed"
+            };
         }
     }
 }

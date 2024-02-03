@@ -4,8 +4,12 @@ namespace Bitfinex.Net.Objects.Sockets
 {
     internal class BitfinexResponse
     {
+        [JsonProperty("code")]
+        public int? Code { get; set; }
         [JsonProperty("event")]
         public string Event { get; set; } = string.Empty;
+        [JsonProperty("msg")]
+        public string Message { get; set; } = string.Empty;
         [JsonProperty("channel")]
         public string Channel { get; set; } = string.Empty;
         [JsonProperty("symbol")]

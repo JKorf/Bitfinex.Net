@@ -72,7 +72,12 @@ namespace Bitfinex.Net.Converters
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            var obj = (BitfinexOrderBookEntry)value!;
+            writer.WriteStartArray();
+            writer.WriteValue(obj.RawPrice);
+            writer.WriteValue(obj.Count);
+            writer.WriteValue(obj.RawQuantity);
+            writer.WriteEndArray();
         }
     }
 }

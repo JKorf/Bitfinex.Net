@@ -147,18 +147,18 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="ct">Cancellation token for closing this subscription</param>
         /// <returns></returns>
         Task<CallResult<UpdateSubscription>> SubscribeToUserUpdatesAsync(
-             Action<DataEvent<IEnumerable<BitfinexOrder>>>? orderHandler,
-             Action<DataEvent<IEnumerable<BitfinexPosition>>>? positionHandler,
-             Action<DataEvent<IEnumerable<BitfinexFundingOffer>>>? fundingOfferHandler,
-             Action<DataEvent<IEnumerable<BitfinexFundingCredit>>>? fundingCreditHandler,
-             Action<DataEvent<IEnumerable<BitfinexFunding>>>? fundingLoanHandler,
-             Action<DataEvent<IEnumerable<BitfinexWallet>>>? walletHandler,
-             Action<DataEvent<BitfinexBalance>>? balanceHandler,
-             Action<DataEvent<BitfinexTradeDetails>>? tradeHandler,
-             Action<DataEvent<BitfinexFundingTrade>>? fundingTradeHandler,
-             Action<DataEvent<BitfinexFundingInfo>>? fundingInfoHandler,
-             Action<DataEvent<BitfinexMarginBase>>? marginBaseHandler,
-             Action<DataEvent<BitfinexMarginSymbol>>? marginSymbolHandler,
+             Action<DataEvent<IEnumerable<BitfinexOrder>>>? orderHandler = null,
+             Action<DataEvent<IEnumerable<BitfinexPosition>>>? positionHandler = null,
+             Action<DataEvent<IEnumerable<BitfinexFundingOffer>>>? fundingOfferHandler = null,
+             Action<DataEvent<IEnumerable<BitfinexFundingCredit>>>? fundingCreditHandler = null,
+             Action<DataEvent<IEnumerable<BitfinexFunding>>>? fundingLoanHandler = null,
+             Action<DataEvent<IEnumerable<BitfinexWallet>>>? walletHandler = null,
+             Action<DataEvent<BitfinexBalance>>? balanceHandler = null,
+             Action<DataEvent<BitfinexTradeDetails>>? tradeHandler = null,
+             Action<DataEvent<BitfinexFundingTrade>>? fundingTradeHandler = null,
+             Action<DataEvent<BitfinexFundingInfo>>? fundingInfoHandler = null,
+             Action<DataEvent<BitfinexMarginBase>>? marginBaseHandler = null,
+             Action<DataEvent<BitfinexMarginSymbol>>? marginSymbolHandler = null,
              CancellationToken ct = default);
 
         /// <summary>
