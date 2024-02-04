@@ -125,9 +125,9 @@ namespace Binance.Net.UnitTests.TestImplementations
 
         public async Task ReconnectAsync()
         {
-            OnReconnecting();
+            await OnReconnecting();
             await Task.Delay(10);
-            OnReconnected();
+            await OnReconnected();
         }
     }
 }
