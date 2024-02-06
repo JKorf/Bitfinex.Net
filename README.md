@@ -30,6 +30,13 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
 ## Release notes
+* Version 7.1.0-beta1 - 06 Feb 2024
+    * Updated CryptoExchange.Net and implemented reworked websocket message handling. For release notes for the CryptoExchange.Net base library see: https://github.com/JKorf/CryptoExchange.Net/tree/beta?tab=readme-ov-file#release-notes
+    * Combined multiple private websocket subscriptions into single subscription
+    * Fixed issue in DI registration causing http client to not be correctly injected
+    * Removed excessive constructor overload for BitfinexRestClient
+    * Removed UpdateType from BitfinexTradeSimple model in favor of the UpdateType in the DataEvent wrapper
+
 * Version 7.0.5 - 03 Dec 2023
     * Updated CryptoExchange.Net
 
