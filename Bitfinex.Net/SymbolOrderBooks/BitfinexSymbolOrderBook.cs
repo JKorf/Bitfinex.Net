@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Clients;
 using Bitfinex.Net.Enums;
+using Bitfinex.Net.ExtensionMethods;
 using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Options;

@@ -33,39 +33,6 @@
             <param name="socketAddress"></param>
             <returns></returns>
         </member>
-        <member name="T:Bitfinex.Net.BitfinexHelpers">
-            <summary>
-            Helper functions
-            </summary>
-        </member>
-        <member name="M:Bitfinex.Net.BitfinexHelpers.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions},System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions},System.Nullable{Microsoft.Extensions.DependencyInjection.ServiceLifetime})">
-            <summary>
-            Add the IBitfinexClient and IBitfinexSocketClient to the sevice collection so they can be injected
-            </summary>
-            <param name="services">The service collection</param>
-            <param name="defaultRestOptionsDelegate">Set default options for the rest client</param>
-            <param name="defaultSocketOptionsDelegate">Set default options for the socket client</param>
-            <param name="socketClientLifeTime">The lifetime of the IBitfinexSocketClient for the service collection. Defaults to Singleton.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Bitfinex.Net.BitfinexHelpers.ValidateBitfinexSymbol(System.String)">
-            <summary>
-            Validate the string is a valid Bitfinex symbol.
-            </summary>
-            <param name="symbolString">string to validate</param>
-        </member>
-        <member name="M:Bitfinex.Net.BitfinexHelpers.ValidateBitfinexFundingSymbol(System.String)">
-            <summary>
-            Validate the string is a valid Bitfinex symbol.
-            </summary>
-            <param name="symbolString">string to validate</param>
-        </member>
-        <member name="M:Bitfinex.Net.BitfinexHelpers.ValidateBitfinexTradingSymbol(System.String)">
-            <summary>
-            Validate the string is a valid Bitfinex symbol.
-            </summary>
-            <param name="symbolString">string to validate</param>
-        </member>
         <member name="T:Bitfinex.Net.Clients.BitfinexRestClient">
             <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient" />
         </member>
@@ -1372,6 +1339,29 @@
             <summary>
             Deposit
             </summary>
+        </member>
+        <member name="T:Bitfinex.Net.ExtensionMethods.BitfinexExtensionMethods">
+            <summary>
+            Extension methods specific to using the Bitfinex API
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.ExtensionMethods.BitfinexExtensionMethods.ValidateBitfinexSymbol(System.String)">
+            <summary>
+            Validate the string is a valid Bitfinex symbol.
+            </summary>
+            <param name="symbolString">string to validate</param>
+        </member>
+        <member name="M:Bitfinex.Net.ExtensionMethods.BitfinexExtensionMethods.ValidateBitfinexFundingSymbol(System.String)">
+            <summary>
+            Validate the string is a valid Bitfinex symbol.
+            </summary>
+            <param name="symbolString">string to validate</param>
+        </member>
+        <member name="M:Bitfinex.Net.ExtensionMethods.BitfinexExtensionMethods.ValidateBitfinexTradingSymbol(System.String)">
+            <summary>
+            Validate the string is a valid Bitfinex symbol.
+            </summary>
+            <param name="symbolString">string to validate</param>
         </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApi">
             <summary>
@@ -5439,18 +5429,33 @@
             Extensions for the ICryptoRestClient and ICryptoSocketClient interfaces
             </summary>
         </member>
-        <member name="M:CryptoExchange.Net.Clients.CryptoClientExtensions.Bitfinex(CryptoExchange.Net.Clients.ICryptoRestClient)">
+        <member name="M:CryptoExchange.Net.Clients.CryptoClientExtensions.Bitfinex(CryptoExchange.Net.Interfaces.ICryptoRestClient)">
             <summary>
             Get the Bitfinex REST Api client
             </summary>
             <param name="baseClient"></param>
             <returns></returns>
         </member>
-        <member name="M:CryptoExchange.Net.Clients.CryptoClientExtensions.Bitfinex(CryptoExchange.Net.Clients.ICryptoSocketClient)">
+        <member name="M:CryptoExchange.Net.Clients.CryptoClientExtensions.Bitfinex(CryptoExchange.Net.Interfaces.ICryptoSocketClient)">
             <summary>
             Get the Bitfinex Websocket Api client
             </summary>
             <param name="baseClient"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions">
+            <summary>
+            Extensions for DI
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions},System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions},System.Nullable{Microsoft.Extensions.DependencyInjection.ServiceLifetime})">
+            <summary>
+            Add the IBitfinexClient and IBitfinexSocketClient to the sevice collection so they can be injected
+            </summary>
+            <param name="services">The service collection</param>
+            <param name="defaultRestOptionsDelegate">Set default options for the rest client</param>
+            <param name="defaultSocketOptionsDelegate">Set default options for the socket client</param>
+            <param name="socketClientLifeTime">The lifetime of the IBitfinexSocketClient for the service collection. Defaults to Singleton.</param>
             <returns></returns>
         </member>
     </members>

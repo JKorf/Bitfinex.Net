@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
+using Bitfinex.Net.ExtensionMethods;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
