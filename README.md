@@ -1,4 +1,4 @@
-# ![.Bitfinex.Net](https://github.com/JKorf/Bitfinex.Net/blob/beta/Bitfinex.Net/Icon/icon.png?raw=true) Bitfinex.Net
+# ![.Bitfinex.Net](https://github.com/JKorf/Bitfinex.Net/blob/master/Bitfinex.Net/Icon/icon.png?raw=true) Bitfinex.Net
 
 [![.NET](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml/badge.svg)](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml)
 
