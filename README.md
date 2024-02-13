@@ -1,32 +1,44 @@
 # ![.Bitfinex.Net](https://github.com/JKorf/Bitfinex.Net/blob/master/Bitfinex.Net/Icon/icon.png?raw=true) Bitfinex.Net
 
-[![.NET](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml/badge.svg)](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml)
+[![.NET](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml/badge.svg?style=for-the-badge)](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml) ![License](https://img.shields.io/github/license/JKorf/Bitfinex.Net?style=for-the-badge)
 
 Bitfinex.Net is a wrapper around the Bitfinex API as described on [Bitfinex](https://docs.bitfinex.com/docs), including all features the API provides using clear and readable objects, both for the REST  as the websocket API's.
 
-## Get the library
-Available on Nuget  
- [![Nuget version](https://img.shields.io/nuget/v/bitfinex.net.svg)](https://www.nuget.org/packages/Bitfinex.Net)  [![Nuget downloads](https://img.shields.io/nuget/dt/Bitfinex.Net.svg)](https://www.nuget.org/packages/Bitfinex.Net)
+## Supported Frameworks
+The library is targeting both `.NET Standard 2.0` and `.NET Standard 2.1` for optimal compatibility
 
-`dotnet add package Bitfinex.Net`
+|.NET implementation|Version Support|
+|--|--|
+|.NET Core|`2.0` and higher|
+|.NET Framework|`4.6.1` and higher|
+|Mono|`5.4` and higher|
+|Xamarin.iOS|`10.14` and higher|
+|Xamarin.Android|`8.0` and higher|
+|UWP|`10.0.16299` and higher|
+|Unity|`2018.1` and higher|
+
+## Get the library
+ [![Nuget version](https://img.shields.io/nuget/v/bitfinex.net.svg?style=for-the-badge)](https://www.nuget.org/packages/Bitfinex.Net)  [![Nuget downloads](https://img.shields.io/nuget/dt/Bitfinex.Net.svg?style=for-the-badge)](https://www.nuget.org/packages/Bitfinex.Net)
+
+	`dotnet add package Bitfinex.Net`
 
 ## How to use
-Simplest usage
-```csharp
-// Get the ETH/USDT ticker via rest request
-var restClient = new BitfinexRestClient();
-var tickerResult = await restClient.SpotApi.ExchangeData.GetTickerAsync("tETHUST");
-var lastPrice = tickerResult.Data.LastPrice;
-```
-
-```csharp
-// Subscribe to ETH/USDT ticker updates via the websocket API
-var socketClient = new BitfinexSocketClient();
-var tickerSubscriptionResult = socketClient.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", (update) => 
-{
-  var lastPrice = update.Data.LastPrice;
-});
-```
+* REST Endpoints
+	```csharp
+	// Get the ETH/USDT ticker via rest request
+	var restClient = new BitfinexRestClient();
+	var tickerResult = await restClient.SpotApi.ExchangeData.GetTickerAsync("tETHUST");
+	var lastPrice = tickerResult.Data.LastPrice;
+	```
+* Websocket streams
+	```csharp
+	// Subscribe to ETH/USDT ticker updates via the websocket API
+	var socketClient = new BitfinexSocketClient();
+	var tickerSubscriptionResult = socketClient.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", (update) => 
+	{
+	  var lastPrice = update.Data.LastPrice;
+	});
+	```
 
 For information on the clients, dependency injection, response processing and more see the [documentation](https://jkorf.github.io/CryptoExchange.Net), or have a look at the examples  [here](https://github.com/JKorf/CryptoExchange.Net/tree/master/Examples).
 
@@ -49,6 +61,7 @@ CryptoExchange.Net also allows for [easy access to different exchange API's](htt
 |OKX|[JKorf/OKX.Net](https://github.com/JKorf/OKX.Net)|[![Nuget version](https://img.shields.io/nuget/v/JK.OKX.net.svg)](https://www.nuget.org/packages/JK.OKX.Net)|
 
 ## Discord
+[![Nuget version](https://img.shields.io/discord/847020490588422145?style=for-the-badge)](https://discord.gg/MSpeEtSY8t)  
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free to join for discussion and/or questions around the CryptoExchange.Net and implementation libraries.
 
 ## Supported functionality
