@@ -90,6 +90,9 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 7.1.0-beta2 - 17 Feb 2024
+    * Fixed socket authentication
+
 * Version 7.1.0-beta1 - 06 Feb 2024
     * Updated CryptoExchange.Net and implemented reworked websocket message handling. For release notes for the CryptoExchange.Net base library see: https://github.com/JKorf/CryptoExchange.Net/tree/beta?tab=readme-ov-file#release-notes
     * Combined multiple private websocket subscriptions into single subscription
