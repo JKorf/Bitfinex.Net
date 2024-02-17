@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
 
         public override Task<CallResult<BitfinexResponse>> HandleMessageAsync(SocketConnection connection, DataEvent<BitfinexResponse> message)
         {
-            if (message.Data.Message != "OK")
+            if (message.Data.Status != "OK")
                 return Task.FromResult(new CallResult<BitfinexResponse>(new ServerError(message.Data.Code!.Value, message.Data.Message!)));
 
             return Task.FromResult(new CallResult<BitfinexResponse>(message.Data, message.OriginalData, null));

@@ -10,6 +10,8 @@ namespace Bitfinex.Net.Objects.Sockets
         public string Event { get; set; } = string.Empty;
         [JsonProperty("msg")]
         public string Message { get; set; } = string.Empty;
+        [JsonProperty("status")]
+        public string Status { get; set; } = string.Empty;
         [JsonProperty("channel")]
         public string Channel { get; set; } = string.Empty;
         [JsonProperty("symbol")]
