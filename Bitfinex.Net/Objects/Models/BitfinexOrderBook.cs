@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CryptoExchange.Net.Interfaces;
 
 namespace Bitfinex.Net.Objects.Models
 {

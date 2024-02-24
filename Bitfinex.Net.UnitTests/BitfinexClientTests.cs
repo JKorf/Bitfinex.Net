@@ -13,6 +13,8 @@ using System.Diagnostics;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
 using Bitfinex.Net.Clients;
+using Bitfinex.Net.ExtensionMethods;
+using CryptoExchange.Net.Objects.Sockets;
 
 namespace Bitfinex.Net.UnitTests
 {

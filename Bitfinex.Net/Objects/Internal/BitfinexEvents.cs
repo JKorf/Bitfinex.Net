@@ -89,7 +89,6 @@ namespace Bitfinex.Net.Objects.Internal
             { "tu", BitfinexEventType.TradeExecutionUpdate },
             { "fte", BitfinexEventType.FundingTradeExecution },
             { "ftu", BitfinexEventType.FundingTradeUpdate },
-            { "hos", BitfinexEventType.HistoricalOrderSnapshot },
             { "mis", BitfinexEventType.MarginInfoSnapshot },
             { "miu", BitfinexEventType.MarginInfoUpdate },
             { "n", BitfinexEventType.Notification },
@@ -99,18 +98,14 @@ namespace Bitfinex.Net.Objects.Internal
             { "fou", BitfinexEventType.FundingOfferUpdate },
             { "foc", BitfinexEventType.FundingOfferCancel },
             { "foc-req", BitfinexEventType.FundingOfferCancelRequest },
-            { "hfos", BitfinexEventType.HistoricalFundingOfferSnapshot },
             { "fcs", BitfinexEventType.FundingCreditsSnapshot },
             { "fcn", BitfinexEventType.FundingCreditsNew },
             { "fcu", BitfinexEventType.FundingCreditsUpdate },
             { "fcc", BitfinexEventType.FundingCreditsClose },
-            { "hfcs", BitfinexEventType.HistoricalFundingCreditsSnapshot },
             { "fls", BitfinexEventType.FundingLoanSnapshot },
             { "fln", BitfinexEventType.FundingLoanNew },
             { "flu", BitfinexEventType.FundingLoanUpdate },
             { "flc", BitfinexEventType.FundingLoanClose },
-            { "hfls", BitfinexEventType.HistoricalFundingLoanSnapshot },
-            { "hfts", BitfinexEventType.HistoricalFundingTradeSnapshot },
             { "uac", BitfinexEventType.UserCustomPriceAlert }
         };
     }

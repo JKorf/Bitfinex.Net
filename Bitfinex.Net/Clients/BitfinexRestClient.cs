@@ -9,6 +9,7 @@ using CryptoExchange.Net.Authentication;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using Bitfinex.Net.Objects.Options;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Bitfinex.Net.Clients
 {
@@ -29,14 +30,7 @@ namespace Bitfinex.Net.Clients
         /// Create a new instance of the BitfinexRestClient using provided options
         /// </summary>
         /// <param name="optionsDelegate">Option configuration delegate</param>
-        public BitfinexRestClient(Action<BitfinexRestOptions> optionsDelegate) : this(null, null, optionsDelegate)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of the BitfinexRestClient using provided options
-        /// </summary>
-        public BitfinexRestClient(ILoggerFactory? loggerFactory = null, HttpClient? httpClient = null) : this(httpClient, loggerFactory, null)
+        public BitfinexRestClient(Action<BitfinexRestOptions>? optionsDelegate = null) : this(null, null, optionsDelegate)
         {
         }
 
