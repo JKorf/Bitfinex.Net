@@ -7,12 +7,12 @@
   <PropertyGroup>
     <PackageId>Bitfinex.Net</PackageId>
     <Authors>JKorf</Authors>
-    <PackageVersion>7.1.0-beta2</PackageVersion>
+    <PackageVersion>7.1.0</PackageVersion>
     <AssemblyVersion>7.1.0</AssemblyVersion>
     <FileVersion>7.1.0</FileVersion>
-    <Description>Bitfinex.Net is a .Net wrapper for the Bitfinex API. It includes all features the API provides, REST API and Websocket, using clear and readable objects including but not limited to Reading market info, Placing and managing orders and Reading balances and funds</Description>
+    <Description>Bitfinex.Net is a client library for accessing the Bitfinex REST and Websocket API. All data is mapped to readable models and enum values. Additional features include an implementation for maintaining a client side order book, easy integration with other exchange client libraries and more.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>Bitfinex Bitfinex.Net C# .Net CryptoCurrency Exchange API wrapper</PackageTags>
+    <PackageTags>Bitfinex;Bitfinex.Net;Bitfinex Client;Bitfinex API;CryptoCurrency;CryptoCurrency Exchange</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/JKorf/Bitfinex.Net.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/JKorf/Bitfinex.Net</PackageProjectUrl>
@@ -21,7 +21,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>7.1.0-beta2 - Fixed socket authentication</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/JKorf/Bitfinex.Net?tab=readme-ov-file#release-notes</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup>
     <DocumentationFile>Bitfinex.Net.xml</DocumentationFile>

@@ -2,7 +2,7 @@
 
 [![.NET](https://img.shields.io/github/actions/workflow/status/JKorf/Bitfinex.Net/dotnet.yml?style=for-the-badge)](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml) ![License](https://img.shields.io/github/license/JKorf/Bitfinex.Net?style=for-the-badge)
 
-Bitfinex.Net is a wrapper around the Bitfinex API as described on [Bitfinex](https://docs.bitfinex.com/docs), including all features the API provides using clear and readable objects, both for the REST  as the websocket API's.
+Bitfinex.Net is a client library for accessing the [Bitfinex REST and Websocket API](https://docs.bitfinex.com/docs). All data is mapped to readable models and enum values. Additional features include an implementation for maintaining a client side order book, easy integration with other exchange client libraries and more.
 
 ## Supported Frameworks
 The library is targeting both `.NET Standard 2.0` and `.NET Standard 2.1` for optimal compatibility
@@ -84,21 +84,19 @@ I develop and maintain this package on my own for free in my spare time, any sup
 Make a one time donation in a crypto currency of your choice. If you prefer to donate a currency not listed here please contact me.
 
 **Btc**:  bc1qz0jv0my7fc60rxeupr23e75x95qmlq6489n8gh  
-**Eth**:  0x8E21C4d955975cB645589745ac0c46ECA8FAE504  
+**Eth**:  0xcb1b63aCF9fef2755eBf4a0506250074496Ad5b7  
 
 ### Sponsor
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
-* Version 7.1.0-beta2 - 17 Feb 2024
-    * Fixed socket authentication
-
-* Version 7.1.0-beta1 - 06 Feb 2024
-    * Updated CryptoExchange.Net and implemented reworked websocket message handling. For release notes for the CryptoExchange.Net base library see: https://github.com/JKorf/CryptoExchange.Net/tree/beta?tab=readme-ov-file#release-notes
+* Version 7.1.0 - 25 Feb 2024
+    * Updated CryptoExchange.Net and implemented reworked websocket message handling. For release notes for the CryptoExchange.Net base library see: https://github.com/JKorf/CryptoExchange.Net?tab=readme-ov-file#release-notes
     * Combined multiple private websocket subscriptions into single subscription
     * Fixed issue in DI registration causing http client to not be correctly injected
-    * Removed excessive constructor overload for BitfinexRestClient
+    * Removed redundant BitfinexRestClient constructor overload
     * Removed UpdateType from BitfinexTradeSimple model in favor of the UpdateType in the DataEvent wrapper
+    * Updated some namespaces
 
 * Version 7.0.5 - 03 Dec 2023
     * Updated CryptoExchange.Net
