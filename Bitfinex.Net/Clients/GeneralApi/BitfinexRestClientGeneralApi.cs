@@ -4,6 +4,8 @@ using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Sockets.MessageParsing;
+using CryptoExchange.Net.Sockets.MessageParsing.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
@@ -59,24 +61,27 @@ namespace Bitfinex.Net.Clients.GeneralApi
         }
 
         /// <inheritdoc />
-        protected override Error ParseErrorResponse(int httpStatusCode, IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders, string data)
+        protected override Error ParseErrorResponse(int httpStatusCode, IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders, IMessageAccessor accessor)
         {
-            var errorData = ValidateJson(data);
-            if (!errorData)
-                return new ServerError(data);
+            if (!accessor.IsJson)
+                return new ServerError(accessor.GetOriginalString());
 
-            if (!(errorData.Data is JArray))
+            if (accessor.GetNodeType() != NodeType.Array)
             {
-                if (errorData.Data["error"] != null && errorData.Data["code"] != null && errorData.Data["error_description"] != null)
-                    return new ServerError((int)errorData.Data["code"]!, errorData.Data["error"] + ": " + errorData.Data["error_description"]);
-                if (errorData.Data["message"] != null)
-                    return new ServerError(errorData.Data["message"]!.ToString());
-                else
-                    return new ServerError(errorData.Data.ToString());
+
+                //if (errorData.Data["error"] != null && errorData.Data["code"] != null && errorData.Data["error_description"] != null)
+                //    return new ServerError((int)errorData.Data["code"]!, errorData.Data["error"] + ": " + errorData.Data["error_description"]);
+                //if (errorData.Data["message"] != null)
+                //    return new ServerError(errorData.Data["message"]!.ToString());
+                //else
+                //    return new ServerError(errorData.Data.ToString());
             }
 
-            var error = errorData.Data.ToObject<BitfinexError>();
-            return new ServerError(error!.ErrorCode, error.ErrorMessage);
+            var result = accessor.Deserialize<BitfinexError>();
+            if (!result)
+                return new ServerError(accessor.GetOriginalString());
+
+            return new ServerError(result.Data.ErrorCode!, result.Data.ErrorMessage!);
         }
 
         /// <inheritdoc />
