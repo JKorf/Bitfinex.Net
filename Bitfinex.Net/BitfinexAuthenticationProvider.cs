@@ -6,6 +6,7 @@ using System.Text;
 using Bitfinex.Net.Objects.Internal;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using Newtonsoft.Json;

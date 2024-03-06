@@ -2,11 +2,11 @@
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Sockets.Queries;
+using CryptoExchange.Net.Converters.MessageParsing;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
-using CryptoExchange.Net.Sockets.MessageParsing;
-using CryptoExchange.Net.Sockets.MessageParsing.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;

@@ -1,5 +1,4 @@
-﻿using CryptoExchange.Net;
-using System;
+﻿using System;
 using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Interfaces.Clients.GeneralApi;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using Bitfinex.Net.Objects.Options;
 using Microsoft.Extensions.DependencyInjection;
+using CryptoExchange.Net.Clients;
 
 namespace Bitfinex.Net.Clients
 {

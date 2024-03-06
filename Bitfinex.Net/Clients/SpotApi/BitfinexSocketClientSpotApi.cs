@@ -21,9 +21,10 @@ using System.Linq;
 using CryptoExchange.Net.Sockets;
 using System.Globalization;
 using Bitfinex.Net.Objects.Sockets.Queries;
-using CryptoExchange.Net.Sockets.MessageParsing;
-using CryptoExchange.Net.Sockets.MessageParsing.Interfaces;
 using Bitfinex.Net.ExtensionMethods;
+using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Converters.MessageParsing;
+using CryptoExchange.Net.Clients;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {

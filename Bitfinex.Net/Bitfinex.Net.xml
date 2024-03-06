@@ -111,7 +111,7 @@
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.ParseErrorResponse(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.IEnumerable{System.String}}},CryptoExchange.Net.Sockets.MessageParsing.Interfaces.IMessageAccessor)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.ParseErrorResponse(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.IEnumerable{System.String}}},CryptoExchange.Net.Interfaces.IMessageAccessor)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.GetTimeSyncInfo">
@@ -216,7 +216,7 @@
         <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CommonSpotClient">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.ParseErrorResponse(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.IEnumerable{System.String}}},CryptoExchange.Net.Sockets.MessageParsing.Interfaces.IMessageAccessor)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.ParseErrorResponse(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.IEnumerable{System.String}}},CryptoExchange.Net.Interfaces.IMessageAccessor)">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount">
@@ -522,7 +522,7 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CancelFundingOfferAsync(System.Int64)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.GetListenerIdentifier(CryptoExchange.Net.Sockets.MessageParsing.Interfaces.IMessageAccessor)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.GetListenerIdentifier(CryptoExchange.Net.Interfaces.IMessageAccessor)">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.Enums.BitfinexEventType">
@@ -5356,10 +5356,10 @@
             Spot API options
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Objects.Sockets.Subscriptions.BitfinexSubscription`1.GetMessageType(CryptoExchange.Net.Sockets.MessageParsing.Interfaces.IMessageAccessor)">
+        <member name="M:Bitfinex.Net.Objects.Sockets.Subscriptions.BitfinexSubscription`1.GetMessageType(CryptoExchange.Net.Interfaces.IMessageAccessor)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Objects.Sockets.Subscriptions.BitfinexUserSubscription.GetMessageType(CryptoExchange.Net.Sockets.MessageParsing.Interfaces.IMessageAccessor)">
+        <member name="M:Bitfinex.Net.Objects.Sockets.Subscriptions.BitfinexUserSubscription.GetMessageType(CryptoExchange.Net.Interfaces.IMessageAccessor)">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory">
