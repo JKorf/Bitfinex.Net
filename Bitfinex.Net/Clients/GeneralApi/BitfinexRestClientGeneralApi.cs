@@ -68,20 +68,28 @@ namespace Bitfinex.Net.Clients.GeneralApi
 
             if (accessor.GetNodeType() != NodeType.Array)
             {
+                var error = accessor.GetValue<string?>(MessagePath.Get().Property("error"));
+                var errorCode = accessor.GetValue<int?>(MessagePath.Get().Property("code"));
+                var errorDesc = accessor.GetValue<string?>(MessagePath.Get().Property("error_description"));
+                if (error != null && errorCode != null && errorDesc != null)
+                    return new ServerError(errorCode.Value, $"{error}: {errorDesc}");
 
-                //if (errorData.Data["error"] != null && errorData.Data["code"] != null && errorData.Data["error_description"] != null)
-                //    return new ServerError((int)errorData.Data["code"]!, errorData.Data["error"] + ": " + errorData.Data["error_description"]);
-                //if (errorData.Data["message"] != null)
-                //    return new ServerError(errorData.Data["message"]!.ToString());
-                //else
-                //    return new ServerError(errorData.Data.ToString());
+                var message = accessor.GetValue<string?>(MessagePath.Get().Property("message"));
+                if (message != null)
+                    return new ServerError(message);
+
+                return new ServerError(accessor.GetOriginalString());
             }
 
-            var result = accessor.Deserialize<BitfinexError>();
-            if (!result)
+            var code = accessor.GetValue<int?>(MessagePath.Get().Index(1));
+            var msg = accessor.GetValue<string>(MessagePath.Get().Index(2));
+            if (msg == null)
                 return new ServerError(accessor.GetOriginalString());
 
-            return new ServerError(result.Data.ErrorCode!, result.Data.ErrorMessage!);
+            if (code == null)
+                return new ServerError(msg);
+
+            return new ServerError(code.Value, msg);
         }
 
         /// <inheritdoc />
