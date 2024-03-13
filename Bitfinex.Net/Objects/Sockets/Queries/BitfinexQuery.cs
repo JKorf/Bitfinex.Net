@@ -28,12 +28,12 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             return typeof(BitfinexSocketEvent<BitfinexNotification<T>>);
         }
 
-        public override Task<CallResult<BitfinexSocketEvent<BitfinexNotification<T>>>> HandleMessageAsync(SocketConnection connection, DataEvent<BitfinexSocketEvent<BitfinexNotification<T>>> message)
+        public override CallResult<BitfinexSocketEvent<BitfinexNotification<T>>> HandleMessage(SocketConnection connection, DataEvent<BitfinexSocketEvent<BitfinexNotification<T>>> message)
         {
             if (message.Data.Data.Result != "SUCCESS")
-                return Task.FromResult(new CallResult<BitfinexSocketEvent<BitfinexNotification<T>>>(new ServerError(message.Data.Data.ErrorMessage!)));
+                return new CallResult<BitfinexSocketEvent<BitfinexNotification<T>>>(new ServerError(message.Data.Data.ErrorMessage!));
 
-            return Task.FromResult(new CallResult<BitfinexSocketEvent<BitfinexNotification<T>>>(message.Data));
+            return new CallResult<BitfinexSocketEvent<BitfinexNotification<T>>>(message.Data);
         }
     }
 }

@@ -129,7 +129,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public override Query? GetUnsubQuery() => null;
 
-        public override Task<CallResult> DoHandleMessageAsync(SocketConnection connection, DataEvent<object> message)
+        public override CallResult DoHandleMessage(SocketConnection connection, DataEvent<object> message)
         {
             if (message.Data is BitfinexSocketEvent<List<BitfinexPosition>> positionSnapshot)
                 _positionHandler?.Invoke(message.As<IEnumerable<BitfinexPosition>>(positionSnapshot.Data));
@@ -177,7 +177,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             else if (message.Data is BitfinexSocketEvent<BitfinexMarginSymbol> marginSymbolUpdate)
                 _marginSymbolHandler?.Invoke(message.As(marginSymbolUpdate.Data));
 
-            return Task.FromResult(new CallResult(null));
+            return new CallResult(null);
         }
     }
 }
