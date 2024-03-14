@@ -56,7 +56,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            await socket.InvokeMessage(subResponse);
+            socket.InvokeMessage(subResponse);
 
             var taskResult = await subTask.ConfigureAwait(false);
 
@@ -93,12 +93,12 @@ namespace Bitfinex.Net.UnitTests
                 Precision = JsonConvert.SerializeObject(prec, new PrecisionConverter(false)),
                 Symbol = "tBTCUSD"
             };
-            await socket.InvokeMessage(subResponse);
+            socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
             BitfinexOrderBookEntry[] expected = new[] { new BitfinexOrderBookEntry() { RawPrice = "1", RawQuantity = "2", Count = 3, Price = 1, Quantity = 2 } };
 
             // act
-            await socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
+            socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
             Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
@@ -133,7 +133,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            await socket.InvokeMessage(subResponse);
+            socket.InvokeMessage(subResponse);
 
             subTask.Wait(5000);
 
@@ -169,12 +169,12 @@ namespace Bitfinex.Net.UnitTests
                 ChannelId = 1,
                 Key = "trade:" + JsonConvert.SerializeObject(timeframe, new KlineIntervalConverter(false)) + ":tBTCUSD"
             };
-            await socket.InvokeMessage(subResponse);
+            socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
             BitfinexKline[] expected = new[] { new BitfinexKline() };
 
             // act
-            await socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
+            socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
             Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
@@ -200,7 +200,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            await socket.InvokeMessage(subResponse);
+            socket.InvokeMessage(subResponse);
 
             subTask.Wait(5000);
 
@@ -227,12 +227,12 @@ namespace Bitfinex.Net.UnitTests
                 Symbol = "tBTCUSD",
                 Pair = "BTCUSD"
             };
-            await socket.InvokeMessage(subResponse);
+            socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
             BitfinexStreamTicker expected = new BitfinexStreamTicker();
 
             // act
-            await socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
+            socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
             Assert.IsTrue(TestHelpers.AreEqual(result, expected));
@@ -261,7 +261,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            await socket.InvokeMessage(subResponse);
+            socket.InvokeMessage(subResponse);
 
             subTask.Wait(5000);
 
@@ -291,12 +291,12 @@ namespace Bitfinex.Net.UnitTests
                 Precision = "R0",
                 Length = 10
             };
-            await socket.InvokeMessage(subResponse);
+            socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
             BitfinexRawOrderBookEntry[] expected = new []{ new BitfinexRawOrderBookEntry()};
 
             // act
-            await socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
+            socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
             Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
@@ -322,7 +322,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            await socket.InvokeMessage(subResponse);
+            socket.InvokeMessage(subResponse);
 
             subTask.Wait(5000);
 
@@ -349,12 +349,12 @@ namespace Bitfinex.Net.UnitTests
                 Symbol = "BTCUSD",
                 Pair = "BTCUSD"
             };
-            await socket.InvokeMessage(subResponse);
+            socket.InvokeMessage(subResponse);
             subTask.Wait(5000);
             BitfinexTradeSimple[] expected = new[] { new BitfinexTradeSimple() };
 
             // act
-            await socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
+            socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
             Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
@@ -580,9 +580,9 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             var placeTask = client.SpotApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
-            await socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
-            await socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
+            socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
             var result = placeTask.Result;
 
             // assert
@@ -601,9 +601,9 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             var placeTask = client.SpotApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
-            await socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
-            await socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(order)}, 0, \"error\", \"order placing failed\"]]");
+            socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(order)}, 0, \"error\", \"order placing failed\"]]");
             var result = placeTask.Result;
 
             // assert
@@ -625,7 +625,7 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             var placeTask = client.SpotApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
-            await socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Message = "OK" });
+            socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Message = "OK" });
             var result = placeTask.Result;
 
             // assert
@@ -652,9 +652,9 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             var placeTask = client.SpotApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeMarket, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
-            await socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
-            await socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
+            socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
             var result = placeTask.Result;
 
             // assert
@@ -682,9 +682,9 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             var placeTask = client.SpotApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeFillOrKill, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
-            await socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
-            await socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
+            socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
             var result = placeTask.Result;
 
             // assert
@@ -712,9 +712,9 @@ namespace Bitfinex.Net.UnitTests
 
             // act
             var placeTask = client.SpotApi.SubmitFundingOfferAsync(FundingOfferType.Limit, "fUSD", 1, 1, 1);
-            await socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
+            socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
             Thread.Sleep(100);
-            await socket.InvokeMessage($"[0, \"n\", [0, \"fon-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
+            socket.InvokeMessage($"[0, \"n\", [0, \"fon-req\", 0, 0, {JsonConvert.SerializeObject(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
             var result = placeTask.Result;
 
             // assert
@@ -737,7 +737,7 @@ namespace Bitfinex.Net.UnitTests
 
             var rstEvent = new ManualResetEvent(false);
             var subTask = client.SpotApi.SubscribeToKlineUpdatesAsync("tBTCUSD", KlineInterval.FiveMinutes, data => { });
-            await socket.InvokeMessage(new CandleSubscriptionResponse()
+            socket.InvokeMessage(new CandleSubscriptionResponse()
             {
                 Channel = "candles",
                 Event = "subscribed",
@@ -749,9 +749,9 @@ namespace Bitfinex.Net.UnitTests
             subResult.Data.ConnectionRestored += (t) => rstEvent.Set();
 
             // act
-            await socket.InvokeMessage("{\"event\":\"info\", \"code\": 20051}");
+            socket.InvokeMessage("{\"event\":\"info\", \"code\": 20051}");
             Thread.Sleep(100);
-            await socket.InvokeMessage(new CandleSubscriptionResponse()
+            socket.InvokeMessage(new CandleSubscriptionResponse()
             {
                 Channel = "candles",
                 Event = "subscribed",
