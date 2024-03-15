@@ -19,6 +19,7 @@ using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
 using System.Diagnostics;
 using Bitfinex.Net.Objects.Sockets;
+using NUnit.Framework.Legacy;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -61,7 +62,7 @@ namespace Bitfinex.Net.UnitTests
             var taskResult = await subTask.ConfigureAwait(false);
 
             // assert
-            Assert.IsTrue(taskResult.Success);
+            Assert.That(taskResult.Success);
         }
 
         [TestCase(Precision.PrecisionLevel0, Frequency.Realtime)]
@@ -101,7 +102,7 @@ namespace Bitfinex.Net.UnitTests
             socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
+            Assert.That(TestHelpers.AreEqual(result[0], expected[0]));
         }
 
         [TestCase(KlineInterval.OneMinute)]
@@ -138,7 +139,7 @@ namespace Bitfinex.Net.UnitTests
             subTask.Wait(5000);
 
             // assert
-            Assert.IsTrue(subTask.Result.Success);
+            Assert.That(subTask.Result.Success);
         }
 
         [TestCase(KlineInterval.OneMinute)]
@@ -177,7 +178,7 @@ namespace Bitfinex.Net.UnitTests
             socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
+            Assert.That(TestHelpers.AreEqual(result[0], expected[0]));
         }
 
         [Test]
@@ -205,7 +206,7 @@ namespace Bitfinex.Net.UnitTests
             subTask.Wait(5000);
 
             // assert
-            Assert.IsTrue(subTask.Result.Success);
+            Assert.That(subTask.Result.Success);
         }
 
         [Test]
@@ -235,7 +236,7 @@ namespace Bitfinex.Net.UnitTests
             socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result, expected));
+            Assert.That(TestHelpers.AreEqual(result, expected));
         }
 
         [Test]
@@ -266,7 +267,7 @@ namespace Bitfinex.Net.UnitTests
             subTask.Wait(5000);
 
             // assert
-            Assert.IsTrue(subTask.Result.Success);
+            Assert.That(subTask.Result.Success);
         }
 
         [Test]
@@ -299,7 +300,7 @@ namespace Bitfinex.Net.UnitTests
             socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
+            Assert.That(TestHelpers.AreEqual(result[0], expected[0]));
         }
 
         [Test]
@@ -327,7 +328,7 @@ namespace Bitfinex.Net.UnitTests
             subTask.Wait(5000);
 
             // assert
-            Assert.IsTrue(subTask.Result.Success);
+            Assert.That(subTask.Result.Success);
         }
 
         [Test]
@@ -357,7 +358,7 @@ namespace Bitfinex.Net.UnitTests
             socket.InvokeMessage($"[1, {JsonConvert.SerializeObject(expected)}]");
 
             // assert
-            Assert.IsTrue(TestHelpers.AreEqual(result[0], expected[0]));
+            Assert.That(TestHelpers.AreEqual(result[0], expected[0]));
         }
         
         //[TestCase("ou", BitfinexEventType.OrderUpdate)]
@@ -386,7 +387,7 @@ namespace Bitfinex.Net.UnitTests
         //    rstEvent.WaitOne(1000);
 
         //    // assert
-        //    Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
+        //    Assert.That(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
         //}
 
         //[TestCase("te", BitfinexEventType.TradeExecuted)]
@@ -414,7 +415,7 @@ namespace Bitfinex.Net.UnitTests
         //    rstEvent.WaitOne(1000);
 
         //    // assert
-        //    Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
+        //    Assert.That(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
         //}
 
         //[TestCase("ws", BitfinexEventType.WalletSnapshot, false)]
@@ -441,7 +442,7 @@ namespace Bitfinex.Net.UnitTests
         //    rstEvent.WaitOne(1000);
 
         //    // assert
-        //    Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data.First()));
+        //    Assert.That(TestHelpers.AreEqual(result.Data.First(), expected.Data.First()));
         //}
 
         //[TestCase("pn", BitfinexEventType.PositionNew)]
@@ -470,7 +471,7 @@ namespace Bitfinex.Net.UnitTests
         //    rstEvent.WaitOne(1000);
 
         //    // assert
-        //    Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data.First()));
+        //    Assert.That(TestHelpers.AreEqual(result.Data.First(), expected.Data.First()));
         //}
 
         //[TestCase("fcn", BitfinexEventType.FundingCreditsNew)]
@@ -499,7 +500,7 @@ namespace Bitfinex.Net.UnitTests
         //    rstEvent.WaitOne(1000);
 
         //    // assert
-        //    Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
+        //    Assert.That(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
         //}
 
         //[TestCase("fln", BitfinexEventType.FundingLoanNew)]
@@ -528,7 +529,7 @@ namespace Bitfinex.Net.UnitTests
         //    rstEvent.WaitOne(1000);
 
         //    // assert
-        //    Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
+        //    Assert.That(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
         //}
 
         //[TestCase("fon", BitfinexEventType.FundingOfferNew)]
@@ -557,7 +558,7 @@ namespace Bitfinex.Net.UnitTests
         //    rstEvent.WaitOne(1000);
 
         //    // assert
-        //    Assert.IsTrue(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
+        //    Assert.That(TestHelpers.AreEqual(result.Data.First(), expected.Data[0]));
         //}
 
         [Test]
@@ -586,8 +587,8 @@ namespace Bitfinex.Net.UnitTests
             var result = placeTask.Result;
 
             // assert
-            Assert.IsTrue(result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
+            Assert.That(result.Success);
+            Assert.That(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [Test]
@@ -607,8 +608,8 @@ namespace Bitfinex.Net.UnitTests
             var result = placeTask.Result;
 
             // assert
-            Assert.IsFalse(result.Success);
-            Assert.IsTrue(result.Error.Message.Contains("order placing failed"));
+            ClassicAssert.IsFalse(result.Success);
+            Assert.That(result.Error.Message.Contains("order placing failed"));
         }
 
         [Test]
@@ -629,7 +630,7 @@ namespace Bitfinex.Net.UnitTests
             var result = placeTask.Result;
 
             // assert
-            Assert.IsFalse(result.Success);
+            ClassicAssert.IsFalse(result.Success);
         }
 
         [Test]
@@ -658,8 +659,8 @@ namespace Bitfinex.Net.UnitTests
             var result = placeTask.Result;
 
             // assert
-            Assert.IsTrue(result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
+            Assert.That(result.Success);
+            Assert.That(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [Test]
@@ -688,8 +689,8 @@ namespace Bitfinex.Net.UnitTests
             var result = placeTask.Result;
 
             // assert
-            Assert.IsTrue(result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
+            Assert.That(result.Success);
+            Assert.That(TestHelpers.AreEqual(expected, result.Data));
         }
 
         [Test]
@@ -718,8 +719,8 @@ namespace Bitfinex.Net.UnitTests
             var result = placeTask.Result;
 
             // assert
-            Assert.IsTrue(result.Success);
-            Assert.IsTrue(TestHelpers.AreEqual(expected, result.Data));
+            Assert.That(result.Success);
+            Assert.That(TestHelpers.AreEqual(expected, result.Data));
         }
 
 
@@ -762,7 +763,7 @@ namespace Bitfinex.Net.UnitTests
             var triggered = rstEvent.WaitOne(1000);
 
             // assert
-            Assert.IsTrue(triggered);
+            Assert.That(triggered);
         }
 
         // TODO FIX TIMING ISSUE
@@ -811,7 +812,7 @@ namespace Bitfinex.Net.UnitTests
         //    rstEvent.WaitOne(1000);
 
         //    // assert
-        //    Assert.IsTrue(subResultWhenPaused?.Error?.Message.Contains("Socket is paused"));
+        //    Assert.That(subResultWhenPaused?.Error?.Message.Contains("Socket is paused"));
         //}
     }
 }

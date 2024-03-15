@@ -15,6 +15,7 @@ using CryptoExchange.Net.Sockets;
 using Bitfinex.Net.Clients;
 using Bitfinex.Net.ExtensionMethods;
 using CryptoExchange.Net.Objects.Sockets;
+using NUnit.Framework.Legacy;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -31,9 +32,9 @@ namespace Bitfinex.Net.UnitTests
             var result = await client.SpotApi.ExchangeData.GetAssetFullNamesAsync();
 
             // assert
-            Assert.AreEqual(false, result.Success);
-            Assert.IsTrue(result.Error.ToString().Contains("Error message"));
-            Assert.AreEqual(HttpStatusCode.BadRequest, result.ResponseStatusCode);
+            Assert.ReferenceEquals(false, result.Success);
+            Assert.That(result.Error.ToString().Contains("Error message"));
+            Assert.ReferenceEquals(HttpStatusCode.BadRequest, result.ResponseStatusCode);
         }
 
 
@@ -45,7 +46,7 @@ namespace Bitfinex.Net.UnitTests
             var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"), null);
 
             // assert
-            Assert.AreEqual(authProvider.GetApiKey(), "TestKey");
+            Assert.ReferenceEquals(authProvider.GetApiKey(), "TestKey");
         }
 
         [Test]
@@ -58,7 +59,7 @@ namespace Bitfinex.Net.UnitTests
             string signed = authProvider.Sign("SomeTestString");
 
             // assert
-            Assert.AreEqual(signed, "9052C73092B21B945BC5859CADBA6A5658E142F021FCB092A72F68E8A0D5E6351CFEBAE52DB9067D4360F796CB520960");
+            Assert.ReferenceEquals(signed, "9052C73092B21B945BC5859CADBA6A5658E142F021FCB092A72F68E8A0D5E6351CFEBAE52DB9067D4360F796CB520960");
         }
 
         [Test]
@@ -112,7 +113,7 @@ namespace Bitfinex.Net.UnitTests
                 foreach (var method in implementation.GetMethods().Where(m => m.ReturnType.IsAssignableTo(typeof(Task))))
                 {
                     var interfaceMethod = clientInterface.GetMethod(method.Name, method.GetParameters().Select(p => p.ParameterType).ToArray());
-                    Assert.NotNull(interfaceMethod, $"Missing interface for method {method.Name} in {implementation.Name} implementing interface {clientInterface.Name}");
+                    ClassicAssert.NotNull(interfaceMethod, $"Missing interface for method {method.Name} in {implementation.Name} implementing interface {clientInterface.Name}");
                     methods++;
                 }
                 Debug.WriteLine($"{clientInterface.Name} {methods} methods validated");
@@ -132,7 +133,7 @@ namespace Bitfinex.Net.UnitTests
                 foreach (var method in implementation.GetMethods().Where(m => m.ReturnType.IsAssignableTo(typeof(Task<CallResult<UpdateSubscription>>))))
                 {
                     var interfaceMethod = clientInterface.GetMethod(method.Name, method.GetParameters().Select(p => p.ParameterType).ToArray());
-                    Assert.NotNull(interfaceMethod, $"Missing interface for method {method.Name} in {implementation.Name} implementing interface {clientInterface.Name}");
+                    ClassicAssert.NotNull(interfaceMethod, $"Missing interface for method {method.Name} in {implementation.Name} implementing interface {clientInterface.Name}");
                     methods++;
                 }
                 Debug.WriteLine($"{clientInterface.Name} {methods} methods validated");
