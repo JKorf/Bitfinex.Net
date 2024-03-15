@@ -32,9 +32,9 @@ namespace Bitfinex.Net.UnitTests
             var result = await client.SpotApi.ExchangeData.GetAssetFullNamesAsync();
 
             // assert
-            Assert.ReferenceEquals(false, result.Success);
+            Assert.That(false == result.Success);
             Assert.That(result.Error.ToString().Contains("Error message"));
-            Assert.ReferenceEquals(HttpStatusCode.BadRequest, result.ResponseStatusCode);
+            Assert.That(HttpStatusCode.BadRequest == result.ResponseStatusCode);
         }
 
 
@@ -46,7 +46,7 @@ namespace Bitfinex.Net.UnitTests
             var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"), null);
 
             // assert
-            Assert.ReferenceEquals(authProvider.GetApiKey(), "TestKey");
+            Assert.That(authProvider.GetApiKey() == "TestKey");
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace Bitfinex.Net.UnitTests
             string signed = authProvider.Sign("SomeTestString");
 
             // assert
-            Assert.ReferenceEquals(signed, "9052C73092B21B945BC5859CADBA6A5658E142F021FCB092A72F68E8A0D5E6351CFEBAE52DB9067D4360F796CB520960");
+            Assert.That(signed == "9052C73092B21B945BC5859CADBA6A5658E142F021FCB092A72F68E8A0D5E6351CFEBAE52DB9067D4360F796CB520960");
         }
 
         [Test]
