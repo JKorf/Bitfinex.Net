@@ -72,7 +72,7 @@ namespace Bitfinex.Net.UnitTests
         [TestCase(Precision.PrecisionLevel1, Frequency.TwoSeconds)]
         [TestCase(Precision.PrecisionLevel2, Frequency.TwoSeconds)]
         [TestCase(Precision.PrecisionLevel3, Frequency.TwoSeconds)]
-        public async Task SubscribingToBookUpdates_Should_TriggerWithBookUpdate(Precision prec, Frequency freq)
+        public void SubscribingToBookUpdates_Should_TriggerWithBookUpdate(Precision prec, Frequency freq)
         {
             // arrange
             var socket = new TestSocket();
@@ -115,7 +115,7 @@ namespace Bitfinex.Net.UnitTests
         [TestCase(KlineInterval.OneDay)]
         [TestCase(KlineInterval.SevenDays)]
         [TestCase(KlineInterval.FourteenDays)]
-        public async Task SubscribingToCandleUpdates_Should_SubscribeSuccessfully(KlineInterval timeframe)
+        public void SubscribingToCandleUpdates_Should_SubscribeSuccessfully(KlineInterval timeframe)
         {
             // arrange
             var socket = new TestSocket();
@@ -152,7 +152,7 @@ namespace Bitfinex.Net.UnitTests
         [TestCase(KlineInterval.OneDay)]
         [TestCase(KlineInterval.SevenDays)]
         [TestCase(KlineInterval.FourteenDays)]
-        public async Task SubscribingToCandleUpdates_Should_TriggerWithCandleUpdate(KlineInterval timeframe)
+        public void SubscribingToCandleUpdates_Should_TriggerWithCandleUpdate(KlineInterval timeframe)
         {
             // arrange
             var socket = new TestSocket();
@@ -181,7 +181,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task SubscribingToTickerUpdates_Should_SubscribeSuccessfully()
+        public void SubscribingToTickerUpdates_Should_SubscribeSuccessfully()
         {
             // arrange
             var socket = new TestSocket();
@@ -209,7 +209,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task SubscribingToTickerUpdates_Should_TriggerWithTickerUpdate()
+        public void SubscribingToTickerUpdates_Should_TriggerWithTickerUpdate()
         {
             // arrange
             var socket = new TestSocket();
@@ -239,7 +239,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task SubscribingToRawBookUpdates_Should_SubscribeSuccessfully()
+        public void SubscribingToRawBookUpdates_Should_SubscribeSuccessfully()
         {
             // arrange
             var socket = new TestSocket();
@@ -270,7 +270,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task SubscribingToRawBookUpdates_Should_TriggerWithRawBookUpdate()
+        public void SubscribingToRawBookUpdates_Should_TriggerWithRawBookUpdate()
         {
             // arrange
             var socket = new TestSocket();
@@ -303,7 +303,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task SubscribingToTradeUpdates_Should_SubscribeSuccessfully()
+        public void SubscribingToTradeUpdates_Should_SubscribeSuccessfully()
         {
             // arrange
             var socket = new TestSocket();
@@ -331,7 +331,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task SubscribingToTradeUpdates_Should_TriggerWithTradeUpdate()
+        public void SubscribingToTradeUpdates_Should_TriggerWithTradeUpdate()
         {
             // arrange
             var socket = new TestSocket();
@@ -561,7 +561,7 @@ namespace Bitfinex.Net.UnitTests
         //}
 
         [Test]
-        public async Task PlacingAnOrder_Should_SucceedIfSuccessResponse()
+        public void PlacingAnOrder_Should_SucceedIfSuccessResponse()
         {
             // arrange
             var socket = new TestSocket();
@@ -591,7 +591,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task PlacingAnOrder_Should_FailIfErrorResponse()
+        public void PlacingAnOrder_Should_FailIfErrorResponse()
         {
             // arrange
             var socket = new TestSocket();
@@ -612,7 +612,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task PlacingAnOrder_Should_FailIfNoResponse()
+        public void PlacingAnOrder_Should_FailIfNoResponse()
         {
             // arrange
             var socket = new TestSocket();
@@ -633,7 +633,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task PlacingAnMarketOrder_Should_SucceedIfSuccessResponse()
+        public void PlacingAnMarketOrder_Should_SucceedIfSuccessResponse()
         {
             // arrange
             var socket = new TestSocket();
@@ -663,7 +663,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task PlacingAnFOKOrder_Should_SucceedIfSuccessResponse()
+        public void PlacingAnFOKOrder_Should_SucceedIfSuccessResponse()
         {
             // arrange
             var socket = new TestSocket();
@@ -693,7 +693,7 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public async Task PlacingAnFundingOffer_Should_SucceedIfSuccessResponse()
+        public void PlacingAnFundingOffer_Should_SucceedIfSuccessResponse()
         {
             // arrange
             var socket = new TestSocket();
