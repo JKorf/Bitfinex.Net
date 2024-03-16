@@ -16,13 +16,13 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         {
         }
 
-        public override Task<CallResult> HandleMessageAsync(SocketConnection connection, DataEvent<BitfinexSocketInfo> message)
+        public override CallResult HandleMessage(SocketConnection connection, DataEvent<BitfinexSocketInfo> message)
         {
             if (message.Data.Code == null)
             {
                 // welcome event, send a config message for receiving checsum updates for order book subscriptions
                 _ = connection.SendAndWaitQueryAsync(new BitfinexConfQuery(131072));
-                return Task.FromResult(new CallResult(null));
+                return new CallResult(null);
             }
 
             var code = message.Data.Code;
@@ -46,7 +46,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     break;
             }
 
-            return Task.FromResult(new CallResult(null));
+            return new CallResult(null);
         }
     }
 }

@@ -4,7 +4,10 @@ using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.CommonObjects;
+using CryptoExchange.Net.Converters.MessageParsing;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Interfaces.CommonClients;
 using CryptoExchange.Net.Objects;
 using Microsoft.Extensions.Logging;
@@ -419,24 +422,35 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
 
         /// <inheritdoc />
-        protected override Error ParseErrorResponse(int httpStatusCode, IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders, string data)
+        protected override Error ParseErrorResponse(int httpStatusCode, IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders, IMessageAccessor accessor)
         {
-            var errorData = ValidateJson(data);
-            if (!errorData)
-                return new ServerError(data);
+            if (!accessor.IsJson)
+                return new ServerError(accessor.GetOriginalString());
 
-            if (!(errorData.Data is JArray))
+            if (accessor.GetNodeType() != NodeType.Array)
             {
-                if (errorData.Data["error"] != null && errorData.Data["code"] != null && errorData.Data["error_description"] != null)
-                    return new ServerError((int)errorData.Data["code"]!, errorData.Data["error"] + ": " + errorData.Data["error_description"]);
-                if (errorData.Data["message"] != null)
-                    return new ServerError(errorData.Data["message"]!.ToString());
-                else
-                    return new ServerError(errorData.Data.ToString());
+                var error = accessor.GetValue<string?>(MessagePath.Get().Property("error"));
+                var errorCode = accessor.GetValue<int?>(MessagePath.Get().Property("code"));
+                var errorDesc = accessor.GetValue<string?>(MessagePath.Get().Property("error_description"));
+                if (error != null && errorCode != null && errorDesc != null)
+                    return new ServerError(errorCode.Value, $"{error}: {errorDesc}");
+                
+                var message = accessor.GetValue<string?>(MessagePath.Get().Property("message"));
+                if (message != null)
+                    return new ServerError(message);
+
+                return new ServerError(accessor.GetOriginalString());
             }
 
-            var error = errorData.Data.ToObject<BitfinexError>();
-            return new ServerError(error!.ErrorCode, error.ErrorMessage);
+            var code = accessor.GetValue<int?>(MessagePath.Get().Index(1));
+            var msg = accessor.GetValue<string>(MessagePath.Get().Index(2));
+            if (msg == null)
+                return new ServerError(accessor.GetOriginalString());
+
+            if (code == null)
+                return new ServerError(msg);
+
+            return new ServerError(code.Value, msg);
         }
     }
 }

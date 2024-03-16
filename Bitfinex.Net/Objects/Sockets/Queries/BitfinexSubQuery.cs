@@ -31,12 +31,12 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             };
         }
 
-        public override Task<CallResult<BitfinexResponse>> HandleMessageAsync(SocketConnection connection, DataEvent<BitfinexResponse> message)
+        public override CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DataEvent<BitfinexResponse> message)
         {
             if (message.Data.Event == "error")
-                return Task.FromResult(new CallResult<BitfinexResponse>(new ServerError(message.Data.Message!)));
+                return new CallResult<BitfinexResponse>(new ServerError(message.Data.Message!));
 
-            return Task.FromResult(new CallResult<BitfinexResponse>(message.Data));
+            return new CallResult<BitfinexResponse>(message.Data);
         }
     }
 }

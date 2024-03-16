@@ -1,11 +1,11 @@
-﻿using CryptoExchange.Net;
-using System;
+﻿using System;
 using Microsoft.Extensions.Logging;
 using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Clients.SpotApi;
 using CryptoExchange.Net.Authentication;
 using Bitfinex.Net.Objects.Options;
+using CryptoExchange.Net.Clients;
 
 namespace Bitfinex.Net.Clients
 {

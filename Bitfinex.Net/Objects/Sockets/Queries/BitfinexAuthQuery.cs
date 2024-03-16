@@ -15,12 +15,12 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
         {
         }
 
-        public override Task<CallResult<BitfinexResponse>> HandleMessageAsync(SocketConnection connection, DataEvent<BitfinexResponse> message)
+        public override CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DataEvent<BitfinexResponse> message)
         {
             if (message.Data.Status != "OK")
-                return Task.FromResult(new CallResult<BitfinexResponse>(new ServerError(message.Data.Code!.Value, message.Data.Message!)));
+                return new CallResult<BitfinexResponse>(new ServerError(message.Data.Code!.Value, message.Data.Message!));
 
-            return Task.FromResult(new CallResult<BitfinexResponse>(message.Data, message.OriginalData, null));
+            return new CallResult<BitfinexResponse>(message.Data, message.OriginalData, null);
         }
     }
 }

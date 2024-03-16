@@ -2,11 +2,11 @@
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Sockets.Queries;
+using CryptoExchange.Net.Converters.MessageParsing;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
-using CryptoExchange.Net.Sockets.MessageParsing;
-using CryptoExchange.Net.Sockets.MessageParsing.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -93,7 +93,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             return new BitfinexUnsubQuery(_channelId);
         }
 
-        public override Task<CallResult> DoHandleMessageAsync(SocketConnection connection, DataEvent<object> message)
+        public override CallResult DoHandleMessage(SocketConnection connection, DataEvent<object> message)
         {
             if (message.Data is BitfinexChecksum checksum)
                 _checksumHandler?.Invoke(message.As(checksum.Checksum, _symbol));
@@ -107,7 +107,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 _handler?.Invoke(message.As<IEnumerable<T>>(new[] { single3Update.Data }, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
 
             _firstUpdate = false;
-            return Task.FromResult(new CallResult(null));
+            return new CallResult(null);
         }
     }
 }
