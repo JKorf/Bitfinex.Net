@@ -50,8 +50,8 @@ namespace Bitfinex.Net.SymbolOrderBooks
         /// <param name="socketClient">Socket client instance</param>
         public BitfinexSymbolOrderBook(string symbol, 
             Action<BitfinexOrderBookOptions>? optionsDelegate, 
-            ILogger<BitfinexSymbolOrderBook>? logger,
-            IBitfinexSocketClient? socketClient) : base(logger, "Bitfinex", symbol)
+            ILoggerFactory? logger,
+            IBitfinexSocketClient? socketClient) : base(logger, "Bitfinex", "Spot", symbol)
         {
             symbol.ValidateBitfinexTradingSymbol();
 

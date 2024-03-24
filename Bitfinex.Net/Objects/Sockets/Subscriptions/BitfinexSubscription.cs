@@ -23,6 +23,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         private string _channel;
         private string? _symbol;
+        private bool _sendSymbol;
         private string? _precision;
         private string? _frequency;
         private string? _length;
@@ -43,7 +44,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             Precision? precision = null,
             Frequency? frequency = null,
             int? length = null,
-            string? key = null)
+            string? key = null,
+            bool sendSymbol = true)
             : base(logger, authenticated)
         {
             _handler = handler;
@@ -54,6 +56,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _precision = precision == null ? null : JsonConvert.SerializeObject(precision, new PrecisionConverter(false));
             _frequency = frequency == null ? null: JsonConvert.SerializeObject(frequency, new FrequencyConverter(false));
             _length = length?.ToString();
+            _sendSymbol = sendSymbol;
         }
 
         /// <inheritdoc />
@@ -86,7 +89,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public override Query? GetSubQuery(SocketConnection connection)
         {
-            return new BitfinexSubQuery("subscribe", _channel, _symbol, _precision, _frequency, _length, _key);
+            return new BitfinexSubQuery("subscribe", _channel, _sendSymbol ? _symbol : null, _precision, _frequency, _length, _key);
         }
         public override Query? GetUnsubQuery()
         {

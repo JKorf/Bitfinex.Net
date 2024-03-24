@@ -28,7 +28,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
         public ISymbolOrderBook Create(string symbol, Action<BitfinexOrderBookOptions>? options = null)
             => new BitfinexSymbolOrderBook(symbol,
                                              options,
-                                             _serviceProvider.GetRequiredService<ILogger<BitfinexSymbolOrderBook>>(),
+                                             _serviceProvider.GetRequiredService<ILoggerFactory>(),
                                              _serviceProvider.GetRequiredService<IBitfinexSocketClient>());
     }
 }

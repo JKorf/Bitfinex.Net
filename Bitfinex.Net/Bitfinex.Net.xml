@@ -5388,7 +5388,7 @@
             <param name="symbol">The symbol the order book is for</param>
             <param name="optionsDelegate">Option configuration delegate</param>
         </member>
-        <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook.#ctor(System.String,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions},Microsoft.Extensions.Logging.ILogger{Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook},Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient)">
+        <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexSymbolOrderBook.#ctor(System.String,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions},Microsoft.Extensions.Logging.ILoggerFactory,Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient)">
             <summary>
             Create a new order book instance
             </summary>
