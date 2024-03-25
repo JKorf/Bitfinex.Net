@@ -8,17 +8,17 @@ namespace Bitfinex.Net.Objects.Internal
     {
         [JsonProperty("id")]
         public long OrderId { get; set; }
-        [JsonProperty("amount"), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonProperty("amount", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
         public decimal? Amount { get; set; }
-        [JsonProperty("delta"), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonProperty("delta", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
         public decimal? Delta { get; set; }
-        [JsonProperty("price"), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonProperty("price", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
         public decimal? Price { get; set; }
-        [JsonProperty("price_trailing")]
+        [JsonProperty("price_trailing", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? PriceTrailing { get; set; }
-        [JsonProperty("price_aux_limit"), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonProperty("price_aux_limit", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
         public string? PriceAuxiliaryLimit { get; set; }        
-        [JsonProperty("flags")]
+        [JsonProperty("flags", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public OrderFlags? Flags { get; set; }
     }
 }
