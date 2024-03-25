@@ -94,6 +94,10 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 7.2.2 - 25 Mar 2024
+    * Fixed parameter serialization websocket queries
+    * Added missing info websocket user data updates
+
 * Version 7.2.1 - 24 Mar 2024
 	* Updated CryptoExchange.Net to 7.2.0, see https://github.com/JKorf/CryptoExchange.Net?tab=readme-ov-file#release-notes for release notes
 	* Fixed Topic not set in socket client SubscribeToKlineUpdatesAsync updates
