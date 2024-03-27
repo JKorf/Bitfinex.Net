@@ -64,10 +64,10 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         {
             var identifier = message.GetValue<string>(_1Path);
 
-            if (identifier == "cs")
+            if (string.Equals(identifier, "cs", StringComparison.Ordinal))
                 return typeof(BitfinexChecksum);
 
-            if (identifier == "hb")
+            if (string.Equals(identifier, "hb", StringComparison.Ordinal))
                 return typeof(BitfinexUpdate<string>);
 
             if (identifier == null)

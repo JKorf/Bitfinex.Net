@@ -35,60 +35,80 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         {
             var identifier = message.GetValue<string>(_messagePath);
 
-            if (identifier == "hb")
+            if (string.Equals(identifier, "hb", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<string>);
 
-            if (identifier == "ps")
+            if (string.Equals(identifier, "ps", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<List<BitfinexPosition>>);
-            if (identifier == "pn" || identifier == "pu" || identifier == "pc")
-                return typeof(BitfinexSocketEvent<BitfinexPosition>);
-
-            if (identifier == "bu")
-                return typeof(BitfinexSocketEvent<BitfinexBalance>);
-
-            if (identifier == "miu")
+            if (string.Equals(identifier, "pn", StringComparison.Ordinal)
+                || string.Equals(identifier, "pu", StringComparison.Ordinal)
+                || string.Equals(identifier, "pc", StringComparison.Ordinal))
             {
-                var marginInfoType = message.GetValue<string>(_marginInfoPath);
-                return marginInfoType == "base" ? typeof(BitfinexSocketEvent<BitfinexMarginBase>) : typeof(BitfinexSocketEvent<BitfinexMarginSymbol>);
+                return typeof(BitfinexSocketEvent<BitfinexPosition>);
             }
 
-            if (identifier == "fiu")
+            if (string.Equals(identifier, "bu", StringComparison.Ordinal))
+                return typeof(BitfinexSocketEvent<BitfinexBalance>);
+
+            if (string.Equals(identifier, "miu", StringComparison.Ordinal))
+            {
+                var marginInfoType = message.GetValue<string>(_marginInfoPath);
+                return string.Equals(marginInfoType, "base", StringComparison.Ordinal) ? typeof(BitfinexSocketEvent<BitfinexMarginBase>) : typeof(BitfinexSocketEvent<BitfinexMarginSymbol>);
+            }
+
+            if (string.Equals(identifier, "fiu", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<BitfinexFundingInfo>);
 
-            if (identifier == "ws")
+            if (string.Equals(identifier, "ws", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<List<BitfinexWallet>>);
-            if (identifier == "wu")
+            if (string.Equals(identifier, "wu", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<BitfinexWallet>);
 
-            if (identifier == "os")
+            if (string.Equals(identifier, "os", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<List<BitfinexOrder>>);
-            if (identifier == "on" || identifier == "ou" || identifier == "oc")
+            if (string.Equals(identifier, "on", StringComparison.Ordinal)
+                || string.Equals(identifier, "ou", StringComparison.Ordinal) 
+                || string.Equals(identifier, "oc", StringComparison.Ordinal))
+            {
                 return typeof(BitfinexSocketEvent<BitfinexOrder>);
+            }
 
-            if (identifier == "te")
+            if (string.Equals(identifier, "te", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<BitfinexTradeDetails>);
-            if (identifier == "tu")
+            if (string.Equals(identifier, "tu", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<BitfinexTradeDetails>);
 
-            if (identifier == "fte")
+            if (string.Equals(identifier, "fte", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<BitfinexFundingTrade>);
-            if (identifier == "ftu")
+            if (string.Equals(identifier, "ftu", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<BitfinexFundingTrade>);
 
-            if (identifier == "fos")
+            if (string.Equals(identifier, "fos", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<List<BitfinexFundingOffer>>);
-            if (identifier == "fon" || identifier == "fou" || identifier == "foc")
+            if (string.Equals(identifier, "fon", StringComparison.Ordinal)
+                || string.Equals(identifier, "fou", StringComparison.Ordinal)
+                || string.Equals(identifier, "foc", StringComparison.Ordinal))
+            {
                 return typeof(BitfinexSocketEvent<BitfinexFundingOffer>);
+            }
 
-            if (identifier == "fcs")
+            if (string.Equals(identifier, "fcs", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<List<BitfinexFundingCredit>>);
-            if (identifier == "fcn" || identifier == "fcu" || identifier == "fcc")
+            if (string.Equals(identifier, "fcn", StringComparison.Ordinal)
+                || string.Equals(identifier, "fcu", StringComparison.Ordinal)
+                || string.Equals(identifier, "fcc", StringComparison.Ordinal))
+            {
                 return typeof(BitfinexSocketEvent<BitfinexFundingCredit>);
+            }
 
-            if (identifier == "fls")
+            if (string.Equals(identifier, "fls", StringComparison.Ordinal))
                 return typeof(BitfinexSocketEvent<List<BitfinexFunding>>);
-            if (identifier == "fln" || identifier == "flu" || identifier == "flc")
+            if (string.Equals(identifier, "fln", StringComparison.Ordinal)
+                || string.Equals(identifier, "flu", StringComparison.Ordinal)
+                || string.Equals(identifier, "flc", StringComparison.Ordinal))
+            {
                 return typeof(BitfinexSocketEvent<BitfinexFunding>);
+            }
 
             return null;
         }

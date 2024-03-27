@@ -357,7 +357,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return message.GetValue<int>(_0Path).ToString();
 
             var evnt = message.GetValue<string>(_eventPath);
-            if (evnt == "info")
+            if (string.Equals(evnt, "info", StringComparison.Ordinal))
                 return "info";
 
             var channel = message.GetValue<string>(_channelPath);
@@ -366,7 +366,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var freq = message.GetValue<string>(_freqPath);
             var len = message.GetValue<string>(_lenPath);
             var key = message.GetValue<string>(_keyPath);
-            var chanId = evnt == "unsubscribed" ? message.GetValue<string>(_chanIdPath) : "";
+            var chanId = string.Equals(evnt, "unsubscribed", StringComparison.Ordinal) ? message.GetValue<string>(_chanIdPath) : "";
             return chanId + evnt + channel + symbol + prec + freq + len + key;
         }
 
