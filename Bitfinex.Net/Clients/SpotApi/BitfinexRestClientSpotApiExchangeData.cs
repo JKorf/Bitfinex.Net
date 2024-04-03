@@ -230,8 +230,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexTicker>> GetTickerAsync(string symbol, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexTradingSymbol();
-
             var ticker = await GetTickersAsync(new[] { symbol }, ct).ConfigureAwait(false);
             if(!ticker)
                 return ticker.As<BitfinexTicker>(null);
@@ -247,8 +245,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexFundingTicker>> GetFundingTickerAsync(string symbol, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexFundingSymbol();
-
             var ticker = await GetFundingTickersAsync(new[] { symbol }, ct).ConfigureAwait(false);
             if (!ticker)
                 return ticker.As<BitfinexFundingTicker>(null);
@@ -306,7 +302,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexTradeSimple>>> GetTradeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 5000);
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
@@ -322,7 +317,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexOrderBook>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexTradingSymbol();
             limit?.ValidateIntValues("limit", 1, 25, 100);
             if (precision == Precision.R0)
                 throw new ArgumentException("Precision can not be R0. Use PrecisionLevel0 to get aggregated trades for each price point or GetRawOrderBook to get the raw order book instead");
@@ -352,7 +346,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexFundingOrderBook>> GetFundingOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexFundingSymbol();
             limit?.ValidateIntValues("limit", 1, 25, 100);
             if (precision == Precision.R0)
                 throw new ArgumentException("Precision can not be R0. Use PrecisionLevel0 to get aggregated trades for each price point or GetRawOrderBook to get the raw order book instead");
@@ -382,7 +375,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexRawOrderBook>> GetRawOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexTradingSymbol();
             limit?.ValidateIntValues("limit", 25, 100);
 
             var parameters = new Dictionary<string, object>();
@@ -410,7 +402,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexRawFundingOrderBook>> GetRawFundingOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexFundingSymbol();
             limit?.ValidateIntValues("limit", 25, 100);
 
             var parameters = new Dictionary<string, object>();
@@ -438,8 +429,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(string symbol, KlineInterval interval, string? fundingPeriod = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
-
             string endpoint;
             if (fundingPeriod != null)
             {
@@ -463,7 +452,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexKline>>> GetKlinesAsync(string symbol, KlineInterval interval, string? fundingPeriod = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 10000);
 
             var parameters = new Dictionary<string, object>();
@@ -495,8 +483,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexAveragePrice>> GetAveragePriceAsync(string symbol, decimal quantity, decimal? rateLimit = null, int? period = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
-
             var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },
@@ -588,8 +574,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexStats>>> GetFundingSizeAsync(string symbol, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
-
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
 

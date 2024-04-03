@@ -59,7 +59,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexMarginSymbol>> GetSymbolMarginInfoAsync(string symbol, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
             return await _baseClient.SendRequestAsync<BitfinexMarginSymbol>(_baseClient.GetUrl(MarginInfoSymbolEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
@@ -109,8 +108,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexAlert>> SetAlertAsync(string symbol, decimal price, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
-
             var parameters = new Dictionary<string, object>
             {
                 { "type", "price" },
@@ -124,15 +121,12 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexSuccessResult>> DeleteAlertAsync(string symbol, decimal price, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
-
             return await _baseClient.SendRequestAsync<BitfinexSuccessResult>(_baseClient.GetUrl(DeleteAlertEndpoint.FillPathParameters(symbol, price.ToString(CultureInfo.InvariantCulture)), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal price, WalletType type, decimal? leverage = null, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
             var parameters = new Dictionary<string, object>
             {
                 { "symbol", symbol },

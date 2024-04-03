@@ -58,7 +58,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetClosedOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
-            symbol?.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
             var parameters = new Dictionary<string, object>();
@@ -75,15 +74,12 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetOrderTradesAsync(string symbol, long orderId, CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
-
             return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTradeDetails>>(_baseClient.GetUrl(OrderTradesEndpoint.FillPathParameters(symbol, orderId.ToString(CultureInfo.InvariantCulture)), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetUserTradesAsync(string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
-            symbol?.ValidateBitfinexSymbol();
             limit?.ValidateIntBetween(nameof(limit), 1, 1000);
 
             var parameters = new Dictionary<string, object>();
@@ -114,8 +110,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             string? affiliateCode = null,
             CancellationToken ct = default)
         {
-            symbol.ValidateBitfinexSymbol();
-
             if (side == OrderSide.Sell)
                 quantity = -quantity;
 

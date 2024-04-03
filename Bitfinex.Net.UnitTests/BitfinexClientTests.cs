@@ -78,27 +78,6 @@ namespace Bitfinex.Net.UnitTests
             request.Verify(r => r.AddHeader("bfx-apikey", "TestKey"));
         }
 
-        [TestCase("tBTCUSD", true)]
-        [TestCase("tNANOUSD", true)]
-        [TestCase("tNANOBTC", true)]
-        [TestCase("tETHBTC", true)]
-        [TestCase("dETHBTC", false)]
-        [TestCase("tBEETC", false)]
-        [TestCase("BTC-USDT", false)]
-        [TestCase("BTC-USD", false)]
-        [TestCase("tBTC-USD", false)]
-        [TestCase("fBTC-USD", false)]
-        [TestCase("fBTC", true)]
-        [TestCase("fNANO", true)]
-        [TestCase("fNA", false)]
-        public void CheckValidBitfinexSymbol(string symbol, bool isValid)
-        {
-            if (isValid)
-                Assert.DoesNotThrow(symbol.ValidateBitfinexSymbol);
-            else
-                Assert.Throws(typeof(ArgumentException), symbol.ValidateBitfinexSymbol);
-        }
-
         [Test]
         public void CheckRestInterfaces()
         {

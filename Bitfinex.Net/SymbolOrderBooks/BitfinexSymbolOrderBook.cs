@@ -53,8 +53,6 @@ namespace Bitfinex.Net.SymbolOrderBooks
             ILoggerFactory? logger,
             IBitfinexSocketClient? socketClient) : base(logger, "Bitfinex", "Spot", symbol)
         {
-            symbol.ValidateBitfinexTradingSymbol();
-
             var options = BitfinexOrderBookOptions.Default.Copy();
             if (optionsDelegate != null)
                 optionsDelegate(options);

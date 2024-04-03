@@ -1345,24 +1345,6 @@
             Extension methods specific to using the Bitfinex API
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.ExtensionMethods.BitfinexExtensionMethods.ValidateBitfinexSymbol(System.String)">
-            <summary>
-            Validate the string is a valid Bitfinex symbol.
-            </summary>
-            <param name="symbolString">string to validate</param>
-        </member>
-        <member name="M:Bitfinex.Net.ExtensionMethods.BitfinexExtensionMethods.ValidateBitfinexFundingSymbol(System.String)">
-            <summary>
-            Validate the string is a valid Bitfinex symbol.
-            </summary>
-            <param name="symbolString">string to validate</param>
-        </member>
-        <member name="M:Bitfinex.Net.ExtensionMethods.BitfinexExtensionMethods.ValidateBitfinexTradingSymbol(System.String)">
-            <summary>
-            Validate the string is a valid Bitfinex symbol.
-            </summary>
-            <param name="symbolString">string to validate</param>
-        </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApi">
             <summary>
             General API endpoints
