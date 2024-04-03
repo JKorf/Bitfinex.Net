@@ -95,6 +95,10 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 7.2.3 - 03 Apr 2024
+    * Updated string comparison for improved performance
+    * Removed pre-send symbol validation
+
 * Version 7.2.2 - 25 Mar 2024
     * Fixed parameter serialization websocket queries
     * Added missing info websocket user data updates
