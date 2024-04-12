@@ -20,6 +20,7 @@ namespace Binance.Net.UnitTests.TestImplementations
         public event Func<Task> OnReconnected;
         public event Func<Task> OnReconnecting;
 #pragma warning restore 0067
+        public event Func<int, Task> OnRequestRateLimited;
         public event Func<int, Task> OnRequestSent;
         public event Action<WebSocketMessageType, ReadOnlyMemory<byte>> OnStreamMessage;
         public event Func<Exception, Task> OnError;
@@ -50,12 +51,12 @@ namespace Binance.Net.UnitTests.TestImplementations
         public TimeSpan KeepAliveInterval { get; set; }
         public Func<Task<Uri>> GetReconnectionUrl { get; set; }
 
-        public async Task<bool> ConnectAsync()
+        public async Task<CallResult> ConnectAsync()
         {
             await Task.Delay(OpenTime);
             Connected = CanConnect;
             OnOpen?.Invoke();
-            return true;
+            return CanConnect ? new CallResult(null) : new CallResult(new CantConnectError());
         }
 
         public void Send(int requestId, string data, int weight)
