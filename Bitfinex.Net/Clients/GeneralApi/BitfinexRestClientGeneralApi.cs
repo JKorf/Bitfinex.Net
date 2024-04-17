@@ -54,7 +54,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
             CancellationToken cancellationToken,
             Dictionary<string, object>? parameters = null,
             bool signed = false) where T : class
-                => base.SendRequestAsync<T>(uri, method, cancellationToken, parameters, signed);
+                => base.SendRequestAsync<T>(uri, method, cancellationToken, parameters, signed, requestWeight: 0);
 
         internal Uri GetUrl(string endpoint, string version)
         {
