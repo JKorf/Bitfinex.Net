@@ -95,6 +95,9 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 7.2.4 - 18 Apr 2024
+    * Updated CryptoExchange.Net, see https://github.com/JKorf/CryptoExchange.Net?tab=readme-ov-file#release-notes for release notes
+
 * Version 7.2.3 - 03 Apr 2024
     * Updated string comparison for improved performance
     * Removed pre-send symbol validation
