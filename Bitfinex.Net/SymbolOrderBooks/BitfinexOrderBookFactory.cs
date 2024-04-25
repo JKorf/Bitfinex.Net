@@ -2,6 +2,7 @@
 using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.OrderBook;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,7 +23,12 @@ namespace Bitfinex.Net.SymbolOrderBooks
         public BitfinexOrderBookFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+
+            Spot = new OrderBookFactory<BitfinexOrderBookOptions>((symbol, options) => Create(symbol, options), (baseAsset, quoteAsset, options) => Create(baseAsset + quoteAsset, options));
         }
+
+        /// <inheritdoc />
+        public IOrderBookFactory<BitfinexOrderBookOptions> Spot { get; }
 
         /// <inheritdoc />
         public ISymbolOrderBook Create(string symbol, Action<BitfinexOrderBookOptions>? options = null)

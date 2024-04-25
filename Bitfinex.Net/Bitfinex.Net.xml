@@ -111,6 +111,9 @@
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.FormatSymbol(System.String,System.String)">
+            <inheritdoc />
+        </member>
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.ParseErrorResponse(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.IEnumerable{System.String}}},CryptoExchange.Net.Interfaces.IMessageAccessor)">
             <inheritdoc />
         </member>
@@ -197,6 +200,9 @@
             </summary>
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.FormatSymbol(System.String,System.String)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetSymbolName(System.String,System.String)">
@@ -454,6 +460,9 @@
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.FormatSymbol(System.String,System.String)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.GetAuthenticationRequest">
@@ -2620,6 +2629,11 @@
         <member name="T:Bitfinex.Net.Interfaces.IBitfinexOrderBookFactory">
             <summary>
             Bitfinex order book factory
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Interfaces.IBitfinexOrderBookFactory.Spot">
+            <summary>
+            Spot order book factory methods
             </summary>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexOrderBookFactory.Create(System.String,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions})">
@@ -5354,6 +5368,9 @@
             ctor
             </summary>
             <param name="serviceProvider">Service provider for resolving logging and clients</param>
+        </member>
+        <member name="P:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory.Spot">
+            <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory.Create(System.String,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions})">
             <inheritdoc />
