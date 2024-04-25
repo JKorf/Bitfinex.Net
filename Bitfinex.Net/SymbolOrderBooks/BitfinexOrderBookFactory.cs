@@ -24,7 +24,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
         {
             _serviceProvider = serviceProvider;
 
-            Spot = new OrderBookFactory<BitfinexOrderBookOptions>((symbol, options) => Create(symbol, options), (baseAsset, quoteAsset, options) => Create(baseAsset + quoteAsset, options));
+            Spot = new OrderBookFactory<BitfinexOrderBookOptions>((symbol, options) => Create(symbol, options), (baseAsset, quoteAsset, options) => Create($"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}", options));
         }
 
         /// <inheritdoc />
