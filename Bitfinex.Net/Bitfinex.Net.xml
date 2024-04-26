@@ -33,6 +33,26 @@
             <param name="socketAddress"></param>
             <returns></returns>
         </member>
+        <member name="T:Bitfinex.Net.BitfinexExchange">
+            <summary>
+            Bitfinex exchange information and configuration
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.BitfinexExchange.ExchangeName">
+            <summary>
+            Exchange name
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.BitfinexExchange.Url">
+            <summary>
+            Url to the main website
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.BitfinexExchange.ApiDocsUrl">
+            <summary>
+            Urls to the API documentation
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Clients.BitfinexRestClient">
             <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient" />
         </member>
