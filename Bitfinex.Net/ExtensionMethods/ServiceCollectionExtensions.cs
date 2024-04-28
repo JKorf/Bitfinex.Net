@@ -55,7 +55,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return handler;
             });
 
-            services.AddSingleton<IBitfinexOrderBookFactory, BitfinexOrderBookFactory>();
+            services.AddTransient<IBitfinexOrderBookFactory, BitfinexOrderBookFactory>();
             services.AddTransient<IBitfinexRestClient, BitfinexRestClient>();
             services.AddTransient(x => x.GetRequiredService<IBitfinexRestClient>().SpotApi.CommonSpotClient);
             if (socketClientLifeTime == null)
