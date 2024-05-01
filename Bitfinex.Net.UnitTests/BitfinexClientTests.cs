@@ -16,6 +16,11 @@ using Bitfinex.Net.Clients;
 using Bitfinex.Net.ExtensionMethods;
 using CryptoExchange.Net.Objects.Sockets;
 using NUnit.Framework.Legacy;
+using CryptoExchange.Net.Clients;
+using System.Net.Http;
+using System.Collections.Generic;
+using CryptoExchange.Net.Converters.JsonNet;
+using CryptoExchange.Net.Testing.Implementations;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -50,19 +55,6 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public void SigningString_Should_ReturnCorrectString()
-        {
-            // arrange
-            var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"), null);
-
-            // act
-            string signed = authProvider.Sign("SomeTestString");
-
-            // assert
-            Assert.That(signed == "9052C73092B21B945BC5859CADBA6A5658E142F021FCB092A72F68E8A0D5E6351CFEBAE52DB9067D4360F796CB520960");
-        }
-
-        [Test]
         public async Task MakingAuthv2Call_Should_SendAuthHeaders()
         {
             // arrange
@@ -79,44 +71,40 @@ namespace Bitfinex.Net.UnitTests
         }
 
         [Test]
-        public void CheckRestInterfaces()
+        public void CheckSignatureExample1()
         {
-            var assembly = Assembly.GetAssembly(typeof(BitfinexRestClient));
-            var ignore = new string[] { "IBitfinexClient" };
-            var clientInterfaces = assembly.GetTypes().Where(t => t.Name.StartsWith("IBitfinexClient") && !ignore.Contains(t.Name));
+            var authProvider = new BitfinexAuthenticationProvider(
+                new ApiCredentials("hO6oQotzTE0S5FRYze2Jx2wGx7eVnJGMolpA1nZyehsoMgCcgKNWQHd4QgTFZuwl4Zt4xMe2PqGBegWXO4A", "mheO6dR8ovSsxZQCOYEFCtelpuxcWGTfHw7te326y6jOwq5WpvFQ9JNljoTwBXZGv5It07m9RXSPpDQEK2w"), 
+                new TestNonceProvider(1696751141337)
+                );
+            var client = (RestApiClient)new BitfinexRestClient().SpotApi;
 
-            foreach (var clientInterface in clientInterfaces)
-            {
-                var implementation = assembly.GetTypes().Single(t => t.IsAssignableTo(clientInterface) && t != clientInterface);
-                int methods = 0;
-                foreach (var method in implementation.GetMethods().Where(m => m.ReturnType.IsAssignableTo(typeof(Task))))
+            CryptoExchange.Net.Testing.TestHelpers.CheckSignature(
+                client,
+                authProvider,
+                HttpMethod.Post,
+                "v2/auth/w/order/submit",
+                (uriParams, bodyParams, headers) =>
                 {
-                    var interfaceMethod = clientInterface.GetMethod(method.Name, method.GetParameters().Select(p => p.ParameterType).ToArray());
-                    ClassicAssert.NotNull(interfaceMethod, $"Missing interface for method {method.Name} in {implementation.Name} implementing interface {clientInterface.Name}");
-                    methods++;
-                }
-                Debug.WriteLine($"{clientInterface.Name} {methods} methods validated");
-            }
+                    return headers["bfx-signature"].ToString();
+                },
+                "5bead18437434889be3fda165655289d30ee7433d5cdaa9bffd1c3291ea625971b452ca87c7ed11af4e9c959352ec91a",
+                new Dictionary<string, object>
+                {
+                    { "type", "LIMIT" },
+                    { "symbol", "tBTCUSD" },
+                    { "price", 15 },
+                    { "amount", 0.1 },
+                },
+                disableOrdering: true);
+
         }
 
         [Test]
-        public void CheckSocketInterfaces()
+        public void CheckInterfaces()
         {
-            var assembly = Assembly.GetAssembly(typeof(BitfinexSocketClient));
-            var clientInterfaces = assembly.GetTypes().Where(t => t.Name.StartsWith("IBitfinexSocketClient"));
-
-            foreach (var clientInterface in clientInterfaces)
-            {
-                var implementation = assembly.GetTypes().Single(t => t.IsAssignableTo(clientInterface) && t != clientInterface);
-                int methods = 0;
-                foreach (var method in implementation.GetMethods().Where(m => m.ReturnType.IsAssignableTo(typeof(Task<CallResult<UpdateSubscription>>))))
-                {
-                    var interfaceMethod = clientInterface.GetMethod(method.Name, method.GetParameters().Select(p => p.ParameterType).ToArray());
-                    ClassicAssert.NotNull(interfaceMethod, $"Missing interface for method {method.Name} in {implementation.Name} implementing interface {clientInterface.Name}");
-                    methods++;
-                }
-                Debug.WriteLine($"{clientInterface.Name} {methods} methods validated");
-            }
+            CryptoExchange.Net.Testing.TestHelpers.CheckForMissingRestInterfaces<BitfinexRestClient>();
+            CryptoExchange.Net.Testing.TestHelpers.CheckForMissingSocketInterfaces<BitfinexSocketClient>();
         }
     }
 }
