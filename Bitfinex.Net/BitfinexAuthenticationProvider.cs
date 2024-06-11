@@ -28,7 +28,17 @@ namespace Bitfinex.Net
             _nonceProvider = nonceProvider ?? new BitfinexNonceProvider();
         }
 
-        public override void AuthenticateRequest(RestApiClient apiClient, Uri uri, HttpMethod method, IDictionary<string, object> uriParams, IDictionary<string, object> bodyParams, Dictionary<string, string> headers, bool auth, ArrayParametersSerialization arraySerialization, HttpMethodParameterPosition parameterPosition, RequestBodyFormat bodyFormat)
+        public override void AuthenticateRequest(
+            RestApiClient apiClient,
+            Uri uri,
+            HttpMethod method,
+            IDictionary<string, object> uriParameters,
+            IDictionary<string, object> bodyParameters,
+            Dictionary<string, string> headers,
+            bool auth,
+            ArrayParametersSerialization arraySerialization,
+            HttpMethodParameterPosition parameterPosition,
+            RequestBodyFormat requestBodyFormat)
         {
             if (!auth)
                 return;
@@ -36,10 +46,10 @@ namespace Bitfinex.Net
             // Auth requests are always POST
             if (uri.AbsolutePath.Contains("v1"))
             {
-                bodyParams.Add("request", uri.AbsolutePath);
-                bodyParams.Add("nonce", _nonceProvider.GetNonce().ToString());
+                bodyParameters.Add("request", uri.AbsolutePath);
+                bodyParameters.Add("nonce", _nonceProvider.GetNonce().ToString());
 
-                var signature = JsonConvert.SerializeObject(bodyParams);
+                var signature = JsonConvert.SerializeObject(bodyParameters);
                 var payload = Convert.ToBase64String(Encoding.ASCII.GetBytes(signature));
                 var signedData = Sign(payload);
 
@@ -49,7 +59,7 @@ namespace Bitfinex.Net
             }
             else if (uri.AbsolutePath.Contains("v2"))
             {
-                var json = JsonConvert.SerializeObject(bodyParams);
+                var json = JsonConvert.SerializeObject(bodyParameters);
                 var n = _nonceProvider.GetNonce().ToString();
                 var signature = $"/api{uri.AbsolutePath}{n}{json}";
                 var signedData = SignHMACSHA384(signature);

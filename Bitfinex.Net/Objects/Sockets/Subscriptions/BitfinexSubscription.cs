@@ -101,13 +101,13 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             if (message.Data is BitfinexChecksum checksum)
                 _checksumHandler?.Invoke(message.As(checksum.Checksum, _symbol));
             else if (message.Data is BitfinexUpdate<IEnumerable<T>> arrayUpdate)
-                _handler?.Invoke(message.As(arrayUpdate.Data, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+                _handler?.Invoke(message.As(arrayUpdate.Data, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
             else if (message.Data is BitfinexUpdate<T> singleUpdate)
-                _handler?.Invoke(message.As<IEnumerable<T>>(new[] { singleUpdate.Data }, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+                _handler?.Invoke(message.As<IEnumerable<T>>(new[] { singleUpdate.Data }, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
             else if (message.Data is BitfinexTopicUpdate<IEnumerable<T>> array3Update)
-                _handler?.Invoke(message.As(array3Update.Data, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+                _handler?.Invoke(message.As(array3Update.Data, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
             else if (message.Data is BitfinexTopicUpdate<T> single3Update)
-                _handler?.Invoke(message.As<IEnumerable<T>>(new[] { single3Update.Data }, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+                _handler?.Invoke(message.As<IEnumerable<T>>(new[] { single3Update.Data }, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
 
             _firstUpdate = false;
             return new CallResult(null);
