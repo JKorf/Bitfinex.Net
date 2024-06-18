@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding auto renew status
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexFundingAutoRenewStatus
+    public record BitfinexFundingAutoRenewStatus
     {
         /// <summary>
         /// The symbol

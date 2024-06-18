@@ -6,7 +6,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Order book
     /// </summary>
-    public class BitfinexRawFundingOrderBook
+    public record BitfinexRawFundingOrderBook
     {
         /// <summary>
         /// List of bids

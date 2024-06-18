@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding ticker information
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexFundingTicker
+    public record BitfinexFundingTicker
     {
         /// <summary>
         /// The symbol

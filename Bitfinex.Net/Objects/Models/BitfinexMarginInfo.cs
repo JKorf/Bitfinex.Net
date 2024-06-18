@@ -5,7 +5,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Margin info
     /// </summary>
-    public class BitfinexMarginInfo
+    public record BitfinexMarginInfo
     {
         /// <summary>
         /// Conf

@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Margin base
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexMarginBase
+    public record BitfinexMarginBase
     {
         /// <summary>
         /// Type
@@ -26,7 +26,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Margin base info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexMarginBaseInfo
+    public record BitfinexMarginBaseInfo
     {
         /// <summary>
         /// User profit and loss

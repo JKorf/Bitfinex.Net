@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.Models.Socket
 {
-    internal class BitfinexSocketInfo
+    internal record BitfinexSocketInfo
     {
         [JsonProperty("event")]
         public string Event { get; set; } = string.Empty;
@@ -20,7 +20,7 @@ namespace Bitfinex.Net.Objects.Models.Socket
         public string? Message { get; set; }
     }
 
-    internal class BitfinexSocketInfoDetails
+    internal record BitfinexSocketInfoDetails
     {
         [JsonProperty("status")]
         [JsonConverter(typeof(PlatformStatusConverter))]

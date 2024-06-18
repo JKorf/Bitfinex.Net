@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Derivatives status
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexDerivativesStatusUpdate
+    public record BitfinexDerivativesStatusUpdate
     {
         /// <summary>
         /// Timestamp

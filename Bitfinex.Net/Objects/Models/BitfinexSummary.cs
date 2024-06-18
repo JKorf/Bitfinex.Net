@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Bitfinex fee summary
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexSummary
+    public record BitfinexSummary
     {
         /// <summary>
         /// Maker/taker fee info
@@ -36,7 +36,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Leo info
     /// </summary>
-    public class BitfinexLeoInfo
+    public record BitfinexLeoInfo
     {
         /// <summary>
         /// Leo discount level
@@ -54,7 +54,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding earnings
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexFundingEarnings
+    public record BitfinexFundingEarnings
     {
         /// <summary>
         /// Earnings per asset
@@ -72,7 +72,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Volume info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexVolumes
+    public record BitfinexVolumes
     {
         /// <summary>
         /// Volumes
@@ -95,7 +95,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Fee info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexFees
+    public record BitfinexFees
     {
         /// <summary>
         /// Maker fees
@@ -113,7 +113,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Maker fee info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexMakerFee
+    public record BitfinexMakerFee
     {
         /// <summary>
         /// Maker fee
@@ -131,7 +131,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Taker fees info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexTakerFee
+    public record BitfinexTakerFee
     {
         /// <summary>
         /// Crypto trading taker fee
@@ -158,7 +158,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Summary entry
     /// </summary>
-    public class Bitfinex30DaySummaryVolumeEntry
+    public record Bitfinex30DaySummaryVolumeEntry
     {
         /// <summary>
         /// The asset

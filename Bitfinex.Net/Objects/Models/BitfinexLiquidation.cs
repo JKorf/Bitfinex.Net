@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Liquidation info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexLiquidation
+    public record BitfinexLiquidation
     {
         /// <summary>
         /// Position id

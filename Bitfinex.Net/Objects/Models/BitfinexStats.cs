@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Stat info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexStats
+    public record BitfinexStats
     {
         /// <summary>
         /// The timestamp

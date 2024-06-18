@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace Bitfinex.Net.Objects.Models
 {
     [JsonConverter(typeof(ArrayConverter))]
-    internal class BitfinexKeyValue<T>
+    internal record BitfinexKeyValue<T>
     {
         [ArrayProperty(0)]
         public string Key { get; set; } = string.Empty;

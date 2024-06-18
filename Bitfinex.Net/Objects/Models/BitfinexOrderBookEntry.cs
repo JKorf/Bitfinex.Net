@@ -9,13 +9,13 @@ namespace Bitfinex.Net.Objects.Models
     /// Base for order book
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexOrderBookBase { }
+    public record BitfinexOrderBookBase { }
 
     /// <summary>
     /// Order book entry
     /// </summary>
     [JsonConverter(typeof(OrderBookEntryConverter))]
-    public class BitfinexOrderBookEntry: BitfinexOrderBookBase, ISymbolOrderBookEntry
+    public record BitfinexOrderBookEntry: BitfinexOrderBookBase, ISymbolOrderBookEntry
     {
         /// <summary>
         /// The price of this entry
@@ -41,7 +41,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Order book funding entry
     /// </summary>
-    public class BitfinexOrderBookFundingEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
+    public record BitfinexOrderBookFundingEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
     {
         /// <summary>
         /// The price of this entry
@@ -73,7 +73,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Raw order book entry
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexRawOrderBookEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
+    public record BitfinexRawOrderBookEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
     {
         /// <summary>
         /// The id of this order
@@ -96,7 +96,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Raw order book entry
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexRawOrderBookFundingEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
+    public record BitfinexRawOrderBookFundingEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
     {
         /// <summary>
         /// The id of this order

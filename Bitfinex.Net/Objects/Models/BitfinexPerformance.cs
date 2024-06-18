@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Performance info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexPerformance
+    public record BitfinexPerformance
     {
         /// <summary>
         /// The timestamp of the calculation

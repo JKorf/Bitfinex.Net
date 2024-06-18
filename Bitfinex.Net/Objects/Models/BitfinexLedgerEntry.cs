@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Ledger entry
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexLedgerEntry
+    public record BitfinexLedgerEntry
     {
         /// <summary>
         /// The id of the entry

@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Permission info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexPermission
+    public record BitfinexPermission
     {
         /// <summary>
         /// Permission scope

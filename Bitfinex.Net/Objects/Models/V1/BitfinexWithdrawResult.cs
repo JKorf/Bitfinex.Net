@@ -6,7 +6,7 @@ namespace Bitfinex.Net.Objects.Models.V1
     /// <summary>
     /// Result of withdrawing
     /// </summary>
-    public class BitfinexWithdrawalResult
+    public record BitfinexWithdrawalResult
     {
         /// <summary>
         /// The status of the transfer

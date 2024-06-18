@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Symbol info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexSymbolInfo
+    public record BitfinexSymbolInfo
     {
         /// <summary>
         /// Min order quantity

@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Wallet info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexWallet
+    public record BitfinexWallet
     {
         /// <summary>
         /// The type of the wallet

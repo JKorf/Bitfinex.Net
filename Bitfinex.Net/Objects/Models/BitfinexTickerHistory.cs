@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// History info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexTickerHistory
+    public record BitfinexTickerHistory
     {
         /// <summary>
         /// Symbol

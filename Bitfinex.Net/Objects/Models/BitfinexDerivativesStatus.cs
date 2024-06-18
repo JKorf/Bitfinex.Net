@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Derivatives status
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexDerivativesStatus
+    public record BitfinexDerivativesStatus
     {
         /// <summary>
         /// The derivative symbol

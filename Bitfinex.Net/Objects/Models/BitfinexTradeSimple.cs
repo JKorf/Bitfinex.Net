@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Trade info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexTradeSimple
+    public record BitfinexTradeSimple
     {
         /// <summary>
         /// The id of the trade

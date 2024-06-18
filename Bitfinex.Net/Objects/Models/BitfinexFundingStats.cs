@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding stats
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexFundingStats
+    public record BitfinexFundingStats
     {
         /// <summary>
         /// Timestamp

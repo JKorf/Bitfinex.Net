@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Result V2.
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexWriteResult
+    public record BitfinexWriteResult
     {
         /// <summary>
         /// Millisecond Time Stamp of the update.
@@ -57,7 +57,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Result V2.
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexWriteResult<T> : BitfinexWriteResult
+    public record BitfinexWriteResult<T> : BitfinexWriteResult
         where T : class
     {
         /// <summary>

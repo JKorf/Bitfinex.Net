@@ -10,7 +10,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Position info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexPosition
+    public record BitfinexPosition
     {
         /// <summary>
         /// The symbol

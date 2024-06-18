@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Kline info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexKline
+    public record BitfinexKline
     {
         /// <summary>
         /// The timestamp of the kline

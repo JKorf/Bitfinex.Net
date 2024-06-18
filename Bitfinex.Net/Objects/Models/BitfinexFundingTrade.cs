@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding trade info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexFundingTrade
+    public record BitfinexFundingTrade
     {
         /// <summary>
         /// The id

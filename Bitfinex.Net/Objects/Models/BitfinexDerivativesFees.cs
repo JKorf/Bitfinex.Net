@@ -5,7 +5,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Derivatives fee info
     /// </summary>
-    public class BitfinexDerivativesFees
+    public record BitfinexDerivativesFees
     {
         /// <summary>
         /// Perpetual derivatives fee config
@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Perp derivatives fees
     /// </summary>
-    public class BitfinexPerpDerivativesFees
+    public record BitfinexPerpDerivativesFees
     {
         /// <summary>
         /// Correction clamp min

@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Asset info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexAsset
+    public record BitfinexAsset
     {
         /// <summary>
         /// The shorthand name of the asset

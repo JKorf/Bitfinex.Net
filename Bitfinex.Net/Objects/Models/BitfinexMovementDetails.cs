@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Wallet movement info (deposit/withdraw)
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexMovementDetails
+    public record BitfinexMovementDetails
     {
         /// <summary>
         /// The id of the movement

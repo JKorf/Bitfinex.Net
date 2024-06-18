@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models.Socket
     /// Ticker information
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexStreamTicker
+    public record BitfinexStreamTicker
     {
         /// <summary>
         /// The best bid price

@@ -11,7 +11,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Order info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexOrder
+    public record BitfinexOrder
     {
         /// <summary>
         /// The id of the order

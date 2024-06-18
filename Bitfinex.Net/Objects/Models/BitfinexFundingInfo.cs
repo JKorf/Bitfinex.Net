@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexFundingInfo
+    public record BitfinexFundingInfo
     {
         /// <summary>
         /// Type
@@ -32,7 +32,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding info details
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexFundingInfoDetails
+    public record BitfinexFundingInfoDetails
     {
         /// <summary>
         /// The weighted average rate for taken funding

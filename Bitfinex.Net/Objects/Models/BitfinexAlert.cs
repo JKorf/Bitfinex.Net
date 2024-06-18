@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Alert
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexAlert
+    public record BitfinexAlert
     {
         /// <summary>
         /// The key of the alert

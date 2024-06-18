@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Transfer info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexTransfer
+    public record BitfinexTransfer
     {
         /// <summary>
         /// Time of last update

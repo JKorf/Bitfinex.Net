@@ -6,7 +6,7 @@ using System;
 namespace Bitfinex.Net.Objects.Models.Socket
 {
     [JsonConverter(typeof(ArrayConverter))]
-    internal class BitfinexNotification<T>
+    internal record BitfinexNotification<T>
     {
         [ArrayProperty(0)]
         [JsonConverter(typeof(DateTimeConverter))]

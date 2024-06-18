@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Margin symbol info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexMarginSymbol
+    public record BitfinexMarginSymbol
     {
         /// <summary>
         /// The topic
@@ -32,7 +32,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Margin symbol info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexMarginSymbolInfo
+    public record BitfinexMarginSymbolInfo
     {
         /// <summary>
         /// Trade-able balance

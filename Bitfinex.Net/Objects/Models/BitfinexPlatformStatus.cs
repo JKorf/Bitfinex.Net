@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Platform status info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexPlatformStatus
+    public record BitfinexPlatformStatus
     {
         /// <summary>
         /// The current platform status

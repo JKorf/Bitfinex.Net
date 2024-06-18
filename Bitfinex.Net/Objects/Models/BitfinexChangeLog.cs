@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Account change log
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexChangeLog
+    public record BitfinexChangeLog
     {
         /// <summary>
         /// Change timestamp

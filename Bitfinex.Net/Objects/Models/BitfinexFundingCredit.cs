@@ -10,7 +10,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexFunding
+    public record BitfinexFunding
     {
         /// <summary>
         /// The offer id
@@ -122,7 +122,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding credit info
     /// </summary>
-    public class BitfinexFundingCredit: BitfinexFunding
+    public record BitfinexFundingCredit: BitfinexFunding
     {
         /// <summary>
         /// The pair the currency was used for

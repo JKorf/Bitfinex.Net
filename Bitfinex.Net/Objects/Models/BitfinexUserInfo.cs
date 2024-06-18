@@ -11,7 +11,7 @@ namespace Bitfinex.Net.Objects.Models
     /// User info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexUserInfo
+    public record BitfinexUserInfo
     {
         /// <summary>
         /// The id of the user

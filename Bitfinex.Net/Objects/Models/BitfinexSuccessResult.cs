@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Result
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexSuccessResult
+    public record BitfinexSuccessResult
     {
         /// <summary>
         /// Whether the operation was successful

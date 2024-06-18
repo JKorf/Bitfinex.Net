@@ -10,7 +10,7 @@ namespace Bitfinex.Net.Objects.Models.Socket
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexSocketEvent<T>
+    public record BitfinexSocketEvent<T>
     {
         /// <summary>
         /// The channel id of the event

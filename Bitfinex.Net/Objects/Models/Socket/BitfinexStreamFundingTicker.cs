@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding ticker information
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexStreamFundingTicker
+    public record BitfinexStreamFundingTicker
     {
         /// <summary>
         /// Flash Return Rate - average of all fixed rate funding over the last hour

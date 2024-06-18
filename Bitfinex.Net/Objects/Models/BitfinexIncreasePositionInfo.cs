@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Increase position info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexIncreasePositionInfo
+    public record BitfinexIncreasePositionInfo
     {
         /// <summary>
         /// Position quantity info
@@ -35,7 +35,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Position quantity info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexIncreasePositionQuantity
+    public record BitfinexIncreasePositionQuantity
     {
         /// <summary>
         /// Max position
@@ -53,7 +53,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Position balances
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexIncreasePositionBalances
+    public record BitfinexIncreasePositionBalances
     {
         /// <summary>
         /// Base asset balance
@@ -76,7 +76,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Balance info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexIncreasePositionBalance
+    public record BitfinexIncreasePositionBalance
     {
         /// <summary>
         /// Current tradable quote balance
@@ -104,7 +104,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexIncreasePositionFundingInfo
+    public record BitfinexIncreasePositionFundingInfo
     {
         /// <summary>
         /// Funding value
@@ -122,7 +122,7 @@ namespace Bitfinex.Net.Objects.Models
     /// Funding asset info
     /// </summary>
     [JsonConverter(typeof(ArrayConverter))]
-    public class BitfinexIncreasePositionFundingAssetInfo
+    public record BitfinexIncreasePositionFundingAssetInfo
     {
         /// <summary>
         /// Funding value asset
