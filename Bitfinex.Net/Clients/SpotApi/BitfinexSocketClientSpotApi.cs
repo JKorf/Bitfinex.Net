@@ -74,7 +74,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         public override string FormatSymbol(string baseAsset, string quoteAsset) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
 
         /// <inheritdoc />
-        protected override Query GetAuthenticationRequest()
+        protected override Query GetAuthenticationRequest(SocketConnection connection)
         {
             var authProvider = (BitfinexAuthenticationProvider)AuthenticationProvider!;
             var n = authProvider.GetNonce().ToString();
