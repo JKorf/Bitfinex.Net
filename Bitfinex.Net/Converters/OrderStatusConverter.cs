@@ -39,11 +39,22 @@ namespace Bitfinex.Net.Converters
 
         private OrderStatus ParseString(string status)
         {
-            var wasSplit = status.Split(new[] { " was: " }, StringSplitOptions.RemoveEmptyEntries);
-            var split = wasSplit[0].Split(new[] { " @ " }, StringSplitOptions.RemoveEmptyEntries);
+            if (string.IsNullOrWhiteSpace(status))
+                return OrderStatus.Unknown;
 
-            if(TryParseSubstring(split[0], out var result))
+            var wasSplit = status.Split(new[] { " was: " }, StringSplitOptions.RemoveEmptyEntries);
+            if (wasSplit.Length == 0)
+                return OrderStatus.Unknown;
+
+            var split = wasSplit[0].Split(new[] { " @ " }, StringSplitOptions.RemoveEmptyEntries);
+            if (split.Length == 0)
+                return OrderStatus.Unknown;
+
+            if (TryParseSubstring(split[0], out var result))
                return result;
+
+            if (wasSplit.Length == 1)
+                return OrderStatus.Unknown;
 
             split = wasSplit[1].Split(new[] { " @ " }, StringSplitOptions.RemoveEmptyEntries);
             if (TryParseSubstring(split[0], out result))
