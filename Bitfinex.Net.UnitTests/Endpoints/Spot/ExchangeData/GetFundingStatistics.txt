@@ -1,0 +1,19 @@
+GET
+/v2/funding/stats/tETHUST/hist
+false
+[
+  [
+    1678467900000, //MTS
+    null,
+    null,
+    0.00000187, //FRR
+    68.88, //AVG_PERIOD
+    null,
+    null,
+    3230660371.4429536, //FUNDING_AMOUNT
+    2988430006.4623938, //FUNDING_AMOUNT_USED
+    null,
+    null,
+    1447938775.5708046 //FUNDING_BELOW_THRESHOLD
+  ]
+]

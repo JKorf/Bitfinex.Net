@@ -1,0 +1,10 @@
+GET
+/v2/book/tETHUST/R0
+false
+[
+  [
+    34006738527, //ORDER_ID
+    8744.9, //PRICE
+    0.25603413 //AMOUNT
+  ]
+]

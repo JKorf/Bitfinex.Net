@@ -1,0 +1,19 @@
+GET
+/v2/conf/pub:map:currency:undl
+false
+[
+  [
+    [
+      "USTF0",
+      "UST"
+    ],
+    [
+      "BTCF0",
+      "BTC"
+    ],
+    [
+      "ETHF0",
+      "ETH"
+    ]
+  ]
+]

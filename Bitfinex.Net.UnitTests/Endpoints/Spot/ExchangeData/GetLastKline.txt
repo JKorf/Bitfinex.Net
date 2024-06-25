@@ -1,0 +1,11 @@
+GET
+/v2/candles/trade:1D:tETHUST/last
+false
+[ 
+  1678465320000, //MTS 
+  20097, //OPEN
+  20094, //CLOSE
+  20097, //HIGH
+  20094, //LOW
+  0.07870586 //VOLUME
+]

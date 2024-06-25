@@ -1,0 +1,7 @@
+POST
+/v2/calc/trade/avg
+false
+[
+  24187.614862350845, //PRICE_AVG
+  1.123 //AMOUNT
+]

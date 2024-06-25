@@ -1,0 +1,11 @@
+GET
+/v2/book/fUSD/P2
+false
+[
+  [
+  	0.0003301, //RATE
+  	30, //PERIOD
+  	1, //COUNT
+  	-3862.874 //AMOUNT
+  ]
+]

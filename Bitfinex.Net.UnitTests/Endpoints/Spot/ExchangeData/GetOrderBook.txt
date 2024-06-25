@@ -1,0 +1,10 @@
+GET
+/v2/book/tETHUST/P2
+false
+[
+  [
+    8744.9, //PRICE
+    2, //COUNT
+    0.45603413 //AMOUNT
+  ]
+]

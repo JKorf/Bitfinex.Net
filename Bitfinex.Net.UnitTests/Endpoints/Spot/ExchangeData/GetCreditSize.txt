@@ -1,0 +1,9 @@
+GET
+/v2/stats1/credits.size:1m:UST/last
+false
+[
+  [
+   	1573560420000, //MTS
+   	369005353.5945115 //VALUE
+  ]
+]

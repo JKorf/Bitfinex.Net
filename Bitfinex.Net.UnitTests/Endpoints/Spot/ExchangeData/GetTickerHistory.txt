@@ -1,0 +1,20 @@
+GET
+/v2/tickers/hist
+false
+[
+  [
+    "tMKRF0:USTF0", //SYMBOL
+    643.57, //BID
+    null,
+    648.82, //ASK
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    1674061204000 //MTS
+  ]
+]

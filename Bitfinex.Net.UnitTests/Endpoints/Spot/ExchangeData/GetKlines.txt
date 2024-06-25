@@ -1,0 +1,13 @@
+GET
+/v2/candles/trade:1D:tETHUST/hist
+false
+[
+  [
+   	1678465320000, //MTS 
+    20097, //OPEN
+    20114, //CLOSE
+    20125, //HIGH
+    20094, //LOW
+    1.43504645 //VOLUME
+  ]
+]

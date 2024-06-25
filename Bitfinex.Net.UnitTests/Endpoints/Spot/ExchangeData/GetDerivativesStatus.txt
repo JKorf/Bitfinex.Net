@@ -1,0 +1,31 @@
+GET
+/v2/status/deriv
+false
+[
+  [
+    "tAMPF0:USTF0", //KEY
+    1596124822000, //MTS
+    null,
+    0.896, //DERIV_PRICE
+    0.771995, //SPOT_PRICE
+    null,
+    1396531.67460709, //INSURANCE_FUND_BALANCE
+    null,
+    1596153600000, //NEXT_FUNDING_EVT_MTS
+    0.0001056, //NEXT_FUNDING_ACCRUED
+    6, //NEXT_FUNDING_STEP 
+    null,
+    -0.01381344, //CURRENT_FUNDING
+    null,
+    null,
+    0.7664, //MARK_PRICE
+    null,
+    null,
+    246502.09001551, //OPEN_INTEREST
+    null,
+    null,
+    null,
+    0.0005, //CLAMP_MIN
+    0.0025 //CLAMP_MAX
+  ]
+]

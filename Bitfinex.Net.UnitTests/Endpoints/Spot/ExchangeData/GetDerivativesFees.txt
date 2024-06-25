@@ -1,0 +1,12 @@
+GET
+/v2/conf/pub:fees
+false
+[
+  {
+    "deriv_perp": {
+      "correction_clamp_min": 0.0025,
+      "correction_clamp_insurance": 0.0015,
+      "correction_slope": 0.2
+    }
+  }
+]

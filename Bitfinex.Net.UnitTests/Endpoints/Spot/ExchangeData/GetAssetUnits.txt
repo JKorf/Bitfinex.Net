@@ -1,0 +1,11 @@
+GET
+/v2/conf/pub:map:currency:unit
+false
+[
+  [
+    [
+      "IOT",
+      "Mi|MegaIOTA"
+    ]
+  ]
+]

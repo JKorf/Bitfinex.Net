@@ -1,0 +1,11 @@
+GET
+/v2/trades/tETHUST/hist
+false
+[
+  [
+    388063448, //ID
+    1567526214876, //MTS
+    1.918524, //AMOUNT
+    10682 //PRICE
+  ]
+]

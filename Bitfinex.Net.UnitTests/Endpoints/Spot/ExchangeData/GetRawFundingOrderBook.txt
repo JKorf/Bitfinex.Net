@@ -1,0 +1,11 @@
+GET
+/v2/book/fUSD/R0
+false
+[
+  [
+  	645902785, //OFFER_ID
+  	30, //PERIOD
+  	0.0003301, //RATE
+  	-3862.874 //AMOUNT
+	]
+]

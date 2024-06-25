@@ -1,0 +1,6 @@
+POST
+/v2/calc/fx
+false
+[ 
+  8668.65 //CURRENT_RATE 
+]

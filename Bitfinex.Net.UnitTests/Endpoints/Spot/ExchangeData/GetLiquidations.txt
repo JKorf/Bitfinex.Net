@@ -1,0 +1,21 @@
+GET
+/v2/liquidations/hist
+false
+[
+  [
+    [
+    	"pos",
+      158793100, //POS_ID
+      1678465351520, //MTS
+      null,
+      "tAMPF0:USTF0", //SYMBOL
+      1e-8, //AMOUNT
+      1.0093, //BASE_PRICE
+      null,
+      0, //IS_MATCH
+      1, //IS_MARKET_SOLD
+      null,
+      1.0098 //PRICE_ACQUIRED
+    ]
+  ]
+]
