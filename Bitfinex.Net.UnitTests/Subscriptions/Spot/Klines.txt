@@ -1,0 +1,16 @@
+> { "event": "subscribe", "channel": "candles", "key": "trade:1h:tETHUST" }
+< { "event": "subscribed", "channel": "candles", "key": "trade:1h:tETHUST", chanId: 1 }
+= 
+[
+  1, //CHANNEL_ID
+  [
+    [
+      1574698260000, //MTS
+      7379.785503, //OPEN
+      7383.8, //CLOSE
+      7388.3, //HIGH
+      7379.785503, //LOW
+      1.68829482 //VOLUME
+    ]
+  ] //SNAPSHOT
+]

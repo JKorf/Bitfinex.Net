@@ -1,0 +1,17 @@
+> { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
+< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+= 
+[
+  0, //CHAN_ID
+  "fte", //TYPE
+  [
+    636854, //ID
+    "fUSD", //SYMBOL
+    1575282446000, //MTS_CREATE
+    41238905, //OFFER_ID
+    -1000, //AMOUNT
+    0.002, //RATE
+    7, //PERIOD
+    null //MAKER
+  ] //FUNDING_TRADE_ARRAY
+]

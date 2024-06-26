@@ -1,0 +1,17 @@
+> { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
+< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+= 
+[
+  0, //CHAN_ID
+  "miu", //MSG_TYPE
+  [
+    "base", //UPDATE_TYPE
+    [
+      -13.014640000000007, //USER_PL
+      0, //USER_SWAPS
+      49331.70267297, //MARGIN_BALANCE
+      49318.68803297, //MARGIN_NET
+      27 //MARGIN_REQUIRED
+    ] //BASE_UPDATE_ARRAY
+  ] //UPDATE_ARRAY
+] 

@@ -1,0 +1,14 @@
+> { "event": "subscribe", "channel": "book", "symbol": "fUSD", "prec": "P2", "freq": "F1", "len": 25 }
+< { "event": "subscribed", "channel": "book", "symbol": "fUSD", "prec": "P2", "freq": "F1", "len": 25, chanId: 1 }
+= 
+[
+  1, //CHANNEL_ID
+  [
+    [
+      0.00023112, //RATE
+      30, //PERIOD
+      1, //COUNT
+      -15190.7005375 //AMOUNT
+    ] //BOOK_ENTRY
+  ] //BOOK_ENTRIES
+]

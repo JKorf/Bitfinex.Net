@@ -1,0 +1,22 @@
+POST
+/v2/auth/w/transfer
+true
+[
+  1568736745789, //MTS
+  "acc_tf", //TYPE
+  null, //MESSAGE_ID
+  null, //PLACEHOLDER
+  [
+    1568736745790, //MTS_UPDATE
+    "margin", //WALLET_FROM
+    "exchange", //WALLET_TO
+    null, //PLACEHOLDER
+    "USD", //CURRENCY
+    null, //CURRENCY_TO
+    null, //PLACEHOLDER
+    50 //AMOUNT
+  ], //TRANSFER_ARRAY
+  null, //CODE
+  "SUCCESS", //STATUS
+  "50.0 US Dollar transferred from Margin to Exchange" //TEXT
+]

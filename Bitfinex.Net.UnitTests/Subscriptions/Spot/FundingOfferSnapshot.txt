@@ -1,0 +1,32 @@
+> { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
+< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+= 
+[
+  0, //CHAN_ID
+  "fos", //MSG_TYPE
+  [
+    [
+      41237920, //OFFER_ID
+      "fETH", //SYMBOL
+      1573912039000, //MTS_CREATED
+      1573912039000, //MTS_UPDATED
+      0.5, //AMOUNT
+      0.5, //AMOUNT_ORIG
+      "LIMIT", //OFFER_TYPE
+      null, //PLACEHOLDER
+      null, //PLACEHOLDER
+      0, //FLAGS
+      "ACTIVE", //STATUS
+      null, //PLACEHOLDER
+      null, //PLACEHOLDER
+      null, //PLACEHOLDER
+      0.0024, //RATE
+      2, //PERIOD
+      0, //NOTIFY
+      0, //HIDDEN
+      null, //PLACEHOLDER
+      0, //RENEW
+      null //PLACEHOLDER
+    ] //FUNDING_OFFER_ARRAY
+  ] //FUNDING_OFFERS_SNAPSHOT
+]

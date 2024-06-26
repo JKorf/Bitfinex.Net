@@ -1,0 +1,39 @@
+POST
+/v2/auth/r/orders/hist
+true
+[
+  [
+    33961681942, //ID
+    "1227", //GID
+    1337, //CID
+    "tBTCUSD", //SYMBOL
+    1573482478000, //MTS_CREATE
+    1573485373000, //MTS_UPDATE
+    0.001, //AMOUNT
+    0.001, //AMOUNT_ORIG
+    "EXCHANGE LIMIT", //ORDER_TYPE
+    null, //TYPE_PREV
+    null, //MTS_TIF
+    null,
+    "0", //FLAGS
+    "CANCELED", //STATUS
+    null,
+    null,
+    15, //PRICE
+    0, //PRICE_AVG
+    0, //PRICE_TRAILING
+    0, //PRICE_AUX_LIMIT
+    null,
+    null,
+    null,
+    0, //NOTIFY
+    0, //HIDDEN
+    null, //PLACED_ID
+    null,
+    null,
+    "API>BFX", //ROUTING
+    null,
+    null,
+    null //META
+  ]
+]

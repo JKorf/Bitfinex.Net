@@ -172,6 +172,11 @@ namespace Bitfinex.Net.Objects.Models
         [JsonProperty("vol")]
         public string Volume { get; set; } = string.Empty;
         /// <summary>
+        /// The safe volume
+        /// </summary>
+        [JsonProperty("vol_safe")]
+        public string VolumeSafe { get; set; } = string.Empty;
+        /// <summary>
         /// The maker volume
         /// </summary>
         [JsonProperty("vol_maker")]
@@ -181,6 +186,11 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [JsonProperty("vol_BFX")]
         public string VolumeBFX { get; set; } = string.Empty;
+        /// <summary>
+        /// The safe volume on Bitfinex
+        /// </summary>
+        [JsonProperty("vol_BFX_safe")]
+        public string VolumeBFXSafe { get; set; } = string.Empty;
         /// <summary>
         /// The maker volume on Bitfinex
         /// </summary>

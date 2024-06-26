@@ -1,0 +1,19 @@
+POST
+/v2/auth/r/order/tETHUST:123/trades
+true
+[
+  [
+    399251013, //ID
+    "tETHUSD", //SYMBOL
+    1573485493000, //MTS
+    33963608932, //ORDER_ID
+    0.26334268, //EXEC_AMOUNT
+    187.37, //EXEC_PRICE
+    null,
+    null,
+    0, //MAKER
+    -0.09868591, //FEE
+    "USD", //FEE_CURRENCY
+    1234 //CID
+  ]
+]

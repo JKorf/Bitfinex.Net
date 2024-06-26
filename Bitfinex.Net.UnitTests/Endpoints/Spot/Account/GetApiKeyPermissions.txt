@@ -1,0 +1,55 @@
+POST
+/v2/auth/r/permissions
+true
+[
+  [
+    'account', //SCOPE
+    1, //READ
+    1 //WRITE
+	], //KEY_PERMISSION_ARRAY
+  [
+    'history', //SCOPE
+    1, //READ
+    1 //WRITE
+	], //KEY_PERMISSION_ARRAY
+  [
+    'orders',
+    1,
+    1
+	],
+  [
+    'positions',
+    0,
+    0
+	],
+  [
+    'funding',
+    1,
+    1
+	],
+  [
+    'settings',
+    0,
+    0
+	],
+  [
+    'wallets',
+    1,
+    1
+	],
+  [
+    'withdraw',
+    0,
+    1
+	],
+  [
+    'ui_withdraw',
+    0,
+    0
+	],
+  [
+    'bfxpay', 
+    0, 
+    0
+	]
+]

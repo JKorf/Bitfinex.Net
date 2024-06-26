@@ -164,7 +164,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToDerivativesUpdatesAsync(string symbol, Action<DataEvent<BitfinexDerivativesStatusUpdate>> handler, CancellationToken ct = default)
         {
-            var subscription = new BitfinexSubscription<BitfinexDerivativesStatusUpdate>(_logger, "candles", null, x => handler(x.As(x.Data.Single())), key: $"deriv:" + symbol);
+            var subscription = new BitfinexSubscription<BitfinexDerivativesStatusUpdate>(_logger, "status", null, x => handler(x.As(x.Data.Single())), key: $"deriv:" + symbol);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 

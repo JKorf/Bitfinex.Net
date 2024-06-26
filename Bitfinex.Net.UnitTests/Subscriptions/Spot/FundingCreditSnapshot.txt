@@ -1,0 +1,33 @@
+> { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
+< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+= 
+[
+  0, //CHAN_ID
+  "fcs", //MSG_TYPE
+  [
+    [
+      26223578, //CREDIT_ID
+      "fUST", //SYMBOL
+      1, //SIDE
+      1575052261000, //MTS_CREATE
+      1575296187000, //MTS_UPDATE
+      350, //AMOUNT
+      0, //FLAGS
+      "ACTIVE", //STATUS
+      null, //PLACEHOLDER
+      null, //PLACEHOLDER
+      null, //PLACEHOLDER
+      0, //RATE
+      30, //PERIOD
+      1575052261000, //MTS_OPENING
+      1575293487000, //MTS_LAST_PAYOUT
+      0, //NOTIFY
+      0, //HIDDEN
+      null, //PLACEHOLDER
+      0, //RENEW
+      null, //RATE_REAL
+      0, //NO_CLOSE
+      "tBTCUST" //POSITION_PAIR
+    ]
+  ] //FUNDING_CREDITS_SNAPSHOT
+]

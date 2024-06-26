@@ -1,0 +1,4 @@
+POST
+/v2/auth/calc/order/avail
+true
+[0.8056309]

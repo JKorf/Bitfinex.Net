@@ -120,6 +120,12 @@ namespace Bitfinex.Net.Enums
         FundingTradeUpdate,
 
         /// <summary>
+        /// Funding info update
+        /// </summary>
+        [Map("fiu")]
+        FundingInfoUpdate,
+
+        /// <summary>
         /// Margin info snapshot
         /// </summary>
         [Map("mis")]

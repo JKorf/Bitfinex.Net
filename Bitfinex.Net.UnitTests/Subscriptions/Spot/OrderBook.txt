@@ -1,0 +1,13 @@
+> { "event": "subscribe", "channel": "book", "symbol": "tETHUST", "prec": "P2", "freq": "F1", "len": 25 }
+< { "event": "subscribed", "channel": "book", "symbol": "tETHUST", "prec": "P2", "freq": "F1", "len": 25, chanId: 1 }
+= 
+[
+  1, //CHANNEL_ID
+  [
+    [
+      7254.7, //PRICE
+      3, //COUNT
+      3.3 //AMOUNT
+    ]
+  ] //BOOK_ENTRIES
+]

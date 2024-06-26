@@ -1,0 +1,41 @@
+> { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
+< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+= 
+[
+  0, //CHAN_ID
+  "oc", //MSG_TYPE
+  [
+    34930659963, //ID
+    null, //GID
+    1574955083558, //CID
+    "tETHUSD", //SYMBOL
+    1574955083558, //MTS_CREATE
+    1574955354487, //MTS_UPDATE
+    0.201104, //AMOUNT
+    0.201104, //AMOUNT_ORIG
+    "EXCHANGE LIMIT", //ORDER_TYPE
+    null, //TYPE_PREV
+    null, //MTS_TIF
+    null, //PLACEHOLDER
+    0, //FLAGS
+    "CANCELED", //ORDER_STATUS
+    null, //PLACEHOLDER
+    null, //PLACEHOLDER
+    120, //PRICE
+    0, //PRICE_AVG
+    0, //PRICE_TRAILING
+    0, //PRICE_AUX_LIMIT
+    null, //PLACEHOLDER
+    null, //PLACEHOLDER
+    null, //PLACEHOLDER
+    0, //NOTIFY
+    0, //HIDDEN
+    null, //PLACED_ID
+    null, //PLACEHOLDER
+    null, //PLACEHOLDER
+    "BFX", //ROUTING
+    null, //PLACEHOLDER
+    null, //PLACEHOLDER
+    null //META
+  ] //ORDER_ARRAY
+]

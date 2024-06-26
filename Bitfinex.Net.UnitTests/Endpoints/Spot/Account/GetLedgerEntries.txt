@@ -1,0 +1,16 @@
+POST
+/v2/auth/r/ledgers/tETHUST/hist
+true
+ [
+  [
+  2531822314, //ID
+  "USD", //CURRENCY
+  "margin", //WALLET
+  1573521810000, //MTS
+  null, //PLACEHOLDER
+  0.01644445, //AMOUNT
+  0, //BALANCE
+  null, //PLACEHOLDER
+  "Settlement @ 185.79 on wallet margin" //DESCRIPTION
+	]
+]

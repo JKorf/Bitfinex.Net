@@ -1,0 +1,4 @@
+POST
+/v2/auth/r/summary
+true
+[null,null,null,null,[[0.001,0.001,0.001,null,null,0.0002],[0.002,0.002,0.002,null,null,0.00065]],[[{"curr":"Total (USD)","vol":0,"vol_safe":0,"vol_maker":0,"vol_BFX":0,"vol_BFX_safe":0,"vol_BFX_maker":0}],{},0],[null,{},0],null,null,{"leo_lev":0,"leo_amount_avg":0.6470697827185}]

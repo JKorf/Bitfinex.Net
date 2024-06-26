@@ -1,0 +1,12 @@
+POST
+/v2/auth/r/alerts
+true
+[
+ [
+   "price:tETHUSD:220", //INFO
+   "price", //TYPE
+   "tETHUSD", //PAIR
+   220, //PRICE
+   100 //COUNTDOWN
+ ]
+]

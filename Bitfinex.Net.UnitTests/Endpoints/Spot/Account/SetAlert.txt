@@ -1,0 +1,10 @@
+POST
+/v2/auth/w/alert/set
+true
+[
+  "price:tETHUSD:185", //INFO
+  "price", //TYPE
+  "tETHUSD", //PAIR
+  185, //PRICE
+  100 //COUNTDOWN
+]

@@ -1,0 +1,39 @@
+POST
+/v2/auth/r/orders
+true
+[
+  [
+    33950998275, //ID
+    null, //GID
+    1573476747887, //CID
+    "tETHUSD", //SYMBOL
+    1573476748000, //MTS_CREATE
+    1573476748000, //MTS_UPDATE
+    -0.5, //AMOUNT
+    -0.5, //AMOUNT_ORIG
+    "LIMIT", //ORDER_TYPE
+    null, //TYPE_PREV
+    null, //MTS_TIF
+    null,
+    0, //FLAGS
+    "ACTIVE", //STATUS
+    null,
+    null,
+    220, //PRICE
+    0, //PRICE_AVG
+    0, //PRICE_TRAILING
+    0, //PRICE_AUX_LIMIT
+    null,
+    null,
+    null,
+    0, //NOTIFY
+    0, //HIDDEN
+    null, //PLACED_ID
+    null,
+    null,
+    "BFX", //ROUTING
+    null,
+    null,
+    null //META
+  ]
+]

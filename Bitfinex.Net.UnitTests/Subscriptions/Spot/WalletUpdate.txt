@@ -1,0 +1,22 @@
+> { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
+< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+= 
+[
+  0, //CHAN_ID
+  "wu", //MSG_TYPE
+  [ 
+    "exchange", //WALLET_TYPE
+    "BTC", //CURRENCY
+    1.61169184, //BALANCE
+    0, //UNSETTLED_INTEREST
+    null, //BALANCE_AVAILABLE
+    "Exchange 0.01 BTC for USD @ 7804.6", //DESCRIPTION
+    {
+      "reason":"TRADE",
+      "order_id":34988418651,
+      "order_id_oppo":34990541044,
+      "trade_price":"7804.6",
+      "trade_amount":"0.01"
+    } //META
+  ] //WALLET_ARRAY
+]

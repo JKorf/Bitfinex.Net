@@ -1,0 +1,20 @@
+POST
+/v2/auth/w/deposit/address
+true
+[
+  1568738594687, //MTS
+  "acc_dep", //TYPE
+  null, //MESSAGE_ID
+  null, //PLACEHOLDER
+  [
+    null, //PLACEHOLDER
+    "BITCOIN", //METHOD
+    "BTC", //CURRENCY_CODE
+    null, //PLACEHOLDER
+    "YOURADDRESS", //ADDRESS
+    null //POOL_ADDRESS
+  ], //DEPOSIT_ADDRESS_ARRAY
+  null, //CODE
+  "SUCCESS", //STATUS
+  "success" //TEXT
+]

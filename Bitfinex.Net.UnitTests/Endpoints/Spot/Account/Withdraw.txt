@@ -1,0 +1,10 @@
+POST
+/v1/withdraw
+true
+[
+  {
+    "status": "success",
+    "message": "Your withdrawal request has been successfully submitted.",
+    "withdrawal_id": 586829
+  }
+]

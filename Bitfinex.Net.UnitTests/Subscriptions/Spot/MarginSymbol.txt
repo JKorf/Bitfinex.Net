@@ -1,0 +1,21 @@
+> { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
+< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+= 
+[
+  0, //CHAN_ID
+  "miu", //MSG_TYPE
+  [
+    "sym", //UPDATE_TYPE
+    "tETHUSD", //SYMBOL
+    [
+      149361.09689202666, //TRADABLE_BALANCE
+      149639.26293509, //GROSS_BALANCE
+      830.0182168075556, //BUY
+      895.0658432466332, //SELL
+      null, //PLACEHOLDER
+      null, //PLACEHOLDER
+      null, //PLACEHOLDER
+      null //PLACEHOLDER
+    ] //SYM_UPDATE_ARRAY
+  ] //UPDATE_ARRAY
+] 

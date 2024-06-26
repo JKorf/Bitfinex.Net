@@ -1,0 +1,21 @@
+> { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
+< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+= 
+[
+  0, //CHAN_ID
+  "te", //MSG_TYPE
+  [
+    402088407, //ID
+    "tETHUST", //SYMBOL
+    1574963975602, //MTS_CREATE
+    34938060782, //ORDER_ID
+    -0.2, //EXEC_AMOUNT
+    153.57, //EXEC_PRICE
+    "MARKET", //ORDER_TYPE
+    0, //ORDER_PRICE
+    -1, //MAKER
+    null, //FEE ('tu' only)
+    null, //FEE_CURRENCY ('tu' only)
+    0 //CID
+  ] //TRADE_ARRAY
+]

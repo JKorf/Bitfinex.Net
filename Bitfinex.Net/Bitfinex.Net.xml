@@ -664,6 +664,11 @@
             Funding trade update
             </summary>
         </member>
+        <member name="F:Bitfinex.Net.Enums.BitfinexEventType.FundingInfoUpdate">
+            <summary>
+            Funding info update
+            </summary>
+        </member>
         <member name="F:Bitfinex.Net.Enums.BitfinexEventType.MarginInfoSnapshot">
             <summary>
             Margin info snapshot
@@ -4610,6 +4615,11 @@
             The volume
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Bitfinex30DaySummaryVolumeEntry.VolumeSafe">
+            <summary>
+            The safe volume
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.Models.Bitfinex30DaySummaryVolumeEntry.VolumeMaker">
             <summary>
             The maker volume
@@ -4618,6 +4628,11 @@
         <member name="P:Bitfinex.Net.Objects.Models.Bitfinex30DaySummaryVolumeEntry.VolumeBFX">
             <summary>
             The volume on Bitfinex
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Bitfinex30DaySummaryVolumeEntry.VolumeBFXSafe">
+            <summary>
+            The safe volume on Bitfinex
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.Bitfinex30DaySummaryVolumeEntry.VolumeBFXMaker">

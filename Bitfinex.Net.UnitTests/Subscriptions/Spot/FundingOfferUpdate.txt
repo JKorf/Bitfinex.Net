@@ -1,0 +1,30 @@
+> { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
+< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+= 
+[
+  0, //CHAN_ID
+  "fon", //MSG_TYPE
+  [
+    41238747, //OFFER_ID
+    "fUST", //SYMBOL
+    1575026670000, //MTS_CREATED
+    1575026670000, //MTS_UPDATED
+    5000, //AMOUNT
+    5000, //AMOUNT_ORIG
+    "LIMIT", //OFFER_TYPE
+    null, //PLACEHOLDER
+    null, //PLACEHOLDER
+    0, //FLAGS
+    "ACTIVE", //STATUS
+    null, //PLACEHOLDER
+    null, //PLACEHOLDER
+    null, //PLACEHOLDER
+    0.006000000000000001, //RATE
+    30, //PERIOD
+    0, //NOTIFY
+    0, //HIDDEN
+    null, //PLACEHOLDER
+    0, //RENEW
+    null //RATE_REAL
+  ]
+]

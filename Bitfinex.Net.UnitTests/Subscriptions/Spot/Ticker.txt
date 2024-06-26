@@ -1,0 +1,18 @@
+> { "event": "subscribe", "channel": "ticker", "symbol": "tETHUST" }
+< { "event": "subscribed", "channel": "ticker", "symbol": "tETHUST", chanId: 1 }
+= 
+[
+  1, //CHANNEL_ID
+  [
+    7616.5, //BID
+    31.89055171, //BID_SIZE
+    7617.5, //ASK
+    43.358118629999986, //ASK_SIZE
+    -550.8, //DAILY_CHANGE
+    -0.0674, //DAILY_CHANGE_RELATIVE
+    7617.1, //LAST_PRICE
+    8314.71200815, //VOLUME
+    8257.8, //HIGH
+    7500 //LOW
+  ] //UPDATE
+]

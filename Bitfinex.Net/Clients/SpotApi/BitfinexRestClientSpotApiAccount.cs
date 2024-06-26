@@ -84,14 +84,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 { "id", id }
             };
 
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexMovementDetails>>(_baseClient.GetUrl("auth/r/movements/info", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
-            if (!result)
-                return result.As<BitfinexMovementDetails>(null);
-
-            if (!result.Data.Any())
-                return result.AsError<BitfinexMovementDetails>(new ServerError("No movement found with id"));
-
-            return result.As<BitfinexMovementDetails>(result.Data.First());
+            return await _baseClient.SendRequestAsync<BitfinexMovementDetails>(_baseClient.GetUrl("auth/r/movements/info", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
