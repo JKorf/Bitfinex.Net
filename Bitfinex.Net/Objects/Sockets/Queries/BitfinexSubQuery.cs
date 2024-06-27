@@ -3,7 +3,6 @@ using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Objects.Sockets.Queries
 {
@@ -35,7 +34,11 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
         public override CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DataEvent<BitfinexResponse> message)
         {
             if (string.Equals(message.Data.Event, "error", StringComparison.Ordinal))
-                return new CallResult<BitfinexResponse>(new ServerError(message.Data.Message!));
+            {
+                // Additional check for "dup" which means the subscription is already active
+                if (!message.Data.Message.Equals("subscribe: dup", StringComparison.Ordinal))
+                    return new CallResult<BitfinexResponse>(new ServerError(message.Data.Message!));
+            }
 
             return new CallResult<BitfinexResponse>(message.Data);
         }

@@ -50,5 +50,17 @@ namespace Bitfinex.Net.UnitTests
             await tester.ValidateAsync<BitfinexMarginBase>((client, handler) => client.SpotApi.SubscribeToUserUpdatesAsync(marginBaseHandler: handler), "MarginBase");
             await tester.ValidateAsync<BitfinexMarginSymbol>((client, handler) => client.SpotApi.SubscribeToUserUpdatesAsync(marginSymbolHandler: handler), "MarginSymbol");
         }
+
+        [Test]
+        public async Task TestDoubleSubscription()
+        {
+            var client = new BitfinexSocketClient();
+            
+            var sub1 = await client.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", (data) => { });
+            var sub2 = await client.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", (data) => { });
+
+            Assert.That(sub1.Success);
+            Assert.That(sub2.Success);
+        }
     }
 }
