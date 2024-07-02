@@ -96,6 +96,9 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 7.4.3 - 02 Jul 2024
+    * Updated CryptoExchange.Net to V7.8.0, see https://github.com/JKorf/CryptoExchange.Net/releases/tag/7.8.0
+
 * Version 7.4.2 - 26 Jun 2024
     * Updated CryptoExchange.Net to 7.7.3, see https://github.com/JKorf/CryptoExchange.Net/releases/tag/7.7.3
     * Fixed SpotApi.Account.GetMovementsDetailsAsync deserialization
