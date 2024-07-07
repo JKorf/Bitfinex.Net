@@ -29,7 +29,7 @@ using CryptoExchange.Net.Clients;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc cref="IBitfinexSocketClientSpotApi" />
-    public class BitfinexSocketClientSpotApi : SocketApiClient, IBitfinexSocketClientSpotApi
+    internal class BitfinexSocketClientSpotApi : SocketApiClient, IBitfinexSocketClientSpotApi
     {
         private static readonly MessagePath _0Path = MessagePath.Get().Index(0);
         private static readonly MessagePath _eventPath = MessagePath.Get().Property("event");

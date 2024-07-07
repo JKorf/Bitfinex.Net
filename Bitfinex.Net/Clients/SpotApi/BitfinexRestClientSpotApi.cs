@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc cref="IBitfinexRestClientSpotApi" />
-    public class BitfinexRestClientSpotApi : RestApiClient, IBitfinexRestClientSpotApi, ISpotClient
+    internal class BitfinexRestClientSpotApi : RestApiClient, IBitfinexRestClientSpotApi, ISpotClient
     {
         #region fields
         internal string? AffiliateCode { get; set; }

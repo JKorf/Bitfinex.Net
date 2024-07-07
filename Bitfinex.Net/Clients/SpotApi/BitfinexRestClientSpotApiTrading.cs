@@ -20,7 +20,7 @@ using Bitfinex.Net.ExtensionMethods;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc />
-    public class BitfinexRestClientSpotApiTrading : IBitfinexRestClientSpotApiTrading
+    internal class BitfinexRestClientSpotApiTrading : IBitfinexRestClientSpotApiTrading
     {
         private const string OrderHistorySingleEndpoint = "auth/r/orders/hist";
         private const string OrderHistoryEndpoint = "auth/r/orders/{}/hist";

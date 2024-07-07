@@ -19,7 +19,7 @@ using Bitfinex.Net.ExtensionMethods;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc />
-    public class BitfinexRestClientSpotApiAccount : IBitfinexRestClientSpotApiAccount
+    internal class BitfinexRestClientSpotApiAccount : IBitfinexRestClientSpotApiAccount
     {
         private const string WalletsEndpoint = "auth/r/wallets";
         private const string CalcAvailableBalanceEndpoint = "auth/calc/order/avail";

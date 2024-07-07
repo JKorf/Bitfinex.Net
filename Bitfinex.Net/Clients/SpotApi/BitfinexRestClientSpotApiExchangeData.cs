@@ -18,7 +18,7 @@ using Bitfinex.Net.ExtensionMethods;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc />
-    public class BitfinexRestClientSpotApiExchangeData : IBitfinexRestClientSpotApiExchangeData
+    internal class BitfinexRestClientSpotApiExchangeData : IBitfinexRestClientSpotApiExchangeData
     {
         private const string StatusEndpoint = "platform/status";
         private const string ForeignExchangeEndpoint = "calc/fx";

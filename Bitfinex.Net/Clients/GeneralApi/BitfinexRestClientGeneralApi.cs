@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace Bitfinex.Net.Clients.GeneralApi
 {
     /// <inheritdoc cref="IBitfinexRestClientGeneralApi" />
-    public class BitfinexRestClientGeneralApi : RestApiClient, IBitfinexRestClientGeneralApi
+    internal class BitfinexRestClientGeneralApi : RestApiClient, IBitfinexRestClientGeneralApi
     {
         #region fields
         internal string? AffiliateCode { get; set; }
