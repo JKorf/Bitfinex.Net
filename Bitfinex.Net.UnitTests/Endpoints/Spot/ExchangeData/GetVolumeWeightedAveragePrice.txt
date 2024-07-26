@@ -1,5 +1,5 @@
 GET
-/v2/stats1/vwap:1d:tETHUST/last
+/v2/stats1/vwap:1d:tETHUST/hist
 false
 [
   [

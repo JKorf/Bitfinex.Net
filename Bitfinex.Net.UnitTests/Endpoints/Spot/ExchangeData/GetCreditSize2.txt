@@ -1,5 +1,5 @@
 GET
-/v2/stats1/credits.size.sym:1m:UST:tETHUST/last
+/v2/stats1/credits.size.sym:1m:UST:tETHUST/hist
 false
 [
   [
