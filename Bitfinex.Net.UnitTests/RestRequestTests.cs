@@ -87,12 +87,12 @@ namespace Bitfinex.Net.UnitTests
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetDerivativesStatusHistoryAsync("tETHUST"), "GetDerivativesStatusHistory");
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetLiquidationsAsync(), "GetLiquidations", useSingleArrayItem: true);
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetFundingStatisticsAsync("tETHUST"), "GetFundingStatistics");
-            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetFundingSizeAsync("UST", Enums.StatSection.Last), "GetFundingSize");
-            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetCreditSizeAsync("UST", Enums.StatSection.Last), "GetCreditSize");
-            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetCreditSizeAsync("UST", "tETHUST", Enums.StatSection.Last), "GetCreditSize2");
-            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetLongsShortsTotalsAsync("tETHUST", Enums.StatSide.Long, Enums.StatSection.History), "GetLongsShortsTotals");
-            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetTradingVolumeAsync(1, Enums.StatSection.History), "GetTradingVolume");
-            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetVolumeWeightedAveragePriceAsync("tETHUST", Enums.StatSection.Last), "GetVolumeWeightedAveragePrice");
+            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetFundingSizeHistoryAsync("UST"), "GetFundingSize");
+            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetCreditSizeHistoryAsync("UST"), "GetCreditSize");
+            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetCreditSizeHistoryAsync("UST", "tETHUST"), "GetCreditSize2");
+            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetLongsShortsTotalsHistoryAsync("tETHUST", Enums.StatSide.Long), "GetLongsShortsTotals");
+            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetTradingVolumeHistoryAsync(1), "GetTradingVolume");
+            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetVolumeWeightedAveragePriceHistoryAsync("tETHUST"), "GetVolumeWeightedAveragePrice");
         }
 
         [Test]

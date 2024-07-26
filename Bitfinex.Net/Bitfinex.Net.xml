@@ -410,22 +410,40 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetFundingStatisticsAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetFundingSizeAsync(System.String,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetFundingSizeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetCreditSizeAsync(System.String,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetLastFundingSizeAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetCreditSizeAsync(System.String,System.String,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetLastCreditSizeAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetLongsShortsTotalsAsync(System.String,Bitfinex.Net.Enums.StatSide,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetCreditSizeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetTradingVolumeAsync(System.Int32,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetLastCreditSizeAsync(System.String,System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetVolumeWeightedAveragePriceAsync(System.String,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetCreditSizeHistoryAsync(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetLastLongsShortsTotalsAsync(System.String,Bitfinex.Net.Enums.StatSide,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetLongsShortsTotalsHistoryAsync(System.String,Bitfinex.Net.Enums.StatSide,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetLastTradingVolumeAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetTradingVolumeHistoryAsync(System.Int32,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetLastVolumeWeightedAveragePriceAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiExchangeData.GetVolumeWeightedAveragePriceHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading">
@@ -2037,13 +2055,21 @@
             <param name="ct"></param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetFundingSizeAsync(System.String,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastFundingSizeAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get total active funding in specified asset
             <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
             </summary>
             <param name="asset">The asset</param>
-            <param name="section">Section of data</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetFundingSizeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+            <summary>
+            Get total active funding in specified asset
+            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            </summary>
+            <param name="asset">The asset</param>
             <param name="limit">Max number of results</param>
             <param name="startTime">Filter by start time</param>
             <param name="endTime">Filter by end time</param>
@@ -2051,13 +2077,21 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetCreditSizeAsync(System.String,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastCreditSizeAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get total funding used in positions in specified asset
             <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
             </summary>
             <param name="asset">The asset</param>
-            <param name="section">Section of data</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetCreditSizeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+            <summary>
+            Get total funding used in positions in specified asset
+            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            </summary>
+            <param name="asset">The asset</param>
             <param name="limit">Max number of results</param>
             <param name="startTime">Filter by start time</param>
             <param name="endTime">Filter by end time</param>
@@ -2065,14 +2099,23 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetCreditSizeAsync(System.String,System.String,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastCreditSizeAsync(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Get total funding used in positions on a specific symbol in specified asset
             <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
             </summary>
             <param name="asset">The asset</param>
             <param name="symbol">The symbol</param>
-            <param name="section">Section of data</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetCreditSizeHistoryAsync(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+            <summary>
+            Get total funding used in positions on a specific symbol in specified asset
+            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            </summary>
+            <param name="asset">The asset</param>
+            <param name="symbol">The symbol</param>
             <param name="limit">Max number of results</param>
             <param name="startTime">Filter by start time</param>
             <param name="endTime">Filter by end time</param>
@@ -2080,14 +2123,23 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLongsShortsTotalsAsync(System.String,Bitfinex.Net.Enums.StatSide,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastLongsShortsTotalsAsync(System.String,Bitfinex.Net.Enums.StatSide,System.Threading.CancellationToken)">
             <summary>
             Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
             <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
             </summary>
             <param name="symbol">The symbol</param>
             <param name="side">Position side</param>
-            <param name="section">Section of data</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLongsShortsTotalsHistoryAsync(System.String,Bitfinex.Net.Enums.StatSide,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+            <summary>
+            Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
+            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            </summary>
+            <param name="symbol">The symbol</param>
+            <param name="side">Position side</param>
             <param name="limit">Max number of results</param>
             <param name="startTime">Filter by start time</param>
             <param name="endTime">Filter by end time</param>
@@ -2095,13 +2147,21 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetTradingVolumeAsync(System.Int32,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastTradingVolumeAsync(System.Int32,System.Threading.CancellationToken)">
             <summary>
             Get trading volume on the platform
             <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
             </summary>
             <param name="period">The period in days to get the data for. 1, 7 or 30</param>
-            <param name="section">Section of data</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetTradingVolumeHistoryAsync(System.Int32,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+            <summary>
+            Get trading volume on the platform
+            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            </summary>
+            <param name="period">The period in days to get the data for. 1, 7 or 30</param>
             <param name="limit">Max number of results</param>
             <param name="startTime">Filter by start time</param>
             <param name="endTime">Filter by end time</param>
@@ -2109,13 +2169,21 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetVolumeWeightedAveragePriceAsync(System.String,Bitfinex.Net.Enums.StatSection,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastVolumeWeightedAveragePriceAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get volume weighted average price for the day
             <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
             </summary>
             <param name="symbol">The symbol</param>
-            <param name="section">Section of data</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetVolumeWeightedAveragePriceHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
+            <summary>
+            Get volume weighted average price for the day
+            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            </summary>
+            <param name="symbol">The symbol</param>
             <param name="limit">Max number of results</param>
             <param name="startTime">Filter by start time</param>
             <param name="endTime">Filter by end time</param>

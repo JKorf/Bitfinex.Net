@@ -230,28 +230,44 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
         /// </summary>
         /// <param name="asset">The asset</param>
-        /// <param name="section">Section of data</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexStats>> GetLastFundingSizeAsync(string asset, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get total active funding in specified asset
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="asset">The asset</param>
         /// <param name="limit">Max number of results</param>
         /// <param name="startTime">Filter by start time</param>
         /// <param name="endTime">Filter by end time</param>
         /// <param name="sorting">Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetFundingSizeAsync(string asset, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetFundingSizeHistoryAsync(string asset, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get total funding used in positions in specified asset
         /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
         /// </summary>
         /// <param name="asset">The asset</param>
-        /// <param name="section">Section of data</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexStats>> GetLastCreditSizeAsync(string asset, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get total funding used in positions in specified asset
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="asset">The asset</param>
         /// <param name="limit">Max number of results</param>
         /// <param name="startTime">Filter by start time</param>
         /// <param name="endTime">Filter by end time</param>
         /// <param name="sorting">Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetCreditSizeAsync(string asset, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetCreditSizeHistoryAsync(string asset, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get total funding used in positions on a specific symbol in specified asset
@@ -259,14 +275,23 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="asset">The asset</param>
         /// <param name="symbol">The symbol</param>
-        /// <param name="section">Section of data</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexStats>> GetLastCreditSizeAsync(string asset, string symbol, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get total funding used in positions on a specific symbol in specified asset
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="asset">The asset</param>
+        /// <param name="symbol">The symbol</param>
         /// <param name="limit">Max number of results</param>
         /// <param name="startTime">Filter by start time</param>
         /// <param name="endTime">Filter by end time</param>
         /// <param name="sorting">Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetCreditSizeAsync(string asset, string symbol, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetCreditSizeHistoryAsync(string asset, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
@@ -274,42 +299,67 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="symbol">The symbol</param>
         /// <param name="side">Position side</param>
-        /// <param name="section">Section of data</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexStats>> GetLastLongsShortsTotalsAsync(string symbol, StatSide side, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="symbol">The symbol</param>
+        /// <param name="side">Position side</param>
         /// <param name="limit">Max number of results</param>
         /// <param name="startTime">Filter by start time</param>
         /// <param name="endTime">Filter by end time</param>
         /// <param name="sorting">Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetLongsShortsTotalsAsync(string symbol, StatSide side, StatSection section,int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetLongsShortsTotalsHistoryAsync(string symbol, StatSide side, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get trading volume on the platform
         /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
         /// </summary>
         /// <param name="period">The period in days to get the data for. 1, 7 or 30</param>
-        /// <param name="section">Section of data</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexStats>> GetLastTradingVolumeAsync(int period, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get trading volume on the platform
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="period">The period in days to get the data for. 1, 7 or 30</param>
         /// <param name="limit">Max number of results</param>
         /// <param name="startTime">Filter by start time</param>
         /// <param name="endTime">Filter by end time</param>
         /// <param name="sorting">Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetTradingVolumeAsync(int period, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetTradingVolumeHistoryAsync(int period, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get volume weighted average price for the day
         /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
         /// </summary>
         /// <param name="symbol">The symbol</param>
-        /// <param name="section">Section of data</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexStats>> GetLastVolumeWeightedAveragePriceAsync(string symbol, CancellationToken ct = default);
+        
+        /// <summary>
+        /// Get volume weighted average price for the day
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// </summary>
+        /// <param name="symbol">The symbol</param>
         /// <param name="limit">Max number of results</param>
         /// <param name="startTime">Filter by start time</param>
         /// <param name="endTime">Filter by end time</param>
         /// <param name="sorting">Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetVolumeWeightedAveragePriceAsync(string symbol, StatSection section, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexStats>>> GetVolumeWeightedAveragePriceHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get symbol names
