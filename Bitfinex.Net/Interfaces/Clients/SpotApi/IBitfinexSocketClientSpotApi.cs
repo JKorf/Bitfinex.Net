@@ -20,7 +20,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Subscribes to ticker updates for a symbol. Use SubscribeToFundingTickerUpdatesAsync for funding symbol ticker updates
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="handler">The handler for the data</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
         /// <returns></returns>
@@ -30,7 +30,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Subscribes to funding ticker updates a symbol. Use SubscribeToTickerUpdatesAsync for trade symbol ticker updates
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="handler">The handler for the data</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
         /// <returns></returns>
@@ -40,7 +40,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Subscribes to order book updates for a symbol. Use SubscribeToFundingOrderBookUpdatesAsync for funding symbol ticker updates
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-books" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="precision">The precision of the updates</param>
         /// <param name="frequency">The frequency of updates</param>
         /// <param name="length">The range for the order book updates, either 25 or 100</param>
@@ -54,7 +54,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Subscribes to funding order book updates for a symbol. Use SubscribeToOrderBookUpdatesAsync for trade symbol ticker updates
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-books" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="precision">The precision of the updates</param>
         /// <param name="frequency">The frequency of updates</param>
         /// <param name="length">The range for the order book updates, either 25 or 100</param>
@@ -68,7 +68,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Subscribes to raw order book updates for a symbol. Use SubscribeToRawFundingOrderBookUpdatesAsync for funding symbol ticker updates
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-raw-books" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="limit">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
         /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
@@ -80,7 +80,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Subscribes to raw order book updates for a symbol. Use SubscribeToRawOrderBookUpdatesAsync for trade symbol ticker updates
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-raw-books" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="limit">The range for the order book updates</param>
         /// <param name="handler">The handler for the data</param>
         /// <param name="checksumHandler">The handler for the checksum, can be used to validate a order book implementation</param>
@@ -92,7 +92,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Subscribes to public trade updates for a symbol
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-trades" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to subscribe to</param>
+        /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="handler">The handler for the data</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
         /// <returns></returns>
@@ -102,7 +102,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Subscribes to kline updates for a symbol
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-candles" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to subscribe to. For funding klines use {symbol}:p{period}, for example fUSD:p30</param>
+        /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`. For funding klines use {symbol}:p{period}, for example fUSD:p30</param>
         /// <param name="interval">The interval of the klines</param>
         /// <param name="handler">The handler for the data</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
@@ -167,7 +167,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="side">The order side</param>
         /// <param name="type">The type of the order</param>
-        /// <param name="symbol">The symbol the order is for</param>
+        /// <param name="symbol">The symbol the order is for, for example `tETHUSD`</param>
         /// <param name="quantity">The quantity of the order, positive for buying, negative for selling</param>
         /// <param name="groupId">Group id to assign to the order</param>
         /// <param name="clientOrderId">Client order id to assign to the order</param>
@@ -248,7 +248,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-offer-new" /></para>
         /// </summary>
         /// <param name="type">Offer type</param>
-        /// <param name="symbol">Symbol</param>
+        /// <param name="symbol">Symbol, for example `tETHUSD`</param>
         /// <param name="quantity">Amount (more than 0 for offer, less than 0 for bid)</param>
         /// <param name="price">Rate (or offset for FRRDELTA offers)</param>
         /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>

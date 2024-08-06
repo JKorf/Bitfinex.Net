@@ -34,7 +34,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Get the margin info for a symbol
         /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to get the info for</param>
+        /// <param name="symbol">The symbol to get the info for, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<BitfinexMarginSymbol>> GetSymbolMarginInfoAsync(string symbol, CancellationToken ct = default);
@@ -43,7 +43,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Get the withdrawal/deposit history
         /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-movements" /></para>
         /// </summary>
-        /// <param name="symbol">Symbol to get history for</param>
+        /// <param name="symbol">Symbol to get history for, for example `tETHUSD`</param>
         /// <param name="ids">Filter by ids</param>
         /// <param name="address">Filter by deposit address</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -74,7 +74,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Set an alert
         /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-alert-set" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol to set the alert for</param>
+        /// <param name="symbol">The symbol to set the alert for, for example `tETHUSD`</param>
         /// <param name="price">The price to set the alert for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -84,7 +84,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Delete an existing alert
         /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-alert-del" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol of the alert to delete</param>
+        /// <param name="symbol">The symbol of the alert to delete, for example `tETHUSD`</param>
         /// <param name="price">The price of the alert to delete</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -94,7 +94,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Calculates the available balance for a symbol at a specific rate
         /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-calc-order-avail" /></para>
         /// </summary>
-        /// <param name="symbol">The symbol</param>
+        /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="side">Buy or sell</param>
         /// <param name="rate">The rate/price</param>
         /// <param name="type">The wallet type</param>
@@ -107,7 +107,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Get changes in your balance for an asset
         /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-ledgers" /></para>
         /// </summary>
-        /// <param name="asset">The asset to check the ledger for</param>
+        /// <param name="asset">The asset to check the ledger for, for example `ETH`</param>
         /// <param name="startTime">Start time of the data to return</param>
         /// <param name="endTime">End time of the data to return</param>
         /// <param name="limit">Max amount of results</param>
@@ -147,7 +147,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Transfers funds from one wallet to another
         /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-transfer" /></para>
         /// </summary>
-        /// <param name="asset">The asset to transfer</param>
+        /// <param name="asset">The asset to transfer, for example `ETH`</param>
         /// <param name="fromWallet">The wallet to remove funds from</param>
         /// <param name="toWallet">The wallet to add funds to</param>
         /// <param name="quantity">The quantity to transfer</param>
