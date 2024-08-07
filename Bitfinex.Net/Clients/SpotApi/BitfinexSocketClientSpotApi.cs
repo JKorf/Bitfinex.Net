@@ -81,7 +81,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var authentication = new BitfinexAuthentication
             {
                 Event = "auth",
-                ApiKey = authProvider.GetApiKey(),
+                ApiKey = authProvider.ApiKey,
                 Nonce = n,
                 Payload = "AUTH" + n
             };

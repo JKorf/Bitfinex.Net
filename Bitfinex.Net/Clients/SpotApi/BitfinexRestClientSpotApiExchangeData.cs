@@ -20,18 +20,6 @@ namespace Bitfinex.Net.Clients.SpotApi
     /// <inheritdoc />
     internal class BitfinexRestClientSpotApiExchangeData : IBitfinexRestClientSpotApiExchangeData
     {
-        private const string StatusEndpoint = "platform/status";
-        private const string ForeignExchangeEndpoint = "calc/fx";
-
-        private const string TickersEndpoint = "tickers";
-        private const string TradesEndpoint = "trades/{}/hist";
-        private const string OrderBookEndpoint = "book/{}/{}";
-        private const string LastCandleEndpoint = "candles/trade:{}:{}/last";
-        private const string LastFundingCandleEndpoint = "candles/trade:{}:{}:{}/last";
-        private const string CandlesEndpoint = "candles/trade:{}:{}/hist";
-        private const string FundingCandlesEndpoint = "candles/trade:{}:{}:{}/hist";
-        private const string MarketAverageEndpoint = "calc/trade/avg";
-
         private readonly BitfinexRestClientSpotApi _baseClient;
 
         internal BitfinexRestClientSpotApiExchangeData(BitfinexRestClientSpotApi baseClient)
@@ -43,7 +31,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexPlatformStatus>> GetPlatformStatusAsync(CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<BitfinexPlatformStatus>(_baseClient.GetUrl(StatusEndpoint, "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexPlatformStatus>(_baseClient.GetUrl("platform/status", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -265,7 +253,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTicker>>(_baseClient.GetUrl(TickersEndpoint, "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTicker>>(_baseClient.GetUrl("tickers", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
         #endregion
 
@@ -278,7 +266,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingTicker>>(_baseClient.GetUrl(TickersEndpoint, "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingTicker>>(_baseClient.GetUrl("tickers", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
         #endregion
 
@@ -309,7 +297,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
             parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTradeSimple>>(_baseClient.GetUrl(TradesEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTradeSimple>>(_baseClient.GetUrl($"trades/{symbol}/hist", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
         }
         #endregion
 
@@ -325,7 +313,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
             var prec = JsonConvert.SerializeObject(precision, new PrecisionConverter(false));
 
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrderBookEntry>>(_baseClient.GetUrl(OrderBookEndpoint.FillPathParameters(symbol, prec), "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrderBookEntry>>(_baseClient.GetUrl($"book/{symbol}/{prec}", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexOrderBook>(default);
 
@@ -354,7 +342,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
             var prec = JsonConvert.SerializeObject(precision, new PrecisionConverter(false));
 
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrderBookFundingEntry>>(_baseClient.GetUrl(OrderBookEndpoint.FillPathParameters(symbol, prec), "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrderBookFundingEntry>>(_baseClient.GetUrl($"book/{symbol}/{prec}", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexFundingOrderBook>(default);
 
@@ -381,7 +369,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
             var prec = JsonConvert.SerializeObject(Precision.R0, new PrecisionConverter(false));
 
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexRawOrderBookEntry>>(_baseClient.GetUrl(OrderBookEndpoint.FillPathParameters(symbol, prec), "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexRawOrderBookEntry>>(_baseClient.GetUrl($"book/{symbol}/{prec}", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexRawOrderBook>(default);
 
@@ -408,7 +396,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
             var prec = JsonConvert.SerializeObject(Precision.R0, new PrecisionConverter(false));
 
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexRawOrderBookFundingEntry>>(_baseClient.GetUrl(OrderBookEndpoint.FillPathParameters(symbol, prec), "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexRawOrderBookFundingEntry>>(_baseClient.GetUrl($"book/{symbol}/{prec}", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexRawFundingOrderBook>(default);
 
@@ -432,16 +420,11 @@ namespace Bitfinex.Net.Clients.SpotApi
             string endpoint;
             if (fundingPeriod != null)
             {
-                endpoint = LastFundingCandleEndpoint.FillPathParameters(
-                    JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false)),
-                    symbol,
-                    fundingPeriod);
+                endpoint = $"candles/trade:{JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))}:{symbol}:{fundingPeriod}/last";
             }
             else
             {
-                endpoint = LastCandleEndpoint.FillPathParameters(
-                    JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false)),
-                    symbol);
+                endpoint = $"candles/trade:{JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))}:{symbol}/last";
             }
 
             return await _baseClient.SendRequestAsync<BitfinexKline>(_baseClient.GetUrl(endpoint, "2"), HttpMethod.Get, ct).ConfigureAwait(false);
@@ -463,16 +446,11 @@ namespace Bitfinex.Net.Clients.SpotApi
             string endpoint;
             if (fundingPeriod != null)
             {
-                endpoint = FundingCandlesEndpoint.FillPathParameters(
-                    JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false)),
-                    symbol,
-                    fundingPeriod);
+                endpoint = $"candles/trade:{JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))}:{symbol}:{fundingPeriod}/hist";
             }
             else
             {
-                endpoint = CandlesEndpoint.FillPathParameters(
-                    JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false)),
-                    symbol);
+                endpoint = $"candles/trade:{JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))}:{symbol}/hist";
             }
 
             return await _baseClient.SendRequestAsync<IEnumerable<BitfinexKline>>(_baseClient.GetUrl(endpoint, "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
@@ -491,7 +469,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("period", period?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("rate_limit", rateLimit?.ToString(CultureInfo.InvariantCulture));
 
-            return await _baseClient.SendRequestAsync<BitfinexAveragePrice>(_baseClient.GetUrl(MarketAverageEndpoint, "2"), HttpMethod.Post, ct, parameters).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexAveragePrice>(_baseClient.GetUrl("calc/trade/avg", "2"), HttpMethod.Post, ct, parameters).ConfigureAwait(false);
         }
         #endregion
 
@@ -508,7 +486,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 { "ccy2", asset2 }
             };
 
-            return await _baseClient.SendRequestAsync<BitfinexForeignExchangeRate>(_baseClient.GetUrl(ForeignExchangeEndpoint, "2"), HttpMethod.Post, ct, parameters).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexForeignExchangeRate>(_baseClient.GetUrl("calc/fx", "2"), HttpMethod.Post, ct, parameters).ConfigureAwait(false);
         }
         #endregion
 

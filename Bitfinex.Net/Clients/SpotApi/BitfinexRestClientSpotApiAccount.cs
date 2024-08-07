@@ -21,20 +21,6 @@ namespace Bitfinex.Net.Clients.SpotApi
     /// <inheritdoc />
     internal class BitfinexRestClientSpotApiAccount : IBitfinexRestClientSpotApiAccount
     {
-        private const string WalletsEndpoint = "auth/r/wallets";
-        private const string CalcAvailableBalanceEndpoint = "auth/calc/order/avail";
-        private const string UserInfoEndpoint = "auth/r/info/user";
-        private const string LedgerEntriesSingleEndpoint = "auth/r/ledgers/hist";
-        private const string LedgerEntriesEndpoint = "auth/r/ledgers/{}/hist";
-        private const string AllMovementsEndpoint = "auth/r/movements/hist";
-        private const string MovementsEndpoint = "auth/r/movements/{}/hist";
-        private const string AlertListEndpoint = "auth/r/alerts";
-        private const string SetAlertEndpoint = "auth/w/alert/set";
-        private const string DeleteAlertEndpoint = "auth/w/alert/price:{}:{}/del";
-        private const string WithdrawEndpoint = "withdraw";
-        private const string MarginInfoBaseEndpoint = "auth/r/info/margin/base";
-        private const string MarginInfoSymbolEndpoint = "auth/r/info/margin/{}";
-
         private readonly BitfinexRestClientSpotApi _baseClient;
 
         internal BitfinexRestClientSpotApiAccount(BitfinexRestClientSpotApi baseClient)
@@ -46,20 +32,20 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexWallet>>> GetBalancesAsync(CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexWallet>>(_baseClient.GetUrl(WalletsEndpoint, "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexWallet>>(_baseClient.GetUrl("auth/r/wallets", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexMarginBase>> GetBaseMarginInfoAsync(CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<BitfinexMarginBase>(_baseClient.GetUrl(MarginInfoBaseEndpoint, "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexMarginBase>(_baseClient.GetUrl("auth/r/info/margin/base", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexMarginSymbol>> GetSymbolMarginInfoAsync(string symbol, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<BitfinexMarginSymbol>(_baseClient.GetUrl(MarginInfoSymbolEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexMarginSymbol>(_baseClient.GetUrl($"auth/r/info/margin/{symbol}", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -72,7 +58,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            var url = _baseClient.GetUrl(symbol == null ? AllMovementsEndpoint : MovementsEndpoint.FillPathParameters(symbol), "2");
+            var url = _baseClient.GetUrl(symbol == null ? "auth/r/movements/hist" : $"auth/r/movements/{symbol}/hist", "2");
             return await _baseClient.SendRequestAsync<IEnumerable<BitfinexMovement>>(url, HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
@@ -95,7 +81,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 { "type", "price" }
             };
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexAlert>>(_baseClient.GetUrl(AlertListEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexAlert>>(_baseClient.GetUrl("auth/r/alerts", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -108,13 +94,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                 { "price", price.ToString(CultureInfo.InvariantCulture) }
             };
 
-            return await _baseClient.SendRequestAsync<BitfinexAlert>(_baseClient.GetUrl(SetAlertEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexAlert>(_baseClient.GetUrl("auth/w/alert/set", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexSuccessResult>> DeleteAlertAsync(string symbol, decimal price, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<BitfinexSuccessResult>(_baseClient.GetUrl(DeleteAlertEndpoint.FillPathParameters(symbol, price.ToString(CultureInfo.InvariantCulture)), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexSuccessResult>(_baseClient.GetUrl($"auth/w/alert/price:{symbol}:{price.ToString(CultureInfo.InvariantCulture)}/del", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -129,7 +115,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             };
             parameters.AddOptionalParameter("lev", leverage?.ToString(CultureInfo.InvariantCulture));
 
-            return await _baseClient.SendRequestAsync<BitfinexAvailableBalance>(_baseClient.GetUrl(CalcAvailableBalanceEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexAvailableBalance>(_baseClient.GetUrl("auth/calc/order/avail", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -144,7 +130,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var url = string.IsNullOrEmpty(asset)
-                ? LedgerEntriesSingleEndpoint : LedgerEntriesEndpoint.FillPathParameters(asset!);
+                ? "auth/r/ledgers/hist" : $"auth/r/ledgers/{asset}/hist";
 
             return await _baseClient.SendRequestAsync<IEnumerable<BitfinexLedgerEntry>>(_baseClient.GetUrl(url, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
@@ -152,7 +138,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexUserInfo>> GetUserInfoAsync(CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<BitfinexUserInfo>(_baseClient.GetUrl(UserInfoEndpoint, "2"), HttpMethod.Post, ct, signed: true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexUserInfo>(_baseClient.GetUrl("auth/r/info/user", "2"), HttpMethod.Post, ct, signed: true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -240,7 +226,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("intermediary_bank_account", intermediaryBankAccount);
             parameters.AddOptionalParameter("intermediary_bank_swift", intermediaryBankSwift);
 
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexWithdrawalResult>>(_baseClient.GetUrl(WithdrawEndpoint, "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexWithdrawalResult>>(_baseClient.GetUrl("withdraw", "1"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexWithdrawalResult>(default);
 
