@@ -119,7 +119,7 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 * Version 7.7.0 - 07 Aug 2024
     * Updated CryptoExchange.Net to version 7.11.0, see https://github.com/JKorf/CryptoExchange.Net/releases/tag/7.11.0
     * Updated XML code comments
-    * Fixed order status and order type deserialization futures models
+    * Fixed BitfinexPosition model Type enum being nullable
 
 * Version 7.6.0 - 27 Jul 2024
     * Updated CryptoExchange.Net to version 7.10.0, see https://github.com/JKorf/CryptoExchange.Net/releases/tag/7.10.0
