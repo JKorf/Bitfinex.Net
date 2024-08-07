@@ -22,18 +22,6 @@ namespace Bitfinex.Net.Clients.SpotApi
     /// <inheritdoc />
     internal class BitfinexRestClientSpotApiTrading : IBitfinexRestClientSpotApiTrading
     {
-        private const string OrderHistorySingleEndpoint = "auth/r/orders/hist";
-        private const string OrderHistoryEndpoint = "auth/r/orders/{}/hist";
-        private const string OrderTradesEndpoint = "auth/r/order/{}:{}/trades";
-        private const string MyTradesSingleEndpoint = "auth/r/trades/hist";
-        private const string MyTradesEndpoint = "auth/r/trades/{}/hist";
-        private const string PlaceOrderEndpoint = "auth/w/order/submit";
-        private const string CancelOrderEndpoint = "auth/w/order/cancel";
-
-        private const string PositionHistoryEndpoint = "auth/r/positions/hist";
-        private const string PositionAuditEndpoint = "auth/r/positions/audit";
-        private const string ActivePositionsEndpoint = "auth/r/positions";
-
         private readonly BitfinexRestClientSpotApi _baseClient;
 
         internal BitfinexRestClientSpotApiTrading(BitfinexRestClientSpotApi baseClient)
@@ -67,14 +55,14 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("id", orderIds);
 
             var url = string.IsNullOrEmpty(symbol)
-                ? OrderHistorySingleEndpoint : OrderHistoryEndpoint.FillPathParameters(symbol!);
+                ? "auth/r/orders/hist" : $"auth/r/orders/{symbol}/hist";
             return await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrder>>(_baseClient.GetUrl(url, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetOrderTradesAsync(string symbol, long orderId, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTradeDetails>>(_baseClient.GetUrl(OrderTradesEndpoint.FillPathParameters(symbol, orderId.ToString(CultureInfo.InvariantCulture)), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTradeDetails>>(_baseClient.GetUrl($"auth/r/order/{symbol}:{orderId}/trades", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -88,7 +76,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var url = string.IsNullOrEmpty(symbol)
-                ? MyTradesSingleEndpoint : MyTradesEndpoint.FillPathParameters(symbol!);
+                ? "auth/r/trades/hist" : $"auth/r/trades/{symbol}/hist";
             return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTradeDetails>>(_baseClient.GetUrl(url, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
@@ -134,7 +122,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 { "aff_code" , affiliateCode ?? _baseClient.AffiliateCode }
             });
 
-            var result = await _baseClient.SendRequestAsync<BitfinexWriteResult<JArray>>(_baseClient.GetUrl(PlaceOrderEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var result = await _baseClient.SendRequestAsync<BitfinexWriteResult<JArray>>(_baseClient.GetUrl("auth/w/order/submit", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexWriteResult<BitfinexOrder>>(default);
 
@@ -169,7 +157,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("cid", clientOrderId);
             parameters.AddOptionalParameter("cid_date", clientOrderIdDate?.ToString("yyyy-MM-dd"));
 
-            var result = await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexOrder>>(_baseClient.GetUrl(CancelOrderEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var result = await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexOrder>>(_baseClient.GetUrl("auth/w/order/cancel", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
             if (result)
                 _baseClient.InvokeOrderCanceled(new OrderId { SourceObject = result.Data, Id = result.Data.Id.ToString(CultureInfo.InvariantCulture) });
             return result;
@@ -197,7 +185,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl(PositionHistoryEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl("auth/r/positions/hist", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -236,7 +224,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionsAsync(CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl(ActivePositionsEndpoint, "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl("auth/r/positions", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -263,7 +251,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl(PositionAuditEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl("auth/r/positions/audit", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
     }
 }

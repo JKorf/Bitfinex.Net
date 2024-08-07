@@ -94,7 +94,7 @@ namespace Bitfinex.Net.Objects.Models
         /// Type of position
         /// </summary>
         [ArrayProperty(15), JsonConverter(typeof(EnumConverter))]
-        public PositionType Type { get; set; }
+        public PositionType? Type { get; set; }
 
         /// <summary>
         /// The amount of collateral applied to the open position

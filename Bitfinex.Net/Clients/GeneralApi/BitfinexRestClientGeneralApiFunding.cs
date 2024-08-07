@@ -19,19 +19,6 @@ namespace Bitfinex.Net.Clients.GeneralApi
     /// <inheritdoc />
     internal class BitfinexRestClientGeneralApiFunding : IBitfinexRestClientGeneralApiFunding
     {
-        private const string ActiveFundingOffersEndpoint = "auth/r/funding/offers/{}";
-        private const string FundingOfferHistoryEndpoint = "auth/r/funding/offers/{}/hist";
-        private const string FundingLoansEndpoint = "auth/r/funding/loans/{}";
-        private const string FundingLoansHistoryEndpoint = "auth/r/funding/loans/{}/hist";
-        private const string FundingCreditsEndpoint = "auth/r/funding/credits/{}";
-        private const string FundingCreditsHistoryEndpoint = "auth/r/funding/credits/{}/hist";
-        private const string FundingTradesEndpoint = "auth/r/funding/trades/{}/hist";
-        private const string FundingOfferSubmitEndpoint = "auth/w/funding/offer/submit";
-        private const string FundingOfferCancelEndpoint = "auth/w/funding/offer/cancel";
-        private const string FundingInfoEndpoint = "auth/r/info/funding/{}";
-        private const string FundingAutoRenewEndpoint = "auth/w/funding/auto";
-        private const string FundingAutoRenewStatusEndpoint = "auth/r/funding/auto/status";
-
         private readonly BitfinexRestClientGeneralApi _baseClient;
 
         internal BitfinexRestClientGeneralApiFunding(BitfinexRestClientGeneralApi baseClient)
@@ -42,7 +29,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexFundingOffer>>> GetActiveFundingOffersAsync(string symbol, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingOffer>>(_baseClient.GetUrl(ActiveFundingOffersEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingOffer>>(_baseClient.GetUrl($"auth/r/funding/offers/{symbol}", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -54,7 +41,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingOffer>>(_baseClient.GetUrl(FundingOfferHistoryEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingOffer>>(_baseClient.GetUrl($"auth/r/funding/offers/{symbol}/hist", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -70,7 +57,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
             };
             parameters.AddOptionalParameter("flags", flags);
 
-            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexFundingOffer>>(_baseClient.GetUrl(FundingOfferSubmitEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexFundingOffer>>(_baseClient.GetUrl("auth/w/funding/offer/submit", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -92,7 +79,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
                 { "id", offerId }
             };
 
-            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexFundingOffer>>(_baseClient.GetUrl(FundingOfferCancelEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexFundingOffer>>(_baseClient.GetUrl("auth/w/funding/offer/cancel", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -118,7 +105,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexFunding>>> GetFundingLoansAsync(string symbol, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFunding>>(_baseClient.GetUrl(FundingLoansEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFunding>>(_baseClient.GetUrl($"auth/r/funding/loans/{symbol}", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -130,13 +117,13 @@ namespace Bitfinex.Net.Clients.GeneralApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFunding>>(_baseClient.GetUrl(FundingLoansHistoryEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFunding>>(_baseClient.GetUrl($"auth/r/funding/loans/{symbol}/hist", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexFundingCredit>>> GetFundingCreditsAsync(string symbol, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingCredit>>(_baseClient.GetUrl(FundingCreditsEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingCredit>>(_baseClient.GetUrl($"auth/r/funding/credits/{symbol}", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -148,7 +135,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingCredit>>(_baseClient.GetUrl(FundingCreditsHistoryEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingCredit>>(_baseClient.GetUrl($"auth/r/funding/credits/{symbol}/hist", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -160,13 +147,13 @@ namespace Bitfinex.Net.Clients.GeneralApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingTrade>>(_baseClient.GetUrl(FundingTradesEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingTrade>>(_baseClient.GetUrl($"auth/r/funding/trades/{symbol}/hist", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexFundingInfo>> GetFundingInfoAsync(string symbol, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<BitfinexFundingInfo>(_baseClient.GetUrl(FundingInfoEndpoint.FillPathParameters(symbol), "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexFundingInfo>(_baseClient.GetUrl($"auth/r/info/funding/{symbol}", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -181,7 +168,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
             parameters.AddOptionalParameter("rate", rate?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("period", period?.ToString(CultureInfo.InvariantCulture));
 
-            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexFundingAutoRenew>>(_baseClient.GetUrl(FundingAutoRenewEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexFundingAutoRenew>>(_baseClient.GetUrl("auth/w/funding/auto", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -192,7 +179,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
                 { "currency", asset },
             };
 
-            return await _baseClient.SendRequestAsync<BitfinexFundingAutoRenewStatus>(_baseClient.GetUrl(FundingAutoRenewStatusEndpoint, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            return await _baseClient.SendRequestAsync<BitfinexFundingAutoRenewStatus>(_baseClient.GetUrl("auth/r/funding/auto/status", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
         }
     }
 }

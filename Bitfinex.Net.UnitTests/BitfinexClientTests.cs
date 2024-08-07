@@ -51,7 +51,7 @@ namespace Bitfinex.Net.UnitTests
             var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"), null);
 
             // assert
-            Assert.That(authProvider.GetApiKey() == "TestKey");
+            Assert.That(authProvider.ApiKey == "TestKey");
         }
 
         [Test]
