@@ -1,5 +1,6 @@
 ﻿using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Interfaces.CommonClients;
+using CryptoExchange.Net.SharedApis.Interfaces;
 using System;
 
 namespace Bitfinex.Net.Interfaces.Clients.SpotApi
@@ -29,5 +30,6 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <returns></returns>
         public ISpotClient CommonSpotClient { get; }
+        public ISharedClient SharedClient { get; }
     }
 }

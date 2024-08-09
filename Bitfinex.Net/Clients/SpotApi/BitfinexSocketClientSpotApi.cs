@@ -71,7 +71,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
         /// <inheritdoc />
-        public override string FormatSymbol(string baseAsset, string quoteAsset, FuturesType? futuresType = null) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
+        public override string FormatSymbol(string baseAsset, string quoteAsset, ApiType? futuresType = null) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
 
         /// <inheritdoc />
         protected override Query GetAuthenticationRequest(SocketConnection connection)

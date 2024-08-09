@@ -10,6 +10,7 @@ using CryptoExchange.Net.Converters.MessageParsing;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Interfaces.CommonClients;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.SharedApis.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
@@ -23,7 +24,7 @@ using System.Threading.Tasks;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc cref="IBitfinexRestClientSpotApi" />
-    internal class BitfinexRestClientSpotApi : RestApiClient, IBitfinexRestClientSpotApi, ISpotClient
+    internal partial class BitfinexRestClientSpotApi : RestApiClient, IBitfinexRestClientSpotApi, ISpotClient
     {
         #region fields
         internal string? AffiliateCode { get; set; }
@@ -72,7 +73,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
         /// <inheritdoc />
-        public override string FormatSymbol(string baseAsset, string quoteAsset, FuturesType? futuresType = null) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
+        public override string FormatSymbol(string baseAsset, string quoteAsset, ApiType? futuresType = null) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
 
         #region common interface
 
@@ -150,6 +151,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         /// <inheritdoc />
         public ISpotClient CommonSpotClient => this;
+        public ISharedClient SharedClient => this;
 
         async Task<WebCallResult<OrderId>> ISpotClient.PlaceOrderAsync(string symbol, CommonOrderSide side, CommonOrderType type, decimal quantity, decimal? price, string? accountId, string? clientOrderId, CancellationToken ct)
         {
