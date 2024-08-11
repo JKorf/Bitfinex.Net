@@ -8,7 +8,7 @@ Bitfinex.Net is a strongly typed client library for accessing the [Bitfinex REST
 * Response data is mapped to descriptive models
 * Input parameters and response values are mapped to discriptive enum values where possible
 * Automatic websocket (re)connection management 
-* Cient side order book implementation
+* Client side order book implementation
 * Extensive logging
 * Support for different environments
 * Easy integration with other exchange client based on the CryptoExchange.Net base library
