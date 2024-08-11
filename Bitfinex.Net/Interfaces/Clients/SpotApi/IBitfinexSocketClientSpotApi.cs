@@ -16,6 +16,8 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// </summary>
     public interface IBitfinexSocketClientSpotApi : ISocketApiClient, IDisposable
     {
+        public IBitfinexSocketClientSpotApiShared SharedClient { get; }
+
         /// <summary>
         /// Subscribes to ticker updates for a symbol. Use SubscribeToFundingTickerUpdatesAsync for funding symbol ticker updates
         /// <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>

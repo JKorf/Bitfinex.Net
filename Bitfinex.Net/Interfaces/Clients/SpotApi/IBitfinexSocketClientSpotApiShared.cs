@@ -5,11 +5,8 @@ using System.Text;
 
 namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 {
-    public interface IBitfinexRestClientSpotApiShared :
-        ITickerRestClient,
-        ISpotSymbolRestClient,
-        IKlineRestClient,
-        ITradeRestClient
+    public interface IBitfinexSocketClientSpotApiShared :
+        ITickerSocketClient
     {
     }
 }

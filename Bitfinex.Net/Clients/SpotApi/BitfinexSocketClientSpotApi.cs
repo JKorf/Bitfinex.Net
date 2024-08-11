@@ -29,7 +29,7 @@ using CryptoExchange.Net.Clients;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc cref="IBitfinexSocketClientSpotApi" />
-    internal class BitfinexSocketClientSpotApi : SocketApiClient, IBitfinexSocketClientSpotApi
+    internal partial class BitfinexSocketClientSpotApi : SocketApiClient, IBitfinexSocketClientSpotApi
     {
         private static readonly MessagePath _0Path = MessagePath.Get().Index(0);
         private static readonly MessagePath _eventPath = MessagePath.Get().Property("event");
@@ -72,6 +72,8 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, ApiType? futuresType = null) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
+
+        public IBitfinexSocketClientSpotApiShared SharedClient => this;
 
         /// <inheritdoc />
         protected override Query GetAuthenticationRequest(SocketConnection connection)

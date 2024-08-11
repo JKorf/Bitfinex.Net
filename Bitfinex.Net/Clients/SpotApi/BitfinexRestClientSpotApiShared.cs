@@ -18,7 +18,7 @@ namespace Bitfinex.Net.Clients.SpotApi
     {
         public string Exchange => BitfinexExchange.ExchangeName;
 
-        async Task<WebCallResult<IEnumerable<SharedKline>>> IKlineClient.GetKlinesAsync(KlineRequest request, CancellationToken ct)
+        async Task<WebCallResult<IEnumerable<SharedKline>>> IKlineRestClient.GetKlinesAsync(GetKlinesRequest request, CancellationToken ct)
         {
             var interval = (Enums.KlineInterval)request.Interval.TotalSeconds;
             if (!Enum.IsDefined(typeof(Enums.KlineInterval), interval))
@@ -51,7 +51,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             }));
         }
 
-        async Task<WebCallResult<IEnumerable<SharedSpotSymbol>>> ISpotSymbolClient.GetSymbolsAsync(SharedRequest request, CancellationToken ct)
+        async Task<WebCallResult<IEnumerable<SharedSpotSymbol>>> ISpotSymbolRestClient.GetSymbolsAsync(SharedRequest request, CancellationToken ct)
         {
             var result = await ExchangeData.GetSymbolsAsync(ct: ct).ConfigureAwait(false);
             if (!result)
@@ -67,7 +67,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             }));
         }
 
-        async Task<WebCallResult<SharedTicker>> ITickerClient.GetTickerAsync(TickerRequest request, CancellationToken ct)
+        async Task<WebCallResult<SharedTicker>> ITickerRestClient.GetTickerAsync(GetTickerRequest request, CancellationToken ct)
         {
             var baseAsset = request.BaseAsset == "USDT" ? "UST" : request.BaseAsset;
             var quoteAsset = request.QuoteAsset == "USDT" ? "UST" : request.QuoteAsset;
@@ -84,7 +84,22 @@ namespace Bitfinex.Net.Clients.SpotApi
             });
         }
 
-        async Task<WebCallResult<IEnumerable<SharedTrade>>> ITradeClient.GetTradesAsync(TradeRequest request, CancellationToken ct)
+        async Task<WebCallResult<IEnumerable<SharedTicker>>> ITickerRestClient.GetTickersAsync(SharedRequest request, CancellationToken ct)
+        {
+            var result = await ExchangeData.GetTickersAsync(ct: ct).ConfigureAwait(false);
+            if (!result)
+                return result.As<IEnumerable<SharedTicker>>(default);
+
+            return result.As<IEnumerable<SharedTicker>>(result.Data.Select(x => new SharedTicker
+            {
+                Symbol = x.Symbol,
+                HighPrice = x.HighPrice,
+                LastPrice = x.LastPrice,
+                LowPrice = x.LowPrice,
+            }));
+        }
+
+        async Task<WebCallResult<IEnumerable<SharedTrade>>> ITradeRestClient.GetTradesAsync(GetTradesRequest request, CancellationToken ct)
         {
             var baseAsset = request.BaseAsset == "USDT" ? "UST" : request.BaseAsset;
             var quoteAsset = request.QuoteAsset == "USDT" ? "UST" : request.QuoteAsset;
