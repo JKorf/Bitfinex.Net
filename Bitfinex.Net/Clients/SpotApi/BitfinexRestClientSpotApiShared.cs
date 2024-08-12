@@ -3,6 +3,7 @@ using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.SharedApis.Interfaces;
+using CryptoExchange.Net.SharedApis.Models.Rest;
 using CryptoExchange.Net.SharedApis.RequestModels;
 using CryptoExchange.Net.SharedApis.ResponseModels;
 using System;
@@ -40,15 +41,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return result.As<IEnumerable<SharedKline>>(default);
 
             // Reverse as data is returned in desc order instead of standard asc
-            return result.As(result.Data.Select(x => new SharedKline
-            {
-                BaseVolume = x.Volume,
-                ClosePrice = x.ClosePrice,
-                HighPrice = x.HighPrice,
-                LowPrice = x.LowPrice,
-                OpenPrice = x.OpenPrice,
-                OpenTime = x.OpenTime
-            }));
+            return result.As(result.Data.Select(x => new SharedKline(x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume)));
         }
 
         async Task<WebCallResult<IEnumerable<SharedSpotSymbol>>> ISpotSymbolRestClient.GetSymbolsAsync(SharedRequest request, CancellationToken ct)
@@ -57,11 +50,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.As<IEnumerable<SharedSpotSymbol>>(default);
 
-            return result.As(result.Data.Select(s => new SharedSpotSymbol
+            return result.As(result.Data.Select(s => new SharedSpotSymbol(s.Key.Split(new[] { ':' })[0], s.Key.Split(new[] { ':' })[1], s.Key)
             {
-                BaseAsset = s.Key.Split(new[] { ':' })[0],
-                QuoteAsset = s.Key.Split(new[] { ':' })[1],
-                Name = s.Key,
                 MinTradeQuantity = s.Value.MinOrderQuantity,
                 MaxTradeQuantity = s.Value.MaxOrderQuantity
             }));
@@ -76,12 +66,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.As<SharedTicker>(default);
 
-            return result.As(new SharedTicker
-            {
-                HighPrice = result.Data.HighPrice,
-                LastPrice = result.Data.LastPrice,
-                LowPrice = result.Data.LowPrice,
-            });
+            return result.As(new SharedTicker(result.Data.Symbol, result.Data.LastPrice, result.Data.HighPrice, result.Data.LowPrice));
         }
 
         async Task<WebCallResult<IEnumerable<SharedTicker>>> ITickerRestClient.GetTickersAsync(SharedRequest request, CancellationToken ct)
@@ -90,22 +75,13 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.As<IEnumerable<SharedTicker>>(default);
 
-            return result.As<IEnumerable<SharedTicker>>(result.Data.Select(x => new SharedTicker
-            {
-                Symbol = x.Symbol,
-                HighPrice = x.HighPrice,
-                LastPrice = x.LastPrice,
-                LowPrice = x.LowPrice,
-            }));
+            return result.As<IEnumerable<SharedTicker>>(result.Data.Select(x => new SharedTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice)));
         }
 
         async Task<WebCallResult<IEnumerable<SharedTrade>>> ITradeRestClient.GetTradesAsync(GetTradesRequest request, CancellationToken ct)
         {
-            var baseAsset = request.BaseAsset == "USDT" ? "UST" : request.BaseAsset;
-            var quoteAsset = request.QuoteAsset == "USDT" ? "UST" : request.QuoteAsset;
-
             var result = await ExchangeData.GetTradeHistoryAsync(
-                FormatSymbol(baseAsset, quoteAsset, request.ApiType),
+                FormatSymbol(request.BaseAsset, request.QuoteAsset, request.ApiType),
                 startTime: request.StartTime,
                 endTime: request.EndTime,
                 limit: request.Limit,
@@ -113,12 +89,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.As<IEnumerable<SharedTrade>>(default);
 
-            return result.As(result.Data.Select(x => new SharedTrade
-            {
-                Price = x.Price,
-                Quantity = x.Quantity,
-                Timestamp = x.Timestamp
-            }));
+            return result.As(result.Data.Select(x => new SharedTrade(x.Quantity, x.Price, x.Timestamp)));
         }
     }
 }

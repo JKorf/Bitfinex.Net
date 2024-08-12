@@ -4928,6 +4928,11 @@
             Amount of time the funding transaction was for
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexTradeSimple.QuantityAbs">
+            <summary>
+            Quantity as a positive number
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Objects.Models.BitfinexTransfer">
             <summary>
             Transfer info

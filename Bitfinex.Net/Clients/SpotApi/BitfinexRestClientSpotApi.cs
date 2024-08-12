@@ -73,7 +73,16 @@ namespace Bitfinex.Net.Clients.SpotApi
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
         /// <inheritdoc />
-        public override string FormatSymbol(string baseAsset, string quoteAsset, ApiType? futuresType = null) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
+        public override string FormatSymbol(string baseAsset, string quoteAsset, ApiType? futuresType = null)
+        {
+            if (baseAsset == "USDT")
+                baseAsset = "UST";
+
+            if (quoteAsset == "USDT")
+                quoteAsset = "UST";
+
+            return $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
+        }
 
         #region common interface
 
