@@ -1,6 +1,7 @@
 ﻿using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
+using CryptoExchange.Net.SharedApis.Enums;
 using CryptoExchange.Net.SharedApis.Interfaces.Socket;
 using CryptoExchange.Net.SharedApis.Models.Socket;
 using CryptoExchange.Net.SharedApis.RequestModels;
@@ -59,9 +60,9 @@ namespace Bitfinex.Net.Clients.SpotApi
                     new SharedSpotOrder(
                         x.Symbol,
                         x.Id.ToString(),
-                        x.Type == Enums.OrderType.Limit ? CryptoExchange.Net.SharedApis.Enums.SharedOrderType.Limit : x.Type == Enums.OrderType.Market ? CryptoExchange.Net.SharedApis.Enums.SharedOrderType.Market : CryptoExchange.Net.SharedApis.Enums.SharedOrderType.Other,
-                        x.Side == Enums.OrderSide.Buy ? CryptoExchange.Net.SharedApis.Enums.SharedOrderSide.Buy : CryptoExchange.Net.SharedApis.Enums.SharedOrderSide.Sell,
-                        x.Status == Enums.OrderStatus.Canceled ? CryptoExchange.Net.SharedApis.Enums.SharedOrderStatus.Canceled : (x.Status == Enums.OrderStatus.Active || x.Status == Enums.OrderStatus.PartiallyFilled) ? CryptoExchange.Net.SharedApis.Enums.SharedOrderStatus.PartiallyFilled : CryptoExchange.Net.SharedApis.Enums.SharedOrderStatus.Filled,
+                        x.Type == Enums.OrderType.Limit ? SharedOrderType.Limit : x.Type == Enums.OrderType.Market ? SharedOrderType.Market : SharedOrderType.Other,
+                        x.Side == Enums.OrderSide.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
+                        x.Status == Enums.OrderStatus.Canceled ? SharedOrderStatus.Canceled : (x.Status == Enums.OrderStatus.Active || x.Status == Enums.OrderStatus.PartiallyFilled) ? SharedOrderStatus.Open : SharedOrderStatus.Filled,
                         x.CreateTime)
                     {
                         ClientOrderId = x.ClientOrderId.ToString(),
@@ -72,6 +73,27 @@ namespace Bitfinex.Net.Clients.SpotApi
                         UpdateTime = x.UpdateTime
                     }
                 ))),
+                ct: ct).ConfigureAwait(false);
+
+            return result;
+        }
+
+        async Task<CallResult<UpdateSubscription>> ISpotUserTradeSocketClient.SubscribeToUserTradeUpdatesAsync(SharedRequest request, Action<DataEvent<IEnumerable<SharedUserTrade>>> handler, CancellationToken ct)
+        {
+            var result = await SubscribeToUserUpdatesAsync(
+                tradeHandler: update => handler(update.As<IEnumerable<SharedUserTrade>>(new[] {
+                    new SharedUserTrade(
+                        update.Data.OrderId.ToString(),
+                        update.Data.Id.ToString(),
+                        update.Data.Quantity,
+                        update.Data.Price,
+                        update.Data.Timestamp)
+                    {
+                        Fee = update.Data.Fee,
+                        FeeAsset = update.Data.FeeAsset,
+                        Role = update.Data.Maker == true ? SharedRole.Maker: SharedRole.Taker
+                    }
+                })),
                 ct: ct).ConfigureAwait(false);
 
             return result;

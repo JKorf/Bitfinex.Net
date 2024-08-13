@@ -10,7 +10,8 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         ITradeSocketClient,
         IBookTickerSocketClient,
         IBalanceSocketClient,
-        ISpotOrderSocketClient
+        ISpotOrderSocketClient,
+        ISpotUserTradeSocketClient
     {
     }
 }
