@@ -83,6 +83,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var result = await SubscribeToUserUpdatesAsync(
                 tradeHandler: update => handler(update.As<IEnumerable<SharedUserTrade>>(new[] {
                     new SharedUserTrade(
+                        update.Data.Symbol,
                         update.Data.OrderId.ToString(),
                         update.Data.Id.ToString(),
                         update.Data.Quantity,
