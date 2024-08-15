@@ -160,7 +160,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         /// <inheritdoc />
         public ISpotClient CommonSpotClient => this;
-        public ISharedClient SharedClient => this;
+        public IBitfinexRestClientSpotApiShared SharedClient => this;
 
         async Task<WebCallResult<OrderId>> ISpotClient.PlaceOrderAsync(string symbol, CommonOrderSide side, CommonOrderType type, decimal quantity, decimal? price, string? accountId, string? clientOrderId, CancellationToken ct)
         {
