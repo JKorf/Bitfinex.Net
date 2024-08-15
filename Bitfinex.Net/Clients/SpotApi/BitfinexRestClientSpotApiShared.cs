@@ -102,12 +102,10 @@ namespace Bitfinex.Net.Clients.SpotApi
             return result.AsExchangeResult<IEnumerable<SharedTicker>>(Exchange, result.Data.Select(x => new SharedTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice)));
         }
 
-        async Task<ExchangeWebResult<IEnumerable<SharedTrade>>> ITradeRestClient.GetTradesAsync(GetTradesRequest request, CancellationToken ct)
+        async Task<ExchangeWebResult<IEnumerable<SharedTrade>>> IRecentTradeRestClient.GetRecentTradesAsync(GetRecentTradesRequest request, CancellationToken ct)
         {
             var result = await ExchangeData.GetTradeHistoryAsync(
                 FormatSymbol(request.BaseAsset, request.QuoteAsset, request.ApiType),
-                startTime: request.StartTime,
-                endTime: request.EndTime,
                 limit: request.Limit,
                 ct: ct).ConfigureAwait(false);
             if (!result)
@@ -264,15 +262,26 @@ namespace Bitfinex.Net.Clients.SpotApi
             }));
         }
 
-        async Task<ExchangeWebResult<IEnumerable<SharedUserTrade>>> ISpotOrderRestClient.GetUserTradesAsync(GetUserTradesRequest request, CancellationToken ct = default)
+        async Task<ExchangeWebResult<IEnumerable<SharedUserTrade>>> ISpotOrderRestClient.GetUserTradesAsync(GetUserTradesRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
+            // Determine page token
+            DateTime? fromTimestamp = null;
+            if (pageToken is DateTimeToken dateTimeToken)
+                fromTimestamp = dateTimeToken.LastTime;
+
+            // Get data
             var order = await Trading.GetUserTradesAsync(
                 FormatSymbol(request.BaseAsset, request.QuoteAsset, request.ApiType),
-                startTime: request.StartTime,
+                startTime: fromTimestamp ?? request.StartTime,
                 endTime: request.EndTime,
-                limit: request.Limit).ConfigureAwait(false);
+                limit: request.Limit ?? 1000).ConfigureAwait(false);
             if (!order)
                 return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, default);
+
+            // Get next token
+            DateTimeToken? nextToken = null;
+            if (order.Data.Count() == (request.Limit ?? 1000))
+                nextToken = new DateTimeToken(order.Data.Max(o => o.Timestamp));
 
             return order.AsExchangeResult(Exchange, order.Data.Select(x => new SharedUserTrade(
                 x.Symbol,
@@ -285,7 +294,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 Fee = x.Fee,
                 FeeAsset = x.FeeAsset,
                 Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null
-            }));
+            }), nextToken);
         }
 
         async Task<ExchangeWebResult<SharedOrderId>> ISpotOrderRestClient.CancelOrderAsync(CancelOrderRequest request, CancellationToken ct = default)
