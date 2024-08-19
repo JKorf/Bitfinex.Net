@@ -6,6 +6,7 @@ using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.SharedApis.Enums;
 using CryptoExchange.Net.SharedApis.Interfaces;
 using CryptoExchange.Net.SharedApis.Models;
+using CryptoExchange.Net.SharedApis.Models.FilterOptions;
 using CryptoExchange.Net.SharedApis.Models.Rest;
 using CryptoExchange.Net.SharedApis.RequestModels;
 using CryptoExchange.Net.SharedApis.ResponseModels;
@@ -22,26 +23,12 @@ namespace Bitfinex.Net.Clients.SpotApi
     {
         public string Exchange => BitfinexExchange.ExchangeName;
 
-        public IEnumerable<SharedOrderType> SupportedOrderType { get; } = new[]
-        {
-            SharedOrderType.Limit,
-            SharedOrderType.Market,
-            SharedOrderType.LimitMaker
-        };
+        #region Kline client
 
-        public IEnumerable<SharedTimeInForce> SupportedTimeInForce { get; } = new[]
+        GetKlinesOptions IKlineRestClient.GetKlinesOptions { get; } = new GetKlinesOptions(true)
         {
-            SharedTimeInForce.GoodTillCanceled,
-            SharedTimeInForce.ImmediateOrCancel,
-            SharedTimeInForce.FillOrKill
+            MaxRequestDataPoints = 10000
         };
-
-        public SharedQuantitySupport OrderQuantitySupport { get; } =
-            new SharedQuantitySupport(
-                SharedQuantityType.BaseAssetQuantity,
-                SharedQuantityType.BaseAssetQuantity,
-                SharedQuantityType.BaseAssetQuantity,
-                SharedQuantityType.BaseAssetQuantity);
 
         async Task<ExchangeWebResult<IEnumerable<SharedKline>>> IKlineRestClient.GetKlinesAsync(GetKlinesRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
@@ -83,7 +70,39 @@ namespace Bitfinex.Net.Clients.SpotApi
             return result.AsExchangeResult(Exchange, result.Data.Select(x => new SharedKline(x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume)), nextToken);
         }
 
-        async Task<ExchangeWebResult<IEnumerable<SharedSpotSymbol>>> ISpotSymbolRestClient.GetSpotSymbolsAsync(SharedRequest request, CancellationToken ct)
+        #endregion
+
+        #region Asset client
+
+        async Task<ExchangeWebResult<IEnumerable<SharedAsset>>> IAssetRestClient.GetAssetsAsync(CancellationToken ct)
+        {
+            var assetSymbols = ExchangeData.GetAssetSymbolsAsync(ct: ct);
+            var assetList = ExchangeData.GetAssetsListAsync(ct: ct);
+            var assetMethods = ExchangeData.GetAssetDepositWithdrawalMethodsAsync(ct: ct);
+            await Task.WhenAll(assetList, assetMethods).ConfigureAwait(false);
+            if (!assetSymbols.Result)
+                return assetSymbols.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, default);
+            if (!assetList.Result)
+                return assetList.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, default);
+            if (!assetMethods.Result)
+                return assetMethods.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, default);
+
+            // TODO withdrawal fee info
+
+            return assetList.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, assetList.Result.Data.Select(x => {
+                var symbol = assetSymbols.Result.Data.SingleOrDefault(y => y.Key == x.FullName).Value ?? x.Name;
+                return new SharedAsset(symbol)
+                {
+                    FullName = x.FullName,
+                    Networks = assetMethods.Result.Data.Where(y => y.Value.Contains(symbol))?.Select(x => new SharedAssetNetwork(x.Key))
+                };
+            }).ToList());
+        }
+
+        #endregion
+        #region Spot Symbol client
+
+        async Task<ExchangeWebResult<IEnumerable<SharedSpotSymbol>>> ISpotSymbolRestClient.GetSpotSymbolsAsync(CancellationToken ct)
         {
             var result = await ExchangeData.GetSymbolsAsync(ct: ct).ConfigureAwait(false);
             if (!result)
@@ -95,6 +114,10 @@ namespace Bitfinex.Net.Clients.SpotApi
                 MaxTradeQuantity = s.Value.MaxOrderQuantity
             }));
         }
+
+        #endregion
+
+        #region Ticker client
 
         async Task<ExchangeWebResult<SharedTicker>> ITickerRestClient.GetTickerAsync(GetTickerRequest request, CancellationToken ct)
         {
@@ -108,7 +131,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             return result.AsExchangeResult(Exchange, new SharedTicker(result.Data.Symbol, result.Data.LastPrice, result.Data.HighPrice, result.Data.LowPrice));
         }
 
-        async Task<ExchangeWebResult<IEnumerable<SharedTicker>>> ITickerRestClient.GetTickersAsync(SharedRequest request, CancellationToken ct)
+        async Task<ExchangeWebResult<IEnumerable<SharedTicker>>> ITickerRestClient.GetTickersAsync(ApiType? apiType, CancellationToken ct)
         {
             var result = await ExchangeData.GetTickersAsync(ct: ct).ConfigureAwait(false);
             if (!result)
@@ -116,6 +139,12 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             return result.AsExchangeResult<IEnumerable<SharedTicker>>(Exchange, result.Data.Select(x => new SharedTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice)));
         }
+
+        #endregion
+
+        #region Recent Trade client
+
+        GetRecentTradesOptions IRecentTradeRestClient.GetRecentTradesOptions { get; } = new GetRecentTradesOptions(10000);
 
         async Task<ExchangeWebResult<IEnumerable<SharedTrade>>> IRecentTradeRestClient.GetRecentTradesAsync(GetRecentTradesRequest request, CancellationToken ct)
         {
@@ -129,7 +158,11 @@ namespace Bitfinex.Net.Clients.SpotApi
             return result.AsExchangeResult(Exchange, result.Data.Select(x => new SharedTrade(x.Quantity, x.Price, x.Timestamp)));
         }
 
-        async Task<ExchangeWebResult<IEnumerable<SharedBalance>>> IBalanceRestClient.GetBalancesAsync(SharedRequest request, CancellationToken ct)
+        #endregion
+
+        #region Balance client
+
+        async Task<ExchangeWebResult<IEnumerable<SharedBalance>>> IBalanceRestClient.GetBalancesAsync(ApiType? apiType, CancellationToken ct)
         {
             var result = await Account.GetBalancesAsync(ct: ct).ConfigureAwait(false);
             if (!result)
@@ -137,6 +170,29 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             return result.AsExchangeResult(Exchange, result.Data.Select(x => new SharedBalance(x.Asset, x.Available ?? 0, x.Total)));
         }
+
+        #endregion
+
+        #region Spot Order client
+
+        PlaceSpotOrderOptions ISpotOrderRestClient.PlaceSpotOrderOptions { get; } = new PlaceSpotOrderOptions(
+            new[]
+            {
+                SharedOrderType.Limit,
+                SharedOrderType.Market,
+                SharedOrderType.LimitMaker
+            },
+            new[]
+            {
+                SharedTimeInForce.GoodTillCanceled,
+                SharedTimeInForce.ImmediateOrCancel,
+                SharedTimeInForce.FillOrKill
+            },
+            new SharedQuantitySupport(
+                SharedQuantityType.BaseAssetQuantity,
+                SharedQuantityType.BaseAssetQuantity,
+                SharedQuantityType.BaseAssetQuantity,
+                SharedQuantityType.BaseAssetQuantity));
 
         async Task<ExchangeWebResult<SharedId>> ISpotOrderRestClient.PlaceOrderAsync(PlaceSpotOrderRequest request, CancellationToken ct = default)
         {
@@ -370,5 +426,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             throw new ArgumentException($"The combination of order type `{type}` and time in force `{tif}` in invalid");
         }
+
+        #endregion
     }
 }
