@@ -8,16 +8,16 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     public interface IBitfinexRestClientSpotApiShared :
         IAssetRestClient,
         IBalanceRestClient,
-        //IDepositRestClient,
+        IDepositRestClient,
         IKlineRestClient,
-        //IOrderBookRestClient,
+        IOrderBookRestClient,
         IRecentTradeRestClient,
         ISpotOrderRestClient,
         ISpotSymbolRestClient,
-        ITickerRestClient
-        //ITradeHistoryRestClient,
-        //IWithdrawalRestClient,
-        //IWithdrawRestClient
+        ITickerRestClient,
+        ITradeHistoryRestClient,
+        IWithdrawalRestClient,
+        IWithdrawRestClient
     {
     }
 }

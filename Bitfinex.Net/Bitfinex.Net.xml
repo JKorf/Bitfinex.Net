@@ -293,6 +293,9 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WithdrawV2Async(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.GetLoginHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
@@ -1666,7 +1669,7 @@
             Get the withdrawal/deposit history
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-movements" /></para>
             </summary>
-            <param name="symbol">Symbol to get history for, for example `tETHUSD`</param>
+            <param name="asset">Asset to get history for, for example `ETH`</param>
             <param name="ids">Filter by ids</param>
             <param name="address">Filter by deposit address</param>
             <param name="startTime">Start time of the data to return</param>
@@ -1808,6 +1811,22 @@
             <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
             <param name="accountName">The name of the account</param>
             <param name="paymentId">Hex string for Monero transaction</param>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.WithdrawV2Async(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Threading.CancellationToken)">
+            <summary>
+            Withdraw funds
+            <para><a href="https://docs.bitfinex.com/reference/rest-auth-withdraw" /></para>
+            </summary>
+            <param name="method">Method of withdrawal, methods can be retrieved with <see cref="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetDepositWithdrawalMethodsAsync(System.Threading.CancellationToken)">ExchangeData.GetAssetDepositWithdrawalMethodsAsync</see></param>
+            <param name="wallet">Wallet type</param>
+            <param name="quantity">Quantity to withdraw</param>
+            <param name="address">Withdrawal address</param>
+            <param name="invoice">Invoice (for lightning withdrawals)</param>
+            <param name="paymentId">Payment id (tag/memo)</param>
+            <param name="feeFromWithdrawalAmount">When true the fee will be deducted from the withdrawal quantity</param>
+            <param name="note">Note</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
@@ -5151,6 +5170,71 @@
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexWallet.Available">
             <summary>
             The available balance
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWithdrawalResultV2">
+            <summary>
+            Withdrawal result
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalResultV2.Timestamp">
+            <summary>
+            Timestamp
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalResultV2.NotificationType">
+            <summary>
+            Notification type
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalResultV2.Data">
+            <summary>
+            Withdrawal info
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalResultV2.Status">
+            <summary>
+            Request status
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalResultV2.Info">
+            <summary>
+            Message
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWithdrawalInfo">
+            <summary>
+            Withdrawal info
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalInfo.WithdrawalId">
+            <summary>
+            Withdrawal id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalInfo.Method">
+            <summary>
+            Withdrawal method
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalInfo.PaymentId">
+            <summary>
+            Payment id
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalInfo.Wallet">
+            <summary>
+            Wallet type
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalInfo.Quantity">
+            <summary>
+            Quantity
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWithdrawalInfo.Fee">
+            <summary>
+            Withdrawal fee
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.Models.BitfinexWriteResult">

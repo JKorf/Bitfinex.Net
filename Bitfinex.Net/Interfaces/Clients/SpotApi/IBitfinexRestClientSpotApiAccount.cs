@@ -43,7 +43,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// Get the withdrawal/deposit history
         /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-movements" /></para>
         /// </summary>
-        /// <param name="symbol">Symbol to get history for, for example `tETHUSD`</param>
+        /// <param name="asset">Asset to get history for, for example `ETH`</param>
         /// <param name="ids">Filter by ids</param>
         /// <param name="address">Filter by deposit address</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -51,7 +51,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? symbol = null, IEnumerable<long>? ids = null, string? address = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? asset = null, IEnumerable<long>? ids = null, string? address = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get detailed information about a deposit/withdrawal
@@ -209,6 +209,29 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
             string? paymentId = null,
             CancellationToken ct = default);
 
+        /// <summary>
+        /// Withdraw funds
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-withdraw" /></para>
+        /// </summary>
+        /// <param name="method">Method of withdrawal, methods can be retrieved with <see cref="IBitfinexRestClientSpotApiExchangeData.GetAssetDepositWithdrawalMethodsAsync">ExchangeData.GetAssetDepositWithdrawalMethodsAsync</see></param>
+        /// <param name="wallet">Wallet type</param>
+        /// <param name="quantity">Quantity to withdraw</param>
+        /// <param name="address">Withdrawal address</param>
+        /// <param name="invoice">Invoice (for lightning withdrawals)</param>
+        /// <param name="paymentId">Payment id (tag/memo)</param>
+        /// <param name="feeFromWithdrawalAmount">When true the fee will be deducted from the withdrawal quantity</param>
+        /// <param name="note">Note</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BitfinexWithdrawalResultV2>> WithdrawV2Async(string method,
+                                                                         WithdrawWallet wallet,
+                                                                         decimal quantity,
+                                                                         string? address = null,
+                                                                         string? invoice = null,
+                                                                         string? paymentId = null,
+                                                                         bool? feeFromWithdrawalAmount = null,
+                                                                         string? note = null,
+                                                                         CancellationToken ct = default);
         /// <summary>
         /// Get login history
         /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-logins-hist" /></para>

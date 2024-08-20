@@ -37,6 +37,7 @@ namespace Bitfinex.Net.UnitTests
             await tester.ValidateAsync(client => client.SpotApi.Account.GetDepositAddressAsync("123", Enums.WithdrawWallet.Exchange), "GetDepositAddress");
             await tester.ValidateAsync(client => client.SpotApi.Account.WalletTransferAsync("ETH", 1, Enums.WithdrawWallet.Exchange, Enums.WithdrawWallet.Exchange), "WalletTransfer");
             await tester.ValidateAsync(client => client.SpotApi.Account.WithdrawAsync("ETH", Enums.WithdrawWallet.Exchange, 1), "Withdraw", useSingleArrayItem: true, ignoreProperties: new System.Collections.Generic.List<string> { "status" });
+            await tester.ValidateAsync(client => client.SpotApi.Account.WithdrawV2Async("BITCOIN", Enums.WithdrawWallet.Exchange, 1, "123"), "WithdrawV2");
             await tester.ValidateAsync(client => client.SpotApi.Account.GetLoginHistoryAsync(), "GetLoginHistory");
             await tester.ValidateAsync(client => client.SpotApi.Account.GetApiKeyPermissionsAsync(), "GetApiKeyPermissions");
             await tester.ValidateAsync(client => client.SpotApi.Account.GetAccountChangeLogAsync(), "GetAccountChangeLog");
