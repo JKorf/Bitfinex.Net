@@ -6,7 +6,7 @@ using System.Text;
 namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 {
     public interface IBitfinexRestClientSpotApiShared :
-        IAssetRestClient,
+        IAssetsRestClient,
         IBalanceRestClient,
         IDepositRestClient,
         IKlineRestClient,

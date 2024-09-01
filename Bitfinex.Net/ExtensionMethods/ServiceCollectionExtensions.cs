@@ -3,6 +3,7 @@ using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Objects.Options;
 using Bitfinex.Net.SymbolOrderBooks;
+using CryptoExchange.Net;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -58,6 +59,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IBitfinexOrderBookFactory, BitfinexOrderBookFactory>();
             services.AddTransient<IBitfinexRestClient, BitfinexRestClient>();
             services.AddTransient(x => x.GetRequiredService<IBitfinexRestClient>().SpotApi.CommonSpotClient);
+
+            services.RegisterSharedRestInterfaces(x => x.GetRequiredService<IBitfinexRestClient>().SpotApi.SharedClient);
+            services.RegisterSharedSocketInterfaces(x => x.GetRequiredService<IBitfinexSocketClient>().SpotApi.SharedClient);
+
             if (socketClientLifeTime == null)
                 services.AddSingleton<IBitfinexSocketClient, BitfinexSocketClient>();
             else
