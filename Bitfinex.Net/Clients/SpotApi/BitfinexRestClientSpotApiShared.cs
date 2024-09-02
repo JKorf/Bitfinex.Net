@@ -5,6 +5,7 @@ using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.SharedApis.Enums;
 using CryptoExchange.Net.SharedApis.Interfaces;
+using CryptoExchange.Net.SharedApis.Interfaces.Rest.Spot;
 using CryptoExchange.Net.SharedApis.Models;
 using CryptoExchange.Net.SharedApis.Models.FilterOptions;
 using CryptoExchange.Net.SharedApis.Models.Rest;
@@ -205,35 +206,35 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Ticker client
 
-        EndpointOptions<GetTickerRequest> ITickerRestClient.GetTickerOptions { get; } = new EndpointOptions<GetTickerRequest>(false);
-        async Task<ExchangeWebResult<SharedTicker>> ITickerRestClient.GetTickerAsync(GetTickerRequest request, ExchangeParameters? exchangeParameters, CancellationToken ct)
+        EndpointOptions<GetTickerRequest> ISpotTickerRestClient.GetSpotTickerOptions { get; } = new EndpointOptions<GetTickerRequest>(false);
+        async Task<ExchangeWebResult<SharedSpotTicker>> ISpotTickerRestClient.GetSpotTickerAsync(GetTickerRequest request, ExchangeParameters? exchangeParameters, CancellationToken ct)
         {
-            var validationError = ((ITickerRestClient)this).GetTickerOptions.ValidateRequest(Exchange, request, exchangeParameters);
+            var validationError = ((ISpotTickerRestClient)this).GetSpotTickerOptions.ValidateRequest(Exchange, request, exchangeParameters);
             if (validationError != null)
-                return new ExchangeWebResult<SharedTicker>(Exchange, validationError);
+                return new ExchangeWebResult<SharedSpotTicker>(Exchange, validationError);
 
             var baseAsset = request.Symbol.BaseAsset == "USDT" ? "UST" : request.Symbol.BaseAsset;
             var quoteAsset = request.Symbol.QuoteAsset == "USDT" ? "UST" : request.Symbol.QuoteAsset;
 
             var result = await ExchangeData.GetTickerAsync(request.Symbol.GetSymbol((baseAsset, quoteAsset) => FormatSymbol(baseAsset, quoteAsset, request.ApiType)), ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<SharedTicker>(Exchange, default);
+                return result.AsExchangeResult<SharedSpotTicker>(Exchange, default);
 
-            return result.AsExchangeResult(Exchange, new SharedTicker(result.Data.Symbol, result.Data.LastPrice, result.Data.HighPrice, result.Data.LowPrice, result.Data.Volume));
+            return result.AsExchangeResult(Exchange, new SharedSpotTicker(result.Data.Symbol, result.Data.LastPrice, result.Data.HighPrice, result.Data.LowPrice, result.Data.Volume));
         }
 
-        EndpointOptions ITickerRestClient.GetTickersOptions { get; } = new EndpointOptions("GetTickersRequest", false);
-        async Task<ExchangeWebResult<IEnumerable<SharedTicker>>> ITickerRestClient.GetTickersAsync(ApiType? apiType, ExchangeParameters? exchangeParameters, CancellationToken ct)
+        EndpointOptions ISpotTickerRestClient.GetSpotTickersOptions { get; } = new EndpointOptions("GetSpotTickersRequest", false);
+        async Task<ExchangeWebResult<IEnumerable<SharedSpotTicker>>> ISpotTickerRestClient.GetSpotTickersAsync(ApiType? apiType, ExchangeParameters? exchangeParameters, CancellationToken ct)
         {
-            var validationError = ((ITickerRestClient)this).GetTickersOptions.ValidateRequest(Exchange, exchangeParameters);
+            var validationError = ((ISpotTickerRestClient)this).GetSpotTickersOptions.ValidateRequest(Exchange, exchangeParameters);
             if (validationError != null)
-                return new ExchangeWebResult<IEnumerable<SharedTicker>>(Exchange, validationError);
+                return new ExchangeWebResult<IEnumerable<SharedSpotTicker>>(Exchange, validationError);
 
             var result = await ExchangeData.GetTickersAsync(ct: ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<IEnumerable<SharedTicker>>(Exchange, default);
+                return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, default);
 
-            return result.AsExchangeResult<IEnumerable<SharedTicker>>(Exchange, result.Data.Select(x => new SharedTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice, x.Volume)));
+            return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, result.Data.Select(x => new SharedSpotTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice, x.Volume)));
         }
 
         #endregion
