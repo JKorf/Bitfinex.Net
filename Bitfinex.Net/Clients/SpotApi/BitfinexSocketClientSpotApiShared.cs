@@ -20,6 +20,7 @@ namespace Bitfinex.Net.Clients.SpotApi
     internal partial class BitfinexSocketClientSpotApi : IBitfinexSocketClientSpotApiShared
     {
         public string Exchange => BitfinexExchange.ExchangeName;
+        public ApiType[] SupportedApiTypes { get; } = new[] { ApiType.Spot };
 
         async Task<ExchangeResult<UpdateSubscription>> ITickerSocketClient.SubscribeToTickerUpdatesAsync(TickerSubscribeRequest request, Action<DataEvent<SharedSpotTicker>> handler, CancellationToken ct)
         {
