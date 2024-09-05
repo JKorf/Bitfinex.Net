@@ -196,11 +196,27 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<IEnumerable<SharedSpotSymbol>>(Exchange, default);
 
-            return result.AsExchangeResult(Exchange, result.Data.Select(s => new SharedSpotSymbol(s.Key.Split(new[] { ':' })[0], s.Key.Split(new[] { ':' })[1], s.Key)
+            return result.AsExchangeResult(Exchange, result.Data.Select(s =>
             {
-                MinTradeQuantity = s.Value.MinOrderQuantity,
-                MaxTradeQuantity = s.Value.MaxOrderQuantity
+                var assets = GetAssets(s.Key);
+                return new SharedSpotSymbol(assets.BaseAsset, assets.QuoteAsset, "t" + s.Key, true)
+                {
+                    MinTradeQuantity = s.Value.MinOrderQuantity,
+                    MaxTradeQuantity = s.Value.MaxOrderQuantity
+                };
             }));
+
+        }
+
+        private (string BaseAsset, string QuoteAsset) GetAssets(string input)
+        {
+            if (input.Contains(":"))
+            {
+                var split = input.Split(':');
+                return (split[0], split[1]);
+            }
+
+            return (input.Substring(0, 3), input.Substring(3));
         }
 
         #endregion
