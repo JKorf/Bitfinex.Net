@@ -51,13 +51,14 @@ namespace Bitfinex.Net.Clients.SpotApi
             var baseAsset = request.Symbol.BaseAsset == "USDT" ? "UST" : request.Symbol.BaseAsset;
             var quoteAsset = request.Symbol.QuoteAsset == "USDT" ? "UST" : request.Symbol.QuoteAsset;
 
+            var limit = request.Limit ?? 10000;
             var result = await ExchangeData.GetKlinesAsync(
                 request.Symbol.GetSymbol(FormatSymbol),
                 interval,
-                startTime: fromTimestamp ?? request.StartTime,
-                endTime: request.EndTime?.AddSeconds(-1),
-                limit: request.Limit ?? 10000,
-                sorting: Sorting.OldFirst,
+                startTime: request.StartTime,
+                endTime: fromTimestamp ?? request.EndTime?.AddSeconds(-1),
+                limit: limit,
+                sorting: Sorting.NewFirst,
                 ct: ct
                 ).ConfigureAwait(false);
 
@@ -66,14 +67,13 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             // Get next token
             DateTimeToken? nextToken = null;
-            if (request.StartTime != null && result.Data.Any())
+            if (result.Data.Count() == limit)
             {
-                var maxOpenTime = result.Data.Max(x => x.OpenTime);
-                if (maxOpenTime < request.EndTime!.Value.AddSeconds(-(int)request.Interval))
-                    nextToken = new DateTimeToken(maxOpenTime.AddSeconds((int)interval));
+                var minOpenTime = result.Data.Min(x => x.OpenTime);
+                nextToken = new DateTimeToken(minOpenTime.AddSeconds(-(int)interval));
             }
 
-            return result.AsExchangeResult(Exchange, result.Data.Select(x => new SharedKline(x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume)), nextToken);
+            return result.AsExchangeResult<IEnumerable<SharedKline>>(Exchange, result.Data.Select(x => new SharedKline(x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume)).ToArray(), nextToken);
         }
 
         #endregion
@@ -125,7 +125,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             };
 
 
-            return assetList.Result.AsExchangeResult<SharedAsset>(Exchange, assetResult);
+            return assetList.Result.AsExchangeResult(Exchange, assetResult);
         }
 
         EndpointOptions<GetAssetsRequest> IAssetsRestClient.GetAssetsOptions { get; } = new EndpointOptions<GetAssetsRequest>(false);
@@ -175,9 +175,9 @@ namespace Bitfinex.Net.Clients.SpotApi
                                 WithdrawEnabled = status.WithdrawalStatus,
                                 MinConfirmations = status.DepositConfirmations
                             };
-                        }).ToList()
+                        }).ToArray()
                     };
-                }).Where(x => x != null).ToList()!
+                }).Where(x => x != null).ToArray()!
             );
         }
 
@@ -196,7 +196,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<IEnumerable<SharedSpotSymbol>>(Exchange, default);
 
-            return result.AsExchangeResult(Exchange, result.Data.Select(s =>
+            return result.AsExchangeResult<IEnumerable<SharedSpotSymbol>>(Exchange, result.Data.Select(s =>
             {
                 var assets = GetAssets(s.Key);
                 return new SharedSpotSymbol(assets.BaseAsset, assets.QuoteAsset, "t" + s.Key, true)
@@ -204,7 +204,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                     MinTradeQuantity = s.Value.MinOrderQuantity,
                     MaxTradeQuantity = s.Value.MaxOrderQuantity
                 };
-            }));
+            }).ToArray());
 
         }
 
@@ -251,7 +251,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, default);
 
-            return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, result.Data.Select(x => new SharedSpotTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice, x.Volume, x.DailyChangePercentage)));
+            return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, result.Data.Select(x => new SharedSpotTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice, x.Volume, x.DailyChangePercentage)).ToArray());
         }
 
         #endregion
@@ -273,7 +273,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, default);
 
-            return result.AsExchangeResult(Exchange, result.Data.Select(x => new SharedTrade(Math.Abs(x.Quantity), x.Price, x.Timestamp)));
+            return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, result.Data.Select(x => new SharedTrade(Math.Abs(x.Quantity), x.Price, x.Timestamp)).ToArray());
         }
 
         #endregion
@@ -291,7 +291,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<IEnumerable<SharedBalance>>(Exchange, default);
 
-            return result.AsExchangeResult(Exchange, result.Data.Select(x => new SharedBalance(x.Asset, x.Available ?? 0, x.Total)));
+            return result.AsExchangeResult<IEnumerable<SharedBalance>>(Exchange, result.Data.Select(x => new SharedBalance(x.Asset, x.Available ?? 0, x.Total)).ToArray());
         }
 
         #endregion
@@ -334,12 +334,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                 quantity: request.Quantity ?? 0,
                 flags: request.OrderType == SharedOrderType.LimitMaker ? Enums.OrderFlags.PostOnly : null,
                 price: request.Price ?? 0,
-                clientOrderId: request.ClientOrderId != null ? clientOrderId: null).ConfigureAwait(false);
+                clientOrderId: request.ClientOrderId != null ? clientOrderId: null,
+                ct: ct).ConfigureAwait(false);
 
             if (!result)
                 return result.AsExchangeResult<SharedId>(Exchange, default);
 
-            return result.AsExchangeResult(Exchange, new SharedId(result.Data.Id.ToString()));
+            return result.AsExchangeResult(Exchange, new SharedId(result.Data.Data!.Id.ToString()));
         }
 
         EndpointOptions<GetOrderRequest> ISpotOrderRestClient.GetSpotOrderOptions { get; } = new EndpointOptions<GetOrderRequest>(true);
@@ -373,7 +374,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 order.CreateTime)
             {
                 ClientOrderId = order.ClientOrderId?.ToString(),
-                AveragePrice = order.PriceAverage,
+                AveragePrice = order.PriceAverage == 0 ? null : order.PriceAverage,
                 Price = order.Price,
                 Quantity = order.Quantity,
                 QuantityFilled = order.Quantity - order.QuantityRemaining,
@@ -394,7 +395,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, null);
 
-            return result.AsExchangeResult(Exchange, result.Data.Select(x => new SharedSpotOrder(
+            return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, result.Data.Select(x => new SharedSpotOrder(
                 x.Symbol,
                 x.Id.ToString(),
                 ParseOrderType(x.Type, x.Flags),
@@ -403,13 +404,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                 x.CreateTime)
             {
                 ClientOrderId = x.ClientOrderId?.ToString(),
-                AveragePrice = x.PriceAverage,
+                AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
                 Price = x.Price,
                 Quantity = x.Quantity,
                 QuantityFilled = x.Quantity - x.QuantityRemaining,
                 TimeInForce = ParseTimeInForce(x.Type, x.Flags),
                 UpdateTime = x.UpdateTime
-            }));
+            }).ToArray());
         }
 
         PaginatedEndpointOptions<GetClosedOrdersRequest> ISpotOrderRestClient.GetClosedSpotOrdersOptions { get; } = new PaginatedEndpointOptions<GetClosedOrdersRequest>(SharedPaginationType.Ascending, true);
@@ -426,20 +427,21 @@ namespace Bitfinex.Net.Clients.SpotApi
                 fromTimestamp = dateTimeToken.LastTime;
 
             // Get data
+            var limit = request.Limit ?? 100;
             var result = await Trading.GetClosedOrdersAsync(request.Symbol.GetSymbol(FormatSymbol),
-                startTime: fromTimestamp ?? request.StartTime,
-                endTime: request.EndTime,
-                limit: request.Limit ?? 100,
+                startTime: request.StartTime,
+                endTime: fromTimestamp ?? request.EndTime,
+                limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, null);
 
             // Get next token
             DateTimeToken? nextToken = null;
-            if (result.Data.Count() == (request.Limit ?? 100))
-                nextToken = new DateTimeToken(result.Data.Max(o => o.CreateTime));
+            if (result.Data.Count() == limit)
+                nextToken = new DateTimeToken(result.Data.Min(o => o.CreateTime).AddMilliseconds(-1));
 
-            return result.AsExchangeResult(Exchange, result.Data.Select(x => new SharedSpotOrder(
+            return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, result.Data.Select(x => new SharedSpotOrder(
                 x.Symbol,
                 x.Id.ToString(),
                 ParseOrderType(x.Type, x.Flags),
@@ -448,13 +450,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                 x.CreateTime)
             {
                 ClientOrderId = x.ClientOrderId?.ToString(),
-                AveragePrice = x.PriceAverage,
+                AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
                 Price = x.Price,
                 Quantity = x.Quantity,
                 QuantityFilled = x.Quantity - x.QuantityRemaining,
                 TimeInForce = ParseTimeInForce(x.Type, x.Flags),
                 UpdateTime = x.UpdateTime
-            }), nextToken);
+            }).ToArray(), nextToken);
         }
 
         EndpointOptions<GetOrderTradesRequest> ISpotOrderRestClient.GetSpotOrderTradesOptions { get; } = new EndpointOptions<GetOrderTradesRequest>(true);
@@ -468,11 +470,11 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeWebResult<IEnumerable<SharedUserTrade>>(Exchange, new ArgumentError("Invalid order id"));
 
             var order = await Trading.GetOrderTradesAsync(
-                request.Symbol.GetSymbol(FormatSymbol), orderId).ConfigureAwait(false);
+                request.Symbol.GetSymbol(FormatSymbol), orderId, ct: ct).ConfigureAwait(false);
             if (!order)
                 return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, default);
 
-            return order.AsExchangeResult(Exchange, order.Data.Select(x => new SharedUserTrade(
+            return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, order.Data.Select(x => new SharedUserTrade(
                 x.Symbol,
                 x.OrderId.ToString(),
                 x.Id.ToString(),
@@ -480,13 +482,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                 x.Price,
                 x.Timestamp)
             {
-                Fee = x.Fee,
+                Fee = Math.Abs(x.Fee),
                 FeeAsset = x.FeeAsset,
                 Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null
-            }));
+            }).ToArray());
         }
 
-        PaginatedEndpointOptions<GetUserTradesRequest> ISpotOrderRestClient.GetSpotUserTradesOptions { get; } = new PaginatedEndpointOptions<GetUserTradesRequest>(SharedPaginationType.Ascending, true);
+        PaginatedEndpointOptions<GetUserTradesRequest> ISpotOrderRestClient.GetSpotUserTradesOptions { get; } = new PaginatedEndpointOptions<GetUserTradesRequest>(SharedPaginationType.Descending, true);
         async Task<ExchangeWebResult<IEnumerable<SharedUserTrade>>> ISpotOrderRestClient.GetSpotUserTradesAsync(GetUserTradesRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
             var validationError = ((ISpotOrderRestClient)this).GetSpotUserTradesOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedApiTypes);
@@ -499,20 +501,22 @@ namespace Bitfinex.Net.Clients.SpotApi
                 fromTimestamp = dateTimeToken.LastTime;
 
             // Get data
+            var limit = request.Limit ?? 1000;
             var order = await Trading.GetUserTradesAsync(
                 request.Symbol.GetSymbol(FormatSymbol),
-                startTime: fromTimestamp ?? request.StartTime,
-                endTime: request.EndTime,
-                limit: request.Limit ?? 1000).ConfigureAwait(false);
+                startTime: request.StartTime,
+                endTime: fromTimestamp ?? request.EndTime,
+                limit: limit,
+                ct: ct).ConfigureAwait(false);
             if (!order)
                 return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, default);
 
             // Get next token
             DateTimeToken? nextToken = null;
-            if (order.Data.Count() == (request.Limit ?? 1000))
-                nextToken = new DateTimeToken(order.Data.Max(o => o.Timestamp));
+            if (order.Data.Count() == limit)
+                nextToken = new DateTimeToken(order.Data.Min(o => o.Timestamp).AddMilliseconds(-1));
 
-            return order.AsExchangeResult(Exchange, order.Data.Select(x => new SharedUserTrade(
+            return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, order.Data.Select(x => new SharedUserTrade(
                 x.Symbol,
                 x.OrderId.ToString(),
                 x.Id.ToString(),
@@ -520,10 +524,10 @@ namespace Bitfinex.Net.Clients.SpotApi
                 x.Price,
                 x.Timestamp)
             {
-                Fee = x.Fee,
+                Fee = Math.Abs(x.Fee),
                 FeeAsset = x.FeeAsset,
                 Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null
-            }), nextToken);
+            }).ToArray(), nextToken);
         }
 
         EndpointOptions<CancelOrderRequest> ISpotOrderRestClient.CancelSpotOrderOptions { get; } = new EndpointOptions<CancelOrderRequest>(true);
@@ -536,7 +540,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!long.TryParse(request.OrderId, out var orderId))
                 return new ExchangeWebResult<SharedId>(Exchange, new ArgumentError("Invalid order id"));
 
-            var order = await Trading.CancelOrderAsync(orderId).ConfigureAwait(false);
+            var order = await Trading.CancelOrderAsync(orderId, ct: ct).ConfigureAwait(false);
             if (!order)
                 return order.AsExchangeResult<SharedId>(Exchange, default);
 
@@ -574,7 +578,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if ((type == SharedOrderType.Limit || type == SharedOrderType.LimitMaker) && (tif == null || tif == SharedTimeInForce.GoodTillCanceled)) return Enums.OrderType.ExchangeLimit;
             if (type == SharedOrderType.Limit && tif == SharedTimeInForce.ImmediateOrCancel) return Enums.OrderType.ExchangeImmediateOrCancel;
             if (type == SharedOrderType.Limit && tif == SharedTimeInForce.FillOrKill) return Enums.OrderType.ExchangeFillOrKill;
-            if (type == SharedOrderType.Market) return Enums.OrderType.Market;
+            if (type == SharedOrderType.Market) return Enums.OrderType.ExchangeMarket;
 
             throw new ArgumentException($"The combination of order type `{type}` and time in force `{tif}` in invalid");
         }
@@ -622,24 +626,28 @@ namespace Bitfinex.Net.Clients.SpotApi
                 offset = timeToken.LastTime;
 
             // Get data
+            var limit = request.Limit ?? 1000;
             var deposits = await Account.GetMovementsAsync(
                 request.Asset,
-                startTime: offset ?? request.StartTime,
-                endTime: request.EndTime,
-                limit: request.Limit ?? 1000,
+                startTime: request.StartTime,
+                endTime: offset ?? request.EndTime,
+                limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!deposits)
                 return deposits.AsExchangeResult<IEnumerable<SharedDeposit>>(Exchange, default);
 
+            var data = deposits.Data.Where(x => x.Quantity < 0);
+
             // Determine next token
             DateTimeToken? nextToken = null;
-            if (deposits.Data.Count() == (request.Limit ?? 1000))
-                nextToken = new DateTimeToken(deposits.Data.Max(x => x.StartTime));
+            if (deposits.Data.Count() == limit)
+                nextToken = new DateTimeToken(deposits.Data.Min(x => x.StartTime));
 
-            return deposits.AsExchangeResult(Exchange, deposits.Data.Where(x => x.Quantity > 0).Select(x => new SharedDeposit(x.Asset, x.Quantity, x.Status == "COMPLETED", x.StartTime)
+            return deposits.AsExchangeResult<IEnumerable<SharedDeposit>>(Exchange, data.Where(x => x.Quantity > 0).Select(x => new SharedDeposit(x.Asset, x.Quantity, x.Status == "COMPLETED", x.StartTime)
             {
+                Id = x.Id,
                 TransactionId = x.TransactionId
-            }), nextToken);
+            }).ToArray(), nextToken);
         }
 
         #endregion
@@ -666,7 +674,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Trade History client
 
-        GetTradeHistoryOptions ITradeHistoryRestClient.GetTradeHistoryOptions { get; } = new GetTradeHistoryOptions(SharedPaginationType.Descending, false);
+        GetTradeHistoryOptions ITradeHistoryRestClient.GetTradeHistoryOptions { get; } = new GetTradeHistoryOptions(SharedPaginationType.Ascending, false);
         async Task<ExchangeWebResult<IEnumerable<SharedTrade>>> ITradeHistoryRestClient.GetTradeHistoryAsync(GetTradeHistoryRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
             var validationError = ((ITradeHistoryRestClient)this).GetTradeHistoryOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedApiTypes);
@@ -679,22 +687,24 @@ namespace Bitfinex.Net.Clients.SpotApi
                 fromTimestamp = dateTimeToken.LastTime;
 
             // Get data
+            var limit = request.Limit ?? 10000;
             var result = await ExchangeData.GetTradeHistoryAsync(
                 request.Symbol.GetSymbol(FormatSymbol),
                 startTime: fromTimestamp ?? request.StartTime,
                 endTime: request.EndTime,
-                limit: 10000,
-                sorting: Sorting.OldFirst).ConfigureAwait(false);
+                limit: limit,
+                sorting: Sorting.OldFirst,
+                ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, default);
 
             // Get next token
             DateTimeToken? nextToken = null;
-            if (result.Data.Count() == ( 10000))
-                nextToken = new DateTimeToken(result.Data.Max(o => o.Timestamp));
+            if (result.Data.Count() == limit)
+                nextToken = new DateTimeToken(result.Data.Max(o => o.Timestamp.AddMilliseconds(1)));
 
             // Return
-            return result.AsExchangeResult(Exchange, result.Data./*Where(x => x. < request.EndTime).*/Select(x => new SharedTrade(x.Quantity, x.Price, x.Timestamp)), nextToken);
+            return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, result.Data./*Where(x => x. < request.EndTime).*/Select(x => new SharedTrade(x.Quantity, x.Price, x.Timestamp)).ToArray(), nextToken);
         }
         #endregion
 
@@ -713,24 +723,28 @@ namespace Bitfinex.Net.Clients.SpotApi
                 offset = timeToken.LastTime;
 
             // Get data
+            var limit = request.Limit ?? 1000;
             var withdrawals = await Account.GetMovementsAsync(
                 request.Asset,
-                startTime: offset ?? request.StartTime,
-                endTime: request.EndTime,
-                limit: request.Limit ?? 1000,
+                startTime: request.StartTime,
+                endTime: offset ?? request.EndTime,
+                limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!withdrawals)
                 return withdrawals.AsExchangeResult<IEnumerable<SharedWithdrawal>>(Exchange, default);
 
+            var data = withdrawals.Data.Where(x => x.Quantity < 0);
+
             // Determine next token
             DateTimeToken? nextToken = null;
-            if (withdrawals.Data.Count() == (request.Limit ?? 1000))
-                nextToken = new DateTimeToken(withdrawals.Data.Max(x => x.StartTime));
+            if (withdrawals.Data.Count() == limit)
+                nextToken = new DateTimeToken(withdrawals.Data.Min(x => x.StartTime));
 
-            return withdrawals.AsExchangeResult(Exchange, withdrawals.Data.Where(x => x.Quantity < 0).Select(x => new SharedWithdrawal(x.Asset, x.Address, Math.Abs(x.Quantity), x.Status == "COMPLETED", x.StartTime)
+            return withdrawals.AsExchangeResult<IEnumerable<SharedWithdrawal>>(Exchange, data.Select(x => new SharedWithdrawal(x.Asset, x.Address, Math.Abs(x.Quantity), x.Status == "COMPLETED", x.StartTime)
             {
+                Id = x.Id,
                 TransactionId = x.TransactionId
-            }), nextToken);
+            }).ToArray(), nextToken);
         }
 
         #endregion

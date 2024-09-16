@@ -48,7 +48,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeResult<UpdateSubscription>(Exchange, validationError);
 
             var symbol = request.Symbol.GetSymbol(FormatSymbol);
-            var result = await SubscribeToTradeUpdatesAsync(symbol, update => handler(update.AsExchangeEvent(Exchange, update.Data.Select(x => new SharedTrade(x.QuantityAbs, x.Price, x.Timestamp)))), ct).ConfigureAwait(false);
+            var result = await SubscribeToTradeUpdatesAsync(symbol, update =>
+            {
+                if (update.UpdateType == SocketUpdateType.Snapshot)
+                    return;
+
+                handler(update.AsExchangeEvent<IEnumerable<SharedTrade>>(Exchange, update.Data.Select(x => new SharedTrade(x.QuantityAbs, x.Price, x.Timestamp)).ToArray()));
+            }, ct).ConfigureAwait(false);
 
             return new ExchangeResult<UpdateSubscription>(Exchange, result);
         }
@@ -79,7 +85,12 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeResult<UpdateSubscription>(Exchange, validationError);
 
             var result = await SubscribeToUserUpdatesAsync(
-                walletHandler: update => handler(update.AsExchangeEvent(Exchange, update.Data.Select(x => new SharedBalance(x.Asset, x.Available ?? 0, x.Total)))),
+                walletHandler: update => {
+                    if (update.UpdateType == SocketUpdateType.Snapshot)
+                        return;
+
+                    handler(update.AsExchangeEvent<IEnumerable<SharedBalance>>(Exchange, update.Data.Select(x => new SharedBalance(x.Asset, x.Available ?? x.Total, x.Total)).ToArray()));
+                },
                 ct: ct).ConfigureAwait(false);
 
             return new ExchangeResult<UpdateSubscription>(Exchange, result);
@@ -95,23 +106,29 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeResult<UpdateSubscription>(Exchange, validationError);
 
             var result = await SubscribeToUserUpdatesAsync(
-                orderHandler: update => handler(update.AsExchangeEvent(Exchange, update.Data.Select(x => 
-                    new SharedSpotOrder(
-                        x.Symbol,
-                        x.Id.ToString(),
-                        x.Type == Enums.OrderType.Limit ? SharedOrderType.Limit : x.Type == Enums.OrderType.Market ? SharedOrderType.Market : SharedOrderType.Other,
-                        x.Side == Enums.OrderSide.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
-                        x.Status == Enums.OrderStatus.Canceled ? SharedOrderStatus.Canceled : (x.Status == Enums.OrderStatus.Active || x.Status == Enums.OrderStatus.PartiallyFilled) ? SharedOrderStatus.Open : SharedOrderStatus.Filled,
-                        x.CreateTime)
-                    {
-                        ClientOrderId = x.ClientOrderId.ToString(),
-                        Price = x.Price,
-                        Quantity = x.Quantity,
-                        QuantityFilled = x.Quantity - x.QuantityRemaining,
-                        AveragePrice = x.PriceAverage,
-                        UpdateTime = x.UpdateTime
-                    }
-                ))),
+                orderHandler: update =>
+                {
+                    if (update.UpdateType == SocketUpdateType.Snapshot)
+                        return;
+
+                    handler(update.AsExchangeEvent<IEnumerable<SharedSpotOrder>>(Exchange, update.Data.Select(x =>
+                        new SharedSpotOrder(
+                            x.Symbol,
+                            x.Id.ToString(),
+                            x.Type == Enums.OrderType.ExchangeLimit ? SharedOrderType.Limit : x.Type == Enums.OrderType.ExchangeMarket ? SharedOrderType.Market : SharedOrderType.Other,
+                            x.Side == Enums.OrderSide.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
+                            x.Status == Enums.OrderStatus.Canceled ? SharedOrderStatus.Canceled : (x.Status == Enums.OrderStatus.Active || x.Status == Enums.OrderStatus.PartiallyFilled) ? SharedOrderStatus.Open : SharedOrderStatus.Filled,
+                            x.CreateTime)
+                        {
+                            ClientOrderId = x.ClientOrderId.ToString(),
+                            Price = x.Price,
+                            Quantity = x.Quantity,
+                            QuantityFilled = x.Quantity - x.QuantityRemaining,
+                            AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
+                            UpdateTime = x.UpdateTime
+                        }
+                    ).ToArray()));
+                },
                 ct: ct).ConfigureAwait(false);
 
             return new ExchangeResult<UpdateSubscription>(Exchange, result);
@@ -132,7 +149,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         update.Data.Price,
                         update.Data.Timestamp)
                     {
-                        Fee = update.Data.Fee,
+                        Fee = Math.Abs(update.Data.Fee),
                         FeeAsset = update.Data.FeeAsset,
                         Role = update.Data.Maker == true ? SharedRole.Maker: SharedRole.Taker
                     }
@@ -157,6 +174,9 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var symbol = request.Symbol.GetSymbol(FormatSymbol);
             var result = await SubscribeToKlineUpdatesAsync(symbol, interval, update => {
+                if (update.UpdateType == SocketUpdateType.Snapshot)
+                    return;
+
                 foreach (var item in update.Data)
                     handler(update.AsExchangeEvent(Exchange, new SharedKline(item.OpenTime, item.ClosePrice, item.HighPrice, item.LowPrice, item.OpenPrice, item.Volume)));
                 }
