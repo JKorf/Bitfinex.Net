@@ -23,7 +23,7 @@ namespace Bitfinex.Net.Clients.SpotApi
     internal partial class BitfinexRestClientSpotApi : IBitfinexRestClientSpotApiShared
     {
         public string Exchange => BitfinexExchange.ExchangeName;
-        public ApiType[] SupportedApiTypes { get; } = new[] { ApiType.Spot };
+        public TradingMode[] SupportedApiTypes { get; } = new[] { TradingMode.Spot };
         public void SetDefaultExchangeParameter(string key, object value) => ExchangeParameters.SetStaticParameter(Exchange, key, value);
         public void ResetDefaultExchangeParameters() => ExchangeParameters.ResetStaticParameters();
 
@@ -65,7 +65,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 ).ConfigureAwait(false);
 
             if (!result)
-                return result.AsExchangeResult<IEnumerable<SharedKline>>(Exchange, default);
+                return result.AsExchangeResult<IEnumerable<SharedKline>>(Exchange, null, default);
 
             // Get next token
             DateTimeToken? nextToken = null;
@@ -75,7 +75,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 nextToken = new DateTimeToken(minOpenTime.AddSeconds(-(int)interval));
             }
 
-            return result.AsExchangeResult<IEnumerable<SharedKline>>(Exchange, result.Data.Select(x => new SharedKline(x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume)).ToArray(), nextToken);
+            return result.AsExchangeResult<IEnumerable<SharedKline>>(Exchange, request.Symbol.ApiType, result.Data.Select(x => new SharedKline(x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume)).ToArray(), nextToken);
         }
 
         #endregion
@@ -84,7 +84,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         EndpointOptions<GetAssetRequest> IAssetsRestClient.GetAssetOptions { get; } = new EndpointOptions<GetAssetRequest>(false);
         async Task<ExchangeWebResult<SharedAsset>> IAssetsRestClient.GetAssetAsync(GetAssetRequest request, CancellationToken ct)
         {
-            var validationError = ((IAssetsRestClient)this).GetAssetOptions.ValidateRequest(Exchange, request, ApiType.Spot, SupportedApiTypes);
+            var validationError = ((IAssetsRestClient)this).GetAssetOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedApiTypes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedAsset>(Exchange, validationError);
 
@@ -96,15 +96,15 @@ namespace Bitfinex.Net.Clients.SpotApi
             var assetTxStatus = ExchangeData.GetDepositWithdrawalStatusAsync(ct: ct);
             await Task.WhenAll(assetList, assetMethods).ConfigureAwait(false);
             if (!assetSymbols.Result)
-                return assetSymbols.Result.AsExchangeResult<SharedAsset>(Exchange, default);
+                return assetSymbols.Result.AsExchangeResult<SharedAsset>(Exchange, TradingMode.Spot, default);
             if (!assetList.Result)
-                return assetList.Result.AsExchangeResult<SharedAsset>(Exchange, default);
+                return assetList.Result.AsExchangeResult<SharedAsset>(Exchange, TradingMode.Spot, default);
             if (!assetMethods.Result)
-                return assetMethods.Result.AsExchangeResult<SharedAsset>(Exchange, default);
+                return assetMethods.Result.AsExchangeResult<SharedAsset>(Exchange, TradingMode.Spot, default);
             if (!assetFees.Result)
-                return assetFees.Result.AsExchangeResult<SharedAsset>(Exchange, default);
+                return assetFees.Result.AsExchangeResult<SharedAsset>(Exchange, TradingMode.Spot, default);
             if (!assetTxStatus.Result)
-                return assetTxStatus.Result.AsExchangeResult<SharedAsset>(Exchange, default);
+                return assetTxStatus.Result.AsExchangeResult<SharedAsset>(Exchange, TradingMode.Spot, default);
 
             var asset = assetList.Result.Data.SingleOrDefault(x => x.Name == request.Asset);
             var symbol = assetSymbols.Result.Data.SingleOrDefault(y => y.Key == asset.FullName).Value ?? asset.Name;
@@ -127,14 +127,14 @@ namespace Bitfinex.Net.Clients.SpotApi
             };
 
 
-            return assetList.Result.AsExchangeResult(Exchange, assetResult);
+            return assetList.Result.AsExchangeResult(Exchange, TradingMode.Spot, assetResult);
         }
 
         EndpointOptions<GetAssetsRequest> IAssetsRestClient.GetAssetsOptions { get; } = new EndpointOptions<GetAssetsRequest>(false);
 
         async Task<ExchangeWebResult<IEnumerable<SharedAsset>>> IAssetsRestClient.GetAssetsAsync(GetAssetsRequest request, CancellationToken ct)
         {
-            var validationError = ((IAssetsRestClient)this).GetAssetsOptions.ValidateRequest(Exchange, request, ApiType.Spot, SupportedApiTypes);
+            var validationError = ((IAssetsRestClient)this).GetAssetsOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedApiTypes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedAsset>>(Exchange, validationError);
 
@@ -146,17 +146,17 @@ namespace Bitfinex.Net.Clients.SpotApi
             var assetTxStatus = ExchangeData.GetDepositWithdrawalStatusAsync(ct: ct);
             await Task.WhenAll(assetList, assetMethods).ConfigureAwait(false);
             if (!assetSymbols.Result)
-                return assetSymbols.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, default);
+                return assetSymbols.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, null, default);
             if (!assetList.Result)
-                return assetList.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, default);
+                return assetList.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, null, default);
             if (!assetMethods.Result)
-                return assetMethods.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, default);
+                return assetMethods.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, null, default);
             if (!assetFees.Result)
-                return assetFees.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, default);
+                return assetFees.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, null, default);
             if (!assetTxStatus.Result)
-                return assetTxStatus.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, default);
+                return assetTxStatus.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, null, default);
 
-            return assetList.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, 
+            return assetList.Result.AsExchangeResult<IEnumerable<SharedAsset>>(Exchange, TradingMode.Spot, 
                 assetList.Result.Data.Select(x => 
                 {
                     var symbol = assetSymbols.Result.Data.SingleOrDefault(y => y.Key == x.FullName).Value ?? x.Name;
@@ -190,15 +190,15 @@ namespace Bitfinex.Net.Clients.SpotApi
         EndpointOptions<GetSymbolsRequest> ISpotSymbolRestClient.GetSpotSymbolsOptions { get; } = new EndpointOptions<GetSymbolsRequest>(false);
         async Task<ExchangeWebResult<IEnumerable<SharedSpotSymbol>>> ISpotSymbolRestClient.GetSpotSymbolsAsync(GetSymbolsRequest request, CancellationToken ct)
         {
-            var validationError = ((ISpotSymbolRestClient)this).GetSpotSymbolsOptions.ValidateRequest(Exchange, request, ApiType.Spot, SupportedApiTypes);
+            var validationError = ((ISpotSymbolRestClient)this).GetSpotSymbolsOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedApiTypes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedSpotSymbol>>(Exchange, validationError);
 
             var result = await ExchangeData.GetSymbolsAsync(ct: ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<IEnumerable<SharedSpotSymbol>>(Exchange, default);
+                return result.AsExchangeResult<IEnumerable<SharedSpotSymbol>>(Exchange, null, default);
 
-            return result.AsExchangeResult<IEnumerable<SharedSpotSymbol>>(Exchange, result.Data.Select(s =>
+            return result.AsExchangeResult<IEnumerable<SharedSpotSymbol>>(Exchange, TradingMode.Spot, result.Data.Select(s =>
             {
                 var assets = GetAssets(s.Key);
                 return new SharedSpotSymbol(assets.BaseAsset, assets.QuoteAsset, "t" + s.Key, true)
@@ -237,9 +237,9 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var result = await ExchangeData.GetTickerAsync(request.Symbol.GetSymbol(FormatSymbol), ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<SharedSpotTicker>(Exchange, default);
+                return result.AsExchangeResult<SharedSpotTicker>(Exchange, null, default);
 
-            return result.AsExchangeResult(Exchange, new SharedSpotTicker(result.Data.Symbol, result.Data.LastPrice, result.Data.HighPrice, result.Data.LowPrice, result.Data.Volume, result.Data.DailyChangePercentage));
+            return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedSpotTicker(result.Data.Symbol, result.Data.LastPrice, result.Data.HighPrice, result.Data.LowPrice, result.Data.Volume, result.Data.DailyChangePercentage));
         }
 
         EndpointOptions<GetTickersRequest> ISpotTickerRestClient.GetSpotTickersOptions { get; } = new EndpointOptions<GetTickersRequest>(false);
@@ -251,9 +251,9 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var result = await ExchangeData.GetTickersAsync(ct: ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, default);
+                return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, null, default);
 
-            return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, result.Data.Select(x => new SharedSpotTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice, x.Volume, x.DailyChangePercentage)).ToArray());
+            return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, TradingMode.Spot, result.Data.Select(x => new SharedSpotTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice, x.Volume, x.DailyChangePercentage)).ToArray());
         }
 
         #endregion
@@ -273,9 +273,9 @@ namespace Bitfinex.Net.Clients.SpotApi
                 limit: request.Limit,
                 ct: ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, default);
+                return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, null, default);
 
-            return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, result.Data.Select(x => new SharedTrade(Math.Abs(x.Quantity), x.Price, x.Timestamp)).ToArray());
+            return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, request.Symbol.ApiType, result.Data.Select(x => new SharedTrade(Math.Abs(x.Quantity), x.Price, x.Timestamp)).ToArray());
         }
 
         #endregion
@@ -291,9 +291,9 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var result = await Account.GetBalancesAsync(ct: ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<IEnumerable<SharedBalance>>(Exchange, default);
+                return result.AsExchangeResult<IEnumerable<SharedBalance>>(Exchange, null, default);
 
-            return result.AsExchangeResult<IEnumerable<SharedBalance>>(Exchange, result.Data.Select(x => new SharedBalance(x.Asset, x.Available ?? 0, x.Total)).ToArray());
+            return result.AsExchangeResult<IEnumerable<SharedBalance>>(Exchange, SupportedApiTypes, result.Data.Select(x => new SharedBalance(x.Asset, x.Available ?? 0, x.Total)).ToArray());
         }
 
         #endregion
@@ -343,9 +343,9 @@ namespace Bitfinex.Net.Clients.SpotApi
                 ct: ct).ConfigureAwait(false);
 
             if (!result)
-                return result.AsExchangeResult<SharedId>(Exchange, default);
+                return result.AsExchangeResult<SharedId>(Exchange, null, default);
 
-            return result.AsExchangeResult(Exchange, new SharedId(result.Data.Data!.Id.ToString()));
+            return result.AsExchangeResult(Exchange, request.Symbol.ApiType, new SharedId(result.Data.Data!.Id.ToString()));
         }
 
         EndpointOptions<GetOrderRequest> ISpotOrderRestClient.GetSpotOrderOptions { get; } = new EndpointOptions<GetOrderRequest>(true);
@@ -361,7 +361,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var symbol = request.Symbol.GetSymbol(FormatSymbol);
             var result = await Trading.GetOpenOrdersAsync(symbol, new[] { orderId }, ct: ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<SharedSpotOrder>(Exchange, null);
+                return result.AsExchangeResult<SharedSpotOrder>(Exchange, null, null);
 
             if (!result.Data.Any())
                 result = await Trading.GetClosedOrdersAsync(symbol, new[] { orderId }, ct: ct).ConfigureAwait(false);
@@ -370,7 +370,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return result.AsExchangeError<SharedSpotOrder>(Exchange, new ServerError($"Order with id {orderId} not found"));
 
             var order = result.Data.Single();
-            return result.AsExchangeResult(Exchange, new SharedSpotOrder(
+            return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedSpotOrder(
                 order.Symbol,
                 order.Id.ToString(),
                 ParseOrderType(order.Type, order.Flags),
@@ -398,9 +398,9 @@ namespace Bitfinex.Net.Clients.SpotApi
             var symbol = request.Symbol?.GetSymbol(FormatSymbol);
             var result = await Trading.GetOpenOrdersAsync(symbol, ct: ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, null);
+                return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, null, null);
 
-            return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, result.Data.Select(x => new SharedSpotOrder(
+            return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, TradingMode.Spot, result.Data.Select(x => new SharedSpotOrder(
                 x.Symbol,
                 x.Id.ToString(),
                 ParseOrderType(x.Type, x.Flags),
@@ -418,7 +418,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             }).ToArray());
         }
 
-        PaginatedEndpointOptions<GetClosedOrdersRequest> ISpotOrderRestClient.GetClosedSpotOrdersOptions { get; } = new PaginatedEndpointOptions<GetClosedOrdersRequest>(SharedPaginationType.Ascending, true);
+        PaginatedEndpointOptions<GetClosedOrdersRequest> ISpotOrderRestClient.GetClosedSpotOrdersOptions { get; } = new PaginatedEndpointOptions<GetClosedOrdersRequest>(SharedPaginationType.Descending, true);
 
         async Task<ExchangeWebResult<IEnumerable<SharedSpotOrder>>> ISpotOrderRestClient.GetClosedSpotOrdersAsync(GetClosedOrdersRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
@@ -439,14 +439,14 @@ namespace Bitfinex.Net.Clients.SpotApi
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, null);
+                return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, null, null);
 
             // Get next token
             DateTimeToken? nextToken = null;
             if (result.Data.Count() == limit)
                 nextToken = new DateTimeToken(result.Data.Min(o => o.CreateTime).AddMilliseconds(-1));
 
-            return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, result.Data.Select(x => new SharedSpotOrder(
+            return result.AsExchangeResult<IEnumerable<SharedSpotOrder>>(Exchange, TradingMode.Spot, result.Data.Select(x => new SharedSpotOrder(
                 x.Symbol,
                 x.Id.ToString(),
                 ParseOrderType(x.Type, x.Flags),
@@ -477,9 +477,9 @@ namespace Bitfinex.Net.Clients.SpotApi
             var order = await Trading.GetOrderTradesAsync(
                 request.Symbol.GetSymbol(FormatSymbol), orderId, ct: ct).ConfigureAwait(false);
             if (!order)
-                return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, default);
+                return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, null, default);
 
-            return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, order.Data.Select(x => new SharedUserTrade(
+            return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, TradingMode.Spot, order.Data.Select(x => new SharedUserTrade(
                 x.Symbol,
                 x.OrderId.ToString(),
                 x.Id.ToString(),
@@ -514,14 +514,14 @@ namespace Bitfinex.Net.Clients.SpotApi
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!order)
-                return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, default);
+                return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, null, default);
 
             // Get next token
             DateTimeToken? nextToken = null;
             if (order.Data.Count() == limit)
                 nextToken = new DateTimeToken(order.Data.Min(o => o.Timestamp).AddMilliseconds(-1));
 
-            return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, order.Data.Select(x => new SharedUserTrade(
+            return order.AsExchangeResult<IEnumerable<SharedUserTrade>>(Exchange, TradingMode.Spot, order.Data.Select(x => new SharedUserTrade(
                 x.Symbol,
                 x.OrderId.ToString(),
                 x.Id.ToString(),
@@ -547,9 +547,9 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var order = await Trading.CancelOrderAsync(orderId, ct: ct).ConfigureAwait(false);
             if (!order)
-                return order.AsExchangeResult<SharedId>(Exchange, default);
+                return order.AsExchangeResult<SharedId>(Exchange, null, default);
 
-            return order.AsExchangeResult(Exchange, new SharedId(order.Data.ToString()));
+            return order.AsExchangeResult(Exchange, request.Symbol.ApiType, new SharedId(order.Data.ToString()));
         }
 
         private SharedOrderStatus ParseOrderStatus(Enums.OrderStatus status)
@@ -602,15 +602,15 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         async Task<ExchangeWebResult<IEnumerable<SharedDepositAddress>>> IDepositRestClient.GetDepositAddressesAsync(GetDepositAddressesRequest request, CancellationToken ct)
         {
-            var validationError = ((IDepositRestClient)this).GetDepositAddressesOptions.ValidateRequest(Exchange, request, ApiType.Spot, SupportedApiTypes);
+            var validationError = ((IDepositRestClient)this).GetDepositAddressesOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedApiTypes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedDepositAddress>>(Exchange, validationError);
 
             var depositAddresses = await Account.GetDepositAddressAsync(request.Network!, WithdrawWallet.Deposit, false, ct).ConfigureAwait(false);
             if (!depositAddresses)
-                return depositAddresses.AsExchangeResult<IEnumerable<SharedDepositAddress>>(Exchange, default);
+                return depositAddresses.AsExchangeResult<IEnumerable<SharedDepositAddress>>(Exchange, null, default);
 
-            return depositAddresses.AsExchangeResult<IEnumerable<SharedDepositAddress>>(Exchange, new[] { new SharedDepositAddress(depositAddresses.Data.Data!.Asset, !string.IsNullOrEmpty(depositAddresses.Data.Data.PoolAddress) ? depositAddresses.Data.Data.PoolAddress : depositAddresses.Data.Data.Address)
+            return depositAddresses.AsExchangeResult<IEnumerable<SharedDepositAddress>>(Exchange, TradingMode.Spot, new[] { new SharedDepositAddress(depositAddresses.Data.Data!.Asset, !string.IsNullOrEmpty(depositAddresses.Data.Data.PoolAddress) ? depositAddresses.Data.Data.PoolAddress : depositAddresses.Data.Data.Address)
             {
                 Network = request.Network,
                 TagOrMemo = !string.IsNullOrEmpty(depositAddresses.Data.Data.PoolAddress) ? depositAddresses.Data.Data.Address : null,
@@ -621,7 +621,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         GetDepositsOptions IDepositRestClient.GetDepositsOptions { get; } = new GetDepositsOptions(SharedPaginationType.Descending, true);
         async Task<ExchangeWebResult<IEnumerable<SharedDeposit>>> IDepositRestClient.GetDepositsAsync(GetDepositsRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
-            var validationError = ((IDepositRestClient)this).GetDepositsOptions.ValidateRequest(Exchange, request, ApiType.Spot, SupportedApiTypes);
+            var validationError = ((IDepositRestClient)this).GetDepositsOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedApiTypes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedDeposit>>(Exchange, validationError);
 
@@ -639,7 +639,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!deposits)
-                return deposits.AsExchangeResult<IEnumerable<SharedDeposit>>(Exchange, default);
+                return deposits.AsExchangeResult<IEnumerable<SharedDeposit>>(Exchange, null, default);
 
             var data = deposits.Data.Where(x => x.Quantity < 0);
 
@@ -648,7 +648,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (deposits.Data.Count() == limit)
                 nextToken = new DateTimeToken(deposits.Data.Min(x => x.StartTime));
 
-            return deposits.AsExchangeResult<IEnumerable<SharedDeposit>>(Exchange, data.Where(x => x.Quantity > 0).Select(x => new SharedDeposit(x.Asset, x.Quantity, x.Status == "COMPLETED", x.StartTime)
+            return deposits.AsExchangeResult<IEnumerable<SharedDeposit>>(Exchange, TradingMode.Spot, data.Where(x => x.Quantity > 0).Select(x => new SharedDeposit(x.Asset, x.Quantity, x.Status == "COMPLETED", x.StartTime)
             {
                 Id = x.Id,
                 TransactionId = x.TransactionId
@@ -671,15 +671,15 @@ namespace Bitfinex.Net.Clients.SpotApi
                 limit: request.Limit,
                 ct: ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<SharedOrderBook>(Exchange, default);
+                return result.AsExchangeResult<SharedOrderBook>(Exchange, null, default);
 
-            return result.AsExchangeResult(Exchange, new SharedOrderBook(result.Data.Asks, result.Data.Bids));
+            return result.AsExchangeResult(Exchange, request.Symbol.ApiType, new SharedOrderBook(result.Data.Asks, result.Data.Bids));
         }
         #endregion
 
         #region Trade History client
 
-        GetTradeHistoryOptions ITradeHistoryRestClient.GetTradeHistoryOptions { get; } = new GetTradeHistoryOptions(SharedPaginationType.Ascending, false);
+        GetTradeHistoryOptions ITradeHistoryRestClient.GetTradeHistoryOptions { get; } = new GetTradeHistoryOptions(SharedPaginationType.Descending, false);
         async Task<ExchangeWebResult<IEnumerable<SharedTrade>>> ITradeHistoryRestClient.GetTradeHistoryAsync(GetTradeHistoryRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
             var validationError = ((ITradeHistoryRestClient)this).GetTradeHistoryOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedApiTypes);
@@ -695,21 +695,21 @@ namespace Bitfinex.Net.Clients.SpotApi
             var limit = request.Limit ?? 10000;
             var result = await ExchangeData.GetTradeHistoryAsync(
                 request.Symbol.GetSymbol(FormatSymbol),
-                startTime: fromTimestamp ?? request.StartTime,
-                endTime: request.EndTime,
+                startTime: request.StartTime,
+                endTime: fromTimestamp ?? request.EndTime,
                 limit: limit,
-                sorting: Sorting.OldFirst,
+                sorting: Sorting.NewFirst,
                 ct: ct).ConfigureAwait(false);
             if (!result)
-                return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, default);
+                return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, null, default);
 
             // Get next token
             DateTimeToken? nextToken = null;
             if (result.Data.Count() == limit)
-                nextToken = new DateTimeToken(result.Data.Max(o => o.Timestamp.AddMilliseconds(1)));
+                nextToken = new DateTimeToken(result.Data.Min(o => o.Timestamp.AddMilliseconds(-1)));
 
             // Return
-            return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, result.Data./*Where(x => x. < request.EndTime).*/Select(x => new SharedTrade(x.Quantity, x.Price, x.Timestamp)).ToArray(), nextToken);
+            return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, request.Symbol.ApiType, result.Data./*Where(x => x. < request.EndTime).*/Select(x => new SharedTrade(x.Quantity, x.Price, x.Timestamp)).ToArray(), nextToken);
         }
         #endregion
 
@@ -718,7 +718,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         GetWithdrawalsOptions IWithdrawalRestClient.GetWithdrawalsOptions { get; } = new GetWithdrawalsOptions(SharedPaginationType.Descending, true);
         async Task<ExchangeWebResult<IEnumerable<SharedWithdrawal>>> IWithdrawalRestClient.GetWithdrawalsAsync(GetWithdrawalsRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
-            var validationError = ((IWithdrawalRestClient)this).GetWithdrawalsOptions.ValidateRequest(Exchange, request, ApiType.Spot, SupportedApiTypes);
+            var validationError = ((IWithdrawalRestClient)this).GetWithdrawalsOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedApiTypes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedWithdrawal>>(Exchange, validationError);
 
@@ -736,7 +736,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!withdrawals)
-                return withdrawals.AsExchangeResult<IEnumerable<SharedWithdrawal>>(Exchange, default);
+                return withdrawals.AsExchangeResult<IEnumerable<SharedWithdrawal>>(Exchange, null, default);
 
             var data = withdrawals.Data.Where(x => x.Quantity < 0);
 
@@ -745,7 +745,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (withdrawals.Data.Count() == limit)
                 nextToken = new DateTimeToken(withdrawals.Data.Min(x => x.StartTime));
 
-            return withdrawals.AsExchangeResult<IEnumerable<SharedWithdrawal>>(Exchange, data.Select(x => new SharedWithdrawal(x.Asset, x.Address, Math.Abs(x.Quantity), x.Status == "COMPLETED", x.StartTime)
+            return withdrawals.AsExchangeResult<IEnumerable<SharedWithdrawal>>(Exchange, TradingMode.Spot, data.Select(x => new SharedWithdrawal(x.Asset, x.Address, Math.Abs(x.Quantity), x.Status == "COMPLETED", x.StartTime)
             {
                 Id = x.Id,
                 TransactionId = x.TransactionId
@@ -763,7 +763,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (string.IsNullOrEmpty(request.Network))
                 return new ExchangeWebResult<SharedId>(Exchange, new ArgumentError("Network is required"));
 
-            var validationError = ((IWithdrawRestClient)this).WithdrawOptions.ValidateRequest(Exchange, request, ApiType.Spot, SupportedApiTypes);
+            var validationError = ((IWithdrawRestClient)this).WithdrawOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedApiTypes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedId>(Exchange, validationError);
 
@@ -776,9 +776,9 @@ namespace Bitfinex.Net.Clients.SpotApi
                 paymentId: request.AddressTag,
                 ct: ct).ConfigureAwait(false);
             if (!withdrawal)
-                return withdrawal.AsExchangeResult<SharedId>(Exchange, default);
+                return withdrawal.AsExchangeResult<SharedId>(Exchange, null, default);
 
-            return withdrawal.AsExchangeResult(Exchange, new SharedId(withdrawal.Data.Data.WithdrawalId.ToString()));
+            return withdrawal.AsExchangeResult(Exchange, TradingMode.Spot, new SharedId(withdrawal.Data.Data.WithdrawalId.ToString()));
         }
 
         #endregion
