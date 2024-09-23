@@ -37,7 +37,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         async Task<ExchangeWebResult<IEnumerable<SharedKline>>> IKlineRestClient.GetKlinesAsync(GetKlinesRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
-            var validationError = ((IKlineRestClient)this).GetKlinesOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedTradingModes);
+            var validationError = ((IKlineRestClient)this).GetKlinesOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedKline>>(Exchange, validationError);
 
@@ -76,7 +76,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 nextToken = new DateTimeToken(minOpenTime.AddSeconds(-(int)interval));
             }
 
-            return result.AsExchangeResult<IEnumerable<SharedKline>>(Exchange, request.Symbol.ApiType, result.Data.Select(x => new SharedKline(x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume)).ToArray(), nextToken);
+            return result.AsExchangeResult<IEnumerable<SharedKline>>(Exchange, request.Symbol.TradingMode, result.Data.Select(x => new SharedKline(x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume)).ToArray(), nextToken);
         }
 
         #endregion
@@ -229,7 +229,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         EndpointOptions<GetTickerRequest> ISpotTickerRestClient.GetSpotTickerOptions { get; } = new EndpointOptions<GetTickerRequest>(false);
         async Task<ExchangeWebResult<SharedSpotTicker>> ISpotTickerRestClient.GetSpotTickerAsync(GetTickerRequest request, CancellationToken ct)
         {
-            var validationError = ((ISpotTickerRestClient)this).GetSpotTickerOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedTradingModes);
+            var validationError = ((ISpotTickerRestClient)this).GetSpotTickerOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedSpotTicker>(Exchange, validationError);
 
@@ -240,7 +240,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<SharedSpotTicker>(Exchange, null, default);
 
-            return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedSpotTicker(result.Data.Symbol, result.Data.LastPrice, result.Data.HighPrice, result.Data.LowPrice, result.Data.Volume, result.Data.DailyChangePercentage));
+            return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedSpotTicker(result.Data.Symbol, result.Data.LastPrice, result.Data.HighPrice, result.Data.LowPrice, result.Data.Volume, result.Data.DailyChangePercentage * 100));
         }
 
         EndpointOptions<GetTickersRequest> ISpotTickerRestClient.GetSpotTickersOptions { get; } = new EndpointOptions<GetTickersRequest>(false);
@@ -254,7 +254,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, null, default);
 
-            return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, TradingMode.Spot, result.Data.Select(x => new SharedSpotTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice, x.Volume, x.DailyChangePercentage)).ToArray());
+            return result.AsExchangeResult<IEnumerable<SharedSpotTicker>>(Exchange, TradingMode.Spot, result.Data.Select(x => new SharedSpotTicker(x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice, x.Volume, x.DailyChangePercentage * 100)).ToArray());
         }
 
         #endregion
@@ -265,7 +265,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         async Task<ExchangeWebResult<IEnumerable<SharedTrade>>> IRecentTradeRestClient.GetRecentTradesAsync(GetRecentTradesRequest request, CancellationToken ct)
         {
-            var validationError = ((IRecentTradeRestClient)this).GetRecentTradesOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedTradingModes);
+            var validationError = ((IRecentTradeRestClient)this).GetRecentTradesOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedTrade>>(Exchange, validationError);
 
@@ -276,7 +276,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, null, default);
 
-            return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, request.Symbol.ApiType, result.Data.Select(x => new SharedTrade(Math.Abs(x.Quantity), x.Price, x.Timestamp)).ToArray());
+            return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, request.Symbol.TradingMode, result.Data.Select(x => new SharedTrade(Math.Abs(x.Quantity), x.Price, x.Timestamp)).ToArray());
         }
 
         #endregion
@@ -317,7 +317,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var validationError = ((ISpotOrderRestClient)this).PlaceSpotOrderOptions.ValidateRequest(
                 Exchange,
                 request,
-                request.Symbol.ApiType,
+                request.Symbol.TradingMode,
                 SupportedTradingModes,
                 ((ISpotOrderRestClient)this).SpotSupportedOrderTypes,
                 ((ISpotOrderRestClient)this).SpotSupportedTimeInForce,
@@ -342,13 +342,13 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<SharedId>(Exchange, null, default);
 
-            return result.AsExchangeResult(Exchange, request.Symbol.ApiType, new SharedId(result.Data.Data!.Id.ToString()));
+            return result.AsExchangeResult(Exchange, request.Symbol.TradingMode, new SharedId(result.Data.Data!.Id.ToString()));
         }
 
         EndpointOptions<GetOrderRequest> ISpotOrderRestClient.GetSpotOrderOptions { get; } = new EndpointOptions<GetOrderRequest>(true);
         async Task<ExchangeWebResult<SharedSpotOrder>> ISpotOrderRestClient.GetSpotOrderAsync(GetOrderRequest request, CancellationToken ct)
         {
-            var validationError = ((ISpotOrderRestClient)this).GetSpotOrderOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedTradingModes);
+            var validationError = ((ISpotOrderRestClient)this).GetSpotOrderOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedSpotOrder>(Exchange, validationError);
 
@@ -388,7 +388,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         EndpointOptions<GetOpenOrdersRequest> ISpotOrderRestClient.GetOpenSpotOrdersOptions { get; } = new EndpointOptions<GetOpenOrdersRequest>(true);
         async Task<ExchangeWebResult<IEnumerable<SharedSpotOrder>>> ISpotOrderRestClient.GetOpenSpotOrdersAsync(GetOpenOrdersRequest request, CancellationToken ct)
         {
-            var validationError = ((ISpotOrderRestClient)this).GetOpenSpotOrdersOptions.ValidateRequest(Exchange, request, request.Symbol?.ApiType ?? request.TradingMode, SupportedTradingModes);
+            var validationError = ((ISpotOrderRestClient)this).GetOpenSpotOrdersOptions.ValidateRequest(Exchange, request, request.Symbol?.TradingMode ?? request.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedSpotOrder>>(Exchange, validationError);
 
@@ -419,7 +419,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         async Task<ExchangeWebResult<IEnumerable<SharedSpotOrder>>> ISpotOrderRestClient.GetClosedSpotOrdersAsync(GetClosedOrdersRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
-            var validationError = ((ISpotOrderRestClient)this).GetClosedSpotOrdersOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedTradingModes);
+            var validationError = ((ISpotOrderRestClient)this).GetClosedSpotOrdersOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedSpotOrder>>(Exchange, validationError);
 
@@ -464,7 +464,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         EndpointOptions<GetOrderTradesRequest> ISpotOrderRestClient.GetSpotOrderTradesOptions { get; } = new EndpointOptions<GetOrderTradesRequest>(true);
         async Task<ExchangeWebResult<IEnumerable<SharedUserTrade>>> ISpotOrderRestClient.GetSpotOrderTradesAsync(GetOrderTradesRequest request, CancellationToken ct)
         {
-            var validationError = ((ISpotOrderRestClient)this).GetSpotOrderTradesOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedTradingModes);
+            var validationError = ((ISpotOrderRestClient)this).GetSpotOrderTradesOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedUserTrade>>(Exchange, validationError);
 
@@ -493,7 +493,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         PaginatedEndpointOptions<GetUserTradesRequest> ISpotOrderRestClient.GetSpotUserTradesOptions { get; } = new PaginatedEndpointOptions<GetUserTradesRequest>(SharedPaginationSupport.Descending, true);
         async Task<ExchangeWebResult<IEnumerable<SharedUserTrade>>> ISpotOrderRestClient.GetSpotUserTradesAsync(GetUserTradesRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
-            var validationError = ((ISpotOrderRestClient)this).GetSpotUserTradesOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedTradingModes);
+            var validationError = ((ISpotOrderRestClient)this).GetSpotUserTradesOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedUserTrade>>(Exchange, validationError);
 
@@ -535,7 +535,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         EndpointOptions<CancelOrderRequest> ISpotOrderRestClient.CancelSpotOrderOptions { get; } = new EndpointOptions<CancelOrderRequest>(true);
         async Task<ExchangeWebResult<SharedId>> ISpotOrderRestClient.CancelSpotOrderAsync(CancelOrderRequest request, CancellationToken ct)
         {
-            var validationError = ((ISpotOrderRestClient)this).CancelSpotOrderOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedTradingModes);
+            var validationError = ((ISpotOrderRestClient)this).CancelSpotOrderOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedId>(Exchange, validationError);
 
@@ -546,7 +546,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!order)
                 return order.AsExchangeResult<SharedId>(Exchange, null, default);
 
-            return order.AsExchangeResult(Exchange, request.Symbol.ApiType, new SharedId(order.Data.ToString()));
+            return order.AsExchangeResult(Exchange, request.Symbol.TradingMode, new SharedId(order.Data.ToString()));
         }
 
         private SharedOrderStatus ParseOrderStatus(Enums.OrderStatus status)
@@ -658,7 +658,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         GetOrderBookOptions IOrderBookRestClient.GetOrderBookOptions { get; } = new GetOrderBookOptions(new[] { 1, 25, 100 }, false);
         async Task<ExchangeWebResult<SharedOrderBook>> IOrderBookRestClient.GetOrderBookAsync(GetOrderBookRequest request, CancellationToken ct)
         {
-            var validationError = ((IOrderBookRestClient)this).GetOrderBookOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedTradingModes);
+            var validationError = ((IOrderBookRestClient)this).GetOrderBookOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedOrderBook>(Exchange, validationError);
 
@@ -670,7 +670,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<SharedOrderBook>(Exchange, null, default);
 
-            return result.AsExchangeResult(Exchange, request.Symbol.ApiType, new SharedOrderBook(result.Data.Asks, result.Data.Bids));
+            return result.AsExchangeResult(Exchange, request.Symbol.TradingMode, new SharedOrderBook(result.Data.Asks, result.Data.Bids));
         }
         #endregion
 
@@ -679,7 +679,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         GetTradeHistoryOptions ITradeHistoryRestClient.GetTradeHistoryOptions { get; } = new GetTradeHistoryOptions(SharedPaginationSupport.Descending, false);
         async Task<ExchangeWebResult<IEnumerable<SharedTrade>>> ITradeHistoryRestClient.GetTradeHistoryAsync(GetTradeHistoryRequest request, INextPageToken? pageToken, CancellationToken ct)
         {
-            var validationError = ((ITradeHistoryRestClient)this).GetTradeHistoryOptions.ValidateRequest(Exchange, request, request.Symbol.ApiType, SupportedTradingModes);
+            var validationError = ((ITradeHistoryRestClient)this).GetTradeHistoryOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<IEnumerable<SharedTrade>>(Exchange, validationError);
 
@@ -706,7 +706,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 nextToken = new DateTimeToken(result.Data.Min(o => o.Timestamp.AddMilliseconds(-1)));
 
             // Return
-            return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, request.Symbol.ApiType, result.Data./*Where(x => x. < request.EndTime).*/Select(x => new SharedTrade(x.Quantity, x.Price, x.Timestamp)).ToArray(), nextToken);
+            return result.AsExchangeResult<IEnumerable<SharedTrade>>(Exchange, request.Symbol.TradingMode, result.Data./*Where(x => x. < request.EndTime).*/Select(x => new SharedTrade(Math.Abs(x.Quantity), x.Price, x.Timestamp)).ToArray(), nextToken);
         }
         #endregion
 
