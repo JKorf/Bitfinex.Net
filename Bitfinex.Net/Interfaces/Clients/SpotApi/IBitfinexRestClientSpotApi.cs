@@ -30,6 +30,10 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <returns></returns>
         public ISpotClient CommonSpotClient { get; }
+
+        /// <summary>
+        /// Get the shared rest requests client
+        /// </summary>
         public IBitfinexRestClientSpotApiShared SharedClient { get; }
     }
 }

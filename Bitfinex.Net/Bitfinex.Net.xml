@@ -1634,6 +1634,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.SharedClient">
+            <summary>
+            Get the shared rest requests client
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount">
             <summary>
             Bitfinex account endpoints. Account endpoints include balance info, withdraw/deposit info and requesting and account settings
@@ -2331,6 +2336,11 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
+        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiShared">
+            <summary>
+            Shared interface for Spot rest API usage
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading">
             <summary>
             Bitfinex trading endpoints, placing and mananging orders.
@@ -2501,6 +2511,11 @@
         <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi">
             <summary>
             Bitfinex spot streams
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SharedClient">
+            <summary>
+            Get the shared socket subscription client
             </summary>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker}},System.Threading.CancellationToken)">
@@ -2737,6 +2752,11 @@
             </summary>
             <param name="id">Id of the offer to cancel</param>
             <returns></returns>
+        </member>
+        <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApiShared">
+            <summary>
+            Shared interface for Spot socket API usage
+            </summary>
         </member>
         <member name="T:Bitfinex.Net.Interfaces.IBitfinexOrderBookFactory">
             <summary>

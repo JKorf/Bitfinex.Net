@@ -16,6 +16,9 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// </summary>
     public interface IBitfinexSocketClientSpotApi : ISocketApiClient, IDisposable
     {
+        /// <summary>
+        /// Get the shared socket subscription client
+        /// </summary>
         public IBitfinexSocketClientSpotApiShared SharedClient { get; }
 
         /// <summary>

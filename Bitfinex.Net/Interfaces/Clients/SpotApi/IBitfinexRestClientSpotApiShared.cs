@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 {
+    /// <summary>
+    /// Shared interface for Spot rest API usage
+    /// </summary>
     public interface IBitfinexRestClientSpotApiShared :
         IAssetsRestClient,
         IBalanceRestClient,

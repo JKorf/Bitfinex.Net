@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 {
+    /// <summary>
+    /// Shared interface for Spot socket API usage
+    /// </summary>
     public interface IBitfinexSocketClientSpotApiShared :
         ITickerSocketClient,
         ITradeSocketClient,
