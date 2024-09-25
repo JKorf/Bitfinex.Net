@@ -1630,12 +1630,12 @@
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.CommonSpotClient">
             <summary>
-            DEPRECATED; use <see cref="T:CryptoExchange.Net.SharedApis.ISharedClient" /> instead for common/shared functionality. See <see href="SHAREDDOCSURL" /> for more info.
+            DEPRECATED; use <see cref="T:CryptoExchange.Net.SharedApis.ISharedClient" /> instead for common/shared functionality. See <see href="https://jkorf.github.io/CryptoExchange.Net/docs/index.html#shared" /> for more info.
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.SharedClient">
             <summary>
-            Get the shared rest requests client
+            Get the shared rest requests client. This interface is shared with other exhanges to allow for a common implementation for different exchanges.
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount">
@@ -2514,7 +2514,7 @@
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SharedClient">
             <summary>
-            Get the shared socket subscription client
+            Get the shared socket subscription client. This interface is shared with other exhanges to allow for a common implementation for different exchanges.
             </summary>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker}},System.Threading.CancellationToken)">
