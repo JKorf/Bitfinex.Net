@@ -10,6 +10,7 @@ using CryptoExchange.Net.Converters.MessageParsing;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Interfaces.CommonClients;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;

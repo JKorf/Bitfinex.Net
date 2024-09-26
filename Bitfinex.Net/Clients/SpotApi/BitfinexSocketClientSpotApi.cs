@@ -23,6 +23,7 @@ using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Converters.MessageParsing;
 using CryptoExchange.Net.Clients;
+using CryptoExchange.Net.SharedApis;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
