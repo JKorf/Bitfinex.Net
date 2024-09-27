@@ -11,7 +11,6 @@ using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Models.Socket;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Objects.Options;
-using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Objects.Sockets;
 using Bitfinex.Net.Objects.Sockets.Subscriptions;
 using Bitfinex.Net.Objects.Models;
@@ -21,15 +20,15 @@ using System.Linq;
 using CryptoExchange.Net.Sockets;
 using System.Globalization;
 using Bitfinex.Net.Objects.Sockets.Queries;
-using Bitfinex.Net.ExtensionMethods;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Converters.MessageParsing;
 using CryptoExchange.Net.Clients;
+using CryptoExchange.Net.SharedApis;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc cref="IBitfinexSocketClientSpotApi" />
-    internal class BitfinexSocketClientSpotApi : SocketApiClient, IBitfinexSocketClientSpotApi
+    internal partial class BitfinexSocketClientSpotApi : SocketApiClient, IBitfinexSocketClientSpotApi
     {
         private static readonly MessagePath _0Path = MessagePath.Get().Index(0);
         private static readonly MessagePath _eventPath = MessagePath.Get().Property("event");
@@ -71,7 +70,18 @@ namespace Bitfinex.Net.Clients.SpotApi
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
         /// <inheritdoc />
-        public override string FormatSymbol(string baseAsset, string quoteAsset) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
+        public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
+        {
+            if (baseAsset == "USDT")
+                baseAsset = "UST";
+
+            if (quoteAsset == "USDT")
+                quoteAsset = "UST";
+
+            return $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
+        }
+
+        public IBitfinexSocketClientSpotApiShared SharedClient => this;
 
         /// <inheritdoc />
         protected override Query GetAuthenticationRequest(SocketConnection connection)

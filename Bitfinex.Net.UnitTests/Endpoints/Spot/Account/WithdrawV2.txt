@@ -1,0 +1,23 @@
+POST
+/v2/auth/w/withdraw
+true
+[
+  1568742390999, //MTS
+  "acc_wd-req", //TYPE
+  null, //MESSAGE_ID
+  null, //PLACEHOLDER
+  [
+    13080092, //WITHDRAWAL_ID
+    null, //PLACEHOLDER
+    "ethereum", //METHOD
+    null, //PAYMENT_ID
+    "exchange", //WALLET
+    0.01, //AMOUNT
+    null, //PLACEHOLDER
+    null, //PLACEHOLDER
+    0.00135 //WITHDRAWAL_FEE
+  ], //WITHDRAWAL_ARRAY
+  null, //CODE
+  "SUCCESS", //STATUS
+  "Your withdrawal request has been successfully submitted." //TEXT
+]

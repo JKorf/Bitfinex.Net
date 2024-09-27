@@ -35,5 +35,9 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(4)]
         public int? Period { get; set; }
+        /// <summary>
+        /// Quantity as a positive number
+        /// </summary>
+        public decimal QuantityAbs => Math.Abs(Quantity);
     }
 }
