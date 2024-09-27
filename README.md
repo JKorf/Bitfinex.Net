@@ -116,6 +116,14 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 7.8.0 - 27 Sep 2024
+    * Updated CryptoExchange.Net to version 8.0.0, see https://github.com/JKorf/CryptoExchange.Net/releases/tag/8.0.0
+    * Added Shared client interfaces implementation for Spot Rest and Socket clients
+    * Added SpotApi.Account.WithdrawV2Async endpoint
+    * Updated SpotApi.ExchangeData.GetTradeHistoryAsync limit parameter max value from 5000 to 10000
+    * Updated Sourcelink package version
+    * Marked ISpotClient references as deprecated
+
 * Version 7.7.0 - 07 Aug 2024
     * Updated CryptoExchange.Net to version 7.11.0, see https://github.com/JKorf/CryptoExchange.Net/releases/tag/7.11.0
     * Updated XML code comments
