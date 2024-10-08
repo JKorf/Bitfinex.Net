@@ -117,6 +117,9 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 7.8.1 - 08 Oct 2024
+    * Limit shared interface GetBalancesAsync result to Exchange balances to prevent duplicate asset balances
+
 * Version 7.8.0 - 27 Sep 2024
     * Updated CryptoExchange.Net to version 8.0.0, see https://github.com/JKorf/CryptoExchange.Net/releases/tag/8.0.0
     * Added Shared client interfaces implementation for Spot Rest and Socket clients
