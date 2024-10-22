@@ -80,6 +80,13 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             return nodeType == NodeType.Array ? typeof(BitfinexTopicUpdate<IEnumerable<T>>) : typeof(BitfinexTopicUpdate<T>);
         }
 
+        // After CryptoExchange.Net update:
+        //public override void DoHandleReset()
+        //{
+        //    _channelId = -1;
+        //    _firstUpdate = true;
+        //}
+
         public override void HandleSubQueryResponse(BitfinexResponse message)
         {
             _channelId = message.ChannelId!.Value;
