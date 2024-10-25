@@ -53,6 +53,31 @@
             Urls to the API documentation
             </summary>
         </member>
+        <member name="M:Bitfinex.Net.BitfinexExchange.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
+            <summary>
+            Format a base and quote asset to a Bitfinex recognized symbol 
+            </summary>
+            <param name="baseAsset">Base asset</param>
+            <param name="quoteAsset">Quote asset</param>
+            <param name="tradingMode">Trading mode</param>
+            <param name="deliverTime">Delivery time for delivery futures</param>
+            <returns></returns>
+        </member>
+        <member name="T:Bitfinex.Net.BitfinexTrackerFactory">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexTrackerFactory.#ctor(System.IServiceProvider)">
+            <summary>
+            ctor
+            </summary>
+            <param name="serviceProvider">Service provider for resolving logging and clients</param>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexTrackerFactory.CreateKlineTracker(CryptoExchange.Net.SharedApis.SharedSymbol,CryptoExchange.Net.SharedApis.SharedKlineInterval,System.Nullable{System.Int32},System.Nullable{System.TimeSpan})">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexTrackerFactory.CreateTradeTracker(CryptoExchange.Net.SharedApis.SharedSymbol,System.Nullable{System.Int32},System.Nullable{System.TimeSpan})">
+            <inheritdoc />
+        </member>
         <member name="T:Bitfinex.Net.Clients.BitfinexRestClient">
             <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient" />
         </member>
@@ -2767,12 +2792,44 @@
             Spot order book factory methods
             </summary>
         </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexOrderBookFactory.Create(CryptoExchange.Net.SharedApis.SharedSymbol,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions})">
+            <summary>
+            Create a SymbolOrderBook for the symbol
+            </summary>
+            <param name="symbol">The symbol</param>
+            <param name="options">Book options</param>
+            <returns></returns>
+        </member>
         <member name="M:Bitfinex.Net.Interfaces.IBitfinexOrderBookFactory.Create(System.String,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions})">
             <summary>
             Create a SymbolOrderBook
             </summary>
             <param name="symbol">The symbol</param>
             <param name="options">Book options</param>
+            <returns></returns>
+        </member>
+        <member name="T:Bitfinex.Net.Interfaces.IBitfinexTrackerFactory">
+            <summary>
+            Tracker factory
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexTrackerFactory.CreateKlineTracker(CryptoExchange.Net.SharedApis.SharedSymbol,CryptoExchange.Net.SharedApis.SharedKlineInterval,System.Nullable{System.Int32},System.Nullable{System.TimeSpan})">
+            <summary>
+            Create a new kline tracker
+            </summary>
+            <param name="symbol">The symbol</param>
+            <param name="interval">Kline interval</param>
+            <param name="limit">The max amount of klines to retain</param>
+            <param name="period">The max period the data should be retained</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexTrackerFactory.CreateTradeTracker(CryptoExchange.Net.SharedApis.SharedSymbol,System.Nullable{System.Int32},System.Nullable{System.TimeSpan})">
+            <summary>
+            Create a new trade tracker for a symbol
+            </summary>
+            <param name="symbol">The symbol</param>
+            <param name="limit">The max amount of klines to retain</param>
+            <param name="period">The max period the data should be retained</param>
             <returns></returns>
         </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexApiAddresses">
@@ -5581,6 +5638,9 @@
             <param name="serviceProvider">Service provider for resolving logging and clients</param>
         </member>
         <member name="P:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory.Spot">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory.Create(CryptoExchange.Net.SharedApis.SharedSymbol,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions})">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory.Create(System.String,System.Action{Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions})">

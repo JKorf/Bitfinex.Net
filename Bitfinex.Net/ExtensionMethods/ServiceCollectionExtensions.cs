@@ -1,4 +1,5 @@
-﻿using Bitfinex.Net.Clients;
+﻿using Bitfinex.Net;
+using Bitfinex.Net.Clients;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Objects.Options;
@@ -57,6 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             services.AddTransient<IBitfinexOrderBookFactory, BitfinexOrderBookFactory>();
+            services.AddTransient<IBitfinexTrackerFactory, BitfinexTrackerFactory>();
             services.AddTransient<IBitfinexRestClient, BitfinexRestClient>();
             services.AddTransient(x => x.GetRequiredService<IBitfinexRestClient>().SpotApi.CommonSpotClient);
 
