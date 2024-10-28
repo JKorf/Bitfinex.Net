@@ -45,10 +45,13 @@ namespace Bitfinex.Net.Clients.SpotApi
             var symbol = request.Symbol.GetSymbol(FormatSymbol);
             var result = await SubscribeToTradeUpdatesAsync(symbol, update =>
             {
-                if (update.UpdateType == SocketUpdateType.Snapshot)
+                if (update.UpdateType == SocketUpdateType.Snapshot || update.StreamId!.EndsWith(".tu"))
                     return;
 
-                handler(update.AsExchangeEvent<IEnumerable<SharedTrade>>(Exchange, update.Data.Select(x => new SharedTrade(x.QuantityAbs, x.Price, x.Timestamp)).ToArray()));
+                handler(update.AsExchangeEvent<IEnumerable<SharedTrade>>(Exchange, update.Data.Select(x => new SharedTrade(x.QuantityAbs, x.Price, x.Timestamp)
+                {
+                    Side = x.Quantity > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell
+                }).ToArray()));
             }, ct).ConfigureAwait(false);
 
             return new ExchangeResult<UpdateSubscription>(Exchange, result);

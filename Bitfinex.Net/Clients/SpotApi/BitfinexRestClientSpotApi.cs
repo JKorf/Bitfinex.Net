@@ -74,15 +74,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
-        {
-            if (baseAsset == "USDT")
-                baseAsset = "UST";
-
-            if (quoteAsset == "USDT")
-                quoteAsset = "UST";
-
-            return $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
-        }
+                => BitfinexExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
 
         #region common interface
 

@@ -80,12 +80,11 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             return nodeType == NodeType.Array ? typeof(BitfinexTopicUpdate<IEnumerable<T>>) : typeof(BitfinexTopicUpdate<T>);
         }
 
-        // After CryptoExchange.Net update:
-        //public override void DoHandleReset()
-        //{
-        //    _channelId = -1;
-        //    _firstUpdate = true;
-        //}
+        public override void DoHandleReset()
+        {
+            _channelId = -1;
+            _firstUpdate = true;
+        }
 
         public override void HandleSubQueryResponse(BitfinexResponse message)
         {
@@ -112,9 +111,9 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             else if (message.Data is BitfinexUpdate<T> singleUpdate)
                 _handler?.Invoke(message.As<IEnumerable<T>>(new[] { singleUpdate.Data }, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
             else if (message.Data is BitfinexTopicUpdate<IEnumerable<T>> array3Update)
-                _handler?.Invoke(message.As(array3Update.Data, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+                _handler?.Invoke(message.As(array3Update.Data, _channel + "." + array3Update.Topic, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
             else if (message.Data is BitfinexTopicUpdate<T> single3Update)
-                _handler?.Invoke(message.As<IEnumerable<T>>(new[] { single3Update.Data }, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+                _handler?.Invoke(message.As<IEnumerable<T>>(new[] { single3Update.Data }, _channel + "." + single3Update.Topic, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
 
             _firstUpdate = false;
             return new CallResult(null);

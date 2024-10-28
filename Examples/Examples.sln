@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bitfinex.Examples.Api", "Bi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bitfinex.Examples.Console", "Bitfinex.Examples.Console\Bitfinex.Examples.Console.csproj", "{FD4F95C8-D9B7-4F81-9245-4CE667DFD421}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bitfinex.Net", "..\Bitfinex.Net\Bitfinex.Net.csproj", "{9D8DC24F-660A-4BD5-B3EC-B5349EC54A74}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bitfinex.Examples.OrderBook", "Bitfinex.Examples.OrderBook\Bitfinex.Examples.OrderBook.csproj", "{23DE7C14-3A34-4464-989D-8E980E9EC677}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bitfinex.Examples.Tracker", "Bitfinex.Examples.Tracker\Bitfinex.Examples.Tracker.csproj", "{5D819C4C-32FE-41B6-B4E4-0C0413A26FFE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +27,18 @@ Global
 		{FD4F95C8-D9B7-4F81-9245-4CE667DFD421}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD4F95C8-D9B7-4F81-9245-4CE667DFD421}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD4F95C8-D9B7-4F81-9245-4CE667DFD421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D8DC24F-660A-4BD5-B3EC-B5349EC54A74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D8DC24F-660A-4BD5-B3EC-B5349EC54A74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D8DC24F-660A-4BD5-B3EC-B5349EC54A74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D8DC24F-660A-4BD5-B3EC-B5349EC54A74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23DE7C14-3A34-4464-989D-8E980E9EC677}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23DE7C14-3A34-4464-989D-8E980E9EC677}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23DE7C14-3A34-4464-989D-8E980E9EC677}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23DE7C14-3A34-4464-989D-8E980E9EC677}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D819C4C-32FE-41B6-B4E4-0C0413A26FFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D819C4C-32FE-41B6-B4E4-0C0413A26FFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D819C4C-32FE-41B6-B4E4-0C0413A26FFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D819C4C-32FE-41B6-B4E4-0C0413A26FFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
