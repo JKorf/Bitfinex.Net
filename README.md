@@ -118,6 +118,14 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 7.9.0 - 28 Oct 2024
+    * Updated CryptoExchange.Net to version 8.1.0, see https://github.com/JKorf/CryptoExchange.Net/releases/tag/8.1.0
+    * Moved FormatSymbol to BitfinexExchange class
+    * Added support Side setting on SharedTrade model
+    * Added BitfinexTrackerFactory for creating trackers
+    * Added overload to Create method on BitfinexOrderBookFactory support SharedSymbol parameter
+    * Added filtering of TradeUpdate messages in Shared rest trade socket subscription (Trade execution messages are still processed)
+
 * Version 7.8.2 - 14 Oct 2024
     * Updated CryptoExchange.Net to version 8.0.3, see https://github.com/JKorf/CryptoExchange.Net/releases/tag/8.0.3
     * Fixed TypeLoadException during initialization
