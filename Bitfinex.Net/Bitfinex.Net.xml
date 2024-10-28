@@ -66,6 +66,11 @@
         <member name="T:Bitfinex.Net.BitfinexTrackerFactory">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.BitfinexTrackerFactory.#ctor">
+            <summary>
+            ctor
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexTrackerFactory.#ctor(System.IServiceProvider)">
             <summary>
             ctor
