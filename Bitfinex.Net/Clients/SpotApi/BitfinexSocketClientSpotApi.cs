@@ -76,7 +76,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         public IBitfinexSocketClientSpotApiShared SharedClient => this;
 
         /// <inheritdoc />
-        protected override Query GetAuthenticationRequest(SocketConnection connection)
+        protected override Task<Query?> GetAuthenticationRequestAsync(SocketConnection connection)
         {
             var authProvider = (BitfinexAuthenticationProvider)AuthenticationProvider!;
             var n = authProvider.GetNonce().ToString();
@@ -89,7 +89,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             };
 
             authentication.Signature = authProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
-            return new BitfinexAuthQuery(authentication);
+            return Task.FromResult<Query?>(new BitfinexAuthQuery(authentication));
         }
 
         /// <inheritdoc />
