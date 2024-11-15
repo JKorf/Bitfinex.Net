@@ -11,10 +11,18 @@ namespace Bitfinex.Net.Objects.Options
         /// <summary>
         /// Default options for new clients
         /// </summary>
-        public static BitfinexRestOptions Default { get; set; } = new BitfinexRestOptions()
+        internal static BitfinexRestOptions Default { get; set; } = new BitfinexRestOptions()
         {
             Environment = BitfinexEnvironment.Live
         };
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        public BitfinexRestOptions()
+        {
+            Default?.Set(this);
+        }
 
         /// <summary>
         /// Default affiliate code to use when placing orders
@@ -31,13 +39,13 @@ namespace Bitfinex.Net.Objects.Options
         /// </summary>
         public RestApiOptions SpotOptions { get; private set; } = new RestApiOptions();
 
-        internal BitfinexRestOptions Copy()
+        internal BitfinexRestOptions Set(BitfinexRestOptions targetOptions)
         {
-            var options = Copy<BitfinexRestOptions>();
-            options.AffiliateCode = AffiliateCode;
-            options.NonceProvider = NonceProvider;
-            options.SpotOptions = SpotOptions.Copy<RestApiOptions>();
-            return options;
+            targetOptions = base.Set<BitfinexRestOptions>(targetOptions);
+            targetOptions.AffiliateCode = AffiliateCode;
+            targetOptions.NonceProvider = NonceProvider;
+            targetOptions.SpotOptions = SpotOptions.Set(targetOptions.SpotOptions);
+            return targetOptions;
         }
     }
 }

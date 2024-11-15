@@ -6,6 +6,7 @@ using Bitfinex.Net.Clients.SpotApi;
 using CryptoExchange.Net.Authentication;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Clients;
+using Microsoft.Extensions.Options;
 
 namespace Bitfinex.Net.Clients
 {
@@ -24,16 +25,9 @@ namespace Bitfinex.Net.Clients
         /// <summary>
         /// Create a new instance of the BitfinexSocketClient
         /// </summary>
-        /// <param name="loggerFactory">The logger factory</param>
-        public BitfinexSocketClient(ILoggerFactory? loggerFactory = null) : this((x) => { }, loggerFactory)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of the BitfinexSocketClient
-        /// </summary>
         /// <param name="optionsDelegate">Option configuration delegate</param>
-        public BitfinexSocketClient(Action<BitfinexSocketOptions> optionsDelegate) : this(optionsDelegate, null)
+        public BitfinexSocketClient(Action<BitfinexSocketOptions>? optionsDelegate = null)
+            : this(Options.Create(ApplyOptionsDelegate(optionsDelegate)), null)
         {
         }
 
@@ -41,14 +35,12 @@ namespace Bitfinex.Net.Clients
         /// Create a new instance of the BitfinexSocketClient
         /// </summary>
         /// <param name="loggerFactory">The logger factory</param>
-        /// <param name="optionsDelegate">Option configuration delegate</param>
-        public BitfinexSocketClient(Action<BitfinexSocketOptions> optionsDelegate, ILoggerFactory? loggerFactory = null) : base(loggerFactory, "Bitfinex")
+        /// <param name="options">Option configuration</param>
+        public BitfinexSocketClient(IOptions<BitfinexSocketOptions> options, ILoggerFactory? loggerFactory = null) : base(loggerFactory, "Bitfinex")
         {
-            var options = BitfinexSocketOptions.Default.Copy();
-            optionsDelegate(options);
-            Initialize(options);
+            Initialize(options.Value);
 
-            SpotApi = AddApiClient(new BitfinexSocketClientSpotApi(_logger, options));
+            SpotApi = AddApiClient(new BitfinexSocketClientSpotApi(_logger, options.Value));
         }
 
         #endregion
@@ -59,9 +51,7 @@ namespace Bitfinex.Net.Clients
         /// <param name="optionsDelegate">Option configuration delegate</param>
         public static void SetDefaultOptions(Action<BitfinexSocketOptions> optionsDelegate)
         {
-            var options = BitfinexSocketOptions.Default.Copy();
-            optionsDelegate(options);
-            BitfinexSocketOptions.Default = options;
+            BitfinexSocketOptions.Default = ApplyOptionsDelegate(optionsDelegate);
         }
 
         /// <inheritdoc />

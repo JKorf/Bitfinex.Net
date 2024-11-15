@@ -19,6 +19,16 @@
             Socket client address
             </summary>
         </member>
+        <member name="M:Bitfinex.Net.BitfinexEnvironment.#ctor">
+            <summary>
+            ctor for DI, use <see cref="M:Bitfinex.Net.BitfinexEnvironment.CreateCustom(System.String,System.String,System.String)"/> for creating a custom environment
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexEnvironment.GetEnvironmentByName(System.String)">
+            <summary>
+            Get the Bitfinex environment by name
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.BitfinexEnvironment.Live">
             <summary>
             Live environment
@@ -98,11 +108,11 @@
             </summary>
             <param name="optionsDelegate">Option configuration delegate</param>
         </member>
-        <member name="M:Bitfinex.Net.Clients.BitfinexRestClient.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Logging.ILoggerFactory,System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions})">
+        <member name="M:Bitfinex.Net.Clients.BitfinexRestClient.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Logging.ILoggerFactory,Microsoft.Extensions.Options.IOptions{Bitfinex.Net.Objects.Options.BitfinexRestOptions})">
             <summary>
             Create a new instance of the BitfinexRestClient using provided options
             </summary>
-            <param name="optionsDelegate">Option configuration delegate</param>
+            <param name="options">Option configuration</param>
             <param name="loggerFactory">The logger factory</param>
             <param name="httpClient">Http client for this client</param>
         </member>
@@ -121,24 +131,18 @@
         <member name="P:Bitfinex.Net.Clients.BitfinexSocketClient.SpotApi">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.#ctor(Microsoft.Extensions.Logging.ILoggerFactory)">
-            <summary>
-            Create a new instance of the BitfinexSocketClient
-            </summary>
-            <param name="loggerFactory">The logger factory</param>
-        </member>
         <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.#ctor(System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions})">
             <summary>
             Create a new instance of the BitfinexSocketClient
             </summary>
             <param name="optionsDelegate">Option configuration delegate</param>
         </member>
-        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.#ctor(System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions},Microsoft.Extensions.Logging.ILoggerFactory)">
+        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.#ctor(Microsoft.Extensions.Options.IOptions{Bitfinex.Net.Objects.Options.BitfinexSocketOptions},Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>
             Create a new instance of the BitfinexSocketClient
             </summary>
             <param name="loggerFactory">The logger factory</param>
-            <param name="optionsDelegate">Option configuration delegate</param>
+            <param name="options">Option configuration</param>
         </member>
         <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.SetDefaultOptions(System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions})">
             <summary>
@@ -5550,6 +5554,36 @@
             The fees paid
             </summary>
         </member>
+        <member name="T:Bitfinex.Net.Objects.Options.BitfinexOptions">
+            <summary>
+            Bitfinex options
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOptions.Rest">
+            <summary>
+            Rest client options
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOptions.Socket">
+            <summary>
+            Socket client options
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOptions.Environment">
+            <summary>
+            Trade environment. Contains info about URL's to use to connect to the API. Use `BitfinexEnvironment` to swap environment, for example `Environment = BitfinexEnvironment.Live`
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOptions.ApiCredentials">
+            <summary>
+            The api credentials used for signing requests.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOptions.SocketClientLifeTime">
+            <summary>
+            The DI service lifetime for the IBinanceSocketClient
+            </summary>
+        </member>
         <member name="T:Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions">
             <summary>
             Options for the Bitfinex SymbolOrderBook
@@ -5585,6 +5619,11 @@
             Default options for new clients
             </summary>
         </member>
+        <member name="M:Bitfinex.Net.Objects.Options.BitfinexRestOptions.#ctor">
+            <summary>
+            ctor
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.Options.BitfinexRestOptions.AffiliateCode">
             <summary>
             Default affiliate code to use when placing orders
@@ -5608,6 +5647,11 @@
         <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.Default">
             <summary>
             Default options for new clients
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.#ctor">
+            <summary>
+            ctor
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.AffiliateCode">
@@ -5723,14 +5767,20 @@
             Extensions for DI
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions},System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions},System.Nullable{Microsoft.Extensions.DependencyInjection.ServiceLifetime})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
-            Add the IBitfinexClient and IBitfinexSocketClient to the sevice collection so they can be injected
+            Add services such as the IBitfinexRestClient and IBitfinexSocketClient. Configures the services based on the provided configuration.
             </summary>
             <param name="services">The service collection</param>
-            <param name="defaultRestOptionsDelegate">Set default options for the rest client</param>
-            <param name="defaultSocketOptionsDelegate">Set default options for the socket client</param>
-            <param name="socketClientLifeTime">The lifetime of the IBitfinexSocketClient for the service collection. Defaults to Singleton.</param>
+            <param name="configuration">The configuration(section) containing the options</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitfinex.Net.Objects.Options.BitfinexOptions})">
+            <summary>
+            Add services such as the IBitfinexRestClient and IBitfinexSocketClient. Services will be configured based on the provided options.
+            </summary>
+            <param name="services">The service collection</param>
+            <param name="optionsDelegate">Set options for the Bitfinex services</param>
             <returns></returns>
         </member>
     </members>
