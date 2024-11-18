@@ -81,6 +81,21 @@ namespace Microsoft.Extensions.DependencyInjection
             return AddBitfinexCore(services, options.SocketClientLifeTime);
         }
 
+        /// <summary>
+        /// DEPRECATED; use <see cref="AddBitfinex(IServiceCollection, Action{BitfinexOptions}?)" /> instead
+        /// </summary>
+        public static IServiceCollection AddBitfinex(
+            this IServiceCollection services,
+            Action<BitfinexRestOptions> restDelegate,
+            Action<BitfinexSocketOptions>? socketDelegate = null,
+            ServiceLifetime? socketClientLifeTime = null)
+        {
+            services.Configure<BitfinexRestOptions>((x) => { restDelegate?.Invoke(x); });
+            services.Configure<BitfinexSocketOptions>((x) => { socketDelegate?.Invoke(x); });
+
+            return AddBitfinexCore(services, socketClientLifeTime);
+        }
+
         private static IServiceCollection AddBitfinexCore(
             this IServiceCollection services,
             ServiceLifetime? socketClientLifeTime = null)
