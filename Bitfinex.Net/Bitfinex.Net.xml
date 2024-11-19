@@ -53,6 +53,16 @@
             Exchange name
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.BitfinexExchange.DisplayName">
+            <summary>
+            Exchange name
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.BitfinexExchange.ImageUrl">
+            <summary>
+            Url to exchange image
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.BitfinexExchange.Url">
             <summary>
             Url to the main website
