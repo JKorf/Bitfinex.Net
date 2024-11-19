@@ -12,12 +12,20 @@ namespace Bitfinex.Net.Objects.Options
         /// <summary>
         /// Default options for new clients
         /// </summary>
-        public static BitfinexSocketOptions Default { get; set; } = new BitfinexSocketOptions()
+        internal static BitfinexSocketOptions Default { get; set; } = new BitfinexSocketOptions()
         {
             Environment = BitfinexEnvironment.Live,
             SocketSubscriptionsCombineTarget = 10,
             SocketNoDataTimeout = TimeSpan.FromSeconds(30)
         };
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        public BitfinexSocketOptions()
+        {
+            Default?.Set(this);
+        }
 
         /// <summary>
         /// Default affiliate code to use when placing orders
@@ -34,13 +42,13 @@ namespace Bitfinex.Net.Objects.Options
         /// </summary>
         public SocketApiOptions SpotOptions { get; private set; } = new SocketApiOptions();
 
-        internal BitfinexSocketOptions Copy()
+        internal BitfinexSocketOptions Set(BitfinexSocketOptions targetOptions)
         {
-            var options = Copy<BitfinexSocketOptions>();
-            options.AffiliateCode = AffiliateCode;
-            options.NonceProvider = NonceProvider;
-            options.SpotOptions = SpotOptions.Copy<SocketApiOptions>();
-            return options;
+            targetOptions = base.Set<BitfinexSocketOptions>(targetOptions);
+            targetOptions.AffiliateCode = AffiliateCode;
+            targetOptions.NonceProvider = NonceProvider;
+            targetOptions.SpotOptions = SpotOptions.Set(targetOptions.SpotOptions);
+            return targetOptions;
         }
     }
 }

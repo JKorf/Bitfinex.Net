@@ -21,6 +21,9 @@ using System.Net.Http;
 using System.Collections.Generic;
 using CryptoExchange.Net.Converters.JsonNet;
 using CryptoExchange.Net.Testing.Implementations;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Bitfinex.Net.Interfaces.Clients;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -105,6 +108,104 @@ namespace Bitfinex.Net.UnitTests
         {
             CryptoExchange.Net.Testing.TestHelpers.CheckForMissingRestInterfaces<BitfinexRestClient>();
             CryptoExchange.Net.Testing.TestHelpers.CheckForMissingSocketInterfaces<BitfinexSocketClient>();
+        }
+
+        [Test]
+        [TestCase(TradeEnvironmentNames.Live, "https://api.bitfinex.com")]
+        [TestCase("", "https://api.bitfinex.com")]
+        public void TestConstructorEnvironments(string environmentName, string expected)
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Bitfinex:Environment:Name", environmentName },
+                }).Build();
+
+            var collection = new ServiceCollection();
+            collection.AddBitfinex(configuration.GetSection("Bitfinex"));
+            var provider = collection.BuildServiceProvider();
+
+            var client = provider.GetRequiredService<IBitfinexRestClient>();
+
+            var address = client.SpotApi.BaseAddress;
+
+            Assert.That(address, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestConstructorNullEnvironment()
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Bitfinex", null },
+                }).Build();
+
+            var collection = new ServiceCollection();
+            collection.AddBitfinex(configuration.GetSection("Bitfinex"));
+            var provider = collection.BuildServiceProvider();
+
+            var client = provider.GetRequiredService<IBitfinexRestClient>();
+
+            var address = client.SpotApi.BaseAddress;
+
+            Assert.That(address, Is.EqualTo("https://api.bitfinex.com"));
+        }
+
+        [Test]
+        public void TestConstructorApiOverwriteEnvironment()
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "Bitfinex:Environment:Name", "test" },
+                    { "Bitfinex:Rest:Environment:Name", "live" },
+                }).Build();
+
+            var collection = new ServiceCollection();
+            collection.AddBitfinex(configuration.GetSection("Bitfinex"));
+            var provider = collection.BuildServiceProvider();
+
+            var client = provider.GetRequiredService<IBitfinexRestClient>();
+
+            var address = client.SpotApi.BaseAddress;
+
+            Assert.That(address, Is.EqualTo("https://api.bitfinex.com"));
+        }
+
+        [Test]
+        public void TestConstructorConfiguration()
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { "ApiCredentials:Key", "123" },
+                    { "ApiCredentials:Secret", "456" },
+                    { "Socket:ApiCredentials:Key", "456" },
+                    { "Socket:ApiCredentials:Secret", "789" },
+                    { "Rest:OutputOriginalData", "true" },
+                    { "Socket:OutputOriginalData", "false" },
+                    { "Rest:Proxy:Host", "host" },
+                    { "Rest:Proxy:Port", "80" },
+                    { "Socket:Proxy:Host", "host2" },
+                    { "Socket:Proxy:Port", "81" },
+                }).Build();
+
+            var collection = new ServiceCollection();
+            collection.AddBitfinex(configuration);
+            var provider = collection.BuildServiceProvider();
+
+            var restClient = provider.GetRequiredService<IBitfinexRestClient>();
+            var socketClient = provider.GetRequiredService<IBitfinexSocketClient>();
+
+            Assert.That(((BaseApiClient)restClient.SpotApi).OutputOriginalData, Is.True);
+            Assert.That(((BaseApiClient)socketClient.SpotApi).OutputOriginalData, Is.False);
+            Assert.That(((BaseApiClient)restClient.SpotApi).AuthenticationProvider.ApiKey, Is.EqualTo("123"));
+            Assert.That(((BaseApiClient)socketClient.SpotApi).AuthenticationProvider.ApiKey, Is.EqualTo("456"));
+            Assert.That(((BaseApiClient)restClient.SpotApi).ClientOptions.Proxy.Host, Is.EqualTo("host"));
+            Assert.That(((BaseApiClient)restClient.SpotApi).ClientOptions.Proxy.Port, Is.EqualTo(80));
+            Assert.That(((BaseApiClient)socketClient.SpotApi).ClientOptions.Proxy.Host, Is.EqualTo("host2"));
+            Assert.That(((BaseApiClient)socketClient.SpotApi).ClientOptions.Proxy.Port, Is.EqualTo(81));
         }
     }
 }

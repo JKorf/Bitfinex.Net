@@ -14,6 +14,16 @@ namespace Bitfinex.Net
         public static string ExchangeName => "Bitfinex";
 
         /// <summary>
+        /// Exchange name
+        /// </summary>
+        public static string DisplayName => "Bitfinex";
+
+        /// <summary>
+        /// Url to exchange image
+        /// </summary>
+        public static string ImageUrl { get; } = "https://raw.githubusercontent.com/JKorf/Bitfinex.Net/master/Bitfinex.Net/Icon/icon.png";
+
+        /// <summary>
         /// Url to the main website
         /// </summary>
         public static string Url { get; } = "https://www.bitfinex.com";
