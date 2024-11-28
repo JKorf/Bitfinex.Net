@@ -17,7 +17,8 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         ISpotTickerRestClient,
         ITradeHistoryRestClient,
         IWithdrawalRestClient,
-        IWithdrawRestClient
+        IWithdrawRestClient,
+        IFeeRestClient
     {
     }
 }

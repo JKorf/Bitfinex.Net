@@ -5569,31 +5569,6 @@
             Bitfinex options
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOptions.Rest">
-            <summary>
-            Rest client options
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOptions.Socket">
-            <summary>
-            Socket client options
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOptions.Environment">
-            <summary>
-            Trade environment. Contains info about URL's to use to connect to the API. Use `BitfinexEnvironment` to swap environment, for example `Environment = BitfinexEnvironment.Live`
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOptions.ApiCredentials">
-            <summary>
-            The api credentials used for signing requests.
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Objects.Options.BitfinexOptions.SocketClientLifeTime">
-            <summary>
-            The DI service lifetime for the IBinanceSocketClient
-            </summary>
-        </member>
         <member name="T:Bitfinex.Net.Objects.Options.BitfinexOrderBookOptions">
             <summary>
             Options for the Bitfinex SymbolOrderBook
