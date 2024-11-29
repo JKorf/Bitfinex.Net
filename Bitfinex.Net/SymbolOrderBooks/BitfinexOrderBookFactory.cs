@@ -25,9 +25,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
         {
             _serviceProvider = serviceProvider;
 
-            Spot = new OrderBookFactory<BitfinexOrderBookOptions>(
-                Create,
-                (sharedSymbol, options) => Create(BitfinexExchange.FormatSymbol(sharedSymbol.BaseAsset, sharedSymbol.QuoteAsset, sharedSymbol.TradingMode, sharedSymbol.DeliverTime), options));
+            Spot = new OrderBookFactory<BitfinexOrderBookOptions>(Create, Create);
         }
 
         /// <inheritdoc />
@@ -35,8 +33,8 @@ namespace Bitfinex.Net.SymbolOrderBooks
 
         /// <inheritdoc />
         public ISymbolOrderBook Create(SharedSymbol symbol, Action<BitfinexOrderBookOptions>? options = null)
-        {
-            var symbolName = BitfinexExchange.FormatSymbol(symbol.BaseAsset, symbol.QuoteAsset, symbol.TradingMode, symbol.DeliverTime);            
+        {       
+            var symbolName = symbol.GetSymbol(BitfinexExchange.FormatSymbol);
             return Create(symbolName, options);
         }
 
