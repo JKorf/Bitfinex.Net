@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Binance.Net.UnitTests.TestImplementations
 {
-    public class TestSocket: IWebsocket
+    public class TestSocket : IWebsocket
     {
         public bool CanConnect { get; set; } = true;
         public bool Connected { get; set; }
@@ -130,5 +130,7 @@ namespace Binance.Net.UnitTests.TestImplementations
             await Task.Delay(10);
             await OnReconnected();
         }
+
+        public void UpdateProxy(ApiProxy proxy) => throw new NotImplementedException();
     }
 }

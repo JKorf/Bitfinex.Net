@@ -126,6 +126,9 @@
             <param name="loggerFactory">The logger factory</param>
             <param name="httpClient">Http client for this client</param>
         </member>
+        <member name="M:Bitfinex.Net.Clients.BitfinexRestClient.SetOptions(CryptoExchange.Net.Objects.Options.UpdateOptions)">
+            <inheritdoc />
+        </member>
         <member name="M:Bitfinex.Net.Clients.BitfinexRestClient.SetDefaultOptions(System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions})">
             <summary>
             Set the default options to be used when creating new clients
@@ -153,6 +156,9 @@
             </summary>
             <param name="loggerFactory">The logger factory</param>
             <param name="options">Option configuration</param>
+        </member>
+        <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.SetOptions(CryptoExchange.Net.Objects.Options.UpdateOptions)">
+            <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.BitfinexSocketClient.SetDefaultOptions(System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions})">
             <summary>
@@ -1630,6 +1636,12 @@
             Spot endpoints
             </summary>
         </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.SetOptions(CryptoExchange.Net.Objects.Options.UpdateOptions)">
+            <summary>
+            Update specific options
+            </summary>
+            <param name="options">Options to update. Only specific options are changable after the client has been created</param>
+        </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <summary>
             Set the API credentials for this client. All Api clients in this client will use the new credentials, regardless of earlier set options.
@@ -1645,6 +1657,12 @@
             <summary>
             Spot streams
             </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient.SetOptions(CryptoExchange.Net.Objects.Options.UpdateOptions)">
+            <summary>
+            Update specific options
+            </summary>
+            <param name="options">Options to update. Only specific options are changable after the client has been created</param>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <summary>

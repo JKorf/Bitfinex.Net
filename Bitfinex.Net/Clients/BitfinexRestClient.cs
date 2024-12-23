@@ -11,6 +11,7 @@ using Bitfinex.Net.Objects.Options;
 using Microsoft.Extensions.DependencyInjection;
 using CryptoExchange.Net.Clients;
 using Microsoft.Extensions.Options;
+using CryptoExchange.Net.Objects.Options;
 
 namespace Bitfinex.Net.Clients
 {
@@ -52,6 +53,12 @@ namespace Bitfinex.Net.Clients
         #endregion
 
         #region methods
+        /// <inheritdoc />
+        public void SetOptions(UpdateOptions options)
+        {
+            GeneralApi.SetOptions(options);
+            SpotApi.SetOptions(options);
+        }
 
         /// <summary>
         /// Set the default options to be used when creating new clients
