@@ -1,4 +1,5 @@
-﻿using CryptoExchange.Net.SharedApis;
+﻿using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.SharedApis;
 using System;
 
 namespace Bitfinex.Net
@@ -34,6 +35,11 @@ namespace Bitfinex.Net
         public static string[] ApiDocsUrl { get; } = new[] {
             "https://docs.bitfinex.com/docs/introduction"
             };
+
+        /// <summary>
+        /// Type of exchange
+        /// </summary>
+        public static ExchangeType Type { get; } = ExchangeType.CEX;
 
         /// <summary>
         /// Format a base and quote asset to a Bitfinex recognized symbol 

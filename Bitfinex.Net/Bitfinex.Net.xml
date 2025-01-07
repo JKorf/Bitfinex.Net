@@ -73,6 +73,11 @@
             Urls to the API documentation
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.BitfinexExchange.Type">
+            <summary>
+            Type of exchange
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexExchange.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
             <summary>
             Format a base and quote asset to a Bitfinex recognized symbol 
