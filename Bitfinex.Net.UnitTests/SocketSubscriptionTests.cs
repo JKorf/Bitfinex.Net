@@ -19,7 +19,7 @@ namespace Bitfinex.Net.UnitTests
             {
                 opts.ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "456");
             });
-            var tester = new SocketSubscriptionValidator<BitfinexSocketClient>(client, "Subscriptions/Spot", "wss://api.bitfinex.com/", nestedPropertyForCompare: "1", stjCompare: false);
+            var tester = new SocketSubscriptionValidator<BitfinexSocketClient>(client, "Subscriptions/Spot", "wss://api.bitfinex.com/", nestedPropertyForCompare: "1", stjCompare: true);
             await tester.ValidateAsync<BitfinexStreamTicker>((client, handler) => client.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", handler), "Ticker");
             await tester.ValidateAsync<BitfinexStreamFundingTicker>((client, handler) => client.SpotApi.SubscribeToFundingTickerUpdatesAsync("fUSD", handler), "TickerFunding");
             await tester.ValidateAsync<IEnumerable<BitfinexOrderBookEntry>>((client, handler) => client.SpotApi.SubscribeToOrderBookUpdatesAsync("tETHUST", Enums.Precision.PrecisionLevel2, Enums.Frequency.TwoSeconds, 25, handler), "OrderBook");

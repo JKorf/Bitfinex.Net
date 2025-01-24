@@ -12,7 +12,6 @@ using CryptoExchange.Net.Interfaces.CommonClients;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -75,6 +74,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
                 => BitfinexExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
+
+        /// <inheritdoc />
+        protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer();
+        /// <inheritdoc />
+        protected override IStreamMessageAccessor CreateAccessor() => new SystemTextJsonStreamMessageAccessor();
 
         #region common interface
 

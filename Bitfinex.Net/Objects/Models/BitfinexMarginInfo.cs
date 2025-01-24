@@ -10,14 +10,17 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Conf
         /// </summary>
+        [JsonPropertyName("conf")]
         public Dictionary<string, decimal> Conf { get; set; } = new Dictionary<string, decimal>();
         /// <summary>
         /// Initial
         /// </summary>
+        [JsonPropertyName("initial")]
         public Dictionary<string, decimal> Initial { get; set; } = new Dictionary<string, decimal>();
         /// <summary>
         /// Minimum
         /// </summary>
+        [JsonPropertyName("minimum")]
         public Dictionary<string, decimal> Minimum { get; set; } = new Dictionary<string, decimal>();
     }
 }

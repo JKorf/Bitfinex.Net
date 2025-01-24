@@ -2,45 +2,45 @@ POST
 /v2/auth/w/order/cancel
 true
  [
-  1678989283488, //MTS
-  "oc-req", //TYPE
-  null, //MESSAGE_ID
+  1678989283488, 
+  "oc-req",
+  null, 
   null,
   [
-    1747566428, //ID
-    null, //GID
-    1678987199446, //CID
-    "tBTCUSD", //SYMBOL
-    1678987199446, //MTS_CREATE
-    1678989283489, //MTS_UPDATE
-    0.25, //AMOUNT
-    0.1, //AMOUNT_ORIG
-    "EXCHANGE LIMIT", //ORDER_TYPE
-    "EXCHANGE LIMIT", //TYPE_PREV
-    null, //MTS_TIF
+    1747566428, 
+    null, 
+    1678987199446,
+    "tBTCUSD",
+    1678987199446, 
+    1678989283489, 
+    0.25, 
+    0.1,
+    "EXCHANGE LIMIT", 
+    "EXCHANGE LIMIT",
+    null, 
     null,
-    0, //FLAGS
-    "CANCELED", //STATUS
-    null,
-    null,
-    25000, //PRICE
-    0, //PRICE_AVG
-    0, //PRICE_TRAILING
-    0, //PRICE_AUX_LIMIT
+    0,
+    "CANCELED", 
     null,
     null,
-    null,
-    0, //NOTIFY
-    0, //HIDDEN
-    null, //PLACED_ID
-    null,
-    null,
-    "API>BFX", //ROUTING
+    25000,
+    0,
+    0, 
+    0,
     null,
     null,
-    null //META
-  ], //DATA
-  null, //CODE
-  "SUCCESS", //STATUS
-  "Submitted for cancellation; waiting for confirmation (ID: 1747566428)." //TEXT
+    null,
+    0,
+    0, 
+    null,
+    null,
+    null,
+    "API>BFX", 
+    null,
+    null,
+    null 
+  ], 
+  null, 
+  "SUCCESS", 
+  "Submitted for cancellation; waiting for confirmation (ID: 1747566428)."
 ]

@@ -1,7 +1,5 @@
 ﻿using System;
-using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -49,7 +47,7 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Whether the offer took liquidity off the funding book
         /// </summary>
-        [ArrayProperty(7), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(7)]
         public bool? Maker { get; set; }
     }
 }

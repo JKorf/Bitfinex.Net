@@ -1,4 +1,6 @@
-﻿namespace Bitfinex.Net.Enums
+﻿using CryptoExchange.Net.Attributes;
+
+namespace Bitfinex.Net.Enums
 {
     /// <summary>
     /// Funding type
@@ -8,10 +10,12 @@
         /// <summary>
         /// Lend
         /// </summary>
+        [Map("lend")] 
         Lend,
         /// <summary>
         /// Loan
         /// </summary>
+        [Map("loan")]
         Loan
     }
 }

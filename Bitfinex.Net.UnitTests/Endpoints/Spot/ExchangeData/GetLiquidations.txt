@@ -5,17 +5,17 @@ false
   [
     [
     	"pos",
-      158793100, //POS_ID
-      1678465351520, //MTS
+      158793100,
+      1678465351520, 
       null,
-      "tAMPF0:USTF0", //SYMBOL
-      1e-8, //AMOUNT
-      1.0093, //BASE_PRICE
+      "tAMPF0:USTF0", 
+      1e-8,
+      1.0093, 
       null,
-      0, //IS_MATCH
-      1, //IS_MARKET_SOLD
+      0, 
+      1, 
       null,
-      1.0098 //PRICE_ACQUIRED
+      1.0098
     ]
   ]
 ]

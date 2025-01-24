@@ -3,29 +3,29 @@ GET
 false
 [
   [
-    "tAMPF0:USTF0", //KEY
-    1596124822000, //MTS
+    "tAMPF0:USTF0",
+    1596124822000, 
     null,
-    0.896, //DERIV_PRICE
-    0.771995, //SPOT_PRICE
+    0.896, 
+    0.771995,
     null,
-    1396531.67460709, //INSURANCE_FUND_BALANCE
+    1396531.67460709,
     null,
-    1596153600000, //NEXT_FUNDING_EVT_MTS
-    0.0001056, //NEXT_FUNDING_ACCRUED
-    6, //NEXT_FUNDING_STEP 
+    1596153600000, 
+    0.0001056, 
+    6,
     null,
-    -0.01381344, //CURRENT_FUNDING
-    null,
-    null,
-    0.7664, //MARK_PRICE
+    -0.01381344,
     null,
     null,
-    246502.09001551, //OPEN_INTEREST
+    0.7664, 
+    null,
+    null,
+    246502.09001551, 
     null,
     null,
     null,
-    0.0005, //CLAMP_MIN
-    0.0025 //CLAMP_MAX
+    0.0005,
+    0.0025
   ]
 ]

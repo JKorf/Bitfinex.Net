@@ -1,38 +1,36 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Enums;
-using Newtonsoft.Json;
+﻿using Bitfinex.Net.Enums;
 using System;
 
 namespace Bitfinex.Net.Objects.Internal
 {
     internal class BitfinexNewOrder
     {
-        [JsonConverter(typeof(OrderTypeConverter)), JsonProperty("type")]
+        [JsonConverter(typeof(EnumConverter)), JsonPropertyName("type")]
         public OrderType OrderType { get; set; }
 
-        [JsonProperty("symbol")] 
+        [JsonPropertyName("symbol")] 
         public string Symbol { get; set; } = string.Empty;
-        [JsonProperty("amount", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonPropertyName("amount"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonConverter(typeof(DecimalStringWriterConverter))]
         public decimal? Amount { get; set; }
-        [JsonProperty("price", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonPropertyName("price"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonConverter(typeof(DecimalStringWriterConverter))]
         public decimal? Price { get; set; }
-        [JsonProperty("price_trailing", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("price_trailing"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public decimal? PriceTrailing { get; set; }
-        [JsonProperty("price_aux_limit", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonPropertyName("price_aux_limit"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonConverter(typeof(DecimalStringWriterConverter))]
         public decimal? PriceAuxiliaryLimit { get; set; }
-        [JsonProperty("price_oco_stop", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonPropertyName("price_oco_stop"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonConverter(typeof(DecimalStringWriterConverter))]
         public decimal? PriceOCOStop { get; set; }
-        [JsonProperty("flags", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("flags"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public OrderFlags? Flags { get; set; }
-        [JsonProperty("gid", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("gid"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public long? GroupId { get; set; }
-        [JsonProperty("cid", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("cid"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public long? ClientOrderId { get; set; }
-        [JsonProperty("lev", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("lev"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int? Leverage { get; set; }
-        [JsonProperty("tif", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("tif"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public DateTime? CancelAfter { get; set; }
-        [JsonProperty("meta", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("meta"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public BitfinexMeta? Meta { get; set; }
     }
 
@@ -44,7 +42,7 @@ namespace Bitfinex.Net.Objects.Internal
         /// <summary>
         /// The affiliate code for the order
         /// </summary>
-        [JsonProperty("aff_code", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("aff_code"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string? AffiliateCode { get; set; }
     }
 }

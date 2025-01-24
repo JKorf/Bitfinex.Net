@@ -1,7 +1,5 @@
-﻿using Bitfinex.Net.Converters;
-using CryptoExchange.Net;
+﻿using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
-using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -41,8 +39,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         private static readonly MessagePath _chanIdPath = MessagePath.Get().Property("chanId");
 
         #region fields
-        private readonly JsonSerializer _bookSerializer = new JsonSerializer();
-        private readonly JsonSerializer _fundingBookSerializer = new JsonSerializer();
         private readonly Random _random = new Random();
         private readonly string? _affCode;
 
@@ -60,8 +56,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             AddSystemSubscription(new BitfinexInfoSubscription(_logger));
 
             _affCode = options.AffiliateCode;
-            _bookSerializer.Converters.Add(new OrderBookEntryConverter());
-            _fundingBookSerializer.Converters.Add(new OrderBookFundingEntryConverter());
         }
         #endregion
 
@@ -72,6 +66,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
                 => BitfinexExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
+
+        /// <inheritdoc />
+        protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer();
+        /// <inheritdoc />
+        protected override IByteMessageAccessor CreateAccessor() => new SystemTextJsonByteMessageAccessor();
 
         public IBitfinexSocketClientSpotApiShared SharedClient => this;
 
@@ -152,7 +151,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, KlineInterval interval, Action<DataEvent<IEnumerable<BitfinexKline>>> handler, CancellationToken ct = default)
         {
-            var subscription = new BitfinexSubscription<BitfinexKline>(_logger, "candles", symbol, handler, key: $"trade:{JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))}:" + symbol, sendSymbol: false);
+            var subscription = new BitfinexSubscription<BitfinexKline>(_logger, "candles", symbol, handler, key: $"trade:{EnumConverter.GetString(interval)}:" + symbol, sendSymbol: false);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 
@@ -313,7 +312,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(FundingOfferType type, string symbol, decimal quantity, decimal price, int period, int? flags = null)
         {
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 { "type", EnumConverter.GetString(type) },
                 { "symbol", symbol },
@@ -332,7 +331,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long id)
         {
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 { "id", id }
             };

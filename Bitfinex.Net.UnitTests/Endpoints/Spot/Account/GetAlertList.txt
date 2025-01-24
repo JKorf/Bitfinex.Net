@@ -3,10 +3,10 @@ POST
 true
 [
  [
-   "price:tETHUSD:220", //INFO
-   "price", //TYPE
-   "tETHUSD", //PAIR
-   220, //PRICE
-   100 //COUNTDOWN
+   "price:tETHUSD:220", 
+   "price", 
+   "tETHUSD", 
+   220, 
+   100 
  ]
 ]

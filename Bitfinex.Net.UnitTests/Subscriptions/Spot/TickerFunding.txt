@@ -17,8 +17,8 @@
     122156333.45260866, //VOLUME
     0.00027397, //HIGH
     6.8e-7, //LOW
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
+    null, 
+    null, 
     3441851.73330503 //FRR_AMOUNT_AVAILABLE
   ] //UPDATE
 ]

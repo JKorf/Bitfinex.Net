@@ -1,10 +1,6 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -65,7 +61,8 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Wallet type
         /// </summary>
-        [ArrayProperty(4), JsonConverter(typeof(WithdrawWalletConverter))]
+        [ArrayProperty(4)]
+        [JsonConverter(typeof(EnumConverter))]
         public WithdrawWallet Wallet { get; set; }
         /// <summary>
         /// Quantity

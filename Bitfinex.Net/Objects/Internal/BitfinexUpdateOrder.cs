@@ -1,24 +1,22 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Enums;
-using Newtonsoft.Json;
+﻿using Bitfinex.Net.Enums;
 
 namespace Bitfinex.Net.Objects.Internal
 {
     internal class BitfinexUpdateOrder
     {
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public long OrderId { get; set; }
-        [JsonProperty("amount", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonPropertyName("amount"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonConverter(typeof(DecimalStringWriterConverter))]
         public decimal? Amount { get; set; }
-        [JsonProperty("delta", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonPropertyName("delta"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonConverter(typeof(DecimalStringWriterConverter))]
         public decimal? Delta { get; set; }
-        [JsonProperty("price", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonPropertyName("price"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonConverter(typeof(DecimalStringWriterConverter))]
         public decimal? Price { get; set; }
-        [JsonProperty("price_trailing", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("price_trailing"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string? PriceTrailing { get; set; }
-        [JsonProperty("price_aux_limit", DefaultValueHandling = DefaultValueHandling.Ignore), JsonConverter(typeof(DecimalAsStringConverter))]
+        [JsonPropertyName("price_aux_limit"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonConverter(typeof(DecimalStringWriterConverter))]
         public string? PriceAuxiliaryLimit { get; set; }        
-        [JsonProperty("flags", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonPropertyName("flags"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public OrderFlags? Flags { get; set; }
     }
 }

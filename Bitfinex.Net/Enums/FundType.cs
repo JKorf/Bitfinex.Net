@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Bitfinex.Net.Enums
+﻿namespace Bitfinex.Net.Enums
 {
     /// <summary>
     /// Fund type
@@ -10,12 +8,12 @@ namespace Bitfinex.Net.Enums
         /// <summary>
         /// Credit
         /// </summary>
-        [JsonProperty("credit")]
+        [JsonPropertyName("credit")]
         Credit,
         /// <summary>
         /// Loan
         /// </summary>
-        [JsonProperty("loan")]
+        [JsonPropertyName("loan")]
         Loan
     }
 }

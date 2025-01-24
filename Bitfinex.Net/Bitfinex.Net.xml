@@ -186,6 +186,12 @@
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateSerializer">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateAccessor">
+            <inheritdoc />
+        </member>
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
             <inheritdoc />
         </member>
@@ -278,6 +284,12 @@
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateSerializer">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateAccessor">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetSymbolName(System.String,System.String)">
@@ -559,6 +571,12 @@
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateSerializer">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateAccessor">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.GetAuthenticationRequestAsync(CryptoExchange.Net.Sockets.SocketConnection)">
@@ -1083,6 +1101,11 @@
         <member name="F:Bitfinex.Net.Enums.OrderStatus.Executed">
             <summary>
             Fully filled
+            </summary>
+        </member>
+        <member name="F:Bitfinex.Net.Enums.OrderStatus.ForcefullyExecuted">
+            <summary>
+            Partially filled
             </summary>
         </member>
         <member name="F:Bitfinex.Net.Enums.OrderStatus.PartiallyFilled">
@@ -3497,7 +3520,7 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingOffer.Status">
             <summary>
-            The status
+            The order status
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingOffer.StatusString">
@@ -4307,7 +4330,7 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexOrder.Status">
             <summary>
-            The status of the order
+            The order status
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexOrder.StatusString">
@@ -4825,11 +4848,7 @@
             The safe volume
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Objects.Models.Bitfinex30DaySummaryVolumeEntry.VolumeMaker">
-            <summary>
-            The maker volume
-            </summary>
-        </member>
+        <!-- Badly formed XML comment ignored for member "P:Bitfinex.Net.Objects.Models.Bitfinex30DaySummaryVolumeEntry.VolumeMaker" -->
         <member name="P:Bitfinex.Net.Objects.Models.Bitfinex30DaySummaryVolumeEntry.VolumeBFX">
             <summary>
             The volume on Bitfinex
@@ -5570,6 +5589,11 @@
         <member name="P:Bitfinex.Net.Objects.Models.V1.BitfinexWithdrawalResult.Success">
             <summary>
             The status of the transfer
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.V1.BitfinexWithdrawalResult.Status">
+            <summary>
+            Status string
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.V1.BitfinexWithdrawalResult.Message">

@@ -1,7 +1,5 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -14,7 +12,8 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The type of the wallet
         /// </summary>
-        [ArrayProperty(0), JsonConverter(typeof(WalletTypeConverter))]
+        [ArrayProperty(0)]
+        [JsonConverter(typeof(EnumConverter))]
         public WalletType Type { get; set; }
 
         /// <summary>

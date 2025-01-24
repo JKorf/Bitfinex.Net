@@ -3,17 +3,17 @@ POST
 true
 [
   [
-    399251013, //ID
-    "tETHUSD", //SYMBOL
-    1573485493000, //MTS
-    33963608932, //ORDER_ID
-    0.26334268, //EXEC_AMOUNT
-    187.37, //EXEC_PRICE
+    399251013,
+    "tETHUSD",
+    1573485493000, 
+    33963608932, 
+    0.26334268,
+    187.37,
     null,
     null,
-    0, //MAKER
-    -0.09868591, //FEE
-    "USD", //FEE_CURRENCY
-    1234 //CID
+    0, 
+    -0.09868591, 
+    "USD", 
+    1234
   ]
 ]

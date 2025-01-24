@@ -1,7 +1,6 @@
 ﻿using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -36,7 +35,7 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Indicates if the user has a verified status 
         /// </summary>
-        [ArrayProperty(4), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(4)]
         public bool Verified { get; set; }
         /// <summary>
         /// Account verification level
@@ -61,7 +60,7 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Indicates if the user has a verified status 
         /// </summary>
-        [ArrayProperty(10), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(10)]
         public bool EmailVerified { get; set; }
         /// <summary>
         /// The time the master account was created
@@ -81,32 +80,32 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// True if account inherits verification from master account
         /// </summary>
-        [ArrayProperty(17), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(17)]
         public bool InheritMasterAccountVerification { get; set; }
         /// <summary>
         /// Indicates if the user is group master
         /// </summary>
-        [ArrayProperty(18), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(18)]
         public bool IsGroupMaster { get; set; }
         /// <summary>
         /// Whether group withdraw is enabled 
         /// </summary>
-        [ArrayProperty(19), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(19)]
         public bool GroupWithdrawEnabled { get; set; }
         /// <summary>
         /// Whether paper trading is enabled
         /// </summary>
-        [ArrayProperty(21), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(21)]
         public bool PaperTradingEnabled { get; set; }
         /// <summary>
         /// Whether merchant is enabled
         /// </summary>
-        [ArrayProperty(22), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(22)]
         public bool MerchantEnabled { get; set; }
         /// <summary>
         /// Whether competition is enabled
         /// </summary>
-        [ArrayProperty(23), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(23)]
         public bool CompetitionEnabled { get; set; }
         /// <summary>
         /// Enabled 2fa methods
@@ -116,22 +115,22 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Whether the account has a securities sub-account
         /// </summary>
-        [ArrayProperty(28), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(28)]
         public bool IsSecuritiesMaster { get; set; }
         /// <summary>
         /// Whether the account has securities enabled
         /// </summary>
-        [ArrayProperty(29), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(29)]
         public bool SecuritiesEnabled { get; set; }
         /// <summary>
         /// Account can disable context switching by master account into this account
         /// </summary>
-        [ArrayProperty(38), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(38)]
         public bool AllowDisableContextSwitch { get; set; }
         /// <summary>
         /// Master account cannot context switch into this account
         /// </summary>
-        [ArrayProperty(39), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(39)]
         public bool ContextSwitchDisabled { get; set; }
         /// <summary>
         /// The time of last login
@@ -161,7 +160,7 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Whether account is enterprise merchant
         /// </summary>
-        [ArrayProperty(54), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(54)]
         public bool IsMerchantEnterprice { get; set; }
     }
 }

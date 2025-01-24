@@ -1,24 +1,22 @@
-﻿using Newtonsoft.Json;
-
-namespace Bitfinex.Net.Objects.Sockets
+﻿namespace Bitfinex.Net.Objects.Sockets
 {
     internal class BitfinexResponse
     {
-        [JsonProperty("code")]
+        [JsonPropertyName("code")]
         public int? Code { get; set; }
-        [JsonProperty("event")]
+        [JsonPropertyName("event")]
         public string Event { get; set; } = string.Empty;
-        [JsonProperty("msg")]
+        [JsonPropertyName("msg")]
         public string Message { get; set; } = string.Empty;
-        [JsonProperty("status")]
+        [JsonPropertyName("status")]
         public string Status { get; set; } = string.Empty;
-        [JsonProperty("channel")]
+        [JsonPropertyName("channel")]
         public string Channel { get; set; } = string.Empty;
-        [JsonProperty("symbol")]
+        [JsonPropertyName("symbol")]
         public string? Symbol { get; set; }
-        [JsonProperty("pair")]
+        [JsonPropertyName("pair")]
         public string? Pair { get; set; }
-        [JsonProperty("chanId")]
+        [JsonPropertyName("chanId")]
         public int? ChannelId { get; set; }
     }
 }

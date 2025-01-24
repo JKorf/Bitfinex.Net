@@ -12,10 +12,10 @@
       149639.26293509, //GROSS_BALANCE
       830.0182168075556, //BUY
       895.0658432466332, //SELL
-      null, //PLACEHOLDER
-      null, //PLACEHOLDER
-      null, //PLACEHOLDER
-      null //PLACEHOLDER
+      null, 
+      null, 
+      null, 
+      null 
     ] //SYM_UPDATE_ARRAY
   ] //UPDATE_ARRAY
 ] 

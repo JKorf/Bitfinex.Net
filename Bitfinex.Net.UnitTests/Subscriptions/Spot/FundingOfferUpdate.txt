@@ -12,18 +12,18 @@
     5000, //AMOUNT
     5000, //AMOUNT_ORIG
     "LIMIT", //OFFER_TYPE
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
+    null, 
+    null, 
     0, //FLAGS
     "ACTIVE", //STATUS
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
+    null, 
+    null, 
+    null, 
     0.006000000000000001, //RATE
     30, //PERIOD
     0, //NOTIFY
     0, //HIDDEN
-    null, //PLACEHOLDER
+    null, 
     0, //RENEW
     null //RATE_REAL
   ]

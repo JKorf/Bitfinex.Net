@@ -3,18 +3,18 @@ GET
 false
 [
   [
-    "tMKRF0:USTF0", //SYMBOL
-    643.57, //BID
+    "tMKRF0:USTF0",
+    643.57, 
     null,
-    648.82, //ASK
-    null,
-    null,
+    648.82, 
     null,
     null,
     null,
     null,
     null,
     null,
-    1674061204000 //MTS
+    null,
+    null,
+    1674061204000 
   ]
 ]

@@ -8,14 +8,14 @@
       "pos", //MSG_TYPE
       142397657, //POS_ID
       1574697680828.2002, //TIME_MS
-      null, //PLACEHOLDER
+      null, 
       "tBSVUSD", //SYMBOL
       -2.62932, //AMOUNT
       91.583875238719, //BASE_PRICE
-      null, //PLACEHOLDER
+      null, 
       1, //IS_MATCH
       1, //IS_MARKET_SOLD
-      null, //PLACEHOLDER
+      null, 
       112.27 //LIQUIDATION_PRICE
     ] //LIQUIDATION_ARRAY
   ] //LIQUIDATIONS

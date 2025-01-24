@@ -16,26 +16,26 @@
     "EXCHANGE LIMIT", //ORDER_TYPE
     null, //TYPE_PREV
     null, //MTS_TIF
-    null, //PLACEHOLDER
+    null, 
     0, //FLAGS
     "CANCELED", //ORDER_STATUS
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
+    null, 
+    null, 
     120, //PRICE
     0, //PRICE_AVG
     0, //PRICE_TRAILING
     0, //PRICE_AUX_LIMIT
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
+    null, 
+    null, 
+    null, 
     0, //NOTIFY
     0, //HIDDEN
     null, //PLACED_ID
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
+    null, 
+    null, 
     "BFX", //ROUTING
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
+    null, 
+    null, 
     null //META
   ] //ORDER_ARRAY
 ]

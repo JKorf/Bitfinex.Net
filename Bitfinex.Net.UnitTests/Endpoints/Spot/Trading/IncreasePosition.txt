@@ -2,33 +2,33 @@ POST
 /v2/auth/w/position/increase
 true
 [
-  1612447904081, //MTS
-  'pmi-req', //TYPE
-  null, //MESSAGE_ID
-  null, //PLACEHOLDER
+  1612447904081, 
+  'pmi-req',
+  null,
+  null, 
   [
-    'tBTCUSD', //SYMBOL
-    null, //PLACEHOLDER
-    1, //AMOUNT
-    100, //BASE_PRICE
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null //PLACEHOLDER
+    'tBTCUSD',
+    null, 
+    1,
+    100, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null 
   ],
-  null, //CODE
-  'SUCCESS', //STATUS
-  'Submitting position increase.' //TEXT
+  null, 
+  'SUCCESS', 
+  'Submitting position increase.'
 ]

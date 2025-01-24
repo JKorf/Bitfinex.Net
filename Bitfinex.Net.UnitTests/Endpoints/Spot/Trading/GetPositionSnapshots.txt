@@ -3,25 +3,25 @@ POST
 true
 [
   [
-  'tETHUSD', //SYMBOL	
-  'ACTIVE', //STATUS
-  -0.2, //AMOUNT
-  167.01, //BASE_PRICE
-  0, //FUNDING
-  0, //FUNDING TYPE
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  142661142, //POSITION_ID
-  1579552390000, //MTS_CREATE
-  1579552390000, //MTS_UPDATE
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null //PLACEHOLDER
+  'tETHUSD',
+  'ACTIVE', 
+  -0.2, 
+  167.01, 
+  0,
+  0, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  142661142,
+  1579552390000, 
+  1579552390000, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null 
 	]
 ]

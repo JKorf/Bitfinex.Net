@@ -1,4 +1,6 @@
-﻿namespace Bitfinex.Net.Enums
+﻿using CryptoExchange.Net.Attributes;
+
+namespace Bitfinex.Net.Enums
 {
     /// <summary>
     /// Margin funding type
@@ -8,10 +10,12 @@
         /// <summary>
         /// Daily
         /// </summary>
+        [Map("0")]
         Daily,
         /// <summary>
         /// Term
         /// </summary>
+        [Map("1")]
         Term
     }
 }

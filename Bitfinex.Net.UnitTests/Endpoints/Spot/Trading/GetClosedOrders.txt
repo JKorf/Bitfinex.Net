@@ -3,37 +3,37 @@ POST
 true
 [
   [
-    33961681942, //ID
-    "1227", //GID
-    1337, //CID
-    "tBTCUSD", //SYMBOL
-    1573482478000, //MTS_CREATE
-    1573485373000, //MTS_UPDATE
-    0.001, //AMOUNT
-    0.001, //AMOUNT_ORIG
-    "EXCHANGE LIMIT", //ORDER_TYPE
-    null, //TYPE_PREV
-    null, //MTS_TIF
+    33961681942, 
+    "1227",
+    1337, 
+    "tBTCUSD",
+    1573482478000,
+    1573485373000,
+    0.001,
+    0.001,
+    "EXCHANGE LIMIT", 
+    null, 
+    null, 
     null,
-    "0", //FLAGS
-    "CANCELED", //STATUS
-    null,
-    null,
-    15, //PRICE
-    0, //PRICE_AVG
-    0, //PRICE_TRAILING
-    0, //PRICE_AUX_LIMIT
+    "0", 
+    "CANCELED", 
     null,
     null,
-    null,
-    0, //NOTIFY
-    0, //HIDDEN
-    null, //PLACED_ID
-    null,
-    null,
-    "API>BFX", //ROUTING
+    15, 
+    0, 
+    0, 
+    0, 
     null,
     null,
-    null //META
+    null,
+    0, 
+    0,
+    null,
+    null,
+    null,
+    "API>BFX",
+    null,
+    null,
+    null 
   ]
 ]

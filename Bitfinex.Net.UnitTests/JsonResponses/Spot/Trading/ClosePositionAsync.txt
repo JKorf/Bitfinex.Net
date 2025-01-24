@@ -1,3 +1,0 @@
-{
-  "message": 'Submitting a market order to liquidate this position.'
-}

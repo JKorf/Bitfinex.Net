@@ -20,9 +20,9 @@
       142420429, //POSITION_ID
       null, //MTS_CREATE
       null, //MTS_UPDATE
-      null, //PLACEHOLDER
+      null, 
       0, //TYPE
-      null, //PLACEHOLDER
+      null, 
       0, //COLLATERAL
       null, //COLLATERAL_MIN
       {

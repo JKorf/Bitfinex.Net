@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Converters.MessageParsing;
@@ -8,10 +7,8 @@ using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
@@ -53,8 +50,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _symbol = symbol;
             _key = key;
             _channel = channel;
-            _precision = precision == null ? null : JsonConvert.SerializeObject(precision, new PrecisionConverter(false));
-            _frequency = frequency == null ? null: JsonConvert.SerializeObject(frequency, new FrequencyConverter(false));
+            _precision = precision == null ? null : EnumConverter.GetString(precision);
+            _frequency = frequency == null ? null: EnumConverter.GetString(frequency);
             _length = length?.ToString();
             _sendSymbol = sendSymbol;
         }

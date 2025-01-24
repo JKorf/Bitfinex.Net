@@ -13,20 +13,20 @@
       0.5, //AMOUNT
       0.5, //AMOUNT_ORIG
       "LIMIT", //OFFER_TYPE
-      null, //PLACEHOLDER
-      null, //PLACEHOLDER
+      null, 
+      null, 
       0, //FLAGS
       "ACTIVE", //STATUS
-      null, //PLACEHOLDER
-      null, //PLACEHOLDER
-      null, //PLACEHOLDER
+      null, 
+      null, 
+      null, 
       0.0024, //RATE
       2, //PERIOD
       0, //NOTIFY
       0, //HIDDEN
-      null, //PLACEHOLDER
+      null, 
       0, //RENEW
-      null //PLACEHOLDER
+      null 
     ] //FUNDING_OFFER_ARRAY
   ] //FUNDING_OFFERS_SNAPSHOT
 ]

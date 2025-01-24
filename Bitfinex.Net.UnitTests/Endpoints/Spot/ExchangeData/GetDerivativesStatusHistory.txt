@@ -3,28 +3,28 @@ GET
 false
 [
   [
-    1570578776000, //MTS
+    1570578776000, 
     null, 
-    8194.95, //DERIV_PRICE
-    8196.95, //SPOT_PRICE
+    8194.95,
+    8196.95,
     null,
-    101120.80328179, //INSURANCE_FUND_BALANCE
+    101120.80328179, 
     null,
-    1570579200000, //NEXT_FUNDING_EVT_MTS
-    0.00021817, //NEXT_FUNDING_ACCRUED
-    9379, //NEXT_FUNDING_STEP
+    1570579200000,
+    0.00021817, 
+    9379, 
     null,
-    0, //CURRENT_FUNDING
+    0, 
     null, 
     null,
-    8192.823333333334, //MARK_PRICE
+    8192.823333333334,
     null,
     null,
-    5174.01444474, //OPEN_INTEREST
+    5174.01444474,
     null,
     null,
     null,
-    0.0005, //CLAMP_MIN
-    0.0025 //CLAMP_MAX
+    0.0005,
+    0.0025
   ]
 ]

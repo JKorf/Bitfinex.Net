@@ -1,8 +1,6 @@
 ﻿using System;
-using Bitfinex.Net.Converters;
 using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -51,7 +49,8 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The funding type
         /// </summary>
-        [ArrayProperty(6), JsonConverter(typeof(FundingOfferTypeConverter))]
+        [ArrayProperty(6)]
+        [JsonConverter(typeof(EnumConverter))]
         public FundingOfferType FundingType { get; set; }
         /// <summary>
         /// 
@@ -59,10 +58,12 @@ namespace Bitfinex.Net.Objects.Models
         [ArrayProperty(9)]
         public int? Flags { get; set; }
         /// <summary>
-        /// The status
+        /// The order status
         /// </summary>
-        [JsonIgnore]
-        public OrderStatus Status => new OrderStatusConverter().FromString(StatusString);
+#warning can we have 2 with index 10?
+        [ArrayProperty(10)]
+        [JsonConverter(typeof(EnumConverter))]
+        public OrderStatus Status { get; set; }
         /// <summary>
         /// The raw status string
         /// </summary>
@@ -84,19 +85,19 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// 
         /// </summary>
-        [ArrayProperty(16), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(16)]
         public bool Notify { get; set; }
 
         /// <summary>
         /// Whether the offer is hidden
         /// </summary>
-        [ArrayProperty(17), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(17)]
         public bool Hidden { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        [ArrayProperty(19), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(19)]
         public bool Renew { get; set; }
 
         /// <summary>

@@ -1,6 +1,5 @@
 ﻿using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Models
@@ -41,12 +40,12 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Leo discount level
         /// </summary>
-        [JsonProperty("leo_lev")]
+        [JsonPropertyName("leo_lev")]
         public int LeoDiscountLevel { get; set; }
         /// <summary>
         /// Leo average quantity
         /// </summary>
-        [JsonProperty("leo_amount_avg")]
+        [JsonPropertyName("leo_amount_avg")]
         public decimal LeoAverageQuantity { get; set; }
     }
 
@@ -163,48 +162,47 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The asset
         /// </summary>
-        [JsonProperty("curr")]
+        [JsonPropertyName("curr")]
         public string Asset { get; set; } = string.Empty;
 
         /// <summary>
         /// The volume
         /// </summary>
-        [JsonProperty("vol")]
-        public string Volume { get; set; } = string.Empty;
+        [JsonPropertyName("vol")]
+        public decimal Volume { get; set; }
         /// <summary>
         /// The safe volume
         /// </summary>
-        [JsonProperty("vol_safe")]
-        public string VolumeSafe { get; set; } = string.Empty;
-        /// <summary>
+        [JsonPropertyName("vol_safe")]
+        public decimal VolumeSafe { get; set; }
         /// The maker volume
         /// </summary>
-        [JsonProperty("vol_maker")]
-        public string VolumeMaker { get; set; } = string.Empty;
+        [JsonPropertyName("vol_maker")]
+        public decimal VolumeMaker { get; set; }
         /// <summary>
         /// The volume on Bitfinex
         /// </summary>
-        [JsonProperty("vol_BFX")]
-        public string VolumeBFX { get; set; } = string.Empty;
+        [JsonPropertyName("vol_BFX")]
+        public decimal VolumeBFX { get; set; }
         /// <summary>
         /// The safe volume on Bitfinex
         /// </summary>
-        [JsonProperty("vol_BFX_safe")]
-        public string VolumeBFXSafe { get; set; } = string.Empty;
+        [JsonPropertyName("vol_BFX_safe")]
+        public decimal VolumeBFXSafe { get; set; } 
         /// <summary>
         /// The maker volume on Bitfinex
         /// </summary>
-        [JsonProperty("vol_BFX_maker")]
-        public string VolumeBFXMaker { get; set; } = string.Empty;
+        [JsonPropertyName("vol_BFX_maker")]
+        public decimal VolumeBFXMaker { get; set; } 
         /// <summary>
         /// The volume on EthFinex
         /// </summary>
-        [JsonProperty("vol_ETHFX")]
-        public string VolumeETHFX { get; set; } = string.Empty;
+        [JsonPropertyName("vol_ETHFX")]
+        public decimal VolumeETHFX { get; set; }
         /// <summary>
         /// The maker volume on EthFinex
         /// </summary>
-        [JsonProperty("vol_ETHFX_maker")]
-        public string VolumeETHFXMaker { get; set; } = string.Empty;
+        [JsonPropertyName("vol_ETHFX_maker")]
+        public decimal VolumeETHFXMaker { get; set; }
     }
 }

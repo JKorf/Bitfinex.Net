@@ -9,7 +9,6 @@ using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -56,6 +55,12 @@ namespace Bitfinex.Net.Clients.GeneralApi
             Dictionary<string, object>? parameters = null,
             bool signed = false) where T : class
                 => base.SendRequestAsync<T>(uri, method, cancellationToken, parameters, signed, requestWeight: 0);
+
+
+        /// <inheritdoc />
+        protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer();
+        /// <inheritdoc />
+        protected override IStreamMessageAccessor CreateAccessor() => new SystemTextJsonStreamMessageAccessor();
 
         internal Uri GetUrl(string endpoint, string version)
         {

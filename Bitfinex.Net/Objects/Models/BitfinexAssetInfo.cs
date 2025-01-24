@@ -1,6 +1,4 @@
-﻿using Bitfinex.Net.Converters;
-using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
+﻿using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -18,12 +16,12 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Status of deposits
         /// </summary>
-        [ArrayProperty(1), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(1)]
         public bool DepositStatus { get; set; }
         /// <summary>
         /// Status of withdrawals
         /// </summary>
-        [ArrayProperty(2), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(2)]
         public bool WithdrawalStatus { get; set; }
         /// <summary>
         /// Payment id for deposits

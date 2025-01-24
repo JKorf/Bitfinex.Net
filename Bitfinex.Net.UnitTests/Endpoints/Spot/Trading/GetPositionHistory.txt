@@ -3,25 +3,25 @@ POST
 true
 [
   [
-  "tBTCUSD", //SYMBOL
-  "CLOSED", //STATUS
-  0, //AMOUNT
-  8639.50216298, //BASE_PRICE
-  0, //FUNDING
-  0, //FUNDING_TYPE
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  142355652, //POSITION_ID
-  1574002216000, //MTS_CREATE
-  1574003099000, //MTS_UPDATE
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
+  "tBTCUSD", 
+  "CLOSED", 
+  0, 
+  8639.50216298, 
+  0,
+  0, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  142355652, 
+  1574002216000, 
+  1574003099000, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
+  null, 
 	]
 ]
