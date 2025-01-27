@@ -190,6 +190,11 @@ namespace Bitfinex.Net.Clients.SpotApi
                 var assets = GetAssets(s.Key);
                 return new SharedSpotSymbol(assets.BaseAsset, assets.QuoteAsset, "t" + s.Key, true)
                 {
+                    // These apply to all symbols
+                    PriceSignificantFigures = 5,
+                    PriceDecimals = 8,
+                    QuantityDecimals = 8,
+
                     MinTradeQuantity = s.Value.MinOrderQuantity,
                     MaxTradeQuantity = s.Value.MaxOrderQuantity
                 };

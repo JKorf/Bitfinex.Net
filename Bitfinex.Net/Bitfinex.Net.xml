@@ -19,9 +19,14 @@
             Socket client address
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.BitfinexEnvironment.SocketPublicAddress">
+            <summary>
+            Socket client address
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexEnvironment.#ctor">
             <summary>
-            ctor for DI, use <see cref="M:Bitfinex.Net.BitfinexEnvironment.CreateCustom(System.String,System.String,System.String)"/> for creating a custom environment
+            ctor for DI, use <see cref="M:Bitfinex.Net.BitfinexEnvironment.CreateCustom(System.String,System.String,System.String,System.String)"/> for creating a custom environment
             </summary>
         </member>
         <member name="M:Bitfinex.Net.BitfinexEnvironment.GetEnvironmentByName(System.String)">
@@ -34,14 +39,10 @@
             Live environment
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexEnvironment.CreateCustom(System.String,System.String,System.String)">
+        <member name="M:Bitfinex.Net.BitfinexEnvironment.CreateCustom(System.String,System.String,System.String,System.String)">
             <summary>
             Create a custom environment
             </summary>
-            <param name="name"></param>
-            <param name="restAddress"></param>
-            <param name="socketAddress"></param>
-            <returns></returns>
         </member>
         <member name="T:Bitfinex.Net.BitfinexExchange">
             <summary>
@@ -87,6 +88,21 @@
             <param name="tradingMode">Trading mode</param>
             <param name="deliverTime">Delivery time for delivery futures</param>
             <returns></returns>
+        </member>
+        <member name="P:Bitfinex.Net.BitfinexExchange.RateLimiter">
+            <summary>
+            Rate limiter configuration for the Bitfinex API
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.BitfinexRateLimiters">
+            <summary>
+            Rate limiter configuration for the GateIo API
+            </summary>
+        </member>
+        <member name="E:Bitfinex.Net.BitfinexRateLimiters.RateLimitTriggered">
+            <summary>
+            Event for when a rate limit is triggered
+            </summary>
         </member>
         <member name="T:Bitfinex.Net.BitfinexTrackerFactory">
             <inheritdoc />
@@ -2910,6 +2926,11 @@
         <member name="P:Bitfinex.Net.Objects.BitfinexApiAddresses.SocketClientAddress">
             <summary>
             The address used by the BitfinexSocketClient for the socket API
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexApiAddresses.SocketClientPublicAddress">
+            <summary>
+            The address used by the BitfinexSocketClient for the public socket API
             </summary>
         </member>
         <member name="F:Bitfinex.Net.Objects.BitfinexApiAddresses.Default">

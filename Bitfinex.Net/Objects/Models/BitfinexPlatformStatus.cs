@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models

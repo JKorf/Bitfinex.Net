@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Bitfinex.Net.Objects.Internal
+﻿namespace Bitfinex.Net.Objects.Internal
 {
     internal class BitfinexAuthentication
     {

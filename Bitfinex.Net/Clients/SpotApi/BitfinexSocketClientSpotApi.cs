@@ -45,17 +45,22 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public new BitfinexSocketOptions ClientOptions => (BitfinexSocketOptions)base.ClientOptions;
 
+        private readonly string _baseAddressPrivate;
+
         #endregion
 
         #region ctor
         internal BitfinexSocketClientSpotApi(ILogger logger, BitfinexSocketOptions options) :
-            base(logger, options.Environment.SocketAddress, options, options.SpotOptions)
+            base(logger, options.Environment.SocketPublicAddress, options, options.SpotOptions)
         {
             UnhandledMessageExpected = true;
 
             AddSystemSubscription(new BitfinexInfoSubscription(_logger));
 
+            RateLimiter = BitfinexExchange.RateLimiter.Websocket;
+
             _affCode = options.AffiliateCode;
+            _baseAddressPrivate = options.Environment.SocketAddress;
         }
         #endregion
 
@@ -186,7 +191,7 @@ namespace Bitfinex.Net.Clients.SpotApi
              CancellationToken ct = default)
         {
             var subscription = new BitfinexUserSubscription(_logger, positionHandler, walletHandler, orderHandler, fundingOfferHandler, fundingCreditHandler, fundingLoanHandler, balanceHandler, tradeHandler, fundingTradeHandler, fundingInfoHandler, marginBaseHandler, marginSymbolHandler);
-            return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
+            return await SubscribeAsync(_baseAddressPrivate.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -214,7 +219,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             });
 
             var bitfinexQuery = new BitfinexQuery<BitfinexOrder>(query);
-            var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
             return result.As<BitfinexOrder>(result.Data?.Data.Data);
         }
 
@@ -233,7 +238,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             });
 
             var bitfinexQuery = new BitfinexQuery<BitfinexOrder>(query);
-            var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
             return result.As<BitfinexOrder>(result.Data?.Data.Data);
         }
 
@@ -242,7 +247,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, new BitfinexMultiCancel { All = true });
             var bitfinexQuery = new BitfinexQuery<List<BitfinexOrder>>(query);
-            var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
             return result.As<IEnumerable<BitfinexOrder>>(result.Data?.Data.Data);
         }
 
@@ -251,7 +256,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderCancel, new Dictionary<string, long> { ["id"] = orderId });
             var bitfinexQuery = new BitfinexQuery<BitfinexOrder>(query);
-            var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
             return result.As<BitfinexOrder>(result.Data?.Data.Data);
         }
 
@@ -305,7 +310,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, cancelObject);
             var bitfinexQuery = new BitfinexQuery<List<BitfinexOrder>>(query);
-            var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
             return result.As<IEnumerable<BitfinexOrder>>(result.Data?.Data.Data);
         }
 
@@ -324,7 +329,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var query = new BitfinexSocketQuery(ExchangeHelpers.NextId().ToString(CultureInfo.InvariantCulture), BitfinexEventType.FundingOfferNew, parameters);
             var bitfinexQuery = new BitfinexQuery<BitfinexFundingOffer>(query);
-            var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
             return result.As<BitfinexFundingOffer>(result.Data?.Data.Data);
         }
 
@@ -338,7 +343,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var query = new BitfinexSocketQuery(id.ToString(CultureInfo.InvariantCulture), BitfinexEventType.FundingOfferCancel, parameters);
             var bitfinexQuery = new BitfinexQuery<BitfinexFundingOffer>(query);
-            var result = await QueryAsync(BaseAddress.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
             return result.As<BitfinexFundingOffer>(result.Data?.Data.Data);
         }
 

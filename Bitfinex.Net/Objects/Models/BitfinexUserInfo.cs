@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Converters;
-using CryptoExchange.Net.Attributes;
+﻿using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
 using System;
 using System.Collections.Generic;
