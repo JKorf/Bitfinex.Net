@@ -5711,6 +5711,11 @@
             ctor
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.OrderBookBulkUpdates">
+            <summary>
+            Whether updates for order book subscriptions should be send as bundled updates from the server
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.AffiliateCode">
             <summary>
             Default affiliate code to use when placing orders
