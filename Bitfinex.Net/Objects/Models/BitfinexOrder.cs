@@ -90,18 +90,18 @@ namespace Bitfinex.Net.Objects.Models
         /// Tif timestamp
         /// </summary>
         [ArrayProperty(10), JsonConverter(typeof(DateTimeConverter))]
-        public DateTime TimestampTif { get; set; }
+        public DateTime? TimestampTif { get; set; }
 
         /// <summary>
         /// Order flags
         /// </summary>
         [ArrayProperty(12)]
+        [JsonConverter(typeof(EnumConverter))]
         public OrderFlags? Flags { get; set; }
 
         /// <summary>
         /// The order status
         /// </summary>
-#warning can we have 2 with index 13?
         [ArrayProperty(13)]
         [JsonConverter(typeof(EnumConverter))]
         public OrderStatus Status { get; set; }

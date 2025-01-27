@@ -60,7 +60,6 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The order status
         /// </summary>
-#warning can we have 2 with index 10?
         [ArrayProperty(10)]
         [JsonConverter(typeof(EnumConverter))]
         public OrderStatus Status { get; set; }

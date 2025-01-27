@@ -3,12 +3,12 @@ POST
 true
  [ 
   1568650414540, 
-  'pm-req',
+  "pm-req",
   null, 
   null, 
   [ 
-    'tBTCUSD', 
-    'ACTIVE', 
+    "tBTCUSD", 
+    "ACTIVE", 
     -0.001, 
     10119, 
     0, 
@@ -26,9 +26,9 @@ true
     null, 
     0, 
     null, 
-    '{"reason": "TRADE", "order_id": 31089337681, "liq_stage": null, "trade_price": "10119.0", "trade_amount": "-0.001", "user_id_oppo": 183923, "order_id_oppo": 31089692490}' 
+    "{\"reason\": \"TRADE\", \"order_id\": 31089337681, \"liq_stage\": null, \"trade_price\": \"10119.0\", \"trade_amount\": \"-0.001\", \"user_id_oppo\": 183923, \"order_id_oppo\": 31089692490}" 
   ], 
   null, 	
-  'SUCCESS', 
+  "SUCCESS", 
   null 
 ]

@@ -55,7 +55,6 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The order status
         /// </summary>
-        #warning can we have 2 with index 7?
         [ArrayProperty(7)]
         [JsonConverter(typeof(EnumConverter))]
         public OrderStatus Status { get; set; }
@@ -124,6 +123,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding credit info
     /// </summary>
+    [JsonConverter(typeof(ArrayConverter))]
     public record BitfinexFundingCredit: BitfinexFunding
     {
         /// <summary>

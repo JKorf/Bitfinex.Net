@@ -1,24 +1,24 @@
 > { "event": "subscribe", "channel": "ticker", "symbol": "fUSD" }
-< { "event": "subscribed", "channel": "ticker", "symbol": "fUSD", chanId: 1 }
+< { "event": "subscribed", "channel": "ticker", "symbol": "fUSD", "chanId": 1 }
 = 
 [
-  1, //CHANNEL_ID
+  1, 
   [
-    0.0003193369863013699, //FRR
-    0.0002401, //BID
-    30, //BID_PERIOD
-    3939629.6177260396, //BID_SIZE
-    0.00019012, //ASK
-    2, //ASK_PERIOD
-    307776.1592138799, //ASK_SIZE
-    -0.00005823, //DAILY_CHANGE
-    -0.2344, //DAILY_CHANGE_RELATIVE
-    0.00019016, //LAST_PRICE
-    122156333.45260866, //VOLUME
-    0.00027397, //HIGH
-    6.8e-7, //LOW
+    0.0003193369863013699,
+    0.0002401,
+    30, 
+    3939629.6177260396,
+    0.00019012,
+    2, 
+    307776.1592138799, 
+    -0.00005823, 
+    -0.2344, 
+    0.00019016,
+    122156333.45260866, 
+    0.00027397,
+    6.8e-7,
     null, 
     null, 
-    3441851.73330503 //FRR_AMOUNT_AVAILABLE
-  ] //UPDATE
+    3441851.73330503
+  ] 
 ]

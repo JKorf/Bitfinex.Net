@@ -1,22 +1,22 @@
 > { "event": "subscribe", "channel": "status", "key": "liq:global" }
-< { "event": "subscribed", "channel": "status", "key": "liq:global", chanId: 1 }
+< { "event": "subscribed", "channel": "status", "key": "liq:global", "chanId": 1 }
 = 
 [
-  1, //CHANNEL_ID
+  1, 
   [
     [
-      "pos", //MSG_TYPE
-      142397657, //POS_ID
-      1574697680828.2002, //TIME_MS
+      "pos", 
+      142397657, 
+      1574697680828.2002, 
       null, 
-      "tBSVUSD", //SYMBOL
-      -2.62932, //AMOUNT
-      91.583875238719, //BASE_PRICE
+      "tBSVUSD", 
+      -2.62932,
+      91.583875238719,
       null, 
-      1, //IS_MATCH
-      1, //IS_MARKET_SOLD
+      1, 
+      1, 
       null, 
-      112.27 //LIQUIDATION_PRICE
-    ] //LIQUIDATION_ARRAY
-  ] //LIQUIDATIONS
+      112.27
+    ] 
+  ] 
 ]

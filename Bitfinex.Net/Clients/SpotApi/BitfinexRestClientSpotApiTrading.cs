@@ -1,7 +1,6 @@
 ﻿using Bitfinex.Net.Enums;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -117,11 +116,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                 { "aff_code" , affiliateCode ?? _baseClient.AffiliateCode }
             });
 
-            var result = await _baseClient.SendRequestAsync<BitfinexWriteResult<JArray>>(_baseClient.GetUrl("auth/w/order/submit", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            // Previously used JArray as response object, check if still works
+            var result = await _baseClient.SendRequestAsync<BitfinexWriteResult<IEnumerable<BitfinexOrder>>>(_baseClient.GetUrl("auth/w/order/submit", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexWriteResult<BitfinexOrder>>(default);
 
-            var orderData = result.Data.Data!.First().ToObject<BitfinexOrder>();
+
+            var orderData = result.Data.Data!.First();
             var output = new BitfinexWriteResult<BitfinexOrder>()
             {
                 Code = result.Data.Code,

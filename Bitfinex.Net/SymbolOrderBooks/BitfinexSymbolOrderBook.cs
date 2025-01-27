@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -169,6 +171,9 @@ namespace Bitfinex.Net.SymbolOrderBooks
                 if (_bids.Count > i)
                 {
                     var bid = (BitfinexOrderBookEntry)_bids.ElementAt(i).Value;
+                    if (bid.RawPrice != bid.Price.ToString(CultureInfo.InvariantCulture) || bid.RawQuantity != bid.Quantity.ToString(CultureInfo.InvariantCulture))
+                    {
+                    }
                     checksumValues.Add(bid.RawPrice);
                     checksumValues.Add(bid.RawQuantity);
                 }
@@ -180,6 +185,9 @@ namespace Bitfinex.Net.SymbolOrderBooks
                 if (_asks.Count > i)
                 {
                     var ask = (BitfinexOrderBookEntry)_asks.ElementAt(i).Value;
+                    if (ask.RawPrice != ask.Price.ToString(CultureInfo.InvariantCulture) || ask.RawQuantity != (-ask.Quantity).ToString(CultureInfo.InvariantCulture))
+                    {
+                    }
                     checksumValues.Add(ask.RawPrice);
                     checksumValues.Add(ask.RawQuantity);
                 }

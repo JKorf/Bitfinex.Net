@@ -40,6 +40,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Order book funding entry
     /// </summary>
+    [JsonConverter(typeof(ArrayConverter))]
     public record BitfinexOrderBookFundingEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
     {
         /// <summary>

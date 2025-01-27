@@ -59,22 +59,24 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         /// <inheritdoc />
         public override Type? GetMessageType(IMessageAccessor message)
         {
-            var identifier = message.GetValue<string>(_1Path);
+            var type1 = message.GetNodeType(_1Path);
 
-            if (string.Equals(identifier, "cs", StringComparison.Ordinal))
-                return typeof(BitfinexChecksum);
-
-            if (string.Equals(identifier, "hb", StringComparison.Ordinal))
-                return typeof(BitfinexUpdate<string>);
-
-            if (identifier == null)
+            if (type1 == NodeType.Value)
             {
-                var nodeType1 = message.GetNodeType(_10Path);
-                return nodeType1 == NodeType.Array ? typeof(BitfinexUpdate<IEnumerable<T>>) : typeof(BitfinexUpdate<T>);
+                var identifier = message.GetValue<string?>(_1Path);
+
+                if (string.Equals(identifier, "cs", StringComparison.Ordinal))
+                    return typeof(BitfinexChecksum);
+
+                if (string.Equals(identifier, "hb", StringComparison.Ordinal))
+                    return typeof(BitfinexUpdate<string>);
+
+                var nodeType = message.GetNodeType(_20Path);
+                return nodeType == NodeType.Array ? typeof(BitfinexTopicUpdate<IEnumerable<T>>) : typeof(BitfinexTopicUpdate<T>);
             }
 
-            var nodeType = message.GetNodeType(_20Path);
-            return nodeType == NodeType.Array ? typeof(BitfinexTopicUpdate<IEnumerable<T>>) : typeof(BitfinexTopicUpdate<T>);
+            var nodeType1 = message.GetNodeType(_10Path);
+            return nodeType1 == NodeType.Array ? typeof(BitfinexUpdate<IEnumerable<T>>) : typeof(BitfinexUpdate<T>);
         }
 
         public override void DoHandleReset()

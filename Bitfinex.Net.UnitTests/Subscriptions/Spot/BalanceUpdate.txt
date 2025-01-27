@@ -1,11 +1,11 @@
 > { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
-< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+< { "event": "auth", "status": "OK", "chanId": 0, "userId": 269312, "auth_id": "a26236f1-ef44-4671-be32-197ce190348f" }
 = 
 [
-  0, //CHAN_ID
-  "bu", //MSG_TYPE
+  0,
+  "bu",
   [
-    4131.85, //AUM
-    4131.85 //AUM_NET
-  ] //BALANCE_UPDATE_ARRAY
+    4131.85,
+    4131.85 
+  ] 
 ]

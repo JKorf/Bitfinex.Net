@@ -22,6 +22,6 @@ true
   null, 
   null, 
   null, 
-  null, 
+  null
 	]
 ]

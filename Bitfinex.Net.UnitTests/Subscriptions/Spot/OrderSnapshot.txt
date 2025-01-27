@@ -1,43 +1,43 @@
 > { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
-< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+< { "event": "auth", "status": "OK", "chanId": 0, "userId": 269312, "auth_id": "a26236f1-ef44-4671-be32-197ce190348f" }
 = 
 [
-  0, //CHAN_ID
-  "os", //MSG_TYPE
+  0, 
+  "os", 
   [
     [
-      34930659963, //ID
-      null, //GID
-      1574955083558, //CID
-      "tETHUSD", //SYMBOL
-      1574955083558, //MTS_CREATE
-      1574955083573, //MTS_UPDATE
-      0.201104, //AMOUNT
-      0.201104, //AMOUNT_ORIG
-      "EXCHANGE LIMIT", //ORDER_TYPE
-      null, //TYPE_PREV
-      null, //MTS_TIF
+      34930659963,
       null, 
-      0, //FLAGS
-      "ACTIVE", //STATUS
+      1574955083558,
+      "tETHUSD", 
+      1574955083558, 
+      1574955083573,
+      0.201104,
+      0.201104,
+      "EXCHANGE LIMIT", 
       null, 
+      null,
       null, 
-      120, //PRICE
-      0, //PRICE_AVG
-      0, //PRICE_TRAILING
-      0, //PRICE_AUX_LIMIT
+      0, 
+      "ACTIVE",
       null, 
       null, 
-      null, 
-      0, //NOTIFY
-      0, //HIDDEN
-      null, //PLACED_ID
-      null, 
-      null, 
-      "BFX", //ROUTING
+      120, 
+      0,
+      0, 
+      0, 
       null, 
       null, 
-      null //META
+      null, 
+      0, 
+      0, 
+      null, 
+      null, 
+      null, 
+      "BFX", 
+      null, 
+      null, 
+      null 
     ]
-  ] //ORDER_SNAPSHOT
+  ]
 ]

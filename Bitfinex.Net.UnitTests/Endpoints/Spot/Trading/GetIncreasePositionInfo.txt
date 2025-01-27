@@ -23,11 +23,11 @@ true
   null, 
   null, 
   [
-   1.5
+   1.5,
    63345 
   ], 
   [
-   'BTC', 
-   'USD' 
+   "BTC", 
+   "USD" 
   ]
 ]

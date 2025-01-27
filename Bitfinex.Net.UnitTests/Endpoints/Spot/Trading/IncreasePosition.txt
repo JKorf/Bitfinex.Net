@@ -3,11 +3,11 @@ POST
 true
 [
   1612447904081, 
-  'pmi-req',
+  "pmi-req",
   null,
   null, 
   [
-    'tBTCUSD',
+    "tBTCUSD",
     null, 
     1,
     100, 
@@ -29,6 +29,6 @@ true
     null 
   ],
   null, 
-  'SUCCESS', 
-  'Submitting position increase.'
+  "SUCCESS", 
+  "Submitting position increase."
 ]

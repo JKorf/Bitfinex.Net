@@ -3,8 +3,8 @@ POST
 true
 [
   [
-  'tETHUSD',
-  'ACTIVE', 
+  "tETHUSD",
+  "ACTIVE", 
   -0.2, 
   167.01, 
   0,

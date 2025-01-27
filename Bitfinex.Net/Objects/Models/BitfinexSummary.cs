@@ -175,6 +175,7 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [JsonPropertyName("vol_safe")]
         public decimal VolumeSafe { get; set; }
+        /// <summary>
         /// The maker volume
         /// </summary>
         [JsonPropertyName("vol_maker")]

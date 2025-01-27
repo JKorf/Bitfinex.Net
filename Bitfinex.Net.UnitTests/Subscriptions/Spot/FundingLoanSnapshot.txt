@@ -1,33 +1,33 @@
 > { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
-< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+< { "event": "auth", "status": "OK", "chanId": 0, "userId": 269312, "auth_id": "a26236f1-ef44-4671-be32-197ce190348f" }
 = 
 [
-  0, //CHAN_ID
-  "fls", //MSG_TYPE
+  0, 
+  "fls", 
   [
     [
-      26223578, //LOAN_ID
-      "fUST", //SYMBOL
-      1, //SIDE
-      1575052261000, //MTS_CREATE
-      1575296187000, //MTS_UPDATE
-      350, //AMOUNT
-      0, //FLAGS
-      "ACTIVE", //STATUS
+      26223578, 
+      "fUST",
+      1,
+      1575052261000, 
+      1575296187000,
+      350, 
+      0, 
+      "ACTIVE", 
       null, 
       null, 
       null, 
-      0, //RATE
-      30, //PERIOD
-      1575052261000, //MTS_OPENING
-      1575293487000, //MTS_LAST_PAYOUT
-      0, //NOTIFY
-      0, //HIDDEN
+      0,
+      30,
+      1575052261000,
+      1575293487000, 
+      0, 
+      0, 
       null, 
-      0, //RENEW
-      null, //RATE_REAL
-      0, //NO_CLOSE
-      "tBTCUST" //POSITION_PAIR
+      0, 
+      null,
+      0, 
+      "tBTCUST" 
     ]
-  ] //FUNDING_LOANS_SNAPSHOT
+  ] 
 ]

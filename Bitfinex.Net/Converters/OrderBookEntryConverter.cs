@@ -12,8 +12,6 @@ namespace Bitfinex.Net.Converters
             var doc = JsonDocument.ParseValue(ref reader);
             var arrLength = doc.RootElement.GetArrayLength();
 
-#warning this now only deserializes single entries, not array of entries. Check if needed
-
             string price, quantity;
             int count;
             if (arrLength == 3)
@@ -39,13 +37,13 @@ namespace Bitfinex.Net.Converters
             if (price.Contains("E-07") || price.Contains("E-08"))
                 result.RawPrice = price.Replace('E', 'e').Replace("-07", "-7").Replace("-08", "-8");
             else
-                result.RawPrice = price.TrimEnd('0').TrimEnd('.');
+                result.RawPrice = price;//.TrimEnd('0').TrimEnd('.');
 
 
             if (quantity.Contains("E-07") || quantity.Contains("E-08"))
                 result.RawQuantity = quantity.Replace('E', 'e').Replace("-07", "-7").Replace("-08", "-8");
             else
-                result.RawQuantity = quantity.TrimEnd('0').TrimEnd('.');
+                result.RawQuantity = quantity;//.TrimEnd('0').TrimEnd('.');
 
             return result;
         }
