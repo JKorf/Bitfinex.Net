@@ -115,7 +115,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddEnum("type", type);
             parameters.AddOptionalParameter("gid", groupId);
             parameters.AddOptionalParameter("cid", clientOrderId);
-            parameters.AddOptionalParameter("flags", flags);
+            parameters.AddOptionalParameter("flags", (int?)flags);
             parameters.AddOptionalParameter("lev", leverage);
             parameters.AddOptionalParameter("price_trailing", priceTrailing?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("price_aux_limit", priceAuxLimit?.ToString(CultureInfo.InvariantCulture));

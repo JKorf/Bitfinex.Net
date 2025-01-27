@@ -21,7 +21,7 @@ namespace Bitfinex.Net.Objects.Internal
         [JsonPropertyName("price_oco_stop"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonConverter(typeof(DecimalStringWriterConverter))]
         public decimal? PriceOCOStop { get; set; }
         [JsonPropertyName("flags"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public OrderFlags? Flags { get; set; }
+        public int? Flags { get; set; }
         [JsonPropertyName("gid"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public long? GroupId { get; set; }
         [JsonPropertyName("cid"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

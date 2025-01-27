@@ -208,7 +208,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 Symbol = symbol,
                 Price = price,
                 ClientOrderId = clientOrderId,
-                Flags = flags,
+                Flags = (int?)flags,
                 GroupId = groupId,
                 PriceAuxiliaryLimit = priceAuxiliaryLimit,
                 PriceOCOStop = priceOcoStop,
