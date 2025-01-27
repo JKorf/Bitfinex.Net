@@ -55,7 +55,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             UnhandledMessageExpected = true;
 
-            AddSystemSubscription(new BitfinexInfoSubscription(_logger));
+            AddSystemSubscription(new BitfinexInfoSubscription(_logger, options.OrderBookBulkUpdates));
 
             RateLimiter = BitfinexExchange.RateLimiter.Websocket;
 
