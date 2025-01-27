@@ -121,6 +121,14 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 8.0.0 - 27 Jan 2025
+    * Added client side ratelimit implementation
+    * Updated library to System.Text.Json from Newtonsoft.Json for json (de)serialization
+    * Updated CryptoExchange.Net to version 8.7.2, see https://github.com/JKorf/CryptoExchange.Net/releases/
+    * Updated public websocket subscriptions to use the URI specifically for public data
+    * Updated websocket to use bulk updates for order book updates (configurable)
+    * Updated Enum conversions to use EnumConverter
+
 * Version 7.13.1 - 07 Jan 2025
     * Updated CryptoExchange.Net version
     * Added Type property to BitfinexExchange class
