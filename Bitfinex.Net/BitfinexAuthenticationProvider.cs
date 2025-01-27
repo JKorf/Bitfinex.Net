@@ -60,7 +60,7 @@ namespace Bitfinex.Net
             }
             else if (uri.AbsolutePath.Contains("v2"))
             {
-                var json = bodyParameters == null ? null : _messageSerializer.Serialize(bodyParameters);
+                var json = bodyParameters == null ? "{}" : _messageSerializer.Serialize(bodyParameters);
                 var n = _nonceProvider.GetNonce().ToString();
                 var signature = $"/api{uri.AbsolutePath}{n}{json}";
                 var signedData = SignHMACSHA384(signature);
