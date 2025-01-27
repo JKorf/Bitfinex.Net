@@ -1,9 +1,6 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Enums;
 using CryptoExchange.Net;
-using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Objects;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
-using Bitfinex.Net.ExtensionMethods;
+using CryptoExchange.Net.RateLimiting.Guards;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -21,6 +18,7 @@ namespace Bitfinex.Net.Clients.SpotApi
     internal class BitfinexRestClientSpotApiExchangeData : IBitfinexRestClientSpotApiExchangeData
     {
         private readonly BitfinexRestClientSpotApi _baseClient;
+        private static readonly RequestDefinitionCache _definitions = new();
 
         internal BitfinexRestClientSpotApiExchangeData(BitfinexRestClientSpotApi baseClient)
         {
@@ -31,7 +29,9 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexPlatformStatus>> GetPlatformStatusAsync(CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<BitfinexPlatformStatus>(_baseClient.GetUrl("platform/status", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/platform/status", BitfinexExchange.RateLimiter.Overal, 1, false,
+                limitGuard: new SingleLimitGuard(30, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<BitfinexPlatformStatus>(request, null, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -41,7 +41,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexAsset>>> GetAssetsListAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexAsset>>>(_baseClient.GetUrl("conf/pub:map:currency:label", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/conf/pub:map:currency:label", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexAsset>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<IEnumerable<BitfinexAsset>>(default);
             return result.As(result.Data.First());
@@ -52,7 +53,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<string>>> GetSymbolNamesAsync(SymbolType type, CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<string>>>(_baseClient.GetUrl($"conf/pub:list:pair:{EnumConverter.GetString(type)}", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:list:pair:{EnumConverter.GetString(type)}", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<string>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<IEnumerable<string>>(default);
             return result.As(result.Data.First());
@@ -63,7 +65,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<string>>> GetAssetNamesAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<string>>>(_baseClient.GetUrl($"conf/pub:list:currency", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:list:currency", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<string>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<IEnumerable<string>>(default);
             return result.As(result.Data.First());
@@ -74,7 +77,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<Dictionary<string, string>>> GetAssetSymbolsAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexKeyValue<string>>>>(_baseClient.GetUrl($"conf/pub:map:currency:sym", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:map:currency:sym", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexKeyValue<string>>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<Dictionary<string, string>>(default);
             return result.As(result.Data.First().ToDictionary(k => k.Key, k => k.Value));
@@ -85,7 +89,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<Dictionary<string, string>>> GetAssetFullNamesAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexKeyValue<string>>>>(_baseClient.GetUrl($"conf/pub:map:currency:label", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:map:currency:label", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexKeyValue<string>>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<Dictionary<string, string>>(default);
             return result.As(result.Data.First().ToDictionary(k => k.Key, k => k.Value));
@@ -96,7 +101,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<Dictionary<string, string>>> GetAssetUnitsAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexKeyValue<string>>>>(_baseClient.GetUrl($"conf/pub:map:currency:unit", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:map:currency:unit", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexKeyValue<string>>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<Dictionary<string, string>>(default);
             return result.As(result.Data.First().ToDictionary(k => k.Key, k => k.Value));
@@ -107,7 +113,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<Dictionary<string, string>>> GetAssetUnderlyingsAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexKeyValue<string>>>>(_baseClient.GetUrl($"conf/pub:map:currency:undl", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:map:currency:undl", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexKeyValue<string>>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<Dictionary<string, string>>(default);
             return result.As(result.Data.First().ToDictionary(k => k.Key, k => k.Value));
@@ -118,7 +125,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<Dictionary<string, string>>> GetAssetNetworksAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexKeyValue<string>>>>(_baseClient.GetUrl($"conf/pub:map:currency:pool", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:map:currency:pool", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexKeyValue<string>>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<Dictionary<string, string>>(default);
             return result.As(result.Data.First().ToDictionary(k => k.Key, k => k.Value));
@@ -129,7 +137,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<Dictionary<string, IEnumerable<string>>>> GetAssetBlockExplorerUrlsAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexKeyValue<IEnumerable<string>>>>>(_baseClient.GetUrl($"conf/pub:map:currency:explorer", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:map:currency:explorer", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexKeyValue<IEnumerable<string>>>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<Dictionary<string, IEnumerable<string>>>(default);
             return result.As(result.Data.First().ToDictionary(k => k.Key, k => k.Value));
@@ -140,7 +149,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<Dictionary<string, IEnumerable<decimal>>>> GetAssetWithdrawalFeesAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexKeyValue<IEnumerable<decimal>>>>>(_baseClient.GetUrl($"conf/pub:map:currency:tx:fee", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:map:currency:tx:fee", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexKeyValue<IEnumerable<decimal>>>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As< Dictionary<string, IEnumerable<decimal>>>(default);
             return result.As(result.Data.First().ToDictionary(k => k.Key, k => k.Value));
@@ -151,7 +161,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<Dictionary<string, IEnumerable<string>>>> GetAssetDepositWithdrawalMethodsAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexKeyValue<IEnumerable<string>>>>>(_baseClient.GetUrl($"conf/pub:map:tx:method", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:map:tx:method", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexKeyValue<IEnumerable<string>>>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<Dictionary<string, IEnumerable<string>>>(default);
             return result.As(result.Data.First().ToDictionary(k => k.Key, k => k.Value));
@@ -162,7 +173,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<Dictionary<string, BitfinexSymbolInfo>>> GetSymbolsAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexKeyValue<BitfinexSymbolInfo>>>>(_baseClient.GetUrl($"conf/pub:info:pair", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:info:pair", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexKeyValue<BitfinexSymbolInfo>>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<Dictionary<string, BitfinexSymbolInfo>>(default);
             return result.As(result.Data.First().ToDictionary(k => k.Key, k => k.Value));
@@ -173,7 +185,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<Dictionary<string, BitfinexSymbolInfo>>> GetFuturesSymbolsAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexKeyValue<BitfinexSymbolInfo>>>>(_baseClient.GetUrl($"conf/pub:info:pair:futures", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:info:pair:futures", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexKeyValue<BitfinexSymbolInfo>>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<Dictionary<string, BitfinexSymbolInfo>>(default);
             return result.As(result.Data.First().ToDictionary(k => k.Key, k => k.Value));
@@ -184,7 +197,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexAssetInfo>>> GetDepositWithdrawalStatusAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexAssetInfo>>>(_baseClient.GetUrl($"conf/pub:info:tx:status", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:info:tx:status", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexAssetInfo>>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<IEnumerable<BitfinexAssetInfo>>(default);
             return result.As(result.Data.First());
@@ -195,7 +209,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexMarginInfo>> GetMarginInfoAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexMarginInfo>> (_baseClient.GetUrl($"conf/pub:spec:margin", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:spec:margin", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<BitfinexMarginInfo>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexMarginInfo>(default);
             return result.As(result.Data.First());
@@ -206,12 +221,14 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexDerivativesFees>> GetDerivativesFeesAsync(CancellationToken ct = default)
         {
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexDerivativesFees>>(_baseClient.GetUrl($"conf/pub:fees", "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/conf/pub:fees", BitfinexExchange.RateLimiter.RestConf, 1);
+            var result = await _baseClient.SendAsync<IEnumerable<BitfinexDerivativesFees>>(request, null, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexDerivativesFees>(default);
             return result.As(result.Data.First());
         }
         #endregion
+
         #endregion
 
         #region Get Ticker
@@ -248,12 +265,14 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexTicker>>> GetTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTicker>>(_baseClient.GetUrl("tickers", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/tickers", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(30, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexTicker>>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -261,12 +280,14 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexFundingTicker>>> GetFundingTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingTicker>>(_baseClient.GetUrl("tickers", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/tickers", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(30, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexFundingTicker>>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -274,7 +295,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexTickerHistory>>> GetTickerHistoryAsync(IEnumerable<string>? symbols = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
@@ -282,7 +303,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTickerHistory>>(_baseClient.GetUrl("tickers/hist", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/tickers/hist", BitfinexExchange.RateLimiter.Overal, 1);
+            return await _baseClient.SendAsync<IEnumerable<BitfinexTickerHistory>>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -291,13 +313,15 @@ namespace Bitfinex.Net.Clients.SpotApi
         public async Task<WebCallResult<IEnumerable<BitfinexTradeSimple>>> GetTradeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 10000);
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
+            parameters.AddOptionalEnum("sort", sorting);
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTradeSimple>>(_baseClient.GetUrl($"trades/{symbol}/hist", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/trades/{symbol}/hist", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(15, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexTradeSimple>>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -309,11 +333,12 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (precision == Precision.R0)
                 throw new ArgumentException("Precision can not be R0. Use PrecisionLevel0 to get aggregated trades for each price point or GetRawOrderBook to get the raw order book instead");
 
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
-            var prec = JsonConvert.SerializeObject(precision, new PrecisionConverter(false));
 
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrderBookEntry>>(_baseClient.GetUrl($"book/{symbol}/{prec}", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(precision)}", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            var result = await _baseClient.SendAsync<IEnumerable<BitfinexOrderBookEntry>>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexOrderBook>(default);
 
@@ -338,11 +363,12 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (precision == Precision.R0)
                 throw new ArgumentException("Precision can not be R0. Use PrecisionLevel0 to get aggregated trades for each price point or GetRawOrderBook to get the raw order book instead");
 
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
-            var prec = JsonConvert.SerializeObject(precision, new PrecisionConverter(false));
-
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrderBookFundingEntry>>(_baseClient.GetUrl($"book/{symbol}/{prec}", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(precision)}", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            var result = await _baseClient.SendAsync<IEnumerable<BitfinexOrderBookFundingEntry>>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexFundingOrderBook>(default);
 
@@ -365,11 +391,12 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntValues("limit", 25, 100);
 
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
-            var prec = JsonConvert.SerializeObject(Precision.R0, new PrecisionConverter(false));
 
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexRawOrderBookEntry>>(_baseClient.GetUrl($"book/{symbol}/{prec}", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(Precision.R0)}", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            var result = await _baseClient.SendAsync<IEnumerable<BitfinexRawOrderBookEntry>>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexRawOrderBook>(default);
 
@@ -392,11 +419,12 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntValues("limit", 25, 100);
 
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
-            var prec = JsonConvert.SerializeObject(Precision.R0, new PrecisionConverter(false));
 
-            var result = await _baseClient.SendRequestAsync<IEnumerable<BitfinexRawOrderBookFundingEntry>>(_baseClient.GetUrl($"book/{symbol}/{prec}", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(Precision.R0)}", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            var result = await _baseClient.SendAsync<IEnumerable<BitfinexRawOrderBookFundingEntry>>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexRawFundingOrderBook>(default);
 
@@ -420,14 +448,16 @@ namespace Bitfinex.Net.Clients.SpotApi
             string endpoint;
             if (fundingPeriod != null)
             {
-                endpoint = $"candles/trade:{JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))}:{symbol}:{fundingPeriod}/last";
+                endpoint = $"v2/candles/trade:{EnumConverter.GetString(interval)}:{symbol}:{fundingPeriod}/last";
             }
             else
             {
-                endpoint = $"candles/trade:{JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))}:{symbol}/last";
+                endpoint = $"v2/candles/trade:{EnumConverter.GetString(interval)}:{symbol}/last";
             }
 
-            return await _baseClient.SendRequestAsync<BitfinexKline>(_baseClient.GetUrl(endpoint, "2"), HttpMethod.Get, ct).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, endpoint, BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(30, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<BitfinexKline>(request, null, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -437,23 +467,25 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 10000);
 
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
+            parameters.AddOptionalEnum("sort", sorting); 
 
             string endpoint;
             if (fundingPeriod != null)
             {
-                endpoint = $"candles/trade:{JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))}:{symbol}:{fundingPeriod}/hist";
+                endpoint = $"v2/candles/trade:{EnumConverter.GetString(interval)}:{symbol}:{fundingPeriod}/hist";
             }
             else
             {
-                endpoint = $"candles/trade:{JsonConvert.SerializeObject(interval, new KlineIntervalConverter(false))}:{symbol}/hist";
+                endpoint = $"v2/candles/trade:{EnumConverter.GetString(interval)}:{symbol}/hist";
             }
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexKline>>(_baseClient.GetUrl(endpoint, "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, endpoint, BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(30, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexKline>>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -461,7 +493,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexAveragePrice>> GetAveragePriceAsync(string symbol, decimal quantity, decimal? rateLimit = null, int? period = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 { "symbol", symbol },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
@@ -469,7 +501,9 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("period", period?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("rate_limit", rateLimit?.ToString(CultureInfo.InvariantCulture));
 
-            return await _baseClient.SendRequestAsync<BitfinexAveragePrice>(_baseClient.GetUrl("calc/trade/avg", "2"), HttpMethod.Post, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/calc/trade/avg", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<BitfinexAveragePrice>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -480,13 +514,15 @@ namespace Bitfinex.Net.Clients.SpotApi
             asset1.ValidateNotNull(nameof(asset1));
             asset2.ValidateNotNull(nameof(asset2));
 
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 { "ccy1", asset1 },
                 { "ccy2", asset2 }
             };
 
-            return await _baseClient.SendRequestAsync<BitfinexForeignExchangeRate>(_baseClient.GetUrl("calc/fx", "2"), HttpMethod.Post, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/calc/fx", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<BitfinexForeignExchangeRate>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -494,12 +530,14 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexDerivativesStatus>>> GetDerivativesStatusAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 {"keys", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexDerivativesStatus>>(_baseClient.GetUrl("status/deriv", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/status/deriv", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexDerivativesStatus>>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -507,13 +545,15 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexDerivativesStatus>>> GetDerivativesStatusHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
+            parameters.AddOptionalEnum("sort", sorting);
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexDerivativesStatus>>(_baseClient.GetUrl($"status/deriv/{symbol}/hist", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/status/deriv/{symbol}/hist", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexDerivativesStatus>>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -521,13 +561,15 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexLiquidation>>> GetLiquidationsAsync(int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
+            parameters.AddOptionalEnum("sort", sorting);
 
-            var result = await _baseClient.SendRequestAsync<IEnumerable<IEnumerable<BitfinexLiquidation>>>(_baseClient.GetUrl($"liquidations/hist", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/liquidations/hist", BitfinexExchange.RateLimiter.Overal, 1, false,
+                new SingleLimitGuard(3, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            var result = await _baseClient.SendAsync<IEnumerable<IEnumerable<BitfinexLiquidation>>>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<IEnumerable<BitfinexLiquidation>>(default);
 
@@ -539,12 +581,13 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexFundingStats>>> GetFundingStatisticsAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexFundingStats>>(_baseClient.GetUrl($"funding/stats/{symbol}/hist", "2"), HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/funding/stats/{symbol}/hist", BitfinexExchange.RateLimiter.Overal, 1);
+            return await _baseClient.SendAsync<IEnumerable<BitfinexFundingStats>>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -552,14 +595,14 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexStats>>> GetFundingSizeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
+            parameters.AddOptionalEnum("sort", sorting);
 
-            var endpoint = _baseClient.GetUrl($"stats1/funding.size:1m:{symbol}/{EnumConverter.GetString(StatSection.History)}", "2");
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexStats>>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/funding.size:1m:{symbol}/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<IEnumerable<BitfinexStats>>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -567,9 +610,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats>> GetLastFundingSizeAsync(string symbol, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
-            var endpoint = _baseClient.GetUrl($"stats1/funding.size:1m:{symbol}/{EnumConverter.GetString(StatSection.Last)}", "2");
-            return await _baseClient.SendRequestAsync<BitfinexStats>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/funding.size:1m:{symbol}/{EnumConverter.GetString(StatSection.Last)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<BitfinexStats>(request, null, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -577,9 +619,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats>> GetLastCreditSizeAsync(string symbol, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
-            var endpoint = _baseClient.GetUrl($"stats1/credits.size:1m:{symbol}/{EnumConverter.GetString(StatSection.Last)}", "2");
-            return await _baseClient.SendRequestAsync<BitfinexStats>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/credits.size:1m:{symbol}/{EnumConverter.GetString(StatSection.Last)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<BitfinexStats>(request, null, ct).ConfigureAwait(false);
         }
         #endregion
 
@@ -587,99 +628,95 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexStats>>> GetCreditSizeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
+            parameters.AddOptionalEnum("sort", sorting);
 
-            var endpoint = _baseClient.GetUrl($"stats1/credits.size:1m:{symbol}/{EnumConverter.GetString(StatSection.History)}", "2");
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexStats>>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/credits.size:1m:{symbol}/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<IEnumerable<BitfinexStats>>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats>> GetLastCreditSizeAsync(string asset, string symbol, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
-            var endpoint = _baseClient.GetUrl($"stats1/credits.size.sym:1m:{asset}:{symbol}/{EnumConverter.GetString(StatSection.Last)}", "2");
-            return await _baseClient.SendRequestAsync<BitfinexStats>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/credits.size.sym:1m:{asset}:{symbol}/{EnumConverter.GetString(StatSection.Last)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<BitfinexStats>(request, null, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexStats>>> GetCreditSizeHistoryAsync(string asset, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
+            parameters.AddOptionalEnum("sort", sorting);
 
-            var endpoint = _baseClient.GetUrl($"stats1/credits.size.sym:1m:{asset}:{symbol}/{EnumConverter.GetString(StatSection.History)}", "2");
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexStats>>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/credits.size.sym:1m:{asset}:{symbol}/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<IEnumerable<BitfinexStats>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats>> GetLastLongsShortsTotalsAsync(string symbol, StatSide side, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
-            var endpoint = _baseClient.GetUrl($"stats1/pos.size:1m:{symbol}:{EnumConverter.GetString(side)}/{EnumConverter.GetString(StatSection.Last)}", "2");
-            return await _baseClient.SendRequestAsync<BitfinexStats>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/pos.size:1m:{symbol}:{EnumConverter.GetString(side)}/{EnumConverter.GetString(StatSection.Last)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<BitfinexStats>(request, null, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexStats>>> GetLongsShortsTotalsHistoryAsync(string symbol, StatSide side, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
+            parameters.AddOptionalEnum("sort", sorting);
 
-            var endpoint = _baseClient.GetUrl($"stats1/pos.size:1m:{symbol}:{EnumConverter.GetString(side)}/{EnumConverter.GetString(StatSection.History)}", "2");
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexStats>>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/pos.size:1m:{symbol}:{EnumConverter.GetString(side)}/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<IEnumerable<BitfinexStats>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats>> GetLastTradingVolumeAsync(int period, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
-            var endpoint = _baseClient.GetUrl($"stats1/vol.{period}d:30m:BFX/{EnumConverter.GetString(StatSection.Last)}", "2");
-            return await _baseClient.SendRequestAsync<BitfinexStats>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/vol.{period}d:30m:BFX/{EnumConverter.GetString(StatSection.Last)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<BitfinexStats>(request, null, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexStats>>> GetTradingVolumeHistoryAsync(int period, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
+            parameters.AddOptionalEnum("sort", sorting);
 
-            var endpoint = _baseClient.GetUrl($"stats1/vol.{period}d:30m:BFX/{EnumConverter.GetString(StatSection.History)}", "2");
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexStats>>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/vol.{period}d:30m:BFX/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<IEnumerable<BitfinexStats>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats>> GetLastVolumeWeightedAveragePriceAsync(string symbol, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
-            var endpoint = _baseClient.GetUrl($"stats1/vwap:1d:{symbol}/{EnumConverter.GetString(StatSection.Last)}", "2");
-            return await _baseClient.SendRequestAsync<BitfinexStats>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/vwap:1d:{symbol}/{EnumConverter.GetString(StatSection.Last)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<BitfinexStats>(request, null, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexStats>>> GetVolumeWeightedAveragePriceHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("sort", sorting != null ? JsonConvert.SerializeObject(sorting, new SortingConverter(false)) : null);
+            parameters.AddOptionalEnum("sort", sorting);
 
-            var endpoint = _baseClient.GetUrl($"stats1/vwap:1d:{symbol}/{EnumConverter.GetString(StatSection.History)}", "2");
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexStats>>(endpoint, HttpMethod.Get, ct, parameters).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/vwap:1d:{symbol}/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
+            return await _baseClient.SendAsync<IEnumerable<BitfinexStats>>(request, parameters, ct).ConfigureAwait(false);
         }
     }
 }

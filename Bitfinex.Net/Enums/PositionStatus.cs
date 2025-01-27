@@ -1,4 +1,6 @@
-﻿namespace Bitfinex.Net.Enums
+﻿using CryptoExchange.Net.Attributes;
+
+namespace Bitfinex.Net.Enums
 {
     /// <summary>
     /// Position status
@@ -8,10 +10,12 @@
         /// <summary>
         /// Active
         /// </summary>
+        [Map("ACTIVE")]
         Active,
         /// <summary>
         /// Closed
         /// </summary>
+        [Map("CLOSED")]
         Closed
     }
 }

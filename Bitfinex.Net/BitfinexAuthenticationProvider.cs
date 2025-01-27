@@ -4,18 +4,17 @@ using System.Globalization;
 using System.Net.Http;
 using System.Text;
 using Bitfinex.Net.Objects.Internal;
-using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net
 {
     internal class BitfinexAuthenticationProvider: AuthenticationProvider
     {
         private readonly INonceProvider _nonceProvider;
+        private static readonly IMessageSerializer _messageSerializer = new SystemTextJsonMessageSerializer();
 
         public long GetNonce() => _nonceProvider.GetNonce();
 
@@ -51,7 +50,7 @@ namespace Bitfinex.Net
                 bodyParameters.Add("request", uri.AbsolutePath);
                 bodyParameters.Add("nonce", _nonceProvider.GetNonce().ToString());
 
-                var signature = JsonConvert.SerializeObject(bodyParameters);
+                var signature = _messageSerializer.Serialize(bodyParameters);
                 var payload = Convert.ToBase64String(Encoding.ASCII.GetBytes(signature));
                 var signedData = Sign(payload);
 
@@ -61,7 +60,7 @@ namespace Bitfinex.Net
             }
             else if (uri.AbsolutePath.Contains("v2"))
             {
-                var json = JsonConvert.SerializeObject(bodyParameters);
+                var json = bodyParameters == null ? null : _messageSerializer.Serialize(bodyParameters);
                 var n = _nonceProvider.GetNonce().ToString();
                 var signature = $"/api{uri.AbsolutePath}{n}{json}";
                 var signedData = SignHMACSHA384(signature);

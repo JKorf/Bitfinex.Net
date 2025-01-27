@@ -1,14 +1,14 @@
 > { "event": "subscribe", "channel": "book", "symbol": "fUSD", "freq": "F0", "prec": "R0", "len": 25 }
-< { "event": "subscribed", "channel": "book", "symbol": "fUSD", "freq": "F0", "prec": "R0", "len": 25, chanId: 1 }
+< { "event": "subscribed", "channel": "book", "symbol": "fUSD", "freq": "F0", "prec": "R0", "len": 25, "chanId": 1 }
 = 
 [
-  1, //CHANNEL_ID
+  1, 
   [
     [
-      658282397, //OFFER_ID
-      30, //PERIOD
-      0.000233, //RATE
-      -530 //AMOUNT
+      658282397, 
+      30, 
+      0.000233, 
+      -530 
     ]
-  ] //BOOK_ENTRIES
+  ] 
 ]

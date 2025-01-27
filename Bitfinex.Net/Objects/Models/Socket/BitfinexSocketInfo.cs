@@ -1,29 +1,27 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Enums;
-using Newtonsoft.Json;
+﻿using Bitfinex.Net.Enums;
 
 namespace Bitfinex.Net.Objects.Models.Socket
 {
     internal record BitfinexSocketInfo
     {
-        [JsonProperty("event")]
+        [JsonPropertyName("event")]
         public string Event { get; set; } = string.Empty;
-        [JsonProperty("version")]
+        [JsonPropertyName("version")]
         public int? Version { get; set; }
-        [JsonProperty("serverId")]
+        [JsonPropertyName("serverId")]
         public string? ServerId { get; set; } = string.Empty;
-        [JsonProperty("platform")]
+        [JsonPropertyName("platform")]
         public BitfinexSocketInfoDetails? Platform { get; set; } = null!;
-        [JsonProperty("code")]
+        [JsonPropertyName("code")]
         public int? Code { get; set; }
-        [JsonProperty("msg")]
+        [JsonPropertyName("msg")]
         public string? Message { get; set; }
     }
 
     internal record BitfinexSocketInfoDetails
     {
-        [JsonProperty("status")]
-        [JsonConverter(typeof(PlatformStatusConverter))]
+        [JsonPropertyName("status")]
+        [JsonConverter(typeof(EnumConverter))]
         public PlatformStatus Status { get; set; }
     }
 }

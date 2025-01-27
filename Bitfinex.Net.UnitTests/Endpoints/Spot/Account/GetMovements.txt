@@ -3,51 +3,51 @@ POST
 true
 [
   [
-  13105603, //ID
-  'ETH', //CURRENCY
-  'ETHEREUM', //CURRENCY_NAME
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  1569348774000, //MTS_STARTED
-  1569348774000, //MTS_UPDATED
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  'COMPLETED', //STATUS
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  0.26300954, //AMOUNT
-  -0.00135, //FEES
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  'DESTINATION_ADDRESS', //DESTINATION_ADDRESS
-  null, //PAYMENT_ID
-  null, //PLACEHOLDER
-  null, //PLACEHOLDER
-  'TRANSACTION_ID', //TRANSACTION_ID
-  null //WITHDRAW_TRANSACTION_NOTE
+  13105603, 
+  "ETH",
+  "ETHEREUM",
+  null,
+  null,
+  1569348774000,
+  1569348774000,
+  null, 
+  null, 
+  "COMPLETED", 
+  null,
+  null,
+  0.26300954, 
+  -0.00135, 
+  null,
+  null, 
+  "DESTINATION_ADDRESS", 
+  null, 
+  null,
+  null, 
+  "TRANSACTION_ID", 
+  null
 	],
   [
-    13293039, //ID
-    'ETH', //CURRENCY
-    'ETHEREUM', //CURRENCY_NAME
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    1574175052000, //MTS_STARTED
-    1574181326000, //MTS_UPDATED
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    'CANCELED', //STATUS
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    -0.24, //AMOUNT
-    -0.00135, //FEES
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    'DESTINATION_ADDRESS', //DESTINATION_ADDRESS
-    null, //PAYMENT_ID
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    'TRANSACTION_ID',"Purchase of 100 pizzas" //WITHDRAW_TRANSACTION_NOTE
+    13293039,
+    "ETH",
+    "ETHEREUM", 
+    null, 
+    null,
+    1574175052000, 
+    1574181326000,
+    null,
+    null, 
+    "CANCELED", 
+    null, 
+    null, 
+    -0.24,
+    -0.00135,
+    null, 
+    null,
+    "DESTINATION_ADDRESS",
+    null,
+    null, 
+    null, 
+    "TRANSACTION_ID","Purchase of 100 pizzas" 
   ]
 ]
  

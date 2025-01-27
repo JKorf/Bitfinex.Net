@@ -1,6 +1,4 @@
-﻿using Bitfinex.Net.Converters;
-using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
+﻿using CryptoExchange.Net.Converters;
 using System;
 
 namespace Bitfinex.Net.Objects.Models
@@ -41,13 +39,11 @@ namespace Bitfinex.Net.Objects.Models
         /// False: initial liquidation trigger, true: market execution
         /// </summary>
         [ArrayProperty(8)]
-        [JsonConverter(typeof(BoolToIntConverter))]
         public bool IsMatch { get; set; }
         /// <summary>
         /// False: position acquired by the system, true: direct sell into the market
         /// </summary>
         [ArrayProperty(9)]
-        [JsonConverter(typeof(BoolToIntConverter))]
         public bool IsMarketSold { get; set; }
         /// <summary>
         /// The price at which the position has been acquired

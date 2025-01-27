@@ -1,8 +1,6 @@
 ﻿using System;
-using Bitfinex.Net.Converters;
 using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -57,9 +55,10 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The type of the order
         /// </summary>
-        [ArrayProperty(6), JsonConverter(typeof(OrderTypeConverter))]
+        [ArrayProperty(6)]
+        [JsonConverter(typeof(EnumConverter))]
         public OrderType? OrderType { get; set; }
-        
+
         /// <summary>
         /// The price of the order
         /// </summary>
@@ -69,7 +68,7 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// If was maker
         /// </summary>
-        [ArrayProperty(8), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(8)]
         public bool? Maker { get; set; }
 
         /// <summary>

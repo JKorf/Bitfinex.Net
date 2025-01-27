@@ -1,7 +1,5 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -14,7 +12,8 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The current platform status
         /// </summary>
-        [ArrayProperty(0), JsonConverter(typeof(PlatformStatusConverter))]
+        [ArrayProperty(0)]
+        [JsonConverter(typeof(EnumConverter))]
         public PlatformStatus Status { get; set; }
     }
 }

@@ -1,16 +1,14 @@
-﻿using Newtonsoft.Json;
-
-namespace Bitfinex.Net.Objects.Sockets
+﻿namespace Bitfinex.Net.Objects.Sockets
 {
     internal class BitfinexBookRequest: BitfinexRequest
     {
-        [JsonProperty("prec")]
+        [JsonPropertyName("prec")]
         public string? Precision { get; set; }
-        [JsonProperty("freq")]
+        [JsonPropertyName("freq")]
         public string? Frequency { get; set; }
-        [JsonProperty("len")]
+        [JsonPropertyName("len")]
         public string? Length { get; set; }
-        [JsonProperty("key")]
+        [JsonPropertyName("key")]
         public string? Key { get; set; }
     }
 }

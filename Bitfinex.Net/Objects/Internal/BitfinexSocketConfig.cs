@@ -1,13 +1,11 @@
-﻿using Newtonsoft.Json;
-
-namespace Bitfinex.Net.Objects.Internal
+﻿namespace Bitfinex.Net.Objects.Internal
 {
     internal class BitfinexSocketConfig
     {
-        [JsonProperty("event")]
+        [JsonPropertyName("event")]
         public string Event { get; set; } = string.Empty;
 
-        [JsonProperty("flags")]
+        [JsonPropertyName("flags")]
         public int Flags { get; set; }
     }
 }

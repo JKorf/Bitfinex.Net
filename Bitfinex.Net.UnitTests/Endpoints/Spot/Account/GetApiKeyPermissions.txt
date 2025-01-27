@@ -3,52 +3,52 @@ POST
 true
 [
   [
-    'account', //SCOPE
-    1, //READ
-    1 //WRITE
-	], //KEY_PERMISSION_ARRAY
+    "account",
+    1,
+    1 
+	], 
   [
-    'history', //SCOPE
-    1, //READ
-    1 //WRITE
-	], //KEY_PERMISSION_ARRAY
+    "history", 
+    1, 
+    1 
+	],
   [
-    'orders',
+    "orders",
     1,
     1
 	],
   [
-    'positions',
+    "positions",
     0,
     0
 	],
   [
-    'funding',
+    "funding",
     1,
     1
 	],
   [
-    'settings',
+    "settings",
     0,
     0
 	],
   [
-    'wallets',
+    "wallets",
     1,
     1
 	],
   [
-    'withdraw',
+    "withdraw",
     0,
     1
 	],
   [
-    'ui_withdraw',
+    "ui_withdraw",
     0,
     0
 	],
   [
-    'bfxpay', 
+    "bfxpay", 
     0, 
     0
 	]

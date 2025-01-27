@@ -2,7 +2,6 @@
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Options;
-using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.CommonObjects;
@@ -12,7 +11,6 @@ using CryptoExchange.Net.Interfaces.CommonClients;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -76,6 +74,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
                 => BitfinexExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
 
+        /// <inheritdoc />
+        protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer();
+        /// <inheritdoc />
+        protected override IStreamMessageAccessor CreateAccessor() => new SystemTextJsonStreamMessageAccessor();
+
         #region common interface
 
         /// <summary>
@@ -131,18 +134,18 @@ namespace Bitfinex.Net.Clients.SpotApi
             throw new ArgumentException("Unsupported order type for Bitfinex order: " + type);
         }
 
-        internal Task<WebCallResult<T>> SendRequestAsync<T>(
-            Uri uri,
-            HttpMethod method,
-            CancellationToken cancellationToken,
-            Dictionary<string, object>? parameters = null,
-            bool signed = false) where T : class
-                => base.SendRequestAsync<T>(uri, method, cancellationToken, parameters, signed, requestWeight: 0);
+        internal Task<WebCallResult<T>> SendAsync<T>(
+            RequestDefinition definition,
+            ParameterCollection? parameters,
+            CancellationToken cancellationToken) where T : class
+                => SendToAddressAsync<T>(BaseAddress, definition, parameters, cancellationToken);
 
-        internal Uri GetUrl(string endpoint, string version)
-        {
-            return new Uri(BaseAddress.AppendPath($"v{version}", endpoint));
-        }
+        internal Task<WebCallResult<T>> SendToAddressAsync<T>(
+            string uri,
+            RequestDefinition definition,
+            ParameterCollection? parameters,
+            CancellationToken cancellationToken) where T : class
+                => base.SendAsync<T>(uri, definition, parameters, cancellationToken);
 
         /// <inheritdoc />
         public override TimeSyncInfo? GetTimeSyncInfo() => null;

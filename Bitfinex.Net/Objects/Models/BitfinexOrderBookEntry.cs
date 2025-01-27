@@ -1,7 +1,6 @@
 ﻿using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Interfaces;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -41,6 +40,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Order book funding entry
     /// </summary>
+    [JsonConverter(typeof(ArrayConverter))]
     public record BitfinexOrderBookFundingEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
     {
         /// <summary>

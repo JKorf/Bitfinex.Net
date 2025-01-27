@@ -1,14 +1,14 @@
 > { "event": "subscribe", "channel": "trades", "symbol": "tETHUST" }
-< { "event": "subscribed", "channel": "trades", "symbol": "tETHUST", chanId: 1 }
+< { "event": "subscribed", "channel": "trades", "symbol": "tETHUST", "chanId": 1 }
 = 
 [
-  1, //CHANNEL_ID
+  1,
   [
     [
-      401597393, //ID
-      1574694475039, //MTS
-      0.005, //AMOUNT
-      7244.9 //PRICE
+      401597393,
+      1574694475039,
+      0.005,
+      7244.9 
     ]
-  ] //SNAPSHOT
+  ] 
 ]  

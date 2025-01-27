@@ -4,24 +4,28 @@ using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
     internal class BitfinexInfoSubscription : SystemSubscription<BitfinexSocketInfo>
     {
         public override HashSet<string> ListenerIdentifiers { get; set; } = new HashSet<string> { "info" };
+        private readonly bool _bulkUpdates;
 
-        public BitfinexInfoSubscription(ILogger logger) : base(logger, false)
+        public BitfinexInfoSubscription(ILogger logger, bool bulkUpdates) : base(logger, false)
         {
+            _bulkUpdates = bulkUpdates;
         }
 
         public override CallResult HandleMessage(SocketConnection connection, DataEvent<BitfinexSocketInfo> message)
         {
             if (message.Data.Code == null)
             {
-                // welcome event, send a config message for receiving checsum updates for order book subscriptions
-                _ = connection.SendAndWaitQueryAsync(new BitfinexConfQuery(131072));
+                // welcome event, send a config message
+                _ = connection.SendAndWaitQueryAsync(new BitfinexConfQuery(
+                    131072 + // Send checksum messages
+                    (_bulkUpdates ? 536870912 : 0) // Bulk updates
+                    ));
                 return new CallResult(null);
             }
 

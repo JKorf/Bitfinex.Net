@@ -1,9 +1,8 @@
 ﻿using System;
-using Bitfinex.Net.Converters;
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Internal;
+using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -76,32 +75,36 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The order type
         /// </summary>
-        [ArrayProperty(8), JsonConverter(typeof(OrderTypeConverter))]
+        [ArrayProperty(8)]
+        [JsonConverter(typeof(EnumConverter))]
         public OrderType Type { get; set; }
 
         /// <summary>
         /// The previous order type
         /// </summary>
-        [ArrayProperty(9), JsonConverter(typeof(OrderTypeConverter))]
+        [ArrayProperty(9)]
+        [JsonConverter(typeof(EnumConverter))]
         public OrderType? TypePrevious { get; set; }
-        
+
         /// <summary>
         /// Tif timestamp
         /// </summary>
         [ArrayProperty(10), JsonConverter(typeof(DateTimeConverter))]
-        public DateTime TimestampTif { get; set; }
+        public DateTime? TimestampTif { get; set; }
 
         /// <summary>
         /// Order flags
         /// </summary>
         [ArrayProperty(12)]
+        [JsonConverter(typeof(EnumConverter))]
         public OrderFlags? Flags { get; set; }
 
         /// <summary>
-        /// The status of the order
+        /// The order status
         /// </summary>
-        [JsonIgnore]
-        public OrderStatus Status => new OrderStatusConverter().FromString(StatusString);
+        [ArrayProperty(13)]
+        [JsonConverter(typeof(EnumConverter))]
+        public OrderStatus Status { get; set; }
 
         /// <summary>
         /// The raw status string
@@ -157,7 +160,7 @@ namespace Bitfinex.Net.Objects.Models
         /// Meta data for the order
         /// </summary>
         [ArrayProperty(31)]
-        [JsonConverter(typeof(BitfinexMetaConverter))]
+        [JsonConversion]
         public BitfinexMeta? Meta { get; set; }
     }
 }

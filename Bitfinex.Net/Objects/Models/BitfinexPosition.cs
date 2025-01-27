@@ -1,8 +1,6 @@
 ﻿using System;
-using Bitfinex.Net.Converters;
 using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -21,7 +19,8 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The status of the position
         /// </summary>
-        [ArrayProperty(1), JsonConverter(typeof(PositionStatusConverter))]
+        [ArrayProperty(1)]
+        [JsonConverter(typeof(EnumConverter))]
         public PositionStatus Status { get; set; }
 
         /// <summary>
@@ -45,7 +44,8 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The funding type
         /// </summary>
-        [ArrayProperty(5), JsonConverter(typeof(MarginFundingTypeConverter))]
+        [ArrayProperty(5)]
+        [JsonConverter(typeof(EnumConverter))]
         public MarginFundingType MarginFundingType { get; set; }
 
         /// <summary>

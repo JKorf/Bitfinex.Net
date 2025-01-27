@@ -2,33 +2,33 @@ POST
 /v2/auth/w/position/claim
 true
  [ 
-  1568650414540, //MTS
-  'pm-req', //TYPE
-  null, //MESSAGE_ID
-  null, //PLACEHOLDER
+  1568650414540, 
+  "pm-req",
+  null, 
+  null, 
   [ 
-    'tBTCUSD', //SYMBOL
-    'ACTIVE', //POSITION_STATUS
-    -0.001, //AMOUNT
-    10119, //BASE_PRICE
-    0, //MARGIN_FUNDING
-    0, //MARGIN_FUNDING_TYPE
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    142031891, //POSITION_ID
-    1568650294000, //MTS_CREATE
-    1568650294000, //MTS_UPDATE
-    null, //PLACEHOLDER
-    0, //POS_TYPE
-    null, //PLACEHOLDER
-    0, //COLLATERAL
-    null, //MIN_COLLATERAL
-    '{"reason": "TRADE", "order_id": 31089337681, "liq_stage": null, "trade_price": "10119.0", "trade_amount": "-0.001", "user_id_oppo": 183923, "order_id_oppo": 31089692490}' //META 
-  ], //CLAIM_ARRAY
-  null, //CODE	
-  'SUCCESS', //STATUS
-  null //TEXT 
+    "tBTCUSD", 
+    "ACTIVE", 
+    -0.001, 
+    10119, 
+    0, 
+    0, 
+    null, 
+    null, 
+    null, 
+    null, 
+    null, 
+    142031891, 
+    1568650294000,
+    1568650294000, 
+    null, 
+    0,
+    null, 
+    0, 
+    null, 
+    "{\"reason\": \"TRADE\", \"order_id\": 31089337681, \"liq_stage\": null, \"trade_price\": \"10119.0\", \"trade_amount\": \"-0.001\", \"user_id_oppo\": 183923, \"order_id_oppo\": 31089692490}" 
+  ], 
+  null, 	
+  "SUCCESS", 
+  null 
 ]

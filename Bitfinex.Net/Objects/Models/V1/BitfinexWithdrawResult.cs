@@ -1,7 +1,4 @@
-﻿using Bitfinex.Net.Converters;
-using Newtonsoft.Json;
-
-namespace Bitfinex.Net.Objects.Models.V1
+﻿namespace Bitfinex.Net.Objects.Models.V1
 {
     /// <summary>
     /// Result of withdrawing
@@ -11,20 +8,27 @@ namespace Bitfinex.Net.Objects.Models.V1
         /// <summary>
         /// The status of the transfer
         /// </summary>
-        [JsonConverter(typeof(StringToBoolConverter)), JsonProperty("status")]
-        public bool Success { get; set; }
+        [JsonIgnore]
+        public bool Success => Status == "success";
+        /// <summary>
+        /// Status string
+        /// </summary>
+        [JsonPropertyName("status")]
+        public string Status { get; set; } = string.Empty;
         /// <summary>
         /// Additional info
         /// </summary>
+        [JsonPropertyName("message")]
         public string Message { get; set; } = string.Empty;
         /// <summary>
         /// The id of the withdrawal
         /// </summary>
-        [JsonProperty("withdrawal_id")]
+        [JsonPropertyName("withdrawal_id")]
         public long WithdrawalId { get; set; }
         /// <summary>
         /// The fees paid
         /// </summary>
+        [JsonPropertyName("fees")]
         public decimal Fees { get; set; }
     }
 }

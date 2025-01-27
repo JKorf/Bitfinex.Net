@@ -7,7 +7,6 @@ using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Objects.Sockets.Queries
 {

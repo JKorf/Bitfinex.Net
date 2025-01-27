@@ -2,15 +2,15 @@ POST
 /v2/auth/r/info/margin/tETHUST
 true
 [
-  "sym", //KEY
-  "tBTCUSD", //SYMBOL
-  [854774.7939165855, //TRADABLE_BALANCE
-   909999.9796645334, //GROSS_BALANCE
-   52.08334097688924, //BUY
-   62.676711921295684, //SELL
-   null, //PLACEHOLDER
-   null, //PLACEHOLDER
-   null, //PLACEHOLDER
-   null //PLACEHOLDER
-  ] //MARGIN_SYM_DATA_ARRAY
+  "sym",
+  "tBTCUSD",
+  [854774.7939165855, 
+   909999.9796645334, 
+   52.08334097688924, 
+   62.676711921295684,
+   null,
+   null, 
+   null,
+   null 
+  ]
 ]

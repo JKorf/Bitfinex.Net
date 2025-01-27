@@ -1,8 +1,6 @@
 ﻿using System;
-using Bitfinex.Net.Converters;
 using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
-using Newtonsoft.Json;
 
 namespace Bitfinex.Net.Objects.Models
 {
@@ -27,7 +25,8 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The side of the funding
         /// </summary>
-        [ArrayProperty(2), JsonConverter(typeof(FundingSideConverter))]
+        [ArrayProperty(2)]
+        [JsonConverter(typeof(EnumConverter))]
         public FundingSide Side { get; set; }
 
         /// <summary>
@@ -55,8 +54,9 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// The order status
         /// </summary>
-        [JsonIgnore]
-        public OrderStatus Status => new OrderStatusConverter().FromString(StatusString);
+        [ArrayProperty(7)]
+        [JsonConverter(typeof(EnumConverter))]
+        public OrderStatus Status { get; set; }
         /// <summary>
         /// The raw order status string
         /// </summary>
@@ -90,18 +90,18 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// If notify
         /// </summary>
-        [ArrayProperty(15), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(15)]
         public bool Notify { get; set; }
 
         /// <summary>
         /// If hidden
         /// </summary>
-        [ArrayProperty(16), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(16)]
         public bool Hidden { get; set; }
 
         /// <summary>
         /// </summary>
-        [ArrayProperty(18), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(18)]
         public bool Renew { get; set; }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Whether the funding should be closed when position is closed
         /// </summary>
-        [ArrayProperty(20), JsonConverter(typeof(BoolToIntConverter))]
+        [ArrayProperty(20)]
         public bool NoClose { get; set; }
 
         
@@ -122,6 +122,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding credit info
     /// </summary>
+    [JsonConverter(typeof(ArrayConverter))]
     public record BitfinexFundingCredit: BitfinexFunding
     {
         /// <summary>

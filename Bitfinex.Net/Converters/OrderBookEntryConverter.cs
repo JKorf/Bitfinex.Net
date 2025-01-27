@@ -1,82 +1,61 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Bitfinex.Net.Objects.Models;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using Bitfinex.Net.Objects.Models;
+using System.Text.Json;
 
 namespace Bitfinex.Net.Converters
 {
-    internal class OrderBookEntryConverter : JsonConverter
+    internal class OrderBookEntryConverter : JsonConverter<BitfinexOrderBookEntry>
     {
-        public override bool CanConvert(Type objectType)
+        public override BitfinexOrderBookEntry? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return true;
-        }
+            var doc = JsonDocument.ParseValue(ref reader);
+            var arrLength = doc.RootElement.GetArrayLength();
 
-        public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
-        {
-            var data = JArray.Load(reader);
-            if(data[0].Type == JTokenType.Array)
+            string price, quantity;
+            int count;
+            if (arrLength == 3)
             {
-                var result = new List<BitfinexOrderBookEntry>();
-                foreach(var entry in data)                
-                    result.Add(ParseEntry((JArray)entry));                
-                return result;
+                price = doc.RootElement[0].GetRawText();
+                count = doc.RootElement[1].GetInt32();
+                quantity = doc.RootElement[2].GetRawText();
             }
             else
             {
-                return ParseEntry(data);
-            }           
-        }
+                price = doc.RootElement[0].GetRawText();
+                count = doc.RootElement[2].GetInt32();
+                quantity = doc.RootElement[3].GetRawText();
+            }
 
-        private static BitfinexOrderBookEntry ParseEntry(JArray data)
-        {
-            JToken price;
-            JToken count;
-            JToken quantity;
-            if (data.Count == 3)
-            {
-                price = data[0];
-                count = data[1];
-                quantity = data[2];
-            }
-            else
-            {
-                price = data[0];
-                count = data[2];
-                quantity = data[3];
-            }
             var result = new BitfinexOrderBookEntry()
             {
                 Count = (int)count,
-                Price = (decimal)price,
-                Quantity = (decimal)quantity,
+                Price = decimal.Parse(price, NumberStyles.Float, CultureInfo.InvariantCulture),
+                Quantity = decimal.Parse(quantity, NumberStyles.Float, CultureInfo.InvariantCulture),
             };
 
-            var priceWithExp = ((JValue)price).ToString(CultureInfo.InvariantCulture);
-            if (priceWithExp.Contains("E-07") || priceWithExp.Contains("E-08"))
-                result.RawPrice = priceWithExp.Replace('E', 'e').Replace("-07", "-7").Replace("-08", "-8");
+            if (price.Contains("E-07") || price.Contains("E-08"))
+                result.RawPrice = price.Replace('E', 'e').Replace("-07", "-7").Replace("-08", "-8");
             else
-                result.RawPrice = ((JValue)price).ToString("F8", CultureInfo.InvariantCulture).TrimEnd('0').TrimEnd('.');
+                result.RawPrice = price;//.TrimEnd('0').TrimEnd('.');
 
 
-            var quantityWithExp = ((JValue)quantity).ToString(CultureInfo.InvariantCulture);
-            if (quantityWithExp.Contains("E-07") || quantityWithExp.Contains("E-08"))
-                result.RawQuantity = quantityWithExp.Replace('E', 'e').Replace("-07", "-7").Replace("-08", "-8");
+            if (quantity.Contains("E-07") || quantity.Contains("E-08"))
+                result.RawQuantity = quantity.Replace('E', 'e').Replace("-07", "-7").Replace("-08", "-8");
             else
-                result.RawQuantity = ((JValue)quantity).ToString("F8", CultureInfo.InvariantCulture).TrimEnd('0').TrimEnd('.');
+                result.RawQuantity = quantity;//.TrimEnd('0').TrimEnd('.');
 
             return result;
         }
 
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, BitfinexOrderBookEntry value, JsonSerializerOptions options)
         {
-            var obj = (BitfinexOrderBookEntry)value!;
             writer.WriteStartArray();
-            writer.WriteValue(obj.RawPrice);
-            writer.WriteValue(obj.Count);
-            writer.WriteValue(obj.RawQuantity);
+
+            writer.WriteRawValue(value.RawPrice);
+            writer.WriteNumberValue(value.Count);
+            writer.WriteRawValue(value.RawQuantity);
+
             writer.WriteEndArray();
         }
     }

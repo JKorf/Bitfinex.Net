@@ -1,30 +1,30 @@
 > { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
-< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+< { "event": "auth", "status": "OK", "chanId": 0, "userId": 269312, "auth_id": "a26236f1-ef44-4671-be32-197ce190348f" }
 = 
 [
-  0, //CHAN_ID
-  "ps", //TYPE
+  0,
+  "ps",
   [
     [
-      "tETHUST", //SYMBOL
-      "ACTIVE", //STATUS
-      0.2, //AMOUNT
-      153.71, //BASE_PRICE
-      0, //MARGIN_FUNDING
-      0, //MARGIN_FUNDING_TYPE
-      null, //PL
-      null, //PL_PERC
-      null, //PRICE_LIQ
-      null, //LEVERAGE
-      null, //FLAGS
-      142420429, //POSITION_ID
-      null, //MTS_CREATE
-      null, //MTS_UPDATE
-      null, //PLACEHOLDER
-      0, //TYPE
-      null, //PLACEHOLDER
-      0, //COLLATERAL
-      null, //COLLATERAL_MIN
+      "tETHUST", 
+      "ACTIVE",
+      0.2,
+      153.71, 
+      0,
+      0, 
+      null,
+      null,
+      null,
+      null, 
+      null,
+      142420429, 
+      null, 
+      null, 
+      null, 
+      0, 
+      null, 
+      0,
+      null,
       {
         "reason":"TRADE",
         "order_id":34934099168,
@@ -32,7 +32,7 @@
         "liq_stage":null,
         "trade_price":"153.71",
         "trade_amount":"0.2"
-      } //META
+      } 
     ]
-  ] //POSITION_SNAPSHOT
+  ] 
 ]

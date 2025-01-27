@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Clients;
 using Bitfinex.Net.Enums;
-using Bitfinex.Net.ExtensionMethods;
 using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Options;

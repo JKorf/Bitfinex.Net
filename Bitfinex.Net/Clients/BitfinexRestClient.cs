@@ -8,7 +8,6 @@ using CryptoExchange.Net.Authentication;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using Bitfinex.Net.Objects.Options;
-using Microsoft.Extensions.DependencyInjection;
 using CryptoExchange.Net.Clients;
 using Microsoft.Extensions.Options;
 using CryptoExchange.Net.Objects.Options;

@@ -1,48 +1,48 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Binance.Net.UnitTests.TestImplementations
 {
     public abstract class SubscriptionResponse
     {
-        [JsonProperty("event")]
+        [JsonPropertyName("event")]
         public string Event { get; set; }
-        [JsonProperty("channel")]
+        [JsonPropertyName("channel")]
         public string Channel { get; set; }
-        [JsonProperty("chanId")]
+        [JsonPropertyName("chanId")]
         public int ChannelId { get; set; }
     }
 
     public class BookSubscriptionResponse : SubscriptionResponse
     {
-        [JsonProperty("symbol")]
+        [JsonPropertyName("symbol")]
         public string Symbol { get; set; }
         public string Pair { get; set; }
-        [JsonProperty("prec")]
+        [JsonPropertyName("prec")]
         public string Precision { get; set; }
-        [JsonProperty("freq")]
+        [JsonPropertyName("freq")]
         public string Frequency { get; set; }
-        [JsonProperty("len")]
+        [JsonPropertyName("len")]
         public int Length { get; set; }
     }
 
     public class CandleSubscriptionResponse : SubscriptionResponse
     {
-        [JsonProperty("symbol")]
+        [JsonPropertyName("symbol")]
         public string Symbol { get; set; }
-        [JsonProperty("key")]
+        [JsonPropertyName("key")]
         public string Key { get; set; }
     }
 
     public class TickerSubscriptionResponse : SubscriptionResponse
     {
         public string Pair { get; set; }
-        [JsonProperty("symbol")]
+        [JsonPropertyName("symbol")]
         public string Symbol { get; set; }
     }
 
     public class TradesSubscriptionResponse : SubscriptionResponse
     {
-        [JsonProperty("symbol")]
+        [JsonPropertyName("symbol")]
         public string Symbol { get; set; }
         public string Pair { get; set; }
     }

@@ -1,4 +1,6 @@
-﻿namespace Bitfinex.Net.Enums
+﻿using CryptoExchange.Net.Attributes;
+
+namespace Bitfinex.Net.Enums
 {
     /// <summary>
     /// Withdraw wallet type
@@ -8,14 +10,17 @@
         /// <summary>
         /// Trading
         /// </summary>
+        [Map("trading")]
         Trading,
         /// <summary>
         /// Exchange
         /// </summary>
+        [Map("exchange")]
         Exchange,
         /// <summary>
         /// Deposit
         /// </summary>
+        [Map("deposit")]
         Deposit
     }
 }

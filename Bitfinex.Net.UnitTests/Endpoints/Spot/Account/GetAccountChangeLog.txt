@@ -3,12 +3,12 @@ POST
 true
 [
   [
-    1574332100000, //MTS_CREATE
-    null, //PLACEHOLDER
-    'settings: api key created', //LOG
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    '182.64.34.9', //IP
-    'Mozilla/5.0 (X11; CrOS x86_64 12499.51.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.92 Safari/537.36' //USER_AGENT
+    1574332100000, 
+    null, 
+    "settings: api key created", 
+    null,
+    null, 
+    "182.64.34.9", 
+    "Mozilla/5.0 (X11; CrOS x86_64 12499.51.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.92 Safari/537.36" 
   ]
 ]

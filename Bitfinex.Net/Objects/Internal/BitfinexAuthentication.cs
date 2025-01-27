@@ -1,20 +1,18 @@
-﻿using Newtonsoft.Json;
-
-namespace Bitfinex.Net.Objects.Internal
+﻿namespace Bitfinex.Net.Objects.Internal
 {
     internal class BitfinexAuthentication
     {
-        [JsonProperty("event")]
+        [JsonPropertyName("event")]
         public string Event { get; set; } = string.Empty;
-        [JsonProperty("apiKey")]
+        [JsonPropertyName("apiKey")]
         public string ApiKey { get; set; } = string.Empty;
-        [JsonProperty("authPayload")]
+        [JsonPropertyName("authPayload")]
         public string Payload { get; set; } = string.Empty;
-        [JsonProperty("authSig")]
+        [JsonPropertyName("authSig")]
         public string Signature { get; set; } = string.Empty;
-        [JsonProperty("authNonce")]
+        [JsonPropertyName("authNonce")]
         public string Nonce { get; set; } = string.Empty;
-        [JsonProperty("filter")]
+        [JsonPropertyName("filter")]
         public string[]? Filter { get; set; }
     }
 }

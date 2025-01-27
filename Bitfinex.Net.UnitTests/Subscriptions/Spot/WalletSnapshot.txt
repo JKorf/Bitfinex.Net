@@ -1,18 +1,18 @@
 > { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
-< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+< { "event": "auth", "status": "OK", "chanId": 0, "userId": 269312, "auth_id": "a26236f1-ef44-4671-be32-197ce190348f" }
 = 
 [
-  0, //CHAN_ID
-  "ws", //MSG_TYPE
+  0,
+  "ws", 
   [
     [
-      "exchange", //WALLET_TYPE
-      "SAN", //CURRENCY
-      19.76, //BALANCE
-      0, //UNSETTLED_INTEREST
-      null, //BALANCE_AVAILABLE
-      null, //Used for DESCRIPTION on 'wu' events
-      null //Used for META on 'wu' events
-    ] //WALLET_ARRAY
-  ] //WALLET_SNAPSHOT
+      "exchange",
+      "SAN", 
+      19.76, 
+      0, 
+      null,
+      null, 
+      null 
+    ] 
+  ] 
 ]

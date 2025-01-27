@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Bitfinex.Net.Objects.Models
+﻿namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Derivatives fee info
@@ -10,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Perpetual derivatives fee config
         /// </summary>
-        [JsonProperty("deriv_perp")]
+        [JsonPropertyName("deriv_perp")]
         public BitfinexPerpDerivativesFees PerpetualDerivatives { get; set; } = null!;
     }
 
@@ -22,17 +20,17 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Correction clamp min
         /// </summary>
-        [JsonProperty("correction_clamp_min")]
+        [JsonPropertyName("correction_clamp_min")]
         public decimal CorrectionClampMin { get; set; }
         /// <summary>
         /// Correction clamp insurance
         /// </summary>
-        [JsonProperty("correction_clamp_insurance")]
+        [JsonPropertyName("correction_clamp_insurance")]
         public decimal CorrectionClampInsurance { get; set; }
         /// <summary>
         /// Correction slope
         /// </summary>
-        [JsonProperty("correction_slope")]
+        [JsonPropertyName("correction_slope")]
         public decimal CorrectionSlope { get; set; }
     }
 }

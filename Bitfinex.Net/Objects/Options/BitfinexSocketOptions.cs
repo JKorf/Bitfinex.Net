@@ -28,6 +28,11 @@ namespace Bitfinex.Net.Objects.Options
         }
 
         /// <summary>
+        /// Whether updates for order book subscriptions should be send as bundled updates from the server
+        /// </summary>
+        public bool OrderBookBulkUpdates { get; set; } = true;
+
+        /// <summary>
         /// Default affiliate code to use when placing orders
         /// </summary>
         public string? AffiliateCode { get; set; } = "kCCe-CNBO";
@@ -47,6 +52,7 @@ namespace Bitfinex.Net.Objects.Options
             targetOptions = base.Set<BitfinexSocketOptions>(targetOptions);
             targetOptions.AffiliateCode = AffiliateCode;
             targetOptions.NonceProvider = NonceProvider;
+            targetOptions.OrderBookBulkUpdates = OrderBookBulkUpdates;
             targetOptions.SpotOptions = SpotOptions.Set(targetOptions.SpotOptions);
             return targetOptions;
         }

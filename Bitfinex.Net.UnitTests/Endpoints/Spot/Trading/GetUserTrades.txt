@@ -3,17 +3,17 @@ POST
 true
 [
   [
-  	402088407, //ID
-  	"tETHUST", //SYMBOL
-  	1574963975602, //MTS
-    34938060782, //ORDER_ID
-  	-0.2, //EXEC_AMOUNT
-  	153.57, //EXEC_PRICE
-  	"MARKET", //ORDER_TYPE
-  	0, //ORDER_PRICE
-  	0, //MAKER
-  	-0.061668, //FEE
-  	"USD", //FEE_CURRENCY
-  	1234 //CID
+  	402088407,
+  	"tETHUST", 
+  	1574963975602, 
+    34938060782, 
+  	-0.2, 
+  	153.57, 
+  	"MARKET", 
+  	0, 
+  	0,
+  	-0.061668, 
+  	"USD", 
+  	1234 
 	]
 ]

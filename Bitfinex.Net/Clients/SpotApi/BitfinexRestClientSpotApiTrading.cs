@@ -1,10 +1,6 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Enums;
 using CryptoExchange.Net;
-using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Objects;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,13 +11,14 @@ using System.Threading.Tasks;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using CryptoExchange.Net.CommonObjects;
-using Bitfinex.Net.ExtensionMethods;
+using CryptoExchange.Net.RateLimiting.Guards;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc />
     internal class BitfinexRestClientSpotApiTrading : IBitfinexRestClientSpotApiTrading
     {
+        private static readonly RequestDefinitionCache _definitions = new();
         private readonly BitfinexRestClientSpotApi _baseClient;
 
         internal BitfinexRestClientSpotApiTrading(BitfinexRestClientSpotApi baseClient)
@@ -33,14 +30,16 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOpenOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, CancellationToken ct = default)
         {
-            var url = "auth/r/orders";
+            var url = "v2/auth/r/orders";
             if (symbol != null)
                 url += "/" + symbol;
 
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("id", orderIds);
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrder>>(_baseClient.GetUrl(url, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, url, BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexOrder>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -48,21 +47,25 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
             parameters.AddOptionalParameter("id", orderIds);
 
             var url = string.IsNullOrEmpty(symbol)
-                ? "auth/r/orders/hist" : $"auth/r/orders/{symbol}/hist";
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexOrder>>(_baseClient.GetUrl(url, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+                ? "/v2/auth/r/orders/hist" : $"v2/auth/r/orders/{symbol}/hist";
+            var request = _definitions.GetOrCreate(HttpMethod.Post, url, BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexOrder>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetOrderTradesAsync(string symbol, long orderId, CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTradeDetails>>(_baseClient.GetUrl($"auth/r/order/{symbol}:{orderId}/trades", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/auth/r/order/{symbol}:{orderId}/trades", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexTradeDetails>>(request, null, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -70,14 +73,16 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 1000);
 
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var url = string.IsNullOrEmpty(symbol)
-                ? "auth/r/trades/hist" : $"auth/r/trades/{symbol}/hist";
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexTradeDetails>>(_baseClient.GetUrl(url, "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+                ? "v2/auth/r/trades/hist" : $"v2/auth/r/trades/{symbol}/hist";
+            var request = _definitions.GetOrCreate(HttpMethod.Post, url, BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexTradeDetails>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -101,17 +106,16 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (side == OrderSide.Sell)
                 quantity = -quantity;
 
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 { "symbol", symbol },
-                { "type", JsonConvert.SerializeObject(type, new OrderTypeConverter(false)) },
                 { "price", price.ToString(CultureInfo.InvariantCulture) },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-
+            parameters.AddEnum("type", type);
             parameters.AddOptionalParameter("gid", groupId);
             parameters.AddOptionalParameter("cid", clientOrderId);
-            parameters.AddOptionalParameter("flags", flags);
+            parameters.AddOptionalParameter("flags", (int?)flags);
             parameters.AddOptionalParameter("lev", leverage);
             parameters.AddOptionalParameter("price_trailing", priceTrailing?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("price_aux_limit", priceAuxLimit?.ToString(CultureInfo.InvariantCulture));
@@ -122,11 +126,14 @@ namespace Bitfinex.Net.Clients.SpotApi
                 { "aff_code" , affiliateCode ?? _baseClient.AffiliateCode }
             });
 
-            var result = await _baseClient.SendRequestAsync<BitfinexWriteResult<JArray>>(_baseClient.GetUrl("auth/w/order/submit", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/w/order/submit", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            var result = await _baseClient.SendAsync<BitfinexWriteResult<IEnumerable<BitfinexOrder>>>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexWriteResult<BitfinexOrder>>(default);
 
-            var orderData = result.Data.Data!.First().ToObject<BitfinexOrder>();
+
+            var orderData = result.Data.Data!.First();
             var output = new BitfinexWriteResult<BitfinexOrder>()
             {
                 Code = result.Data.Code,
@@ -152,12 +159,14 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (clientOrderId != null && clientOrderIdDate == null)
                 throw new ArgumentException("The date of the order has to be provided if canceling by clientOrderId");
 
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("id", orderId);
             parameters.AddOptionalParameter("cid", clientOrderId);
             parameters.AddOptionalParameter("cid_date", clientOrderIdDate?.ToString("yyyy-MM-dd"));
 
-            var result = await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexOrder>>(_baseClient.GetUrl("auth/w/order/cancel", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/w/order/cancel", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            var result = await _baseClient.SendAsync<BitfinexWriteResult<BitfinexOrder>>(request, parameters, ct).ConfigureAwait(false);
             if (result)
                 _baseClient.InvokeOrderCanceled(new OrderId { SourceObject = result.Data, Id = result.Data.Id.ToString(CultureInfo.InvariantCulture) });
             return result;
@@ -166,76 +175,90 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResult<IEnumerable<BitfinexOrder>>>> CancelOrdersAsync(IEnumerable<long>? orderIds = null, IEnumerable<long>? groupIds = null, Dictionary<long, DateTime>? clientOrderIds = null, bool? all = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("id", orderIds);
             parameters.AddOptionalParameter("gid", groupIds);
             parameters.AddOptionalParameter("all", all == true ? (bool?)true : null);
             if (clientOrderIds != null)
                 parameters.Add("cid", clientOrderIds.ToDictionary(c => c.Key, c => c.Value.ToString("yyyy-MM-dd")));
 
-            return await _baseClient.SendRequestAsync<BitfinexWriteResult<IEnumerable<BitfinexOrder>>>(_baseClient.GetUrl("auth/w/order/cancel/multi", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/w/order/cancel/multi", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<BitfinexWriteResult<IEnumerable<BitfinexOrder>>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 50);
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl("auth/r/positions/hist", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/r/positions/hist", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexPosition>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResult<BitfinexPosition>>> ClaimPositionAsync(long id, decimal quantity, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 { "id", id },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexPosition>>(_baseClient.GetUrl("auth/w/position/claim", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/w/position/claim", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<BitfinexWriteResult<BitfinexPosition>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResult<BitfinexPositionBasic>>> IncreasePositionAsync(string symbol, decimal quantity, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 { "symbol", symbol },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-            return await _baseClient.SendRequestAsync<BitfinexWriteResult<BitfinexPositionBasic>>(_baseClient.GetUrl("auth/w/position/increase", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/w/position/increase", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<BitfinexWriteResult<BitfinexPositionBasic>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexIncreasePositionInfo>> GetIncreasePositionInfoAsync(string symbol, decimal quantity, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 { "symbol", symbol },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-            return await _baseClient.SendRequestAsync<BitfinexIncreasePositionInfo>(_baseClient.GetUrl("auth/r/position/increase/info", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/r/position/increase/info", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<BitfinexIncreasePositionInfo>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionsAsync(CancellationToken ct = default)
         {
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl("auth/r/positions", "2"), HttpMethod.Post, ct, null, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/r/positions", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexPosition>>(request, null, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionSnapshotsAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl("auth/r/positions/snap", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/r/positions/snap", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexPosition>>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -243,7 +266,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             ids.ValidateNotNull(nameof(ids));
             limit?.ValidateIntBetween(nameof(limit), 1, 250);
-            var parameters = new Dictionary<string, object>
+            var parameters = new ParameterCollection
             {
                 { "id", ids }
             };
@@ -251,7 +274,9 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            return await _baseClient.SendRequestAsync<IEnumerable<BitfinexPosition>>(_baseClient.GetUrl("auth/r/positions/audit", "2"), HttpMethod.Post, ct, parameters, true).ConfigureAwait(false);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/r/positions/audit", BitfinexExchange.RateLimiter.Overal, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<IEnumerable<BitfinexPosition>>(request, parameters, ct).ConfigureAwait(false);
         }
     }
 }

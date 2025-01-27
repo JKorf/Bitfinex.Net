@@ -18,11 +18,17 @@ namespace Bitfinex.Net
         /// </summary>
         public string SocketAddress { get; }
 
-        internal BitfinexEnvironment(string name, string restAddress, string socketAddress) :
+        /// <summary>
+        /// Socket client address
+        /// </summary>
+        public string SocketPublicAddress { get; }
+
+        internal BitfinexEnvironment(string name, string restAddress, string socketAddress, string socketPublicAddress) :
             base(name)
         {
             RestAddress = restAddress;
             SocketAddress = socketAddress;
+            SocketPublicAddress = socketPublicAddress;
         }
 
         /// <summary>
@@ -51,20 +57,18 @@ namespace Bitfinex.Net
         public static BitfinexEnvironment Live { get; }
             = new BitfinexEnvironment(TradeEnvironmentNames.Live,
                                      BitfinexApiAddresses.Default.RestClientAddress,
-                                     BitfinexApiAddresses.Default.SocketClientAddress);
+                                     BitfinexApiAddresses.Default.SocketClientAddress,
+                                     BitfinexApiAddresses.Default.SocketClientPublicAddress);
 
         /// <summary>
         /// Create a custom environment
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="restAddress"></param>
-        /// <param name="socketAddress"></param>
-        /// <returns></returns>
         public static BitfinexEnvironment CreateCustom(
                         string name,
                         string restAddress,
-                        string socketAddress)
-            => new BitfinexEnvironment(name, restAddress, socketAddress);
+                        string socketAddress,
+                        string socketPublicAddress)
+            => new BitfinexEnvironment(name, restAddress, socketAddress, socketPublicAddress);
 
     }
 }

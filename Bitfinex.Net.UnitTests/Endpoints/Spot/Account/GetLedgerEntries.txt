@@ -3,14 +3,14 @@ POST
 true
  [
   [
-  2531822314, //ID
-  "USD", //CURRENCY
-  "margin", //WALLET
-  1573521810000, //MTS
-  null, //PLACEHOLDER
-  0.01644445, //AMOUNT
-  0, //BALANCE
-  null, //PLACEHOLDER
-  "Settlement @ 185.79 on wallet margin" //DESCRIPTION
+  2531822314,
+  "USD", 
+  "margin",
+  1573521810000, 
+  null,
+  0.01644445,
+  0,
+  null,
+  "Settlement @ 185.79 on wallet margin"
 	]
 ]

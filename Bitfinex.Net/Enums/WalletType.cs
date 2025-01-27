@@ -1,4 +1,6 @@
-﻿namespace Bitfinex.Net.Enums
+﻿using CryptoExchange.Net.Attributes;
+
+namespace Bitfinex.Net.Enums
 {
     /// <summary>
     /// Type of wallet
@@ -8,14 +10,17 @@
         /// <summary>
         /// Exchange
         /// </summary>
+        [Map("exchange")]
         Exchange,
         /// <summary>
         /// Margin
         /// </summary>
+        [Map("margin")]
         Margin,
         /// <summary>
         /// Funding
         /// </summary>
+        [Map("funding")]
         Funding
     }
 }

@@ -19,9 +19,14 @@
             Socket client address
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.BitfinexEnvironment.SocketPublicAddress">
+            <summary>
+            Socket client address
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.BitfinexEnvironment.#ctor">
             <summary>
-            ctor for DI, use <see cref="M:Bitfinex.Net.BitfinexEnvironment.CreateCustom(System.String,System.String,System.String)"/> for creating a custom environment
+            ctor for DI, use <see cref="M:Bitfinex.Net.BitfinexEnvironment.CreateCustom(System.String,System.String,System.String,System.String)"/> for creating a custom environment
             </summary>
         </member>
         <member name="M:Bitfinex.Net.BitfinexEnvironment.GetEnvironmentByName(System.String)">
@@ -34,14 +39,10 @@
             Live environment
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.BitfinexEnvironment.CreateCustom(System.String,System.String,System.String)">
+        <member name="M:Bitfinex.Net.BitfinexEnvironment.CreateCustom(System.String,System.String,System.String,System.String)">
             <summary>
             Create a custom environment
             </summary>
-            <param name="name"></param>
-            <param name="restAddress"></param>
-            <param name="socketAddress"></param>
-            <returns></returns>
         </member>
         <member name="T:Bitfinex.Net.BitfinexExchange">
             <summary>
@@ -87,6 +88,21 @@
             <param name="tradingMode">Trading mode</param>
             <param name="deliverTime">Delivery time for delivery futures</param>
             <returns></returns>
+        </member>
+        <member name="P:Bitfinex.Net.BitfinexExchange.RateLimiter">
+            <summary>
+            Rate limiter configuration for the Bitfinex API
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.BitfinexRateLimiters">
+            <summary>
+            Rate limiter configuration for the GateIo API
+            </summary>
+        </member>
+        <member name="E:Bitfinex.Net.BitfinexRateLimiters.RateLimitTriggered">
+            <summary>
+            Event for when a rate limit is triggered
+            </summary>
         </member>
         <member name="T:Bitfinex.Net.BitfinexTrackerFactory">
             <inheritdoc />
@@ -186,6 +202,12 @@
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateSerializer">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateAccessor">
+            <inheritdoc />
+        </member>
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
             <inheritdoc />
         </member>
@@ -278,6 +300,12 @@
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateSerializer">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateAccessor">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetSymbolName(System.String,System.String)">
@@ -559,6 +587,12 @@
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateSerializer">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateAccessor">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.GetAuthenticationRequestAsync(CryptoExchange.Net.Sockets.SocketConnection)">
@@ -1083,6 +1117,11 @@
         <member name="F:Bitfinex.Net.Enums.OrderStatus.Executed">
             <summary>
             Fully filled
+            </summary>
+        </member>
+        <member name="F:Bitfinex.Net.Enums.OrderStatus.ForcefullyExecuted">
+            <summary>
+            Partially filled
             </summary>
         </member>
         <member name="F:Bitfinex.Net.Enums.OrderStatus.PartiallyFilled">
@@ -2889,6 +2928,11 @@
             The address used by the BitfinexSocketClient for the socket API
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.BitfinexApiAddresses.SocketClientPublicAddress">
+            <summary>
+            The address used by the BitfinexSocketClient for the public socket API
+            </summary>
+        </member>
         <member name="F:Bitfinex.Net.Objects.BitfinexApiAddresses.Default">
             <summary>
             The default addresses to connect to the Bitfinex.com API
@@ -3497,7 +3541,7 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingOffer.Status">
             <summary>
-            The status
+            The order status
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexFundingOffer.StatusString">
@@ -4307,7 +4351,7 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexOrder.Status">
             <summary>
-            The status of the order
+            The order status
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexOrder.StatusString">
@@ -5572,6 +5616,11 @@
             The status of the transfer
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.Models.V1.BitfinexWithdrawalResult.Status">
+            <summary>
+            Status string
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.Objects.Models.V1.BitfinexWithdrawalResult.Message">
             <summary>
             Additional info
@@ -5660,6 +5709,11 @@
         <member name="M:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.#ctor">
             <summary>
             ctor
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.OrderBookBulkUpdates">
+            <summary>
+            Whether updates for order book subscriptions should be send as bundled updates from the server
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.AffiliateCode">

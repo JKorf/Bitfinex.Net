@@ -1,17 +1,17 @@
 > { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
-< { event: 'auth', status: 'OK', chanId: 0, userId: 269312, auth_id: 'a26236f1-ef44-4671-be32-197ce190348f' }
+< { "event": "auth", "status": "OK", "chanId": 0, "userId": 269312, "auth_id": "a26236f1-ef44-4671-be32-197ce190348f" }
 = 
 [
-  0, //CHAN_ID
-  "fiu", //MSG_TYPE
+  0,
+  "fiu",
   [
-    "sym", //UPDATE_TYPE
-    "fUSD",  //SYMBOL
+    "sym",
+    "fUSD", 
     [
-      0.0008595462068208099, //YIELD_LOAN
-      0, //YIELD_LEND
-      1.8444560185185186, //DURATION_LOAN
-      0 //DURATION_LEND
-    ] //FUNDING_INFO_UPDATE_ARRAY
-  ] //UPDATE_ARRAY
+      0.0008595462068208099, 
+      0, 
+      1.8444560185185186, 
+      0
+    ] 
+  ]
 ]

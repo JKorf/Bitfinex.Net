@@ -1,31 +1,31 @@
 > { "event": "subscribe", "channel": "status", "key": "deriv:tBTCF0:USTF0" }
-< { "event": "subscribed", "channel": "status", "key": "deriv:tBTCF0:USTF0", chanId: 1 }
+< { "event": "subscribed", "channel": "status", "key": "deriv:tBTCF0:USTF0", "chanId": 1 }
 = 
 [
-  1, //CHANNEL_ID
+  1, 
   [
-    1596124822000, //TIME_MS
-    null, //PLACEHOLDER
-    0.896, //DERIV_PRICE
-    0.771995, //SPOT_PRICE
-    null, //PLACEHOLDER
-    1396531.67460709, //INSURANCE_FUND_BALANCE
-    null, //PLACEHOLDER
-    1596153600000, //NEXT_FUNDING_EVT_TIMESTAMP_MS
-    0.0001056, //NEXT_FUNDING_ACCRUED
-    6, //NEXT_FUNDING_STEP
-    null, //PLACEHOLDER
-    -0.01381344, //CURRENT_FUNDING
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    0.7664, //MARK_PRICE
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    246502.09001551, //OPEN_INTEREST
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //PLACEHOLDER
-    null, //CLAMP_MIN
-    0.3 //CLAMP_MAX
-  ] //DERIVATIVE_STATUS_ARRAY
+    1596124822000, 
+    null, 
+    0.896, 
+    0.771995, 
+    null, 
+    1396531.67460709, 
+    null, 
+    1596153600000, 
+    0.0001056, 
+    6,
+    null, 
+    -0.01381344, 
+    null, 
+    null, 
+    0.7664, 
+    null, 
+    null, 
+    246502.09001551,
+    null, 
+    null, 
+    null, 
+    null,
+    0.3 
+  ] 
 ]

@@ -2,47 +2,47 @@ POST
 /v2/auth/w/order/cancel/multi
 true
 [
-  1568711312683, //MTS
-  "oc_multi-req", //TYPE
-  null, //MESSAGE_ID
+  1568711312683, 
+  "oc_multi-req",
+  null, 
   null,
   [
     [
-      1747566428, //ID
-      null, //GID
-      1678987199446, //CID
-      "tBTCUSD", //SYMBOL
-      1678987199446, //MTS_CREATE
-      1678987199448, //MTS_UPDATE
-      0.1, //AMOUNT
-      0.1, //AMOUNT_ORIG
-      "EXCHANGE LIMIT", //ORDER_TYPE
-      null, //TYPE_PREV
-      null, //MTS_TIF
-      null,
-      0, //FLAGS
-      "ACTIVE", //STATUS
+      1747566428,
+      null, 
+      1678987199446, 
+      "tBTCUSD",
+      1678987199446, 
+      1678987199448,
+      0.1,
+      0.1, 
+      "EXCHANGE LIMIT", 
+      null, 
       null,
       null,
-      10000, //PRICE
-      0, //PRICE_AVG
-      0, //PRICE_TRAILING
-      0, //PRICE_AUX_LIMIT
+      0,
+      "ACTIVE",
+      null,
+      null,
+      10000, 
+      0, 
+      0, 
+      0,
       null,
       null,
       null,
-      0, //NOTIFY
-      0, //HIDDEN
-      null, //PLACED_ID
+      0,
+      0, 
+      null, 
       null,
       null,
-      "API>BFX", //ROUTING
+      "API>BFX",
       null,
       null,
-      null //META
+      null 
     ]
-  ], //DATA
-  null, //CODE
-  "SUCCESS", //STATUS
-  "Submitting 2 order cancellations." //TEXT
+  ], 
+  null,
+  "SUCCESS", 
+  "Submitting 2 order cancellations."
 ]
