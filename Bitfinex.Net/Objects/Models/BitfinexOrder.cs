@@ -1,4 +1,5 @@
 ﻿using System;
+using Bitfinex.Net.Converters;
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Internal;
 using CryptoExchange.Net.Attributes;
@@ -103,7 +104,7 @@ namespace Bitfinex.Net.Objects.Models
         /// The order status
         /// </summary>
         [ArrayProperty(13)]
-        [JsonConverter(typeof(EnumConverter))]
+        [JsonConverter(typeof(OrderStatusConverter))]
         public OrderStatus Status { get; set; }
 
         /// <summary>
@@ -123,7 +124,7 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(17)]
         public decimal? PriceAverage { get; set; }
-        
+
         /// <summary>
         /// The trailing price of the order
         /// </summary>
