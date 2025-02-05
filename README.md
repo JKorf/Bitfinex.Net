@@ -121,6 +121,9 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 8.0.1 - 05 Feb 2025
+    * Updated CryptoExchange.Net to version 8.7.3 to fix serialization error, see https://github.com/JKorf/CryptoExchange.Net/releases/
+
 * Version 8.0.0 - 27 Jan 2025
     * Added client side ratelimit implementation
     * Updated library to System.Text.Json from Newtonsoft.Json for json (de)serialization
