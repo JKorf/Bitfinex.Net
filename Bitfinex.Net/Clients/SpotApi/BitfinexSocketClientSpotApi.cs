@@ -149,7 +149,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<IEnumerable<BitfinexTradeSimple>>> handler, CancellationToken ct = default)
         {
-            var subscription = new BitfinexSubscription<BitfinexTradeSimple>(_logger, "trades", symbol, handler);
+            var subscription = new BitfinexSubscription<BitfinexTradeSimple>(_logger, "trades", symbol, x => handler(x.WithDataTimestamp(x.Data.Max(x => x.Timestamp))));
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 
@@ -163,14 +163,14 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToLiquidationUpdatesAsync(Action<DataEvent<IEnumerable<BitfinexLiquidation>>> handler, CancellationToken ct = default)
         {
-            var subscription = new BitfinexSubscription<BitfinexLiquidation>(_logger, "status", null, handler, key: $"liq:global");
+            var subscription = new BitfinexSubscription<BitfinexLiquidation>(_logger, "status", null, x => handler(x.WithDataTimestamp(x.Data.Max(x => x.Timestamp))), key: $"liq:global");
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToDerivativesUpdatesAsync(string symbol, Action<DataEvent<BitfinexDerivativesStatusUpdate>> handler, CancellationToken ct = default)
         {
-            var subscription = new BitfinexSubscription<BitfinexDerivativesStatusUpdate>(_logger, "status", null, x => handler(x.As(x.Data.Single())), key: $"deriv:" + symbol);
+            var subscription = new BitfinexSubscription<BitfinexDerivativesStatusUpdate>(_logger, "status", null, x => handler(x.As(x.Data.Single()).WithDataTimestamp(x.Data.Single().Timestamp)), key: $"deriv:" + symbol);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 

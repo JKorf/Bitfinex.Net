@@ -8,6 +8,7 @@ using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
@@ -151,35 +152,35 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public override CallResult DoHandleMessage(SocketConnection connection, DataEvent<object> message)
         {
             if (message.Data is BitfinexSocketEvent<List<BitfinexPosition>> positionSnapshot)
-                _positionHandler?.Invoke(message.As<IEnumerable<BitfinexPosition>>(positionSnapshot.Data, "ps", null, SocketUpdateType.Snapshot));
+                _positionHandler?.Invoke(message.As<IEnumerable<BitfinexPosition>>(positionSnapshot.Data, "ps", null, SocketUpdateType.Snapshot).WithDataTimestamp(positionSnapshot.Data.Max(x => x.UpdateTime)));
             else if (message.Data is BitfinexSocketEvent<BitfinexPosition> positionUpdate)
-                _positionHandler?.Invoke(message.As<IEnumerable<BitfinexPosition>>(new[] { positionUpdate.Data }, EnumConverter.GetString(positionUpdate.EventType), positionUpdate.Data.Symbol, SocketUpdateType.Update));
+                _positionHandler?.Invoke(message.As<IEnumerable<BitfinexPosition>>(new[] { positionUpdate.Data }, EnumConverter.GetString(positionUpdate.EventType), positionUpdate.Data.Symbol, SocketUpdateType.Update).WithDataTimestamp(positionUpdate.Data.UpdateTime));
 
             else if (message.Data is BitfinexSocketEvent<List<BitfinexFunding>> loanSnapshot)
-                _fundingLoanHandler?.Invoke(message.As<IEnumerable<BitfinexFunding>>(loanSnapshot.Data, "fls", null, SocketUpdateType.Snapshot));
+                _fundingLoanHandler?.Invoke(message.As<IEnumerable<BitfinexFunding>>(loanSnapshot.Data, "fls", null, SocketUpdateType.Snapshot).WithDataTimestamp(loanSnapshot.Data.Max(x => x.UpdateTime)));
             else if (message.Data is BitfinexSocketEvent<BitfinexFunding> loanUpdate)
-                _fundingLoanHandler?.Invoke(message.As<IEnumerable<BitfinexFunding>>(new[] { loanUpdate.Data }, EnumConverter.GetString(loanUpdate.EventType), loanUpdate.Data.Symbol, SocketUpdateType.Update));
+                _fundingLoanHandler?.Invoke(message.As<IEnumerable<BitfinexFunding>>(new[] { loanUpdate.Data }, EnumConverter.GetString(loanUpdate.EventType), loanUpdate.Data.Symbol, SocketUpdateType.Update).WithDataTimestamp(loanUpdate.Data.UpdateTime));
 
             else if (message.Data is BitfinexSocketEvent<List<BitfinexFundingCredit>> creditSnapshot)
-                _fundingCreditHandler?.Invoke(message.As<IEnumerable<BitfinexFundingCredit>>(creditSnapshot.Data, "fcs", null, SocketUpdateType.Snapshot));
+                _fundingCreditHandler?.Invoke(message.As<IEnumerable<BitfinexFundingCredit>>(creditSnapshot.Data, "fcs", null, SocketUpdateType.Snapshot).WithDataTimestamp(creditSnapshot.Data.Max(x => x.UpdateTime)));
             else if (message.Data is BitfinexSocketEvent<BitfinexFundingCredit> creditUpdate)
-                _fundingCreditHandler?.Invoke(message.As<IEnumerable<BitfinexFundingCredit>>(new[] { creditUpdate.Data }, EnumConverter.GetString(creditUpdate.EventType), creditUpdate.Data.Symbol, SocketUpdateType.Update));
+                _fundingCreditHandler?.Invoke(message.As<IEnumerable<BitfinexFundingCredit>>(new[] { creditUpdate.Data }, EnumConverter.GetString(creditUpdate.EventType), creditUpdate.Data.Symbol, SocketUpdateType.Update).WithDataTimestamp(creditUpdate.Data.UpdateTime));
 
             else if (message.Data is BitfinexSocketEvent<List<BitfinexFundingOffer>> offerSnapshot)
-                _fundingOfferHandler?.Invoke(message.As<IEnumerable<BitfinexFundingOffer>>(offerSnapshot.Data, "fos", null, SocketUpdateType.Snapshot));
+                _fundingOfferHandler?.Invoke(message.As<IEnumerable<BitfinexFundingOffer>>(offerSnapshot.Data, "fos", null, SocketUpdateType.Snapshot).WithDataTimestamp(offerSnapshot.Data.Max(x => x.UpdateTime)));
             else if (message.Data is BitfinexSocketEvent<BitfinexFundingOffer> offerUpdate)
-                _fundingOfferHandler?.Invoke(message.As<IEnumerable<BitfinexFundingOffer>>(new[] { offerUpdate.Data }, EnumConverter.GetString(offerUpdate.EventType), offerUpdate.Data.Symbol, SocketUpdateType.Update));
+                _fundingOfferHandler?.Invoke(message.As<IEnumerable<BitfinexFundingOffer>>(new[] { offerUpdate.Data }, EnumConverter.GetString(offerUpdate.EventType), offerUpdate.Data.Symbol, SocketUpdateType.Update).WithDataTimestamp(offerUpdate.Data.UpdateTime));
 
             else if (message.Data is BitfinexSocketEvent<List<BitfinexOrder>> orderSnapshot)
-                _orderHandler?.Invoke(message.As<IEnumerable<BitfinexOrder>>(orderSnapshot.Data, "os", null, SocketUpdateType.Snapshot));
+                _orderHandler?.Invoke(message.As<IEnumerable<BitfinexOrder>>(orderSnapshot.Data, "os", null, SocketUpdateType.Snapshot).WithDataTimestamp(orderSnapshot.Data.Max(x => x.UpdateTime)));
             else if (message.Data is BitfinexSocketEvent<BitfinexOrder> orderUpdate)
-                _orderHandler?.Invoke(message.As<IEnumerable<BitfinexOrder>>(new[] { orderUpdate.Data }, EnumConverter.GetString(orderUpdate.EventType), orderUpdate.Data.Symbol, SocketUpdateType.Update));
+                _orderHandler?.Invoke(message.As<IEnumerable<BitfinexOrder>>(new[] { orderUpdate.Data }, EnumConverter.GetString(orderUpdate.EventType), orderUpdate.Data.Symbol, SocketUpdateType.Update).WithDataTimestamp(orderUpdate.Data.UpdateTime));
 
             else if (message.Data is BitfinexSocketEvent<BitfinexFundingTrade> fundingTrade)
-                _fundingTradeHandler?.Invoke(message.As(fundingTrade.Data, EnumConverter.GetString(fundingTrade.EventType), null, SocketUpdateType.Update));
+                _fundingTradeHandler?.Invoke(message.As(fundingTrade.Data, EnumConverter.GetString(fundingTrade.EventType), null, SocketUpdateType.Update).WithDataTimestamp(fundingTrade.Data.Timestamp));
 
             else if (message.Data is BitfinexSocketEvent<BitfinexTradeDetails> trade)
-                _tradeHandler?.Invoke(message.As(trade.Data, EnumConverter.GetString(trade.EventType), trade.Data.Symbol, SocketUpdateType.Update));
+                _tradeHandler?.Invoke(message.As(trade.Data, EnumConverter.GetString(trade.EventType), trade.Data.Symbol, SocketUpdateType.Update).WithDataTimestamp(trade.Data.Timestamp));
 
             else if (message.Data is BitfinexSocketEvent<List<BitfinexWallet>> walletSnapshot)
                 _walletHandler?.Invoke(message.As<IEnumerable<BitfinexWallet>>(walletSnapshot.Data, "ws", null, SocketUpdateType.Snapshot));

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Bitfinex.Net.UnitTests
 {
     [NonParallelizable]
-    internal class BitfinexRestIntegrationTests : RestIntergrationTest<BitfinexRestClient>
+    internal class BitfinexRestIntegrationTests : RestIntegrationTest<BitfinexRestClient>
     {
         public override bool Run { get; set; }
 
