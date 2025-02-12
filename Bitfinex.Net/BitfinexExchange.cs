@@ -61,6 +61,9 @@ namespace Bitfinex.Net
             if (quoteAsset == "USDT")
                 quoteAsset = "UST";
 
+            if (baseAsset.Length != 3)
+                return $"t{baseAsset.ToUpperInvariant()}:{quoteAsset.ToUpperInvariant()}";
+
             return $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
         }
 
