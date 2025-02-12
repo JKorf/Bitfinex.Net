@@ -98,6 +98,9 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         }
         public override Query? GetUnsubQuery()
         {
+            if (_channelId == 0)
+                return null;
+
             return new BitfinexUnsubQuery(_channelId);
         }
 
