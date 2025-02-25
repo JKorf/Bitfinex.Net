@@ -12,7 +12,7 @@
     <FileVersion>8.1.1</FileVersion>
     <Description>Bitfinex.Net is a client library for accessing the Bitfinex REST and Websocket API. All data is mapped to readable models and enum values. Additional features include automatic websocket (re)connection management, an implementation for maintaining a client side order book, easy integration with other exchange client libraries and more.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>Bitfinex;Bitfinex.Net;Bitfinex Client;Bitfinex API;CryptoCurrency;CryptoCurrency Exchange</PackageTags>
+    <PackageTags>Bitfinex;Bitfinex.Net;Bitfinex.com;Bitfinex Client;Bitfinex API;CryptoCurrency;CryptoCurrency Exchange</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/JKorf/Bitfinex.Net.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/JKorf/Bitfinex.Net</PackageProjectUrl>
