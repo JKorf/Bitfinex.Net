@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
-    internal class BitfinexSubscription<T> : Subscription<BitfinexResponse, BitfinexResponse>
+    internal class BitfinexSubscription<TSingleHandler, TArrayHandler> : Subscription<BitfinexResponse, BitfinexResponse>
     {
         private static readonly MessagePath _1Path = MessagePath.Get().Index(1);
         private static readonly MessagePath _10Path = MessagePath.Get().Index(1).Index(0);
@@ -27,7 +27,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private string? _key;
         private int _channelId;
         private bool _firstUpdate;
-        private Action<DataEvent<IEnumerable<T>>> _handler;
+        private Action<DataEvent<TSingleHandler>> _singleHandler;
+        private Action<DataEvent<TArrayHandler>> _arrayHandler;
         private Action<DataEvent<int>>? _checksumHandler;
 
         public override HashSet<string> ListenerIdentifiers { get; set; } = new HashSet<string>();
@@ -35,7 +36,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public BitfinexSubscription(ILogger logger,
             string channel,
             string? symbol,
-            Action<DataEvent<IEnumerable<T>>> handler,
+            Action<DataEvent<TSingleHandler>> singleHandler,
+            Action<DataEvent<TArrayHandler>> arrayHandler,
             Action<DataEvent<int>>? checksumHandler = null, 
             bool authenticated = false,
             Precision? precision = null,
@@ -45,7 +47,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             bool sendSymbol = true)
             : base(logger, authenticated)
         {
-            _handler = handler;
+            _singleHandler = singleHandler;
+            _arrayHandler = arrayHandler;
             _checksumHandler = checksumHandler;
             _symbol = symbol;
             _key = key;
@@ -69,14 +72,14 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     return typeof(BitfinexChecksum);
 
                 if (string.Equals(identifier, "hb", StringComparison.Ordinal))
-                    return typeof(BitfinexUpdate<string>);
+                    return typeof(BitfinexStringUpdate);
 
                 var nodeType = message.GetNodeType(_20Path);
-                return nodeType == NodeType.Array ? typeof(BitfinexTopicUpdate<IEnumerable<T>>) : typeof(BitfinexTopicUpdate<T>);
+                return nodeType == NodeType.Array ? typeof(TArrayHandler) : typeof(TSingleHandler);
             }
 
             var nodeType1 = message.GetNodeType(_10Path);
-            return nodeType1 == NodeType.Array ? typeof(BitfinexUpdate<IEnumerable<T>>) : typeof(BitfinexUpdate<T>);
+            return nodeType1 == NodeType.Array ? typeof(TArrayHandler) : typeof(TSingleHandler);
         }
 
         public override void DoHandleReset()
@@ -108,14 +111,14 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         {
             if (message.Data is BitfinexChecksum checksum)
                 _checksumHandler?.Invoke(message.As(checksum.Checksum, _symbol));
-            else if (message.Data is BitfinexUpdate<IEnumerable<T>> arrayUpdate)
-                _handler?.Invoke(message.As(arrayUpdate.Data, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
-            else if (message.Data is BitfinexUpdate<T> singleUpdate)
-                _handler?.Invoke(message.As<IEnumerable<T>>(new[] { singleUpdate.Data }, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
-            else if (message.Data is BitfinexTopicUpdate<IEnumerable<T>> array3Update)
-                _handler?.Invoke(message.As(array3Update.Data, _channel + "." + array3Update.Topic, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
-            else if (message.Data is BitfinexTopicUpdate<T> single3Update)
-                _handler?.Invoke(message.As<IEnumerable<T>>(new[] { single3Update.Data }, _channel + "." + single3Update.Topic, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+            else if (message.Data is TArrayHandler arrayUpdate)
+                _arrayHandler?.Invoke(message.As(arrayUpdate, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+            else if (message.Data is TSingleHandler singleUpdate)
+                _singleHandler?.Invoke(message.As(singleUpdate, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+            //else if (message.Data is BitfinexTopicUpdate<T[]> array3Update)
+            //    _arrayHandler?.Invoke(message.As(array3Update.Data, _channel + "." + array3Update.Topic, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+            //else if (message.Data is BitfinexTopicUpdate<T> single3Update)
+            //    _singleHandler?.Invoke(message.As<TSingleHandler>(new[] { single3Update.Data }, _channel + "." + single3Update.Topic, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
 
             _firstUpdate = false;
             return new CallResult(null);

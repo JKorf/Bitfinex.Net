@@ -1,8 +1,10 @@
-﻿namespace Bitfinex.Net.Objects.Models
+using CryptoExchange.Net.Converters.SystemTextJson;
+namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Derivatives fee info
     /// </summary>
+    [SerializationModel]
     public record BitfinexDerivativesFees
     {
         /// <summary>
@@ -15,6 +17,7 @@
     /// <summary>
     /// Perp derivatives fees
     /// </summary>
+    [SerializationModel]
     public record BitfinexPerpDerivativesFees
     {
         /// <summary>

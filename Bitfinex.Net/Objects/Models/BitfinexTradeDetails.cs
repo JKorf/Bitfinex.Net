@@ -1,13 +1,16 @@
-﻿using System;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using System;
 using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Details of a trade
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexTradeDetails, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     public record BitfinexTradeDetails
     {
         /// <summary>
@@ -56,7 +59,7 @@ namespace Bitfinex.Net.Objects.Models
         /// The type of the order
         /// </summary>
         [ArrayProperty(6)]
-        [JsonConverter(typeof(EnumConverter))]
+
         public OrderType? OrderType { get; set; }
 
         /// <summary>

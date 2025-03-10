@@ -1,11 +1,14 @@
-﻿using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Margin base
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMarginBase, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     public record BitfinexMarginBase
     {
         /// <summary>
@@ -17,14 +20,15 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Data
         /// </summary>
-        [ArrayProperty(1), JsonConverter(typeof(ArrayConverter))]
+        [ArrayProperty(1), JsonConverter(typeof(ArrayConverter<BitfinexMarginBaseInfo, BitfinexSourceGenerationContext>))]
         public BitfinexMarginBaseInfo Data { get; set; } = default!;
     }
     
     /// <summary>
     /// Margin base info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMarginBaseInfo, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     public record BitfinexMarginBaseInfo
     {
         /// <summary>

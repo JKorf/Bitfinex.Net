@@ -130,7 +130,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<IBitfinexOrderBookFactory, BitfinexOrderBookFactory>();
             services.AddTransient<IBitfinexTrackerFactory, BitfinexTrackerFactory>();
-            services.AddTransient(x => x.GetRequiredService<IBitfinexRestClient>().SpotApi.CommonSpotClient);
 
             services.RegisterSharedRestInterfaces(x => x.GetRequiredService<IBitfinexRestClient>().SpotApi.SharedClient);
             services.RegisterSharedSocketInterfaces(x => x.GetRequiredService<IBitfinexSocketClient>().SpotApi.SharedClient);

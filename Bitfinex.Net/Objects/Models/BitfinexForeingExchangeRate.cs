@@ -1,11 +1,14 @@
-﻿using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Exchange rate in a foreign currency
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexForeignExchangeRate, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     public record BitfinexForeignExchangeRate
     {
         /// <summary>

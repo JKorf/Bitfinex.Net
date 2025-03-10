@@ -1,8 +1,10 @@
-﻿using CryptoExchange.Net.Converters;
+﻿using Bitfinex.Net.Converters;
+using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Internal
 {
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexError, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     internal class BitfinexError
     {
         [ArrayProperty(1)]

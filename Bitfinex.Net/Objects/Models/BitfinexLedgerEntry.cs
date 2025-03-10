@@ -1,12 +1,15 @@
-﻿using System;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using System;
 using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Ledger entry
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexLedgerEntry, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     public record BitfinexLedgerEntry
     {
         /// <summary>

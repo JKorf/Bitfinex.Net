@@ -1,11 +1,14 @@
-﻿using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Funding ticker information
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexStreamFundingTicker, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     public record BitfinexStreamFundingTicker
     {
         /// <summary>

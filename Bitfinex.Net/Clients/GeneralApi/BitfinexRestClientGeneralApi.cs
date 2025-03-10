@@ -61,15 +61,15 @@ namespace Bitfinex.Net.Clients.GeneralApi
                 => base.SendAsync<T>(uri, definition, parameters, cancellationToken);
 
         /// <inheritdoc />
-        protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer();
+        protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange.SerializerContext));
         /// <inheritdoc />
-        protected override IStreamMessageAccessor CreateAccessor() => new SystemTextJsonStreamMessageAccessor();
+        protected override IStreamMessageAccessor CreateAccessor() => new SystemTextJsonStreamMessageAccessor(SerializerOptions.WithConverters(BitfinexExchange.SerializerContext));
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
 
         /// <inheritdoc />
-        protected override Error ParseErrorResponse(int httpStatusCode, IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders, IMessageAccessor accessor)
+        protected override Error ParseErrorResponse(int httpStatusCode, KeyValuePair<string, string[]>[] responseHeaders, IMessageAccessor accessor)
         {
             if (!accessor.IsJson)
                 return new ServerError(accessor.GetOriginalString());

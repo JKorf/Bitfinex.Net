@@ -1,5 +1,6 @@
 ﻿namespace Bitfinex.Net.Objects.Sockets
 {
+    [SerializationModel]
     internal class BitfinexRequest
     {
         [JsonPropertyName("event")]

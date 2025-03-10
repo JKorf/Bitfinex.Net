@@ -14,7 +14,7 @@ namespace Bitfinex.Net
     internal class BitfinexAuthenticationProvider: AuthenticationProvider
     {
         private readonly INonceProvider _nonceProvider;
-        private static readonly IMessageSerializer _messageSerializer = new SystemTextJsonMessageSerializer();
+        private static readonly IMessageSerializer _messageSerializer = new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange.SerializerContext));
 
         public long GetNonce() => _nonceProvider.GetNonce();
 

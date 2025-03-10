@@ -1,8 +1,10 @@
-﻿using CryptoExchange.Net.Converters;
+﻿using Bitfinex.Net.Converters;
+using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Internal
 {
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexChecksum, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     internal class BitfinexChecksum
     {
         [ArrayProperty(0)]

@@ -2,6 +2,7 @@
 
 namespace Bitfinex.Net.Objects.Internal
 {
+    [SerializationModel]
     internal class BitfinexMultiCancel
     {
         [JsonPropertyName("all"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

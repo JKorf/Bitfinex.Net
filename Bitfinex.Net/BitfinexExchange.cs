@@ -1,4 +1,5 @@
-﻿using CryptoExchange.Net.Objects;
+﻿using Bitfinex.Net.Converters;
+using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.RateLimiting;
 using CryptoExchange.Net.RateLimiting.Filters;
 using CryptoExchange.Net.RateLimiting.Guards;
@@ -44,6 +45,8 @@ namespace Bitfinex.Net
         /// Type of exchange
         /// </summary>
         public static ExchangeType Type { get; } = ExchangeType.CEX;
+
+        internal static JsonSerializerContext SerializerContext = new BitfinexSourceGenerationContext();
 
         /// <summary>
         /// Format a base and quote asset to a Bitfinex recognized symbol 

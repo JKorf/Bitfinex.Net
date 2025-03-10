@@ -1,11 +1,12 @@
-﻿using Bitfinex.Net.Enums;
+using Bitfinex.Net.Enums;
 using System;
 
 namespace Bitfinex.Net.Objects.Internal
 {
+    [SerializationModel]
     internal class BitfinexNewOrder
     {
-        [JsonConverter(typeof(EnumConverter)), JsonPropertyName("type")]
+        [JsonPropertyName("type")]
         public OrderType OrderType { get; set; }
 
         [JsonPropertyName("symbol")] 

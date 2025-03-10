@@ -1,12 +1,15 @@
-﻿using System;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using System;
 using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Wallet movement info (deposit/withdraw)
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMovement, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     public record BitfinexMovement
     {
         /// <summary>

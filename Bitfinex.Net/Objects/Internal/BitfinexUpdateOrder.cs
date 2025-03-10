@@ -2,6 +2,7 @@
 
 namespace Bitfinex.Net.Objects.Internal
 {
+    [SerializationModel]
     internal class BitfinexUpdateOrder
     {
         [JsonPropertyName("id")]

@@ -1,4 +1,4 @@
-﻿using Bitfinex.Net.Enums;
+using Bitfinex.Net.Enums;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
 using System;
@@ -28,11 +28,11 @@ namespace Bitfinex.Net.Clients.SpotApi
 
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexWallet>>> GetBalancesAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWallet[]>> GetBalancesAsync(CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/wallets", BitfinexExchange.RateLimiter.Overal, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
-            return await _baseClient.SendAsync<IEnumerable<BitfinexWallet>>(request, null, ct).ConfigureAwait(false);
+            return await _baseClient.SendAsync<BitfinexWallet[]>(request, null, ct).ConfigureAwait(false);
         }
 
 
@@ -53,7 +53,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexMovement>>> GetMovementsAsync(string? asset = null, IEnumerable<long>? ids = null, string? address = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexMovement[]>> GetMovementsAsync(string? asset = null, IEnumerable<long>? ids = null, string? address = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("id", ids);
@@ -64,7 +64,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/" + (asset == null ? "auth/r/movements/hist" : $"auth/r/movements/{asset}/hist"), BitfinexExchange.RateLimiter.Overal, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
-            return await _baseClient.SendAsync<IEnumerable<BitfinexMovement>>(request, parameters, ct).ConfigureAwait(false);
+            return await _baseClient.SendAsync<BitfinexMovement[]>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -81,7 +81,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexAlert>>> GetAlertListAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexAlert[]>> GetAlertListAsync(CancellationToken ct = default)
         {
             var parameters = new ParameterCollection
             {
@@ -90,7 +90,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"/v2/auth/r/alerts", BitfinexExchange.RateLimiter.Overal, 1, true,
                 limitGuard: new SingleLimitGuard(45, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
-            return await _baseClient.SendAsync<IEnumerable<BitfinexAlert>>(request, parameters, ct).ConfigureAwait(false);
+            return await _baseClient.SendAsync<BitfinexAlert[]>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -134,7 +134,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexLedgerEntry>>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
@@ -149,7 +149,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, url, BitfinexExchange.RateLimiter.Overal, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
-            return await _baseClient.SendAsync<IEnumerable<BitfinexLedgerEntry>>(request, parameters, ct).ConfigureAwait(false);
+            return await _baseClient.SendAsync<BitfinexLedgerEntry[]>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -169,7 +169,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexWriteResult<BitfinexDepositAddress>>> GetDepositAddressAsync(string method, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWriteResultDepositAddress>> GetDepositAddressAsync(string method, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default)
         {
             var parameters = new ParameterCollection
             {
@@ -180,11 +180,11 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/w/deposit/address", BitfinexExchange.RateLimiter.Overal, 1, true,
                 limitGuard: new SingleLimitGuard(10, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
-            return await _baseClient.SendAsync<BitfinexWriteResult<BitfinexDepositAddress>>(request, parameters, ct).ConfigureAwait(false);
+            return await _baseClient.SendAsync<BitfinexWriteResultDepositAddress>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexWriteResult<BitfinexTransfer>>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, string? toAsset = null, string? emailDestination = null, long? userIdDestination = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexWriteResultTransfer>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, string? toAsset = null, string? emailDestination = null, long? userIdDestination = null, CancellationToken ct = default)
         {
             asset.ValidateNotNull(nameof(asset));
             var parameters = new ParameterCollection
@@ -199,7 +199,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("user_id_dst", userIdDestination);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/w/transfer", BitfinexExchange.RateLimiter.Overal, 1, true);
-            return await _baseClient.SendAsync<BitfinexWriteResult<BitfinexTransfer>>(request, parameters, ct).ConfigureAwait(false);
+            return await _baseClient.SendAsync<BitfinexWriteResultTransfer>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -251,7 +251,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("intermediary_bank_swift", intermediaryBankSwift);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v1/withdraw", BitfinexExchange.RateLimiter.Overal, 1, true);
-            var result = await _baseClient.SendAsync<IEnumerable<BitfinexWithdrawalResult>>(request, parameters, ct).ConfigureAwait(false);
+            var result = await _baseClient.SendAsync<BitfinexWithdrawalResult[]>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
                 return result.As<BitfinexWithdrawalResult>(default);
 
@@ -290,7 +290,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexLogin>>> GetLoginHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexLogin[]>> GetLoginHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 250);
 
@@ -301,23 +301,23 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/logins/hist", BitfinexExchange.RateLimiter.Overal, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
-            return await _baseClient.SendAsync<IEnumerable<BitfinexLogin>>(request, parameters, ct).ConfigureAwait(false);
+            return await _baseClient.SendAsync<BitfinexLogin[]>(request, parameters, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexPermission>>> GetApiKeyPermissionsAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexPermission[]>> GetApiKeyPermissionsAsync(CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/permissions", BitfinexExchange.RateLimiter.Overal, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
-            return await _baseClient.SendAsync<IEnumerable<BitfinexPermission>>(request, null, ct).ConfigureAwait(false);
+            return await _baseClient.SendAsync<BitfinexPermission[]>(request, null, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BitfinexChangeLog>>> GetAccountChangeLogAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexChangeLog[]>> GetAccountChangeLogAsync(CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/audit/hist", BitfinexExchange.RateLimiter.Overal, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
-            return await _baseClient.SendAsync<IEnumerable<BitfinexChangeLog>>(request, null, ct).ConfigureAwait(false);
+            return await _baseClient.SendAsync<BitfinexChangeLog[]>(request, null, ct).ConfigureAwait(false);
         }
     }
 }

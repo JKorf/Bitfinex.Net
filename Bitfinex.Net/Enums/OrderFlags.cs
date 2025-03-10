@@ -1,4 +1,7 @@
-﻿using System;
+using System.Text.Json.Serialization;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Attributes;
+using System;
 
 namespace Bitfinex.Net.Enums
 {
@@ -6,6 +9,8 @@ namespace Bitfinex.Net.Enums
     /// Flags for an order
     /// </summary>
     [Flags]
+    [JsonConverter(typeof(EnumConverter<OrderFlags>))]
+    [SerializationModel]
     public enum OrderFlags
     {
         /// <summary>

@@ -1,10 +1,12 @@
 ﻿using System.Linq;
+using Bitfinex.Net.Converters;
 using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Internal
 {
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexSocketQuery, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     internal class BitfinexSocketQuery
     {
         [JsonIgnore]
@@ -20,6 +22,8 @@ namespace Bitfinex.Net.Objects.Internal
         public object? Object { get; set; }
         [ArrayProperty(3)]
         public object Request { get; set; }
+
+        public BitfinexSocketQuery() { }
 
         public BitfinexSocketQuery(string? id, BitfinexEventType type, object request)
         {

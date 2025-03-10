@@ -1,5 +1,6 @@
 ﻿namespace Bitfinex.Net.Objects.Sockets
 {
+    [SerializationModel]
     internal class BitfinexBookRequest: BitfinexRequest
     {
         [JsonPropertyName("prec")]

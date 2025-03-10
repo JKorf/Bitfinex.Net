@@ -1,13 +1,16 @@
-﻿using System;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using System;
 using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Result V2.
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResult, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     public record BitfinexWriteResult
     {
         /// <summary>
@@ -52,18 +55,107 @@ namespace Bitfinex.Net.Objects.Models
         public string? Text { get; set; }
     }
 
-    /// <summary>
-    /// Result V2.
-    /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
-    public record BitfinexWriteResult<T> : BitfinexWriteResult
-        where T : class
+    /// <inheritdoc />
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultFundingOffer, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
+    public record BitfinexWriteResultFundingOffer : BitfinexWriteResult
     {
         /// <summary>
-        /// Data object.
+        /// Funding offer
         /// </summary>
         [ArrayProperty(4)]
         [JsonConversion]
-        public T? Data { get; set; }
+        public BitfinexFundingOffer Data { get; set; } = default!;
+    }
+
+    /// <inheritdoc />
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingAutoRenew, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
+    public record BitfinexWriteResultFundingAutoRenew : BitfinexWriteResult
+    {
+        /// <summary>
+        /// Auto renew
+        /// </summary>
+        [ArrayProperty(4)]
+        [JsonConversion]
+        public BitfinexFundingAutoRenew Data { get; set; } = default!;
+    }
+
+    /// <inheritdoc />
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultDepositAddress, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
+    public record BitfinexWriteResultDepositAddress : BitfinexWriteResult
+    {
+        /// <summary>
+        /// Deposit address
+        /// </summary>
+        [ArrayProperty(4)]
+        [JsonConversion]
+        public BitfinexDepositAddress Data { get; set; } = default!;
+    }
+
+    /// <inheritdoc />
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultTransfer, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
+    public record BitfinexWriteResultTransfer : BitfinexWriteResult
+    {
+        /// <summary>
+        /// Transfer info
+        /// </summary>
+        [ArrayProperty(4)]
+        [JsonConversion]
+        public BitfinexTransfer Data { get; set; } = default!;
+    }
+
+    /// <inheritdoc />
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultOrder, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
+    public record BitfinexWriteResultOrder : BitfinexWriteResult
+    {
+        /// <summary>
+        /// Order info
+        /// </summary>
+        [ArrayProperty(4)]
+        [JsonConversion]
+        public BitfinexOrder Data { get; set; } = default!;
+    }
+
+    /// <inheritdoc />
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultPosition, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
+    public record BitfinexWriteResultPosition : BitfinexWriteResult
+    {
+        /// <summary>
+        /// Position info
+        /// </summary>
+        [ArrayProperty(4)]
+        [JsonConversion]
+        public BitfinexPosition Data { get; set; } = default!;
+    }
+
+    /// <inheritdoc />
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultPositionBasic, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
+    public record BitfinexWriteResultPositionBasic : BitfinexWriteResult
+    {
+        /// <summary>
+        /// Position info
+        /// </summary>
+        [ArrayProperty(4)]
+        [JsonConversion]
+        public BitfinexPositionBasic Data { get; set; } = default!;
+    }
+
+    /// <inheritdoc />
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultOrders, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
+    public record BitfinexWriteResultOrders : BitfinexWriteResult
+    {
+        /// <summary>
+        /// Orders
+        /// </summary>
+        [ArrayProperty(4)]
+        [JsonConversion]
+        public BitfinexOrder[] Data { get; set; } = default!;
     }
 }

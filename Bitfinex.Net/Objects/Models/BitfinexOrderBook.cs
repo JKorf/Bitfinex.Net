@@ -1,4 +1,5 @@
-﻿using System;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using System;
 using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Models
@@ -6,15 +7,16 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Order book
     /// </summary>
+    [SerializationModel]
     public record BitfinexOrderBook
     {
         /// <summary>
         /// List of bids
         /// </summary>
-        public IEnumerable<BitfinexOrderBookEntry> Bids { get; set; } = Array.Empty<BitfinexOrderBookEntry>();
+        public BitfinexOrderBookEntry[] Bids { get; set; } = Array.Empty<BitfinexOrderBookEntry>();
         /// <summary>
         /// List of asks
         /// </summary>
-        public IEnumerable<BitfinexOrderBookEntry> Asks { get; set; } = Array.Empty<BitfinexOrderBookEntry>();
+        public BitfinexOrderBookEntry[] Asks { get; set; } = Array.Empty<BitfinexOrderBookEntry>();
     }
 }

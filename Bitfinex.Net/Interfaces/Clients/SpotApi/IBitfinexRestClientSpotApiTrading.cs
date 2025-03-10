@@ -1,4 +1,4 @@
-﻿using Bitfinex.Net.Enums;
+using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Objects;
 using System;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="orderIds">Filter by specific order ids</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetOpenOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexOrder[]>> GetOpenOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the order history for a symbol for this account
@@ -34,7 +34,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexOrder>>> GetClosedOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexOrder[]>> GetClosedOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the individual trades for an order
@@ -44,7 +44,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="orderId">The order Id</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetOrderTradesAsync(string symbol, long orderId, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexTradeDetails[]>> GetOrderTradesAsync(string symbol, long orderId, CancellationToken ct = default);
 
         /// <summary>
         /// Get the trade history for a symbol
@@ -56,7 +56,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexTradeDetails>>> GetUserTradesAsync(string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexTradeDetails[]>> GetUserTradesAsync(string? symbol = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexPosition[]>> GetPositionHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Place a new order
@@ -90,7 +90,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="priceOcoStop">OCO stop price</param>
         /// <param name="cancelTime">datetime for automatic order cancelation</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> PlaceOrderAsync(
+        Task<WebCallResult<BitfinexWriteResultOrder>> PlaceOrderAsync(
             string symbol,
             OrderSide side,
             OrderType type,
@@ -116,7 +116,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="clientOrderIdDate">The date of the client order (year month and day)</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResult<BitfinexOrder>>> CancelOrderAsync(long? orderId = null, long? clientOrderId = null, DateTime? clientOrderIdDate = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexWriteResultOrder>> CancelOrderAsync(long? orderId = null, long? clientOrderId = null, DateTime? clientOrderIdDate = null, CancellationToken ct = default);
 
         /// <summary>
         /// Cancels open orders
@@ -128,7 +128,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="all">Cancel all orders</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResult<IEnumerable<BitfinexOrder>>>> CancelOrdersAsync(IEnumerable<long>? orderIds = null, IEnumerable<long>? groupIds = null, Dictionary<long, DateTime>? clientOrderIds = null, bool? all = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexWriteResultOrders>> CancelOrdersAsync(IEnumerable<long>? orderIds = null, IEnumerable<long>? groupIds = null, Dictionary<long, DateTime>? clientOrderIds = null, bool? all = null, CancellationToken ct = default);
 
         /// <summary>
         /// The claim feature allows the use of funds you have in your Margin Wallet to settle a leveraged position as an exchange buy or sale
@@ -138,7 +138,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="quantity">The (partial) quantity to be claimed</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResult<BitfinexPosition>>> ClaimPositionAsync(long id, decimal quantity, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexWriteResultPosition>> ClaimPositionAsync(long id, decimal quantity, CancellationToken ct = default);
 
         /// <summary>
         /// Essentially a reverse of the Claim Position feature, the Increase Position feature allows you to create a new position using the funds in your margin wallet
@@ -148,7 +148,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="quantity">Quantity</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResult<BitfinexPositionBasic>>> IncreasePositionAsync(string symbol, decimal quantity, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexWriteResultPositionBasic>> IncreasePositionAsync(string symbol, decimal quantity, CancellationToken ct = default);
 
         /// <summary>
         /// Returns information relevant to the increase position endpoint.
@@ -166,7 +166,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionsAsync(CancellationToken ct = default);
+        Task<WebCallResult<BitfinexPosition[]>> GetPositionsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get positions by id
@@ -178,7 +178,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionsByIdAsync(IEnumerable<string> ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexPosition[]>> GetPositionsByIdAsync(IEnumerable<string> ids, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Returns position snapshots of user positions between the specified start and end perimiters. Snapshots are taken daily.
@@ -189,6 +189,6 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<BitfinexPosition>>> GetPositionSnapshotsAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexPosition[]>> GetPositionSnapshotsAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
     }
 }

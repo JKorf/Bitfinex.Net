@@ -1,4 +1,5 @@
-﻿using System;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using System;
 using Bitfinex.Net.Converters;
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Internal;
@@ -10,7 +11,8 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Order info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrder, BitfinexSourceGenerationContext>))]
+    [SerializationModel]
     public record BitfinexOrder
     {
         /// <summary>
@@ -77,14 +79,13 @@ namespace Bitfinex.Net.Objects.Models
         /// The order type
         /// </summary>
         [ArrayProperty(8)]
-        [JsonConverter(typeof(EnumConverter))]
+
         public OrderType Type { get; set; }
 
         /// <summary>
         /// The previous order type
         /// </summary>
         [ArrayProperty(9)]
-        [JsonConverter(typeof(EnumConverter))]
         public OrderType? TypePrevious { get; set; }
 
         /// <summary>
@@ -97,7 +98,6 @@ namespace Bitfinex.Net.Objects.Models
         /// Order flags
         /// </summary>
         [ArrayProperty(12)]
-        [JsonConverter(typeof(EnumConverter))]
         public OrderFlags? Flags { get; set; }
 
         /// <summary>
