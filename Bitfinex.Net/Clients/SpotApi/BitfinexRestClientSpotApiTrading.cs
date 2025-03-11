@@ -54,8 +54,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             DateTime? startTime = null, 
             DateTime? endTime = null,
             int? limit = null,
-            string? clientOrderId = null,
-            DateTime? clientOrderIdDate = null,
             CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
