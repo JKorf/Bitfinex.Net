@@ -1053,16 +1053,6 @@
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexError">
-            <summary>
-            Defines the source generated JSON serialization contract metadata for a given type.
-            </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexErrorArray">
-            <summary>
-            Defines the source generated JSON serialization contract metadata for a given type.
-            </summary>
-        </member>
         <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexEvent">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.

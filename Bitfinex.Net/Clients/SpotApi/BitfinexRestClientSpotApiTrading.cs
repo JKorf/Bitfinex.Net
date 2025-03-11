@@ -25,9 +25,13 @@ namespace Bitfinex.Net.Clients.SpotApi
             _baseClient = baseClient;
         }
 
-
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexOrder[]>> GetOpenOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexOrder[]>> GetOpenOrdersAsync(
+            string? symbol = null,
+            IEnumerable<long>? orderIds = null,
+            string? clientOrderId = null,
+            DateTime? clientOrderIdDate = null,
+            CancellationToken ct = default)
         {
             var url = "v2/auth/r/orders";
             if (symbol != null)
@@ -35,6 +39,8 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("id", orderIds);
+            parameters.AddOptional("cid", clientOrderId);
+            parameters.AddOptional("cid_date", clientOrderIdDate?.ToString("yyyy-MM-dd"));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, url, BitfinexExchange.RateLimiter.Overal, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -42,7 +48,15 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexOrder[]>> GetClosedOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexOrder[]>> GetClosedOrdersAsync(
+            string? symbol = null,
+            IEnumerable<long>? orderIds = null,
+            DateTime? startTime = null, 
+            DateTime? endTime = null,
+            int? limit = null,
+            string? clientOrderId = null,
+            DateTime? clientOrderIdDate = null,
+            CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 

@@ -9,7 +9,7 @@ using Bitfinex.Net.Objects.Models;
 namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 {
     /// <summary>
-    /// Bitfinex trading endpoints, placing and mananging orders.
+    /// Bitfinex trading endpoints, placing and managing orders.
     /// </summary>
     public interface IBitfinexRestClientSpotApiTrading
     {
@@ -19,9 +19,16 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="symbol">Filter by symbol, for example `tETHUSD`</param>
         /// <param name="orderIds">Filter by specific order ids</param>
+        /// <param name="clientOrderId">Filter by client order id. clientOrderId should also be provided</param>
+        /// <param name="clientOrderIdDate">The date of the clientOrderId</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexOrder[]>> GetOpenOrdersAsync(string? symbol = null, IEnumerable<long>? orderIds = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexOrder[]>> GetOpenOrdersAsync(
+            string? symbol = null,
+            IEnumerable<long>? orderIds = null,
+            string? clientOrderId = null,
+            DateTime? clientOrderIdDate = null,
+            CancellationToken ct = default);
 
         /// <summary>
         /// Get the order history for a symbol for this account
