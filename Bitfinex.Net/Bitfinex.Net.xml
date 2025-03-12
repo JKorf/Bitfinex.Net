@@ -514,7 +514,7 @@
         <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.String,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetClosedOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
@@ -4421,16 +4421,18 @@
         </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading">
             <summary>
-            Bitfinex trading endpoints, placing and mananging orders.
+            Bitfinex trading endpoints, placing and managing orders.
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.String,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <summary>
             Get the active orders
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-orders" /></para>
             </summary>
             <param name="symbol">Filter by symbol, for example `tETHUSD`</param>
             <param name="orderIds">Filter by specific order ids</param>
+            <param name="clientOrderId">Filter by client order id. clientOrderId should also be provided</param>
+            <param name="clientOrderIdDate">The date of the clientOrderId</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
