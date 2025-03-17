@@ -17,11 +17,11 @@ namespace Bitfinex.Net.Objects.Internal
         [ArrayProperty(0)]
         public int ChannelId { get; set; }
         [ArrayProperty(1)]
-        public string Event { get; set; }
+        public string Event { get; set; } = string.Empty;
         [ArrayProperty(2)]
         public object? Object { get; set; }
         [ArrayProperty(3)]
-        public object Request { get; set; }
+        public object Request { get; set; } = default!;
 
         public BitfinexSocketQuery() { }
 

@@ -97,6 +97,9 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return assetTxStatus.Result.AsExchangeResult<SharedAsset>(Exchange, TradingMode.Spot, default);
 
             var asset = assetList.Result.Data.SingleOrDefault(x => x.Name == request.Asset);
+            if (asset == null)
+                return assetList.Result.AsExchangeError<SharedAsset>(Exchange, new ServerError("Not found"));
+
             var symbol = assetSymbols.Result.Data.SingleOrDefault(y => y.Key == asset.FullName).Value ?? asset.Name;
             var fees = assetFees.Result.Data.SingleOrDefault(y => y.Key.Equals(symbol, StringComparison.OrdinalIgnoreCase));
 
