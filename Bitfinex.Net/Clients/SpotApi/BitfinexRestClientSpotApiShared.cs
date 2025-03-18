@@ -337,7 +337,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 request.Symbol.GetSymbol(FormatSymbol),
                 request.Side == SharedOrderSide.Buy ? Enums.OrderSide.Buy : Enums.OrderSide.Sell,
                 GetPlaceOrderType(request.OrderType, request.TimeInForce),
-                quantity: request.Quantity ?? 0,
+                quantity: request.Quantity?.QuantityInBaseAsset ?? 0,
                 flags: request.OrderType == SharedOrderType.LimitMaker ? Enums.OrderFlags.PostOnly : null,
                 price: request.Price ?? 0,
                 clientOrderId: request.ClientOrderId != null ? clientOrderId: null,
@@ -383,8 +383,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                 ClientOrderId = order.ClientOrderId?.ToString(),
                 AveragePrice = order.PriceAverage == 0 ? null : order.PriceAverage,
                 OrderPrice = order.Price,
-                Quantity = order.Quantity,
-                QuantityFilled = order.Quantity - order.QuantityRemaining,
+                OrderQuantity = new SharedOrderQuantity(order.Quantity),
+                QuantityFilled = new SharedOrderQuantity(order.Quantity - order.QuantityRemaining),
                 TimeInForce = ParseTimeInForce(order.Type, order.Flags),
                 UpdateTime = order.UpdateTime
             });
@@ -414,8 +414,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                 ClientOrderId = x.ClientOrderId?.ToString(),
                 AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
                 OrderPrice = x.Price,
-                Quantity = x.Quantity,
-                QuantityFilled = x.Quantity - x.QuantityRemaining,
+                OrderQuantity = new SharedOrderQuantity(x.Quantity),
+                QuantityFilled = new SharedOrderQuantity(x.Quantity - x.QuantityRemaining),
                 TimeInForce = ParseTimeInForce(x.Type, x.Flags),
                 UpdateTime = x.UpdateTime
             }).ToArray());
@@ -461,8 +461,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                 ClientOrderId = x.ClientOrderId?.ToString(),
                 AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
                 OrderPrice = x.Price,
-                Quantity = x.Quantity,
-                QuantityFilled = x.Quantity - x.QuantityRemaining,
+                OrderQuantity = new SharedOrderQuantity(x.Quantity),
+                QuantityFilled = new SharedOrderQuantity(x.Quantity - x.QuantityRemaining),
                 TimeInForce = ParseTimeInForce(x.Type, x.Flags),
                 UpdateTime = x.UpdateTime
             }).ToArray(), nextToken);

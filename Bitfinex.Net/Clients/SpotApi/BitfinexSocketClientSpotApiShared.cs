@@ -124,8 +124,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                         {
                             ClientOrderId = x.ClientOrderId.ToString(),
                             OrderPrice = x.Price,
-                            Quantity = x.Quantity,
-                            QuantityFilled = x.Quantity - x.QuantityRemaining,
+                            OrderQuantity = new SharedOrderQuantity(x.Quantity),
+                            QuantityFilled = new SharedOrderQuantity(x.Quantity - x.QuantityRemaining),
                             AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
                             UpdateTime = x.UpdateTime
                         }
