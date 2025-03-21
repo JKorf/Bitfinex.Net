@@ -148,7 +148,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var output = new BitfinexWriteResultOrder()
             {
                 Code = result.Data.Code,
-                Id = result.Data.Id,
+                Id = orderData.Id,
                 Status = result.Data.Status,
                 Text = result.Data.Text,
                 Timestamp = result.Data.Timestamp,

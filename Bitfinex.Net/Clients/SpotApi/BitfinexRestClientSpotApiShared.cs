@@ -812,5 +812,88 @@ namespace Bitfinex.Net.Clients.SpotApi
             return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedFee(result.Data.Fees.MakerFees.MakerFee * 100, result.Data.Fees.TakerFees.TakerFeeCrypto * 100));
         }
         #endregion
+
+        #region Trigger Order Client
+        //EndpointOptions<GetFeeRequest> IFeeRestClient.GetFeeOptions { get; } = new EndpointOptions<GetFeeRequest>(true);
+
+        async Task<ExchangeWebResult<SharedId>> ISpotTriggerOrderRestClient.PlaceSpotTriggerOrderAsync(PlaceSpotTriggerOrderRequest request, CancellationToken ct)
+        {
+            //var validationError = ((ITriggerOrderRestClient)this).GetFeeOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
+            //if (validationError != null)
+            //    return new ExchangeWebResult<SharedFee>(Exchange, validationError);
+
+            var result = await Trading.PlaceOrderAsync(
+                request.Symbol.GetSymbol(FormatSymbol),
+                request.OrderDirection == SharedTriggerOrderDirection.Enter ? OrderSide.Buy : OrderSide.Sell,
+                request.OrderPrice == null ? OrderType.ExchangeStop : OrderType.ExchangeStopLimit,
+                quantity: request.Quantity?.QuantityInBaseAsset ?? 0,
+                price: request.TriggerPrice,
+                priceAuxLimit: request.OrderPrice,
+                ct: ct).ConfigureAwait(false);
+            if (!result)
+                return result.AsExchangeResult<SharedId>(Exchange, null, default);
+
+            // Return
+            return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedId(result.Data.Id.ToString()));
+        }
+
+        EndpointOptions<GetOrderRequest> ISpotTriggerOrderRestClient.GetSpotTriggerOrderOptions { get; } = new EndpointOptions<GetOrderRequest>(true);
+        async Task<ExchangeWebResult<SharedSpotTriggerOrder>> ISpotTriggerOrderRestClient.GetSpotTriggerOrderAsync(GetOrderRequest request, CancellationToken ct)
+        {
+            var validationError = ((ISpotTriggerOrderRestClient)this).GetSpotTriggerOrderOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
+            if (validationError != null)
+                return new ExchangeWebResult<SharedSpotTriggerOrder>(Exchange, validationError);
+
+            if (!long.TryParse(request.OrderId, out var id))
+                throw new ArgumentException($"Invalid order id")
+                    ;
+            var symbol = request.Symbol.GetSymbol(FormatSymbol);
+            var result = await Trading.GetOpenOrdersAsync(symbol, new[] { id }, ct: ct).ConfigureAwait(false);
+            if (!result)
+                return result.AsExchangeResult<SharedSpotTriggerOrder>(Exchange, null, null);
+
+            if (!result.Data.Any())
+                result = await Trading.GetClosedOrdersAsync(symbol, new[] { id }, ct: ct).ConfigureAwait(false);
+
+            if (!result.Data.Any())
+                return result.AsExchangeError<SharedSpotTriggerOrder>(Exchange, new ServerError($"Order with id {id} not found"));
+
+            var order = result.Data.Single();
+            return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedSpotTriggerOrder(
+                ExchangeSymbolCache.ParseSymbol(_topicId, order.Symbol),
+                order.Symbol,
+                order.Id.ToString(),
+                order.Type == OrderType.ExchangeStop ? SharedOrderType.Market : SharedOrderType.Limit,
+                order.Side == OrderSide.Buy ? SharedTriggerOrderDirection.Enter : SharedTriggerOrderDirection.Exit,
+                ParseOrderStatus(order.Status),
+                order.Price,
+                order.CreateTime)
+            {
+                AveragePrice = order.PriceAverage == 0 ? null : order.PriceAverage,
+                OrderPrice = order.PriceAuxilliaryLimit,
+                OrderQuantity = new SharedOrderQuantity(order.Quantity),
+                QuantityFilled = new SharedOrderQuantity(order.Quantity - order.QuantityRemaining),
+                TimeInForce = ParseTimeInForce(order.Type, order.Flags),
+                UpdateTime = order.UpdateTime,
+            });
+        }
+
+        EndpointOptions<CancelOrderRequest> ISpotTriggerOrderRestClient.CancelSpotTriggerOrderOptions { get; } = new EndpointOptions<CancelOrderRequest>(true);
+        async Task<ExchangeWebResult<SharedId>> ISpotTriggerOrderRestClient.CancelSpotTriggerOrderAsync(CancelOrderRequest request, CancellationToken ct)
+        {
+            var validationError = ((ISpotTriggerOrderRestClient)this).CancelSpotTriggerOrderOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
+            if (validationError != null)
+                return new ExchangeWebResult<SharedId>(Exchange, validationError);
+
+            if (!long.TryParse(request.OrderId, out var orderId))
+                return new ExchangeWebResult<SharedId>(Exchange, new ArgumentError("Invalid order id"));
+
+            var order = await Trading.CancelOrderAsync(orderId, ct: ct).ConfigureAwait(false);
+            if (!order)
+                return order.AsExchangeResult<SharedId>(Exchange, null, default);
+
+            return order.AsExchangeResult(Exchange, TradingMode.Spot, new SharedId(order.Data.Id.ToString()));
+        }
+        #endregion
     }
 }
