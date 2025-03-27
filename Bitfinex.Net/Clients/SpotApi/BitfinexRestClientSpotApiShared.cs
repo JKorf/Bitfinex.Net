@@ -1,5 +1,6 @@
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
+using Bitfinex.Net.Objects.Models;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.SharedApis;
@@ -814,21 +815,25 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
 
         #region Trigger Order Client
-        //EndpointOptions<GetFeeRequest> IFeeRestClient.GetFeeOptions { get; } = new EndpointOptions<GetFeeRequest>(true);
-
+        PlaceSpotTriggerOrderOptions ISpotTriggerOrderRestClient.PlaceSpotTriggerOrderOptions { get; } = new PlaceSpotTriggerOrderOptions(true);
         async Task<ExchangeWebResult<SharedId>> ISpotTriggerOrderRestClient.PlaceSpotTriggerOrderAsync(PlaceSpotTriggerOrderRequest request, CancellationToken ct)
         {
-            //var validationError = ((ITriggerOrderRestClient)this).GetFeeOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
-            //if (validationError != null)
-            //    return new ExchangeWebResult<SharedFee>(Exchange, validationError);
+            var validationError = ((ISpotTriggerOrderRestClient)this).PlaceSpotTriggerOrderOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes, ((ISpotOrderRestClient)this).SpotSupportedOrderQuantity);
+            if (validationError != null)
+                return new ExchangeWebResult<SharedId>(Exchange, validationError);
+
+            int clientOrderId = 0;
+            if (request.ClientOrderId != null && !int.TryParse(request.ClientOrderId, out clientOrderId))
+                return new ExchangeWebResult<SharedId>(Exchange, new ArgumentError("ClientOrderId needs to be parsable to `int` for `Bitfinex`"));
 
             var result = await Trading.PlaceOrderAsync(
                 request.Symbol.GetSymbol(FormatSymbol),
-                request.OrderDirection == SharedTriggerOrderDirection.Enter ? OrderSide.Buy : OrderSide.Sell,
+                request.OrderSide == SharedOrderSide.Buy ? OrderSide.Buy : OrderSide.Sell,
                 request.OrderPrice == null ? OrderType.ExchangeStop : OrderType.ExchangeStopLimit,
                 quantity: request.Quantity?.QuantityInBaseAsset ?? 0,
                 price: request.TriggerPrice,
                 priceAuxLimit: request.OrderPrice,
+                clientOrderId: clientOrderId,
                 ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<SharedId>(Exchange, null, default);
@@ -845,8 +850,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeWebResult<SharedSpotTriggerOrder>(Exchange, validationError);
 
             if (!long.TryParse(request.OrderId, out var id))
-                throw new ArgumentException($"Invalid order id")
-                    ;
+                throw new ArgumentException($"Invalid order id");
+
             var symbol = request.Symbol.GetSymbol(FormatSymbol);
             var result = await Trading.GetOpenOrdersAsync(symbol, new[] { id }, ct: ct).ConfigureAwait(false);
             if (!result)
@@ -865,17 +870,30 @@ namespace Bitfinex.Net.Clients.SpotApi
                 order.Id.ToString(),
                 order.Type == OrderType.ExchangeStop ? SharedOrderType.Market : SharedOrderType.Limit,
                 order.Side == OrderSide.Buy ? SharedTriggerOrderDirection.Enter : SharedTriggerOrderDirection.Exit,
-                ParseOrderStatus(order.Status),
+                ParseTriggerOrderStatus(order),
                 order.Price,
                 order.CreateTime)
             {
+                PlacedOrderId = order.Id.ToString(),
                 AveragePrice = order.PriceAverage == 0 ? null : order.PriceAverage,
                 OrderPrice = order.PriceAuxilliaryLimit,
                 OrderQuantity = new SharedOrderQuantity(order.Quantity),
                 QuantityFilled = new SharedOrderQuantity(order.Quantity - order.QuantityRemaining),
                 TimeInForce = ParseTimeInForce(order.Type, order.Flags),
                 UpdateTime = order.UpdateTime,
+                ClientOrderId = order.ClientOrderId?.ToString()
             });
+        }
+
+        private SharedTriggerOrderStatus ParseTriggerOrderStatus(BitfinexOrder order)
+        {
+            if (order.Status == OrderStatus.Executed || order.Status == OrderStatus.ForcefullyExecuted)
+                return SharedTriggerOrderStatus.Filled;
+
+            if (order.Status == OrderStatus.Canceled)
+                return SharedTriggerOrderStatus.CanceledOrRejected;
+
+            return SharedTriggerOrderStatus.Active;
         }
 
         EndpointOptions<CancelOrderRequest> ISpotTriggerOrderRestClient.CancelSpotTriggerOrderOptions { get; } = new EndpointOptions<CancelOrderRequest>(true);
