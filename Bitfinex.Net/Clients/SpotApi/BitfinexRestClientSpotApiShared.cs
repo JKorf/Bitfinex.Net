@@ -259,6 +259,31 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #endregion
 
+        #region Book Ticker client
+
+        EndpointOptions<GetBookTickerRequest> IBookTickerRestClient.GetBookTickerOptions { get; } = new EndpointOptions<GetBookTickerRequest>(false);
+        async Task<ExchangeWebResult<SharedBookTicker>> IBookTickerRestClient.GetBookTickerAsync(GetBookTickerRequest request, CancellationToken ct)
+        {
+            var validationError = ((IBookTickerRestClient)this).GetBookTickerOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
+            if (validationError != null)
+                return new ExchangeWebResult<SharedBookTicker>(Exchange, validationError);
+
+            var symbol = request.Symbol.GetSymbol(FormatSymbol);
+            var resultTicker = await ExchangeData.GetOrderBookAsync(symbol, Precision.PrecisionLevel0, 1, ct: ct).ConfigureAwait(false);
+            if (!resultTicker)
+                return resultTicker.AsExchangeResult<SharedBookTicker>(Exchange, null, default);
+
+            return resultTicker.AsExchangeResult(Exchange, request.Symbol.TradingMode, new SharedBookTicker(
+                ExchangeSymbolCache.ParseSymbol(_topicId, symbol),
+                symbol,
+                resultTicker.Data.Asks[0].Price,
+                resultTicker.Data.Asks[0].Quantity,
+                resultTicker.Data.Bids[0].Price,
+                resultTicker.Data.Bids[0].Quantity));
+        }
+
+        #endregion
+
         #region Recent Trade client
 
         GetRecentTradesOptions IRecentTradeRestClient.GetRecentTradesOptions { get; } = new GetRecentTradesOptions(10000, false);
@@ -383,11 +408,13 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 ClientOrderId = order.ClientOrderId?.ToString(),
                 AveragePrice = order.PriceAverage == 0 ? null : order.PriceAverage,
-                OrderPrice = order.Price,
                 OrderQuantity = new SharedOrderQuantity(order.Quantity),
                 QuantityFilled = new SharedOrderQuantity(order.Quantity - order.QuantityRemaining),
                 TimeInForce = ParseTimeInForce(order.Type, order.Flags),
-                UpdateTime = order.UpdateTime
+                UpdateTime = order.UpdateTime,
+                IsTriggerOrder = order.Type == OrderType.ExchangeStop || order.Type == OrderType.ExchangeStopLimit,
+                OrderPrice = order.Type == OrderType.ExchangeStop || order.Type == OrderType.ExchangeStopLimit ? order.PriceAuxilliaryLimit : order.Price,
+                TriggerPrice = order.Type == OrderType.ExchangeStop || order.Type == OrderType.ExchangeStopLimit ? order.Price : null
             });
         }
 
@@ -414,11 +441,13 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 ClientOrderId = x.ClientOrderId?.ToString(),
                 AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
-                OrderPrice = x.Price,
                 OrderQuantity = new SharedOrderQuantity(x.Quantity),
                 QuantityFilled = new SharedOrderQuantity(x.Quantity - x.QuantityRemaining),
                 TimeInForce = ParseTimeInForce(x.Type, x.Flags),
-                UpdateTime = x.UpdateTime
+                UpdateTime = x.UpdateTime,
+                IsTriggerOrder = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit,
+                OrderPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.PriceAuxilliaryLimit : x.Price,
+                TriggerPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.Price : null
             }).ToArray());
         }
 
@@ -461,11 +490,13 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 ClientOrderId = x.ClientOrderId?.ToString(),
                 AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
-                OrderPrice = x.Price,
                 OrderQuantity = new SharedOrderQuantity(x.Quantity),
                 QuantityFilled = new SharedOrderQuantity(x.Quantity - x.QuantityRemaining),
                 TimeInForce = ParseTimeInForce(x.Type, x.Flags),
-                UpdateTime = x.UpdateTime
+                UpdateTime = x.UpdateTime,
+                IsTriggerOrder = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit,
+                OrderPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.PriceAuxilliaryLimit : x.Price,
+                TriggerPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.Price : null
             }).ToArray(), nextToken);
         }
 
@@ -833,7 +864,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 quantity: request.Quantity?.QuantityInBaseAsset ?? 0,
                 price: request.TriggerPrice,
                 priceAuxLimit: request.OrderPrice,
-                clientOrderId: clientOrderId,
+                clientOrderId: request.ClientOrderId != null ? clientOrderId: null,
                 ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<SharedId>(Exchange, null, default);

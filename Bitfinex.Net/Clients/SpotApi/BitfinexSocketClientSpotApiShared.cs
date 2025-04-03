@@ -1,3 +1,4 @@
+using Bitfinex.Net.Enums;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
@@ -117,23 +118,36 @@ namespace Bitfinex.Net.Clients.SpotApi
                             ExchangeSymbolCache.ParseSymbol(_topicId, x.Symbol),
                             x.Symbol,
                             x.Id.ToString(),
-                            x.Type == Enums.OrderType.ExchangeLimit ? SharedOrderType.Limit : x.Type == Enums.OrderType.ExchangeMarket ? SharedOrderType.Market : SharedOrderType.Other,
+                            ParseOrderType(x.Type),
                             x.Side == Enums.OrderSide.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
                             x.Status == Enums.OrderStatus.Canceled ? SharedOrderStatus.Canceled : (x.Status == Enums.OrderStatus.Active || x.Status == Enums.OrderStatus.PartiallyFilled) ? SharedOrderStatus.Open : SharedOrderStatus.Filled,
                             x.CreateTime)
                         {
                             ClientOrderId = x.ClientOrderId.ToString(),
-                            OrderPrice = x.Price,
                             OrderQuantity = new SharedOrderQuantity(x.Quantity),
                             QuantityFilled = new SharedOrderQuantity(x.Quantity - x.QuantityRemaining),
                             AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
-                            UpdateTime = x.UpdateTime
+                            UpdateTime = x.UpdateTime,
+                            IsTriggerOrder = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit,
+                            OrderPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.PriceAuxilliaryLimit : x.Price,
+                            TriggerPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.Price : null
                         }
                     ).ToArray()));
                 },
                 ct: ct).ConfigureAwait(false);
 
             return new ExchangeResult<UpdateSubscription>(Exchange, result);
+        }
+
+        private SharedOrderType ParseOrderType(OrderType type)
+        {
+            if (type == OrderType.ExchangeMarket || type == OrderType.ExchangeStop)
+                return SharedOrderType.Market;
+
+            if (type == OrderType.ExchangeLimit || type == OrderType.ExchangeStopLimit)
+                return SharedOrderType.Limit;
+
+            return SharedOrderType.Other;
         }
         #endregion
 
