@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection
             IConfiguration configuration)
         {
             var options = new BitfinexOptions();
-            // Reset environment so we know if theyre overriden
+            // Reset environment so we know if they're overridden
             options.Rest.Environment = null!;
             options.Socket.Environment = null!;
             configuration.Bind(options);
@@ -63,7 +63,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<BitfinexOptions>? optionsDelegate = null)
         {
             var options = new BitfinexOptions();
-            // Reset environment so we know if theyre overriden
+            // Reset environment so we know if they're overridden
             options.Rest.Environment = null!;
             options.Socket.Environment = null!;
             optionsDelegate?.Invoke(options);
@@ -79,21 +79,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton(x => Options.Options.Create(options.Socket));
 
             return AddBitfinexCore(services, options.SocketClientLifeTime);
-        }
-
-        /// <summary>
-        /// DEPRECATED; use <see cref="AddBitfinex(IServiceCollection, Action{BitfinexOptions}?)" /> instead
-        /// </summary>
-        public static IServiceCollection AddBitfinex(
-            this IServiceCollection services,
-            Action<BitfinexRestOptions> restDelegate,
-            Action<BitfinexSocketOptions>? socketDelegate = null,
-            ServiceLifetime? socketClientLifeTime = null)
-        {
-            services.Configure<BitfinexRestOptions>((x) => { restDelegate?.Invoke(x); });
-            services.Configure<BitfinexSocketOptions>((x) => { socketDelegate?.Invoke(x); });
-
-            return AddBitfinexCore(services, socketClientLifeTime);
         }
 
         private static IServiceCollection AddBitfinexCore(

@@ -7874,10 +7874,5 @@
             <param name="optionsDelegate">Set options for the Bitfinex services</param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions},System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions},System.Nullable{Microsoft.Extensions.DependencyInjection.ServiceLifetime})">
-            <summary>
-            DEPRECATED; use <see cref="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitfinex.Net.Objects.Options.BitfinexOptions})" /> instead
-            </summary>
-        </member>
     </members>
 </doc>
