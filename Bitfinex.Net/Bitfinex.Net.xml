@@ -3481,6 +3481,7 @@
             <summary>
             Endpoints related to funding
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding"/>
         </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding">
             <summary>
@@ -3652,17 +3653,19 @@
             <summary>
             General endpoints
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApi"/>
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.SpotApi">
             <summary>
             Spot endpoints
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi"/>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.SetOptions(CryptoExchange.Net.Objects.Options.UpdateOptions)">
             <summary>
             Update specific options
             </summary>
-            <param name="options">Options to update. Only specific options are changable after the client has been created</param>
+            <param name="options">Options to update. Only specific options are changeable after the client has been created</param>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <summary>
@@ -3679,12 +3682,13 @@
             <summary>
             Spot streams
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi"/>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient.SetOptions(CryptoExchange.Net.Objects.Options.UpdateOptions)">
             <summary>
             Update specific options
             </summary>
-            <param name="options">Options to update. Only specific options are changable after the client has been created</param>
+            <param name="options">Options to update. Only specific options are changeable after the client has been created</param>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <summary>
@@ -3701,16 +3705,19 @@
             <summary>
             Endpoints related to account settings, info or actions
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount"/>
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.ExchangeData">
             <summary>
             Endpoints related to retrieving market and system data
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData"/>
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.Trading">
             <summary>
             Endpoints related to orders and trades
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading"/>
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.SharedClient">
             <summary>

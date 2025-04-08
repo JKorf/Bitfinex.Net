@@ -11,6 +11,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <summary>
         /// Endpoints related to funding
         /// </summary>
+        /// <see cref="IBitfinexRestClientGeneralApiFunding"/>
         public IBitfinexRestClientGeneralApiFunding Funding { get; }
     }
 }

@@ -11,16 +11,19 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <summary>
         /// Endpoints related to account settings, info or actions
         /// </summary>
+        /// <see cref="IBitfinexRestClientSpotApiAccount"/>
         public IBitfinexRestClientSpotApiAccount Account { get; }
 
         /// <summary>
         /// Endpoints related to retrieving market and system data
         /// </summary>
+        /// <see cref="IBitfinexRestClientSpotApiExchangeData"/>
         public IBitfinexRestClientSpotApiExchangeData ExchangeData { get; }
 
         /// <summary>
         /// Endpoints related to orders and trades
         /// </summary>
+        /// <see cref="IBitfinexRestClientSpotApiTrading"/>
         public IBitfinexRestClientSpotApiTrading Trading { get; }
 
         /// <summary>
