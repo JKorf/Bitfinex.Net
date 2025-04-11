@@ -173,7 +173,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="side">The order side</param>
         /// <param name="type">The type of the order</param>
         /// <param name="symbol">The symbol the order is for, for example `tETHUSD`</param>
-        /// <param name="quantity">The quantity of the order, positive for buying, negative for selling</param>
+        /// <param name="quantity">The quantity of the order</param>
         /// <param name="groupId">Group id to assign to the order</param>
         /// <param name="clientOrderId">Client order id to assign to the order</param>
         /// <param name="price">Price of the order</param>

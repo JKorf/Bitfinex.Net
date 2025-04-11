@@ -1,0 +1,5 @@
+> { "event": "auth", "apiKey": "123", "authPayload": "|1|", "authSig": "|2|", "authNonce": "|3|" }
+< { "event": "auth", "status": "OK", "chanId": 0, "userId": 269312, "auth_id": "a26236f1-ef44-4671-be32-197ce190348f" }
+> [ 0, "foc", null, {} ]
+= 
+[0,"foc",[41238934,"fUST",1575293959000,1575294374000,500,500,"LIMIT",null,null,0,"CANCELED",null,null,null,0.02,2,0,0,null,0,null]]

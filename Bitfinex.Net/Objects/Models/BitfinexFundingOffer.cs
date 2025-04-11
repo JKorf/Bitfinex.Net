@@ -53,7 +53,7 @@ namespace Bitfinex.Net.Objects.Models
         /// The funding type
         /// </summary>
         [ArrayProperty(6)]
-        public FundingOfferType FundingType { get; set; }
+        public FundingOfferType? FundingType { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -64,7 +64,7 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(10)]
 
-        public OrderStatus Status { get; set; }
+        public OrderStatus? Status { get; set; }
         /// <summary>
         /// The raw status string
         /// </summary>
