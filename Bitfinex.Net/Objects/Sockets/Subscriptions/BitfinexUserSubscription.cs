@@ -197,7 +197,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             else if (message.Data is BitfinexMarginSymbolEvent marginSymbolUpdate)
                 _marginSymbolHandler?.Invoke(message.As(marginSymbolUpdate.Data, "miu", marginSymbolUpdate.Data.Symbol, SocketUpdateType.Update));
 
-            return new CallResult(null);
+            return CallResult.SuccessResult;
         }
     }
 }

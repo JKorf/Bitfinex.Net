@@ -115,13 +115,9 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 _arrayHandler?.Invoke(message.As(arrayUpdate, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
             else if (message.Data is TSingleHandler singleUpdate)
                 _singleHandler?.Invoke(message.As(singleUpdate, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
-            //else if (message.Data is BitfinexTopicUpdate<T[]> array3Update)
-            //    _arrayHandler?.Invoke(message.As(array3Update.Data, _channel + "." + array3Update.Topic, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
-            //else if (message.Data is BitfinexTopicUpdate<T> single3Update)
-            //    _singleHandler?.Invoke(message.As<TSingleHandler>(new[] { single3Update.Data }, _channel + "." + single3Update.Topic, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
 
             _firstUpdate = false;
-            return new CallResult(null);
+            return CallResult.SuccessResult;
         }
     }
 }
