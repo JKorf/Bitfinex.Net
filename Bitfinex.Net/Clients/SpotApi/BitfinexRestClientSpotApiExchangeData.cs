@@ -29,7 +29,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexPlatformStatus>> GetPlatformStatusAsync(CancellationToken ct = default)
         {
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/platform/status", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/platform/status", BitfinexExchange.RateLimiter.Overall, 1, false,
                 limitGuard: new SingleLimitGuard(30, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexPlatformStatus>(request, null, ct).ConfigureAwait(false);
         }
@@ -270,7 +270,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/tickers", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/tickers", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(30, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexTicker[]>(request, parameters, ct).ConfigureAwait(false);
         }
@@ -285,7 +285,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/tickers", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/tickers", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(30, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexFundingTicker[]>(request, parameters, ct).ConfigureAwait(false);
         }
@@ -303,7 +303,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/tickers/hist", BitfinexExchange.RateLimiter.Overal, 1);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/tickers/hist", BitfinexExchange.RateLimiter.Overall, 1);
             return await _baseClient.SendAsync<BitfinexTickerHistory[]>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
@@ -319,7 +319,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
             parameters.AddOptionalEnum("sort", sorting);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/trades/{symbol}/hist", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/trades/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(15, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexTradeSimple[]>(request, parameters, ct).ConfigureAwait(false);
         }
@@ -336,7 +336,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(precision)}", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(precision)}", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<BitfinexOrderBookEntry[]>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
@@ -366,7 +366,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
             
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(precision)}", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(precision)}", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<BitfinexOrderBookFundingEntry[]>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
@@ -394,7 +394,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(Precision.R0)}", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(Precision.R0)}", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<BitfinexRawOrderBookEntry[]>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
@@ -422,7 +422,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(Precision.R0)}", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(Precision.R0)}", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<BitfinexRawOrderBookFundingEntry[]>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
@@ -455,7 +455,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 endpoint = $"v2/candles/trade:{EnumConverter.GetString(interval)}:{symbol}/last";
             }
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, endpoint, BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, endpoint, BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(30, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexKline>(request, null, ct).ConfigureAwait(false);
         }
@@ -483,7 +483,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 endpoint = $"v2/candles/trade:{EnumConverter.GetString(interval)}:{symbol}/hist";
             }
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, endpoint, BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, endpoint, BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(30, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexKline[]>(request, parameters, ct).ConfigureAwait(false);
         }
@@ -501,7 +501,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("period", period?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("rate_limit", rateLimit?.ToString(CultureInfo.InvariantCulture));
 
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/calc/trade/avg", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/calc/trade/avg", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexAveragePrice>(request, parameters, ct).ConfigureAwait(false);
         }
@@ -520,7 +520,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 { "ccy2", asset2 }
             };
 
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/calc/fx", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/calc/fx", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexForeignExchangeRate>(request, parameters, ct).ConfigureAwait(false);
         }
@@ -535,7 +535,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 {"keys", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/status/deriv", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/status/deriv", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexDerivativesStatus[]>(request, parameters, ct).ConfigureAwait(false);
         }
@@ -551,7 +551,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
             parameters.AddOptionalEnum("sort", sorting);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/status/deriv/{symbol}/hist", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/status/deriv/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexDerivativesStatus[]>(request, parameters, ct).ConfigureAwait(false);
         }
@@ -567,7 +567,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
             parameters.AddOptionalEnum("sort", sorting);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/liquidations/hist", BitfinexExchange.RateLimiter.Overal, 1, false,
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/liquidations/hist", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(3, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<BitfinexLiquidation[][]>(request, parameters, ct).ConfigureAwait(false);
             if (!result)
@@ -586,7 +586,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/funding/stats/{symbol}/hist", BitfinexExchange.RateLimiter.Overal, 1);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/funding/stats/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1);
             return await _baseClient.SendAsync<BitfinexFundingStats[]>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion

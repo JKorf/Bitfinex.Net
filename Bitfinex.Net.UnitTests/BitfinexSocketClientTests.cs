@@ -93,7 +93,7 @@ namespace Bitfinex.Net.UnitTests
             BitfinexOrderBookEntry[] expected = new[] { new BitfinexOrderBookEntry() { RawPrice = "1", RawQuantity = "2", Count = 3, Price = 1, Quantity = 2 } };
 
             // act
-            socket.InvokeMessage($"[1, {JsonSerializer.Serialize(expected, SerializerOptions.WithConverters(BitfinexExchange.SerializerContext))}]");
+            socket.InvokeMessage($"[1, {JsonSerializer.Serialize(expected, SerializerOptions.WithConverters(BitfinexExchange._serializerContext))}]");
 
             // assert
             Assert.That(TestHelpers.AreEqual(result[0], expected[0]));
@@ -169,7 +169,7 @@ namespace Bitfinex.Net.UnitTests
             BitfinexKline[] expected = new[] { new BitfinexKline() };
 
             // act
-            socket.InvokeMessage($"[1, {JsonSerializer.Serialize(expected, SerializerOptions.WithConverters(BitfinexExchange.SerializerContext))}]");
+            socket.InvokeMessage($"[1, {JsonSerializer.Serialize(expected, SerializerOptions.WithConverters(BitfinexExchange._serializerContext))}]");
 
             // assert
             Assert.That(TestHelpers.AreEqual(result[0], expected[0]));
@@ -482,7 +482,7 @@ namespace Bitfinex.Net.UnitTests
             await Task.Delay(100);
             socket.InvokeMessage(new BitfinexResponse() { Event = "auth", Status = "OK" });
             await Task.Delay(100);
-            var str = $"[0, \"n\", [0, \"on-req\", 0, 0, {JsonSerializer.Serialize(expected, SerializerOptions.WithConverters(BitfinexExchange.SerializerContext))}, 0, \"SUCCESS\", \"Submitted\"]]";
+            var str = $"[0, \"n\", [0, \"on-req\", 0, 0, {JsonSerializer.Serialize(expected, SerializerOptions.WithConverters(BitfinexExchange._serializerContext))}, 0, \"SUCCESS\", \"Submitted\"]]";
             socket.InvokeMessage(str);
             var result = placeTask.Result;
 
