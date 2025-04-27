@@ -91,7 +91,11 @@ namespace Bitfinex.Net.Clients.SpotApi
                     if (update.UpdateType == SocketUpdateType.Snapshot)
                         return;
 
-                    handler(update.AsExchangeEvent<SharedBalance[]>(Exchange, update.Data.Where(x => x.Type == Enums.WalletType.Exchange).Select(x => new SharedBalance(x.Asset, x.Available ?? x.Total, x.Total)).ToArray()));
+                    var updateData = update.Data.Where(x => x.Type == Enums.WalletType.Exchange);
+                    if (!updateData.Any())
+                        return;
+
+                    handler(update.AsExchangeEvent<SharedBalance[]>(Exchange, updateData.Select(x => new SharedBalance(x.Asset, x.Available ?? x.Total, x.Total)).ToArray()));
                 },
                 ct: ct).ConfigureAwait(false);
 
