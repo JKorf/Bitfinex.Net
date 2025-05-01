@@ -34,6 +34,12 @@
             Get the Bitfinex environment by name
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.BitfinexEnvironment.All">
+            <summary>
+            Available environment names
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:Bitfinex.Net.BitfinexEnvironment.Live">
             <summary>
             Live environment
