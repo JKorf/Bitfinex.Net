@@ -6309,6 +6309,11 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexOrder.QuantityRemaining">
             <summary>
+            The original quantity
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexOrder.QuantityRemainingRaw">
+            <summary>
             The quantity left
             </summary>
         </member>

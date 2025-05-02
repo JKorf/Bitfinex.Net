@@ -6,6 +6,8 @@ using CryptoExchange.Net.RateLimiting.Guards;
 using CryptoExchange.Net.RateLimiting.Interfaces;
 using CryptoExchange.Net.SharedApis;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Bitfinex.Net
 {
@@ -58,11 +60,8 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public static string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
         {
-            if (baseAsset == "USDT")
-                baseAsset = "UST";
-
-            if (quoteAsset == "USDT")
-                quoteAsset = "UST";
+            baseAsset = AssetAliases.CommonToExchangeName(baseAsset);
+            quoteAsset = AssetAliases.CommonToExchangeName(quoteAsset);
 
             if (baseAsset.Length != 3)
                 return $"t{baseAsset.ToUpperInvariant()}:{quoteAsset.ToUpperInvariant()}";
@@ -70,11 +69,38 @@ namespace Bitfinex.Net
             return $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
         }
 
+#warning move classes to CryptoExchange.Net
+        public static AssetAliasConfiguration AssetAliases { get; } = new AssetAliasConfiguration
+        {
+            Aliases = [new AssetAlias("UST", "USDT")]
+        };
+
         /// <summary>
         /// Rate limiter configuration for the Bitfinex API
         /// </summary>
         public static BitfinexRateLimiters RateLimiter { get; } = new BitfinexRateLimiters();
 
+    }
+
+    public class AssetAliasConfiguration
+    {
+        public AssetAlias[] Aliases { get; internal set; }
+
+        public string CommonToExchangeName(string commonName) => Aliases.SingleOrDefault(x => x.CommonAssetName == commonName)?.ExchangeAssetName ?? commonName;
+        public string ExchangeToCommonName(string exchangeName) => Aliases.SingleOrDefault(x => x.ExchangeAssetName == exchangeName)?.CommonAssetName ?? exchangeName;
+
+    }
+
+    public class AssetAlias
+    {
+        public string ExchangeAssetName { get; set; }
+        public string CommonAssetName { get; set; }
+
+        public AssetAlias(string exchangeName, string commonName)
+        {
+            ExchangeAssetName = exchangeName;
+            CommonAssetName = commonName;
+        }
     }
 
     /// <summary>

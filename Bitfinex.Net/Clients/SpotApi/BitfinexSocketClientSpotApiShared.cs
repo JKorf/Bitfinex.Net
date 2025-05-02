@@ -95,7 +95,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                     if (!updateData.Any())
                         return;
 
-                    handler(update.AsExchangeEvent<SharedBalance[]>(Exchange, updateData.Select(x => new SharedBalance(x.Asset, x.Available ?? x.Total, x.Total)).ToArray()));
+                    handler(update.AsExchangeEvent<SharedBalance[]>(Exchange, updateData.Select(x => 
+                        new SharedBalance(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Available ?? x.Total, x.Total)).ToArray()));
                 },
                 ct: ct).ConfigureAwait(false);
 
@@ -172,7 +173,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         update.Data.Timestamp)
                     {
                         Fee = Math.Abs(update.Data.Fee),
-                        FeeAsset = update.Data.FeeAsset,
+                        FeeAsset = BitfinexExchange.AssetAliases.ExchangeToCommonName(update.Data.FeeAsset),
                         Role = update.Data.Maker == true ? SharedRole.Maker: SharedRole.Taker
                     }
                 })),

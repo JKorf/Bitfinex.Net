@@ -52,10 +52,16 @@ namespace Bitfinex.Net.Objects.Models
         public DateTime UpdateTime { get; set; }
 
         /// <summary>
+        /// The original quantity
+        /// </summary>
+        [JsonIgnore]
+        public decimal QuantityRemaining => Math.Abs(QuantityRemainingRaw);
+
+        /// <summary>
         /// The quantity left
         /// </summary>
         [ArrayProperty(6)]
-        public decimal QuantityRemaining { get; set; }
+        public decimal QuantityRemainingRaw { get; set; }
 
         /// <summary>
         /// The side of the order

@@ -41,9 +41,6 @@ namespace Bitfinex.Net.Clients.SpotApi
                 fromTimestamp = dateTimeToken.LastTime;
 
             // Get data
-            var baseAsset = request.Symbol.BaseAsset == "USDT" ? "UST" : request.Symbol.BaseAsset;
-            var quoteAsset = request.Symbol.QuoteAsset == "USDT" ? "UST" : request.Symbol.QuoteAsset;
-
             var limit = request.Limit ?? 10000;
             var result = await ExchangeData.GetKlinesAsync(
                 request.Symbol.GetSymbol(FormatSymbol),
@@ -213,13 +210,21 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         private (string BaseAsset, string QuoteAsset) GetAssets(string input)
         {
+            string baseAsset;
+            string quoteAsset;
             if (input.Contains(":"))
             {
                 var split = input.Split(':');
-                return (split[0], split[1]);
+                baseAsset = split[0];
+                quoteAsset = split[1];
+            }
+            else
+            {
+                baseAsset = input.Substring(0, 3);
+                quoteAsset = input.Substring(3);
             }
 
-            return (input.Substring(0, 3), input.Substring(3));
+            return (BitfinexExchange.AssetAliases.ExchangeToCommonName(baseAsset), BitfinexExchange.AssetAliases.ExchangeToCommonName(quoteAsset));
         }
 
         #endregion
@@ -232,9 +237,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             var validationError = ((ISpotTickerRestClient)this).GetSpotTickerOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedSpotTicker>(Exchange, validationError);
-
-            var baseAsset = request.Symbol.BaseAsset == "USDT" ? "UST" : request.Symbol.BaseAsset;
-            var quoteAsset = request.Symbol.QuoteAsset == "USDT" ? "UST" : request.Symbol.QuoteAsset;
 
             var result = await ExchangeData.GetTickerAsync(request.Symbol.GetSymbol(FormatSymbol), ct).ConfigureAwait(false);
             if (!result)
@@ -322,7 +324,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<SharedBalance[]>(Exchange, null, default);
 
-            return result.AsExchangeResult<SharedBalance[]>(Exchange, SupportedTradingModes, result.Data.Where(x => x.Type == WalletType.Exchange).Select(x => new SharedBalance(x.Asset, x.Available ?? 0, x.Total)).ToArray());
+            return result.AsExchangeResult<SharedBalance[]>(Exchange, SupportedTradingModes, result.Data.Where(x => x.Type == WalletType.Exchange).Select(x => 
+                new SharedBalance(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Available ?? 0, x.Total)).ToArray());
         }
 
         #endregion
@@ -526,7 +529,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 x.Timestamp)
             {
                 Fee = Math.Abs(x.Fee),
-                FeeAsset = x.FeeAsset,
+                FeeAsset = BitfinexExchange.AssetAliases.ExchangeToCommonName(x.FeeAsset),
                 Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null
             }).ToArray());
         }
@@ -570,7 +573,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 x.Timestamp)
             {
                 Fee = Math.Abs(x.Fee),
-                FeeAsset = x.FeeAsset,
+                FeeAsset = BitfinexExchange.AssetAliases.ExchangeToCommonName(x.FeeAsset),
                 Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null
             }).ToArray(), nextToken);
         }
@@ -650,11 +653,12 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!depositAddresses)
                 return depositAddresses.AsExchangeResult<SharedDepositAddress[]>(Exchange, null, default);
 
-            return depositAddresses.AsExchangeResult<SharedDepositAddress[]>(Exchange, TradingMode.Spot, new[] { new SharedDepositAddress(depositAddresses.Data.Data!.Asset, !string.IsNullOrEmpty(depositAddresses.Data.Data.PoolAddress) ? depositAddresses.Data.Data.PoolAddress : depositAddresses.Data.Data.Address)
-            {
-                Network = request.Network,
-                TagOrMemo = !string.IsNullOrEmpty(depositAddresses.Data.Data.PoolAddress) ? depositAddresses.Data.Data.Address : null,
-            }
+            return depositAddresses.AsExchangeResult<SharedDepositAddress[]>(Exchange, TradingMode.Spot, new[] { 
+                new SharedDepositAddress(BitfinexExchange.AssetAliases.ExchangeToCommonName(depositAddresses.Data.Data!.Asset), !string.IsNullOrEmpty(depositAddresses.Data.Data.PoolAddress) ? depositAddresses.Data.Data.PoolAddress : depositAddresses.Data.Data.Address)
+                {
+                    Network = request.Network,
+                    TagOrMemo = !string.IsNullOrEmpty(depositAddresses.Data.Data.PoolAddress) ? depositAddresses.Data.Data.Address : null,
+                }
             });
         }
 
@@ -688,11 +692,12 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (deposits.Data.Count() == limit)
                 nextToken = new DateTimeToken(deposits.Data.Min(x => x.StartTime));
 
-            return deposits.AsExchangeResult<SharedDeposit[]>(Exchange, TradingMode.Spot, data.Where(x => x.Quantity > 0).Select(x => new SharedDeposit(x.Asset, x.Quantity, x.Status == "COMPLETED", x.StartTime)
-            {
-                Id = x.Id,
-                TransactionId = x.TransactionId
-            }).ToArray(), nextToken);
+            return deposits.AsExchangeResult<SharedDeposit[]>(Exchange, TradingMode.Spot, data.Where(x => x.Quantity > 0).Select(x => 
+                new SharedDeposit(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Quantity, x.Status == "COMPLETED", x.StartTime)
+                {
+                    Id = x.Id,
+                    TransactionId = x.TransactionId
+                }).ToArray(), nextToken);
         }
 
         #endregion
@@ -788,11 +793,12 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (withdrawals.Data.Count() == limit)
                 nextToken = new DateTimeToken(withdrawals.Data.Min(x => x.StartTime));
 
-            return withdrawals.AsExchangeResult<SharedWithdrawal[]>(Exchange, TradingMode.Spot, data.Select(x => new SharedWithdrawal(x.Asset, x.Address, Math.Abs(x.Quantity), x.Status == "COMPLETED", x.StartTime)
-            {
-                Id = x.Id,
-                TransactionId = x.TransactionId
-            }).ToArray(), nextToken);
+            return withdrawals.AsExchangeResult<SharedWithdrawal[]>(Exchange, TradingMode.Spot, 
+                data.Select(x => new SharedWithdrawal(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Address, Math.Abs(x.Quantity), x.Status == "COMPLETED", x.StartTime)
+                {
+                    Id = x.Id,
+                    TransactionId = x.TransactionId
+                }).ToArray(), nextToken);
         }
 
         #endregion
