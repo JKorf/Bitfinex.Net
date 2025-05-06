@@ -30,7 +30,6 @@ namespace Bitfinex.Net.UnitTests
 
             // assert
             Assert.That(false == result.Success);
-            Assert.That(result.Error.ToString().Contains("Error message"));
             Assert.That(HttpStatusCode.BadRequest == result.ResponseStatusCode);
         }
 

@@ -69,7 +69,9 @@ namespace Bitfinex.Net
             return $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
         }
 
-#warning move classes to CryptoExchange.Net
+        /// <summary>
+        /// Aliases for Bitfinex assets
+        /// </summary>
         public static AssetAliasConfiguration AssetAliases { get; } = new AssetAliasConfiguration
         {
             Aliases = [new AssetAlias("UST", "USDT")]
@@ -80,27 +82,6 @@ namespace Bitfinex.Net
         /// </summary>
         public static BitfinexRateLimiters RateLimiter { get; } = new BitfinexRateLimiters();
 
-    }
-
-    public class AssetAliasConfiguration
-    {
-        public AssetAlias[] Aliases { get; internal set; }
-
-        public string CommonToExchangeName(string commonName) => Aliases.SingleOrDefault(x => x.CommonAssetName == commonName)?.ExchangeAssetName ?? commonName;
-        public string ExchangeToCommonName(string exchangeName) => Aliases.SingleOrDefault(x => x.ExchangeAssetName == exchangeName)?.CommonAssetName ?? exchangeName;
-
-    }
-
-    public class AssetAlias
-    {
-        public string ExchangeAssetName { get; set; }
-        public string CommonAssetName { get; set; }
-
-        public AssetAlias(string exchangeName, string commonName)
-        {
-            ExchangeAssetName = exchangeName;
-            CommonAssetName = commonName;
-        }
     }
 
     /// <summary>

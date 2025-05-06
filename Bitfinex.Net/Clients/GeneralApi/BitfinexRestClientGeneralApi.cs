@@ -69,10 +69,10 @@ namespace Bitfinex.Net.Clients.GeneralApi
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
 
         /// <inheritdoc />
-        protected override Error ParseErrorResponse(int httpStatusCode, KeyValuePair<string, string[]>[] responseHeaders, IMessageAccessor accessor)
+        protected override Error ParseErrorResponse(int httpStatusCode, KeyValuePair<string, string[]>[] responseHeaders, IMessageAccessor accessor, Exception? exception)
         {
             if (!accessor.IsJson)
-                return new ServerError(accessor.GetOriginalString());
+                return new ServerError(null, "Unknown request error", exception: exception);
 
             if (accessor.GetNodeType() != NodeType.Array)
             {
@@ -80,22 +80,22 @@ namespace Bitfinex.Net.Clients.GeneralApi
                 var errorCode = accessor.GetValue<int?>(MessagePath.Get().Property("code"));
                 var errorDesc = accessor.GetValue<string?>(MessagePath.Get().Property("error_description"));
                 if (error != null && errorCode != null && errorDesc != null)
-                    return new ServerError(errorCode.Value, $"{error}: {errorDesc}");
+                    return new ServerError(errorCode.Value, $"{error}: {errorDesc}", exception);
 
                 var message = accessor.GetValue<string?>(MessagePath.Get().Property("message"));
                 if (message != null)
-                    return new ServerError(message);
+                    return new ServerError(null, message, exception);
 
-                return new ServerError(accessor.GetOriginalString());
+                return new ServerError(null, "Unknown request error", exception: exception);
             }
 
             var code = accessor.GetValue<int?>(MessagePath.Get().Index(1));
             var msg = accessor.GetValue<string>(MessagePath.Get().Index(2));
             if (msg == null)
-                return new ServerError(accessor.GetOriginalString());
+                return new ServerError(null, "Unknown request error", exception: exception);
 
             if (code == null)
-                return new ServerError(msg);
+                return new ServerError(null, msg, exception);
 
             return new ServerError(code.Value, msg);
         }
