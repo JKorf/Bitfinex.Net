@@ -223,6 +223,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                                                                          string? intermediaryBankSwift = null,
                                                                          string? accountName = null,
                                                                          string? paymentId = null,
+                                                                         bool? travelRuleTos = null,
+                                                                         string? vaspDid = null,
+                                                                         string? vaspName = null,
+                                                                         bool? beneficiarySelf = null,
+                                                                         string? destFirstname = null,
+                                                                         string? destLastname = null,
+                                                                         string? destCorpName = null,
                                                                          CancellationToken ct = default)
         {
             withdrawType.ValidateNotNull(nameof(withdrawType));
@@ -242,13 +249,20 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("bank_city", bankCity);
             parameters.AddOptionalParameter("bank_country", bankCountry);
             parameters.AddOptionalParameter("detail_payment", paymentDetails);
-            parameters.AddOptionalParameter("expressWire", expressWire == null ? null : expressWire == true ? "1": "0");
+            parameters.AddOptionalParameter("expressWire", expressWire == null ? null : expressWire == true ? "1" : "0");
             parameters.AddOptionalParameter("intermediary_bank_name", intermediaryBankName);
             parameters.AddOptionalParameter("intermediary_bank_address", intermediaryBankAddress);
             parameters.AddOptionalParameter("intermediary_bank_city", intermediaryBankCity);
             parameters.AddOptionalParameter("intermediary_bank_country", intermediaryBankCountry);
             parameters.AddOptionalParameter("intermediary_bank_account", intermediaryBankAccount);
             parameters.AddOptionalParameter("intermediary_bank_swift", intermediaryBankSwift);
+            parameters.AddOptionalParameter("travel_rule_tos", travelRuleTos);
+            parameters.AddOptionalParameter("vasp_did", vaspDid);
+            parameters.AddOptionalParameter("vasp_name", vaspName);
+            parameters.AddOptionalParameter("beneficiary_self", beneficiarySelf);
+            parameters.AddOptionalParameter("dest_firstname", destFirstname);
+            parameters.AddOptionalParameter("dest_lastname", destLastname);
+            parameters.AddOptionalParameter("dest_corp_name", destCorpName);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v1/withdraw", BitfinexExchange.RateLimiter.Overall, 1, true);
             var result = await _baseClient.SendAsync<BitfinexWithdrawalResult[]>(request, parameters, ct).ConfigureAwait(false);
@@ -283,7 +297,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("payment_id", paymentId);
             parameters.AddOptionalParameter("invoice", invoice);
             parameters.AddOptionalParameter("note", note);
-            parameters.AddOptionalParameter("fee_deduct", feeFromWithdrawalAmount == null ? null : feeFromWithdrawalAmount == true ? 1: 0);
+            parameters.AddOptionalParameter("fee_deduct", feeFromWithdrawalAmount == null ? null : feeFromWithdrawalAmount == true ? 1 : 0);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/w/withdraw", BitfinexExchange.RateLimiter.Overall, 1, true);
             return await _baseClient.SendAsync<BitfinexWithdrawalResultV2>(request, parameters, ct).ConfigureAwait(false);

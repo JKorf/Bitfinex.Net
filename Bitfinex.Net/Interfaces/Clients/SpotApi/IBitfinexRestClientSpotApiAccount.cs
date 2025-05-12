@@ -185,6 +185,13 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
         /// <param name="accountName">The name of the account</param>
         /// <param name="paymentId">Hex string for Monero transaction</param>
+        /// <param name="travelRuleTos">Flag to voluntarily send travel rule details for withdrawal</param>
+        /// <param name="vaspDid">Virtual asset provider identifier, optional info for travel rule purpose. DID values can be found on https://api-pub.bitfinex.com/v2/ext/vasps endpoint.</param>
+        /// <param name="vaspName">Virtual asset provider name, optional info for travel rule purpose, if self custody ignore the field</param>
+        /// <param name="beneficiarySelf">Set to 'true' to extract destination data from your KYC data. (If 'true', dest_firstname, dest_lastname, or dest_corp_name do not need to be supplied)</param>
+        /// <param name="destFirstname">Destination entity first name for travel rule purpose (mandatory if dest_lastname is supplied, not required if beneficiary_self = true)</param>
+        /// <param name="destLastname">Destination entity last name for travel rule purpose (mandatory if dest_firstname is supplied, not required if beneficiary_self = true)</param>
+        /// <param name="destCorpName">Destination entity corporate name for travel rule purpose. (use either dest_firstname + dest_lastname or dest_corp_name, not required if beneficiary_self = true)</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<BitfinexWithdrawalResult>> WithdrawAsync(string withdrawType,
@@ -207,6 +214,13 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
             string? intermediaryBankSwift = null,
             string? accountName = null,
             string? paymentId = null,
+            bool? travelRuleTos = null,
+            string? vaspDid = null,
+            string? vaspName = null,
+            bool? beneficiarySelf = null,
+            string? destFirstname = null,
+            string? destLastname = null,
+            string? destCorpName = null,
             CancellationToken ct = default);
 
         /// <summary>
