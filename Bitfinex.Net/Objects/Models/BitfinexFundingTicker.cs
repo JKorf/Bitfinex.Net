@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding ticker information
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingTicker, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingTicker>))]
     [SerializationModel]
     public record BitfinexFundingTicker
     {

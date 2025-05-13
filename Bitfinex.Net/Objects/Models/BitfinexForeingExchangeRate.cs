@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Exchange rate in a foreign currency
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexForeignExchangeRate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexForeignExchangeRate>))]
     [SerializationModel]
     public record BitfinexForeignExchangeRate
     {

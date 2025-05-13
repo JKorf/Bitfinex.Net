@@ -47,93 +47,93 @@ namespace Bitfinex.Net.Objects.Models.Socket
         }
     }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexSocketStringEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexSocketStringEvent>))]
     [SerializationModel]
     internal record BitfinexSocketStringEvent : BitfinexSocketEvent<string> { }
 
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexSocketPositionsEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexSocketPositionsEvent>))]
     [SerializationModel]
     internal record BitfinexSocketPositionsEvent : BitfinexSocketEvent<BitfinexPosition[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexSocketPositionEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexSocketPositionEvent>))]
     [SerializationModel]
     internal record BitfinexSocketPositionEvent : BitfinexSocketEvent<BitfinexPosition> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexBalanceEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexBalanceEvent>))]
     [SerializationModel]
     internal record BitfinexBalanceEvent : BitfinexSocketEvent<BitfinexBalance> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexMarginBaseEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMarginBaseEvent>))]
     [SerializationModel]
     internal record BitfinexMarginBaseEvent : BitfinexSocketEvent<BitfinexMarginBase> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexMarginSymbolEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMarginSymbolEvent>))]
     [SerializationModel]
     internal record BitfinexMarginSymbolEvent : BitfinexSocketEvent<BitfinexMarginSymbol> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingInfoEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingInfoEvent>))]
     [SerializationModel]
     internal record BitfinexFundingInfoEvent : BitfinexSocketEvent<BitfinexFundingInfo> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexWalletsEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWalletsEvent>))]
     [SerializationModel]
     internal record BitfinexWalletsEvent : BitfinexSocketEvent<BitfinexWallet[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexWalletEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWalletEvent>))]
     [SerializationModel]
     internal record BitfinexWalletEvent : BitfinexSocketEvent<BitfinexWallet> { }
     
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrdersEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrdersEvent>))]
     [SerializationModel]
     internal record BitfinexOrdersEvent : BitfinexSocketEvent<BitfinexOrder[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrderEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrderEvent>))]
     [SerializationModel]
     internal record BitfinexOrderEvent : BitfinexSocketEvent<BitfinexOrder> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexTradeDetailEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexTradeDetailEvent>))]
     [SerializationModel]
     internal record BitfinexTradeDetailEvent : BitfinexSocketEvent<BitfinexTradeDetails> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingTradeEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingTradeEvent>))]
     [SerializationModel]
     internal record BitfinexFundingTradeEvent : BitfinexSocketEvent<BitfinexFundingTrade> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOffersEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOffersEvent>))]
     [SerializationModel]
     internal record BitfinexOffersEvent : BitfinexSocketEvent<BitfinexFundingOffer[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOfferEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOfferEvent>))]
     [SerializationModel]
     internal record BitfinexOfferEvent : BitfinexSocketEvent<BitfinexFundingOffer> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingCreditsEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingCreditsEvent>))]
     [SerializationModel]
     internal record BitfinexFundingCreditsEvent : BitfinexSocketEvent<BitfinexFundingCredit[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingCreditEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingCreditEvent>))]
     [SerializationModel]
     internal record BitfinexFundingCreditEvent : BitfinexSocketEvent<BitfinexFundingCredit> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingsEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingsEvent>))]
     [SerializationModel]
     internal record BitfinexFundingsEvent : BitfinexSocketEvent<BitfinexFunding[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingEvent>))]
     [SerializationModel]
     internal record BitfinexFundingEvent : BitfinexSocketEvent<BitfinexFunding> { }
 
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrderNotificationEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrderNotificationEvent>))]
     [SerializationModel]
     internal record BitfinexOrderNotificationEvent : BitfinexSocketEvent<BitfinexOrderNotification> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrdersNotificationEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrdersNotificationEvent>))]
     [SerializationModel]
     internal record BitfinexOrdersNotificationEvent : BitfinexSocketEvent<BitfinexOrdersNotification> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingOfferNotificationEvent, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingOfferNotificationEvent>))]
     [SerializationModel]
     internal record BitfinexFundingOfferNotificationEvent : BitfinexSocketEvent<BitfinexFundingOfferNotification> { }
 }

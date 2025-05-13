@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding auto renew status
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingAutoRenewStatus, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingAutoRenewStatus>))]
     [SerializationModel]
     public record BitfinexFundingAutoRenewStatus
     {

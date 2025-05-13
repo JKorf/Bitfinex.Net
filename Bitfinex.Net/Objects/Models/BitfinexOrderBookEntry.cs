@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Base for order book
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookBase, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookBase>))]
     [SerializationModel]
     public record BitfinexOrderBookBase { }
 
@@ -43,7 +43,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Order book funding entry
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookFundingEntry, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookFundingEntry>))]
     [SerializationModel]
     public record BitfinexOrderBookFundingEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
     {
@@ -76,7 +76,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Raw order book entry
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookEntry, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookEntry>))]
     [SerializationModel]
     public record BitfinexRawOrderBookEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
     {
@@ -100,7 +100,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Raw order book entry
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookFundingEntry, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookFundingEntry>))]
     [SerializationModel]
     public record BitfinexRawOrderBookFundingEntry : BitfinexOrderBookBase, ISymbolOrderBookEntry
     {

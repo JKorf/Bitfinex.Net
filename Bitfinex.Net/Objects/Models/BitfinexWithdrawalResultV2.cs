@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Withdrawal result
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexWithdrawalResultV2, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWithdrawalResultV2>))]
     [SerializationModel]
     public record BitfinexWithdrawalResultV2
     {
@@ -43,7 +43,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Withdrawal info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexWithdrawalInfo, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWithdrawalInfo>))]
     [SerializationModel]
     public record BitfinexWithdrawalInfo
     {

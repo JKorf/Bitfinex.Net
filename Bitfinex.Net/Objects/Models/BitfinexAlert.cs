@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Alert
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexAlert, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexAlert>))]
     [SerializationModel]
     public record BitfinexAlert
     {

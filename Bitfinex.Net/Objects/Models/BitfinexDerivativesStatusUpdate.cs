@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Derivatives status
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexDerivativesStatusUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexDerivativesStatusUpdate>))]
     [SerializationModel]
     public record BitfinexDerivativesStatusUpdate
     {

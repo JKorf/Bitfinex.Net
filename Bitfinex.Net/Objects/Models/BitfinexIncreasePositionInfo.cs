@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Increase position info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionInfo, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionInfo>))]
     [SerializationModel]
     public record BitfinexIncreasePositionInfo
     {
@@ -36,7 +36,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Position quantity info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionQuantity, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionQuantity>))]
     [SerializationModel]
     public record BitfinexIncreasePositionQuantity
     {
@@ -55,7 +55,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Position balances
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionBalances, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionBalances>))]
     [SerializationModel]
     public record BitfinexIncreasePositionBalances
     {
@@ -79,7 +79,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Balance info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionBalance, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionBalance>))]
     [SerializationModel]
     public record BitfinexIncreasePositionBalance
     {
@@ -108,7 +108,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionFundingInfo, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionFundingInfo>))]
     [SerializationModel]
     public record BitfinexIncreasePositionFundingInfo
     {
@@ -127,7 +127,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding asset info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionFundingAssetInfo, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexIncreasePositionFundingAssetInfo>))]
     [SerializationModel]
     public record BitfinexIncreasePositionFundingAssetInfo
     {

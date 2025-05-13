@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Details of a trade
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexTradeDetails, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexTradeDetails>))]
     [SerializationModel]
     public record BitfinexTradeDetails
     {

@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Bitfinex fee summary
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexSummary, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexSummary>))]
     [SerializationModel]
     public record BitfinexSummary
     {
@@ -56,7 +56,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding earnings
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingEarnings, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingEarnings>))]
     [SerializationModel]
     public record BitfinexFundingEarnings
     {
@@ -75,7 +75,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Volume info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexVolumes, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexVolumes>))]
     [SerializationModel]
     public record BitfinexVolumes
     {
@@ -99,7 +99,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Fee info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexFees, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFees>))]
     [SerializationModel]
     public record BitfinexFees
     {
@@ -118,7 +118,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Maker fee info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexMakerFee, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMakerFee>))]
     [SerializationModel]
     public record BitfinexMakerFee
     {
@@ -137,7 +137,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Taker fees info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexTakerFee, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexTakerFee>))]
     [SerializationModel]
     public record BitfinexTakerFee
     {

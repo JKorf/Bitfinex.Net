@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Average price info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexAveragePrice, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexAveragePrice>))]
     [SerializationModel]
     public record BitfinexAveragePrice
     {

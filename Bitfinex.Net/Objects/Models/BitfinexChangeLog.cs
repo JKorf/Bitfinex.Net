@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Account change log
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexChangeLog, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexChangeLog>))]
     [SerializationModel]
     public record BitfinexChangeLog
     {

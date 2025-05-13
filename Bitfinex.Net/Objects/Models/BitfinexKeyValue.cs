@@ -5,7 +5,7 @@ using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
-    [JsonConverter(typeof(ArrayConverter<BitfinexStringKeyValue, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexStringKeyValue>))]
     [SerializationModel]
     internal record BitfinexStringKeyValue
     {
@@ -16,7 +16,7 @@ namespace Bitfinex.Net.Objects.Models
         public string Value { get; set; } = default!;
     }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexStringArrayKeyValue, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexStringArrayKeyValue>))]
     [SerializationModel]
     internal record BitfinexStringArrayKeyValue
     {
@@ -27,7 +27,7 @@ namespace Bitfinex.Net.Objects.Models
         public string[] Value { get; set; } = [];
     }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexDecimalArrayKeyValue, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexDecimalArrayKeyValue>))]
     [SerializationModel]
     internal record BitfinexDecimalArrayKeyValue
     {
@@ -38,7 +38,7 @@ namespace Bitfinex.Net.Objects.Models
         public decimal[] Value { get; set; } = [];
     }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexSymbolInfoKeyValue, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexSymbolInfoKeyValue>))]
     [SerializationModel]
     internal record BitfinexSymbolInfoKeyValue
     {

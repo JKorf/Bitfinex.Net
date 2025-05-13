@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Symbol info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexSymbolInfo, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexSymbolInfo>))]
     [SerializationModel]
     public record BitfinexSymbolInfo
     {

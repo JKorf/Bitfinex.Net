@@ -11,7 +11,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Order info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrder, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrder>))]
     [SerializationModel]
     public record BitfinexOrder
     {

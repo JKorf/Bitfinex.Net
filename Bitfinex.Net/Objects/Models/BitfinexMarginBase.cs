@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Margin base
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexMarginBase, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMarginBase>))]
     [SerializationModel]
     public record BitfinexMarginBase
     {
@@ -20,14 +20,14 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Data
         /// </summary>
-        [ArrayProperty(1), JsonConverter(typeof(ArrayConverter<BitfinexMarginBaseInfo, BitfinexSourceGenerationContext>))]
+        [ArrayProperty(1), JsonConverter(typeof(ArrayConverter<BitfinexMarginBaseInfo>))]
         public BitfinexMarginBaseInfo Data { get; set; } = default!;
     }
     
     /// <summary>
     /// Margin base info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexMarginBaseInfo, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMarginBaseInfo>))]
     [SerializationModel]
     public record BitfinexMarginBaseInfo
     {

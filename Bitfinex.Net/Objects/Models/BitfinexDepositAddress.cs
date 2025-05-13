@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Deposit address info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexDepositAddress, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexDepositAddress>))]
     [SerializationModel]
     public record BitfinexDepositAddress
     {

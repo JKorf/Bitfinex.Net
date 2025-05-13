@@ -15,59 +15,59 @@ namespace Bitfinex.Net.Objects.Sockets
         public T Data { get; set; } = default!;
     }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexStringUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexStringUpdate>))]
     [SerializationModel]
     internal class BitfinexStringUpdate: BitfinexUpdate<string> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexStreamTickerUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexStreamTickerUpdate>))]
     [SerializationModel]
     internal class BitfinexStreamTickerUpdate: BitfinexUpdate<BitfinexStreamTicker> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexStreamTickerArrayUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexStreamTickerArrayUpdate>))]
     [SerializationModel]
     internal class BitfinexStreamTickerArrayUpdate: BitfinexUpdate<BitfinexStreamTicker[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexStreamFundingTickerUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexStreamFundingTickerUpdate>))]
     [SerializationModel]
     internal class BitfinexStreamFundingTickerUpdate : BitfinexUpdate<BitfinexStreamFundingTicker> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexStreamFundingTickerArrayUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexStreamFundingTickerArrayUpdate>))]
     [SerializationModel]
     internal class BitfinexStreamFundingTickerArrayUpdate : BitfinexUpdate<BitfinexStreamFundingTicker[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookEntryUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookEntryUpdate>))]
     [SerializationModel]
     internal class BitfinexOrderBookEntryUpdate : BitfinexUpdate<BitfinexOrderBookEntry> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookEntryArrayUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookEntryArrayUpdate>))]
     [SerializationModel]
     internal class BitfinexOrderBookEntryArrayUpdate : BitfinexUpdate<BitfinexOrderBookEntry[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookFundingEntryUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookFundingEntryUpdate>))]
     [SerializationModel]
     internal class BitfinexOrderBookFundingEntryUpdate : BitfinexUpdate<BitfinexOrderBookFundingEntry> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookFundingEntryArrayUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrderBookFundingEntryArrayUpdate>))]
     [SerializationModel]
     internal class BitfinexOrderBookFundingEntryArrayUpdate : BitfinexUpdate<BitfinexOrderBookFundingEntry[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookEntryUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookEntryUpdate>))]
     [SerializationModel]
     internal class BitfinexRawOrderBookEntryUpdate : BitfinexUpdate<BitfinexRawOrderBookEntry> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookEntryArrayUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookEntryArrayUpdate>))]
     [SerializationModel]
     internal class BitfinexRawOrderBookEntryArrayUpdate : BitfinexUpdate<BitfinexRawOrderBookEntry[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookFundingEntryUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookFundingEntryUpdate>))]
     [SerializationModel]
     internal class BitfinexRawOrderBookFundingEntryUpdate : BitfinexUpdate<BitfinexRawOrderBookFundingEntry> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookFundingEntryArrayUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexRawOrderBookFundingEntryArrayUpdate>))]
     [SerializationModel]
     internal class BitfinexRawOrderBookFundingEntryArrayUpdate : BitfinexUpdate<BitfinexRawOrderBookFundingEntry[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexTradeUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexTradeUpdate>))]
     [SerializationModel]
     internal class BitfinexTradeUpdate
     {
@@ -80,31 +80,31 @@ namespace Bitfinex.Net.Objects.Sockets
         public BitfinexTradeSimple Data { get; set; } = default!;    
     }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexTradeArrayUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexTradeArrayUpdate>))]
     [SerializationModel]
     internal class BitfinexTradeArrayUpdate : BitfinexUpdate<BitfinexTradeSimple[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexKlineUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexKlineUpdate>))]
     [SerializationModel]
     internal class BitfinexKlineUpdate : BitfinexUpdate<BitfinexKline> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexKlineArrayUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexKlineArrayUpdate>))]
     [SerializationModel]
     internal class BitfinexKlineArrayUpdate : BitfinexUpdate<BitfinexKline[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexLiquidationUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexLiquidationUpdate>))]
     [SerializationModel]
     internal class BitfinexLiquidationUpdate : BitfinexUpdate<BitfinexLiquidation> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexLiquidationArrayUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexLiquidationArrayUpdate>))]
     [SerializationModel]
     internal class BitfinexLiquidationArrayUpdate : BitfinexUpdate<BitfinexLiquidation[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexDerivativesStatusUpdateUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexDerivativesStatusUpdateUpdate>))]
     [SerializationModel]
     internal class BitfinexDerivativesStatusUpdateUpdate : BitfinexUpdate<BitfinexDerivativesStatusUpdate> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexDerivativesStatusUpdateArrayUpdate, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexDerivativesStatusUpdateArrayUpdate>))]
     [SerializationModel]
     internal class BitfinexDerivativesStatusUpdateArrayUpdate : BitfinexUpdate<BitfinexDerivativesStatusUpdate[]> { }
 

@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Available balance
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexAvailableBalance, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexAvailableBalance>))]
     [SerializationModel]
     public record BitfinexAvailableBalance
     {

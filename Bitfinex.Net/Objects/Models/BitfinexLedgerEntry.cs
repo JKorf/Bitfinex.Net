@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Ledger entry
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexLedgerEntry, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexLedgerEntry>))]
     [SerializationModel]
     public record BitfinexLedgerEntry
     {

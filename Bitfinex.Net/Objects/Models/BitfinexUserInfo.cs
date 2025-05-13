@@ -10,7 +10,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// User info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexUserInfo, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexUserInfo>))]
     [SerializationModel]
     public record BitfinexUserInfo
     {

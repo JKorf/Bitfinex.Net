@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Margin symbol info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexMarginSymbol, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMarginSymbol>))]
     [SerializationModel]
     public record BitfinexMarginSymbol
     {
@@ -26,14 +26,14 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Data
         /// </summary>
-        [ArrayProperty(2), JsonConverter(typeof(ArrayConverter<BitfinexMarginSymbolInfo, BitfinexSourceGenerationContext>))]
+        [ArrayProperty(2), JsonConverter(typeof(ArrayConverter<BitfinexMarginSymbolInfo>))]
         public BitfinexMarginSymbolInfo Data { get; set; } = default!;
     }
 
     /// <summary>
     /// Margin symbol info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexMarginSymbolInfo, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMarginSymbolInfo>))]
     [SerializationModel]
     public record BitfinexMarginSymbolInfo
     {

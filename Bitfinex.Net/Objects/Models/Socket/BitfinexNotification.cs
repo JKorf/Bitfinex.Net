@@ -27,15 +27,15 @@ namespace Bitfinex.Net.Objects.Models.Socket
         public T Data { get; set; } = default!;
     }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrderNotification, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrderNotification>))]
     [SerializationModel]
     internal record BitfinexOrderNotification : BitfinexNotification<BitfinexOrder> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexOrdersNotification, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexOrdersNotification>))]
     [SerializationModel]
     internal record BitfinexOrdersNotification : BitfinexNotification<BitfinexOrder[]> { }
 
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingOfferNotification, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingOfferNotification>))]
     [SerializationModel]
     internal record BitfinexFundingOfferNotification : BitfinexNotification<BitfinexFundingOffer> { }
 }

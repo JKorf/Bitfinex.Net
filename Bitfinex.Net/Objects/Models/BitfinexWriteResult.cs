@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Result V2.
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResult, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResult>))]
     [SerializationModel]
     public record BitfinexWriteResult
     {
@@ -56,7 +56,7 @@ namespace Bitfinex.Net.Objects.Models
     }
 
     /// <inheritdoc />
-    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultFundingOffer, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultFundingOffer>))]
     [SerializationModel]
     public record BitfinexWriteResultFundingOffer : BitfinexWriteResult
     {
@@ -69,7 +69,7 @@ namespace Bitfinex.Net.Objects.Models
     }
 
     /// <inheritdoc />
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingAutoRenew, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingAutoRenew>))]
     [SerializationModel]
     public record BitfinexWriteResultFundingAutoRenew : BitfinexWriteResult
     {
@@ -82,7 +82,7 @@ namespace Bitfinex.Net.Objects.Models
     }
 
     /// <inheritdoc />
-    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultDepositAddress, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultDepositAddress>))]
     [SerializationModel]
     public record BitfinexWriteResultDepositAddress : BitfinexWriteResult
     {
@@ -95,7 +95,7 @@ namespace Bitfinex.Net.Objects.Models
     }
 
     /// <inheritdoc />
-    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultTransfer, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultTransfer>))]
     [SerializationModel]
     public record BitfinexWriteResultTransfer : BitfinexWriteResult
     {
@@ -108,7 +108,7 @@ namespace Bitfinex.Net.Objects.Models
     }
 
     /// <inheritdoc />
-    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultOrder, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultOrder>))]
     [SerializationModel]
     public record BitfinexWriteResultOrder : BitfinexWriteResult
     {
@@ -121,7 +121,7 @@ namespace Bitfinex.Net.Objects.Models
     }
 
     /// <inheritdoc />
-    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultPosition, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultPosition>))]
     [SerializationModel]
     public record BitfinexWriteResultPosition : BitfinexWriteResult
     {
@@ -134,7 +134,7 @@ namespace Bitfinex.Net.Objects.Models
     }
 
     /// <inheritdoc />
-    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultPositionBasic, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultPositionBasic>))]
     [SerializationModel]
     public record BitfinexWriteResultPositionBasic : BitfinexWriteResult
     {
@@ -147,7 +147,7 @@ namespace Bitfinex.Net.Objects.Models
     }
 
     /// <inheritdoc />
-    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultOrders, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWriteResultOrders>))]
     [SerializationModel]
     public record BitfinexWriteResultOrders : BitfinexWriteResult
     {

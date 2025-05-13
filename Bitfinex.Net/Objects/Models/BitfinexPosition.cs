@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Position info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexPosition, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexPosition>))]
     [SerializationModel]
     public record BitfinexPosition
     {

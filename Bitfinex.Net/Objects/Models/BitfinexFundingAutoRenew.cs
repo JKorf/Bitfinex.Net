@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Activate or deactivate auto-renew. Allows you to specify the currency, amount, rate, and period.
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingAutoRenew, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingAutoRenew>))]
     [SerializationModel]
     public record BitfinexFundingAutoRenew
     {

@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexFunding, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFunding>))]
     [SerializationModel]
     public record BitfinexFunding
     {
@@ -125,7 +125,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding credit info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexFundingCredit, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingCredit>))]
     [SerializationModel]
     public record BitfinexFundingCredit: BitfinexFunding
     {

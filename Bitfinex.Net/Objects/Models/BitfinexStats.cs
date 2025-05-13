@@ -8,7 +8,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Stat info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexStats, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexStats>))]
     [SerializationModel]
     public record BitfinexStats
     {

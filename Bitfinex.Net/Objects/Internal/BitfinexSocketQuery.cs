@@ -5,7 +5,7 @@ using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Internal
 {
-    [JsonConverter(typeof(ArrayConverter<BitfinexSocketQuery, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexSocketQuery>))]
     [SerializationModel]
     internal class BitfinexSocketQuery
     {

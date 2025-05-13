@@ -368,7 +368,7 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WalletTransferAsync(System.String,System.Decimal,Bitfinex.Net.Enums.WithdrawWallet,Bitfinex.Net.Enums.WithdrawWallet,System.String,System.String,System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WithdrawV2Async(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Threading.CancellationToken)">
@@ -3894,7 +3894,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
             All withdrawals need the withdrawType, wallet and quantity parameters
@@ -3922,6 +3922,13 @@
             <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
             <param name="accountName">The name of the account</param>
             <param name="paymentId">Hex string for Monero transaction</param>
+            <param name="travelRuleTos">Flag to voluntarily send travel rule details for withdrawal</param>
+            <param name="vaspDid">Virtual asset provider identifier, optional info for travel rule purpose. DID values can be found on https://api-pub.bitfinex.com/v2/ext/vasps endpoint.</param>
+            <param name="vaspName">Virtual asset provider name, optional info for travel rule purpose, if self custody ignore the field</param>
+            <param name="beneficiarySelf">Set to 'true' to extract destination data from your KYC data. (If 'true', dest_firstname, dest_lastname, or dest_corp_name do not need to be supplied)</param>
+            <param name="destFirstname">Destination entity first name for travel rule purpose (mandatory if dest_lastname is supplied, not required if beneficiary_self = true)</param>
+            <param name="destLastname">Destination entity last name for travel rule purpose (mandatory if dest_firstname is supplied, not required if beneficiary_self = true)</param>
+            <param name="destCorpName">Destination entity corporate name for travel rule purpose. (use either dest_firstname + dest_lastname or dest_corp_name, not required if beneficiary_self = true)</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>

@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Models.Socket
     /// <summary>
     /// Ticker information
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter<BitfinexStreamTicker, BitfinexSourceGenerationContext>))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexStreamTicker>))]
     [SerializationModel]
     public record BitfinexStreamTicker
     {
