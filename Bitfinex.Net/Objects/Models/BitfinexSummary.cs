@@ -1,13 +1,16 @@
-﻿using CryptoExchange.Net.Attributes;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
 using System.Collections.Generic;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Bitfinex fee summary
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexSummary>))]
+    [SerializationModel]
     public record BitfinexSummary
     {
         /// <summary>
@@ -35,6 +38,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Leo info
     /// </summary>
+    [SerializationModel]
     public record BitfinexLeoInfo
     {
         /// <summary>
@@ -52,7 +56,8 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding earnings
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingEarnings>))]
+    [SerializationModel]
     public record BitfinexFundingEarnings
     {
         /// <summary>
@@ -70,14 +75,15 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Volume info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexVolumes>))]
+    [SerializationModel]
     public record BitfinexVolumes
     {
         /// <summary>
         /// Volumes
         /// </summary>
         [ArrayProperty(0), JsonConversion]
-        public List<Bitfinex30DaySummaryVolumeEntry> Volumes { get; set; } = new List<Bitfinex30DaySummaryVolumeEntry>();
+        public Bitfinex30DaySummaryVolumeEntry[] Volumes { get; set; } = [];
         /// <summary>
         /// Trading fees paid
         /// </summary>
@@ -93,7 +99,8 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Fee info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFees>))]
+    [SerializationModel]
     public record BitfinexFees
     {
         /// <summary>
@@ -111,7 +118,8 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Maker fee info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexMakerFee>))]
+    [SerializationModel]
     public record BitfinexMakerFee
     {
         /// <summary>
@@ -120,7 +128,7 @@ namespace Bitfinex.Net.Objects.Models
         [ArrayProperty(0)]
         public decimal MakerFee { get; set; }
         /// <summary>
-        /// Derivatie rebate
+        /// Derivatives rebate
         /// </summary>
         [ArrayProperty(5)]
         public decimal DerivativeRebate { get; set; }
@@ -129,7 +137,8 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Taker fees info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexTakerFee>))]
+    [SerializationModel]
     public record BitfinexTakerFee
     {
         /// <summary>
@@ -157,6 +166,7 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Summary entry
     /// </summary>
+    [SerializationModel]
     public record Bitfinex30DaySummaryVolumeEntry
     {
         /// <summary>

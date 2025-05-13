@@ -26,7 +26,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     131072 + // Send checksum messages
                     (_bulkUpdates ? 536870912 : 0) // Bulk updates
                     ));
-                return new CallResult(null);
+                return CallResult.SuccessResult;
             }
 
             var code = message.Data.Code;
@@ -50,7 +50,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     break;
             }
 
-            return new CallResult(null);
+            return CallResult.SuccessResult;
         }
     }
 }

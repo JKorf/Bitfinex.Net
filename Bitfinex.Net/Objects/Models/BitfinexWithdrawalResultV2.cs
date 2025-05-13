@@ -1,13 +1,16 @@
-﻿using Bitfinex.Net.Enums;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
 using System;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Withdrawal result
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWithdrawalResultV2>))]
+    [SerializationModel]
     public record BitfinexWithdrawalResultV2
     {
         /// <summary>
@@ -40,7 +43,8 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Withdrawal info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWithdrawalInfo>))]
+    [SerializationModel]
     public record BitfinexWithdrawalInfo
     {
         /// <summary>
@@ -62,7 +66,7 @@ namespace Bitfinex.Net.Objects.Models
         /// Wallet type
         /// </summary>
         [ArrayProperty(4)]
-        [JsonConverter(typeof(EnumConverter))]
+
         public WithdrawWallet Wallet { get; set; }
         /// <summary>
         /// Quantity

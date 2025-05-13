@@ -1,11 +1,15 @@
-﻿using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
+using System.ComponentModel;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Funding info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingInfo>))]
+    [SerializationModel]
     public record BitfinexFundingInfo
     {
         /// <summary>
@@ -23,14 +27,15 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Data
         /// </summary>
-        [ArrayProperty(2), JsonConverter(typeof(ArrayConverter))]
+        [ArrayProperty(2), JsonConverter(typeof(ArrayConverter<BitfinexFundingInfoDetails>))]
         public BitfinexFundingInfoDetails Data { get; set; } = default!;
     }
 
     /// <summary>
     /// Funding info details
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingInfoDetails>))]
+    [SerializationModel]
     public record BitfinexFundingInfoDetails
     {
         /// <summary>

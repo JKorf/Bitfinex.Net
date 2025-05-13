@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Margin info
     /// </summary>
+    [SerializationModel]
     public record BitfinexMarginInfo
     {
         /// <summary>

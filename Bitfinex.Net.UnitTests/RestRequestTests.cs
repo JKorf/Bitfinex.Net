@@ -20,7 +20,7 @@ namespace Bitfinex.Net.UnitTests
                 opts.AutoTimestamp = false;
                 opts.ApiCredentials = new ApiCredentials("123", "456");
             });
-            var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/Account", "https://api.bitfinex.com", IsAuthenticated, stjCompare: true);
+            var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/Account", "https://api.bitfinex.com", IsAuthenticated);
             await tester.ValidateAsync(client => client.SpotApi.Account.GetBalancesAsync(), "GetBalances");
             await tester.ValidateAsync(client => client.SpotApi.Account.GetBaseMarginInfoAsync(), "GetBaseMarginInfo");
             await tester.ValidateAsync(client => client.SpotApi.Account.GetSymbolMarginInfoAsync("tETHUST"), "GetSymbolMarginInfo");
@@ -50,7 +50,7 @@ namespace Bitfinex.Net.UnitTests
                 opts.AutoTimestamp = false;
                 opts.ApiCredentials = new ApiCredentials("123", "456");
             });
-            var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/ExchangeData", "https://api.bitfinex.com", IsAuthenticated, stjCompare: true);
+            var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/ExchangeData", "https://api.bitfinex.com", IsAuthenticated);
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetTickersAsync(), "GetTickers");
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetPlatformStatusAsync(), "GetPlatformStatus");
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetAssetsListAsync(), "GetAssetsList");
@@ -103,7 +103,7 @@ namespace Bitfinex.Net.UnitTests
                 opts.AutoTimestamp = false;
                 opts.ApiCredentials = new ApiCredentials("123", "456");
             });
-            var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/Trading", "https://api.bitfinex.com", IsAuthenticated, stjCompare: true);
+            var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/Trading", "https://api.bitfinex.com", IsAuthenticated);
             await tester.ValidateAsync(client => client.SpotApi.Trading.GetOpenOrdersAsync(), "GetOpenOrders");
             await tester.ValidateAsync(client => client.SpotApi.Trading.GetClosedOrdersAsync(), "GetClosedOrders");
             await tester.ValidateAsync(client => client.SpotApi.Trading.GetOrderTradesAsync("tETHUST", 123), "GetOrderTrades");

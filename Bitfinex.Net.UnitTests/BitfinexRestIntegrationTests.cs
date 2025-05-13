@@ -1,5 +1,6 @@
 ﻿using Bitfinex.Net;
 using Bitfinex.Net.Clients;
+using Bitfinex.Net.SymbolOrderBooks;
 using CryptoExchange.Net.Testing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -115,12 +116,18 @@ namespace Bitfinex.Net.UnitTests
         [Test]
         public async Task TestSpotTrading()
         {
-            await RunAndCheckResult(client => client.SpotApi.Trading.GetOpenOrdersAsync(default, default, default), true);
+            await RunAndCheckResult(client => client.SpotApi.Trading.GetOpenOrdersAsync(default, default, default, default, default), true);
             await RunAndCheckResult(client => client.SpotApi.Trading.GetClosedOrdersAsync(default, default, default, default, default, default), true);
             await RunAndCheckResult(client => client.SpotApi.Trading.GetUserTradesAsync(default, default, default, default, default), true);
             await RunAndCheckResult(client => client.SpotApi.Trading.GetPositionHistoryAsync(default, default, default, default), true);
             await RunAndCheckResult(client => client.SpotApi.Trading.GetPositionsAsync(default), true);
             await RunAndCheckResult(client => client.SpotApi.Trading.GetPositionSnapshotsAsync(default, default, default, default), true);
+        }
+
+        [Test]
+        public async Task TestOrderBooks()
+        {
+            await TestOrderBook(new BitfinexSymbolOrderBook("tETHUSD"));
         }
     }
 }

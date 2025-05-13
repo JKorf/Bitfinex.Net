@@ -34,6 +34,12 @@
             Get the Bitfinex environment by name
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.BitfinexEnvironment.All">
+            <summary>
+            Available environment names
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:Bitfinex.Net.BitfinexEnvironment.Live">
             <summary>
             Live environment
@@ -89,6 +95,11 @@
             <param name="deliverTime">Delivery time for delivery futures</param>
             <returns></returns>
         </member>
+        <member name="P:Bitfinex.Net.BitfinexExchange.AssetAliases">
+            <summary>
+            Aliases for Bitfinex assets
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.BitfinexExchange.RateLimiter">
             <summary>
             Rate limiter configuration for the Bitfinex API
@@ -102,6 +113,11 @@
         <member name="E:Bitfinex.Net.BitfinexRateLimiters.RateLimitTriggered">
             <summary>
             Event for when a rate limit is triggered
+            </summary>
+        </member>
+        <member name="E:Bitfinex.Net.BitfinexRateLimiters.RateLimitUpdated">
+            <summary>
+            Event when the rate limit is updated. Note that it's only updated when a request is send, so there are no specific updates when the current usage is decaying.
             </summary>
         </member>
         <member name="T:Bitfinex.Net.BitfinexTrackerFactory">
@@ -211,7 +227,7 @@
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.ParseErrorResponse(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.IEnumerable{System.String}}},CryptoExchange.Net.Interfaces.IMessageAccessor)">
+        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.ParseErrorResponse(System.Int32,System.Collections.Generic.KeyValuePair{System.String,System.String[]}[],CryptoExchange.Net.Interfaces.IMessageAccessor,System.Exception)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.GetTimeSyncInfo">
@@ -286,16 +302,6 @@
         <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.Trading">
             <inheritdoc />
         </member>
-        <member name="E:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.OnOrderPlaced">
-            <summary>
-            Event triggered when an order is placed via this client
-            </summary>
-        </member>
-        <member name="E:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.OnOrderCanceled">
-            <summary>
-            Event triggered when an order is canceled via this client
-            </summary>
-        </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
@@ -308,24 +314,13 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateAccessor">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetSymbolName(System.String,System.String)">
-            <summary>
-            Get the name of a symbol for Bitfinex based on the base and quote asset
-            </summary>
-            <param name="baseAsset"></param>
-            <param name="quoteAsset"></param>
-            <returns></returns>
-        </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetTimeSyncInfo">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetTimeOffset">
             <inheritdoc />
         </member>
-        <member name="P:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CommonSpotClient">
-            <inheritdoc />
-        </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.ParseErrorResponse(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.IEnumerable{System.String}}},CryptoExchange.Net.Interfaces.IMessageAccessor)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.ParseErrorResponse(System.Int32,System.Collections.Generic.KeyValuePair{System.String,System.String[]}[],CryptoExchange.Net.Interfaces.IMessageAccessor,System.Exception)">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount">
@@ -373,7 +368,7 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WalletTransferAsync(System.String,System.Decimal,Bitfinex.Net.Enums.WithdrawWallet,Bitfinex.Net.Enums.WithdrawWallet,System.String,System.String,System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount.WithdrawV2Async(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Threading.CancellationToken)">
@@ -535,7 +530,7 @@
         <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.String,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetClosedOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
@@ -604,31 +599,31 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToFundingTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexStreamFundingTicker}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToFundingOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookFundingEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToFundingOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexOrderBookFundingEntry[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToRawOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToRawOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToRawFundingOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookFundingEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToRawFundingOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookFundingEntry[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeSimple}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexTradeSimple[]}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexKline[]}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToLiquidationUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexLiquidation}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToLiquidationUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexLiquidation[]}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToDerivativesUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexDerivativesStatusUpdate}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToUserUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrder}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexPosition}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingOffer}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingCredit}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFunding}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexWallet}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexBalance}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingTrade}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingInfo}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexMarginBase}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexMarginSymbol}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToUserUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexOrder[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexPosition[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingOffer[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingCredit[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFunding[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexWallet[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexBalance}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingTrade}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingInfo}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexMarginBase}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexMarginSymbol}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.String)">
@@ -663,6 +658,2075 @@
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.GetListenerIdentifier(CryptoExchange.Net.Interfaces.IMessageAccessor)">
             <inheritdoc />
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Boolean">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableBoolean">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Decimal">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableDecimal">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.DecimalArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Double">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexEventType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableBitfinexEventType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexEventTypeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Frequency">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableFrequency">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FrequencyArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FundingOfferType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableFundingOfferType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FundingOfferTypeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FundingOrderType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableFundingOrderType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FundingOrderTypeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FundingSide">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableFundingSide">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FundingSideArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FundingType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableFundingType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FundingTypeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FundType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableFundType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.FundTypeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.KlineInterval">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableKlineInterval">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.KlineIntervalArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.MarginFundingType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableMarginFundingType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.MarginFundingTypeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.OrderFlags">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableOrderFlags">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.OrderFlagsArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.OrderSide">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableOrderSide">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.OrderSideArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.OrderStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableOrderStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.OrderStatusArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.OrderType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableOrderType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.OrderTypeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.PlatformStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullablePlatformStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.PlatformStatusArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.PositionStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullablePositionStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.PositionStatusArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.PositionType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullablePositionType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.PositionTypeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Precision">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullablePrecision">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.PrecisionArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Sorting">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableSorting">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.SortingArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.StatKey">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableStatKey">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.StatKeyArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.StatSection">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableStatSection">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.StatSectionArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.StatSide">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableStatSide">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.StatSideArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.SymbolType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableSymbolType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.SymbolTypeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.WalletType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableWalletType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.WalletTypeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.WithdrawWallet">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableWithdrawWallet">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.WithdrawWalletArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAuthentication">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAuthenticationArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexChecksum">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexChecksumArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMeta">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMultiCancel">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMultiCancelArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexNewOrder">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexNewOrderArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketConfig">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketConfigArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketQuery">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketQueryArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexUnsubscribeRequest">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexUnsubscribeRequestArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexUpdateOrder">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexUpdateOrderArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Bitfinex30DaySummaryVolumeEntry">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Bitfinex30DaySummaryVolumeEntryArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAlert">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAlertArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAsset">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAssetArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAssetArrayArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAssetInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAssetInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAssetInfoArrayArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAvailableBalance">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAvailableBalanceArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAveragePrice">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexAveragePriceArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexBalance">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexBalanceArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexChangeLog">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexChangeLogArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDecimalArrayKeyValue">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDecimalArrayKeyValueArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDecimalArrayKeyValueArrayArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDepositAddress">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDepositAddressArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDerivativesFees">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDerivativesFeesArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDerivativesStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDerivativesStatusArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDerivativesStatusUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDerivativesStatusUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFees">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFeesArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexForeignExchangeRate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexForeignExchangeRateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFunding">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingAutoRenew">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingAutoRenewArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingAutoRenewStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingAutoRenewStatusArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingCredit">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingCreditArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingEarnings">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingEarningsArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingInfoDetails">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingInfoDetailsArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingOffer">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingOfferArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingOrderBook">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingOrderBookArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingStats">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingStatsArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingTicker">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingTickerArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingTrade">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingTradeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionBalance">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionBalanceArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionBalances">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionBalancesArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionFundingAssetInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionFundingAssetInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionFundingInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionFundingInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionQuantity">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexIncreasePositionQuantityArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexKline">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexKlineArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLedgerEntry">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLedgerEntryArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLeoInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLeoInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLiquidation">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLiquidationArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLiquidationArrayArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLogin">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLoginArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMakerFee">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMakerFeeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginBase">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginBaseArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginBaseInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginBaseInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginSymbol">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginSymbolArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginSymbolInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginSymbolInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMovement">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMovementArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMovementDetails">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMovementDetailsArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrder">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBook">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookBase">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookBaseArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookEntry">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookEntryArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookFundingEntry">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookFundingEntryArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPerformance">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPerformanceArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPermission">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPermissionArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPerpDerivativesFees">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPerpDerivativesFeesArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPlatformStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPlatformStatusArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPosition">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPositionArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPositionBasic">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexPositionBasicArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawFundingOrderBook">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawFundingOrderBookArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBook">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookEntry">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookEntryArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookFundingEntry">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookFundingEntryArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStats">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStatsArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamFundingTicker">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamFundingTickerArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStringArrayKeyValue">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStringArrayKeyValueArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStringArrayKeyValueArrayArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStringKeyValue">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStringKeyValueArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStringKeyValueArrayArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSuccessResult">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSuccessResultArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSummary">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSummaryArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSymbolInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSymbolInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSymbolInfoKeyValue">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSymbolInfoKeyValueArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSymbolInfoKeyValueArrayArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTakerFee">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTakerFeeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTicker">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTickerArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTickerHistory">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTickerHistoryArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTradeDetails">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTradeDetailsArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTradeSimple">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTradeSimpleArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTransfer">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTransferArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexUserInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexUserInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexVolumes">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexVolumesArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWallet">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWalletArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWithdrawalInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWithdrawalInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWithdrawalResultV2">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWithdrawalResultV2Array">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResult">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultDepositAddress">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultDepositAddressArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultFundingAutoRenew">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultFundingAutoRenewArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultFundingOffer">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultFundingOfferArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultOrder">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultOrderArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultOrders">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultOrdersArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultPosition">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultPositionArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultPositionBasic">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultPositionBasicArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultTransfer">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWriteResultTransferArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexBalanceEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexBalanceEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingCreditEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingCreditEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingCreditsEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingCreditsEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingInfoEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingInfoEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingOfferNotification">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingOfferNotificationArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingOfferNotificationEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingOfferNotificationEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingsEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingsEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingTradeEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexFundingTradeEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginBaseEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginBaseEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginSymbolEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexMarginSymbolEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexNotificationBitfinexFundingOffer">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexNotificationBitfinexOrderArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexNotificationBitfinexOrder">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOfferEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOfferEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOffersEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOffersEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderNotification">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderNotificationArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderNotificationEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderNotificationEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrdersEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrdersEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrdersNotification">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrdersNotificationArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrdersNotificationEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrdersNotificationEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketInfo">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketInfoArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketInfoDetails">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketInfoDetailsArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketPositionEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketPositionEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketPositionsEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketPositionsEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketStringEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexSocketStringEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamTicker">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamTickerArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTradeDetailEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTradeDetailEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWalletEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWalletEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWalletsEvent">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWalletsEventArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWithdrawalResult">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexWithdrawalResultArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexBookRequest">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexBookRequestArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDerivativesStatusUpdateArrayUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDerivativesStatusUpdateArrayUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDerivativesStatusUpdateUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexDerivativesStatusUpdateUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexKlineArrayUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexKlineArrayUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexKlineUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexKlineUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLiquidationArrayUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLiquidationArrayUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLiquidationUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexLiquidationUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookEntryArrayUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookEntryArrayUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookEntryUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookEntryUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookFundingEntryArrayUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookFundingEntryArrayUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookFundingEntryUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexOrderBookFundingEntryUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookEntryArrayUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookEntryArrayUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookEntryUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookEntryUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookFundingEntryArrayUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookFundingEntryArrayUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookFundingEntryUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRawOrderBookFundingEntryUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRequest">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexRequestArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexResponse">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexResponseArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamFundingTickerArrayUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamFundingTickerArrayUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamFundingTickerUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamFundingTickerUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamTickerArrayUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamTickerArrayUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamTickerUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStreamTickerUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStringUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexStringUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTradeArrayUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTradeArrayUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTradeUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.BitfinexTradeUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.DictionaryStringDecimal">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.DictionaryStringInt64">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.DictionaryStringString">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.IDictionaryStringObject">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.IEnumerableInt64">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.DateTime">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableDateTime">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Int32">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableInt32">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Int64">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.NullableInt64">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Int64Array">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Int64ArrayArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Object">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.ObjectArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.ObjectArrayArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.String">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.StringArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.StringArrayArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
         </member>
         <member name="T:Bitfinex.Net.Enums.BitfinexEventType">
             <summary>
@@ -1214,71 +3278,6 @@
             Immediate or cancel order
             </summary>
         </member>
-        <member name="T:Bitfinex.Net.Enums.OrderTypeV1">
-            <summary>
-            Order types for V1 API
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.Market">
-            <summary>
-            Market order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.Limit">
-            <summary>
-            Limit order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.Stop">
-            <summary>
-            Stop order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.StopLimit">
-            <summary>
-            Stop limit order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.TrailingStop">
-            <summary>
-            Trailing stop order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.FillOrKill">
-            <summary>
-            Fill or kill order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.ExchangeMarket">
-            <summary>
-            Exchange market order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.ExchangeLimit">
-            <summary>
-            Exchange limit order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.ExchangeStop">
-            <summary>
-            Exchange stop order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.ExchangeStopLimit">
-            <summary>
-            Exchange stop limit order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.ExchangeTrailingStop">
-            <summary>
-            Exchange trailing stop order
-            </summary>
-        </member>
-        <member name="F:Bitfinex.Net.Enums.OrderTypeV1.ExchangeFillOrKill">
-            <summary>
-            Exchange fill or kill order
-            </summary>
-        </member>
         <member name="T:Bitfinex.Net.Enums.PlatformStatus">
             <summary>
             Status of Bitfinex
@@ -1503,6 +3502,7 @@
             <summary>
             Endpoints related to funding
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding"/>
         </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApiFunding">
             <summary>
@@ -1674,17 +3674,19 @@
             <summary>
             General endpoints
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.GeneralApi.IBitfinexRestClientGeneralApi"/>
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.SpotApi">
             <summary>
             Spot endpoints
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi"/>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.SetOptions(CryptoExchange.Net.Objects.Options.UpdateOptions)">
             <summary>
             Update specific options
             </summary>
-            <param name="options">Options to update. Only specific options are changable after the client has been created</param>
+            <param name="options">Options to update. Only specific options are changeable after the client has been created</param>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <summary>
@@ -1701,12 +3703,13 @@
             <summary>
             Spot streams
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi"/>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient.SetOptions(CryptoExchange.Net.Objects.Options.UpdateOptions)">
             <summary>
             Update specific options
             </summary>
-            <param name="options">Options to update. Only specific options are changable after the client has been created</param>
+            <param name="options">Options to update. Only specific options are changeable after the client has been created</param>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <summary>
@@ -1723,25 +3726,23 @@
             <summary>
             Endpoints related to account settings, info or actions
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount"/>
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.ExchangeData">
             <summary>
             Endpoints related to retrieving market and system data
             </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData"/>
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.Trading">
             <summary>
             Endpoints related to orders and trades
             </summary>
-        </member>
-        <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.CommonSpotClient">
-            <summary>
-            DEPRECATED; use <see cref="T:CryptoExchange.Net.SharedApis.ISharedClient" /> instead for common/shared functionality. See <see href="https://jkorf.github.io/CryptoExchange.Net/docs/index.html#shared" /> for more info.
-            </summary>
+            <see cref="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading"/>
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApi.SharedClient">
             <summary>
-            Get the shared rest requests client. This interface is shared with other exhanges to allow for a common implementation for different exchanges.
+            Get the shared rest requests client. This interface is shared with other exchanges to allow for a common implementation for different exchanges.
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount">
@@ -1893,7 +3894,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.WithdrawAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.Nullable{System.Boolean},System.String,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
             All withdrawals need the withdrawType, wallet and quantity parameters
@@ -1921,6 +3922,13 @@
             <param name="intermediaryBankSwift">Intermediary bank SWIFT code</param>
             <param name="accountName">The name of the account</param>
             <param name="paymentId">Hex string for Monero transaction</param>
+            <param name="travelRuleTos">Flag to voluntarily send travel rule details for withdrawal</param>
+            <param name="vaspDid">Virtual asset provider identifier, optional info for travel rule purpose. DID values can be found on https://api-pub.bitfinex.com/v2/ext/vasps endpoint.</param>
+            <param name="vaspName">Virtual asset provider name, optional info for travel rule purpose, if self custody ignore the field</param>
+            <param name="beneficiarySelf">Set to 'true' to extract destination data from your KYC data. (If 'true', dest_firstname, dest_lastname, or dest_corp_name do not need to be supplied)</param>
+            <param name="destFirstname">Destination entity first name for travel rule purpose (mandatory if dest_lastname is supplied, not required if beneficiary_self = true)</param>
+            <param name="destLastname">Destination entity last name for travel rule purpose (mandatory if dest_firstname is supplied, not required if beneficiary_self = true)</param>
+            <param name="destCorpName">Destination entity corporate name for travel rule purpose. (use either dest_firstname + dest_lastname or dest_corp_name, not required if beneficiary_self = true)</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
@@ -2395,7 +4403,7 @@
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetDepositWithdrawalMethodsAsync(System.Threading.CancellationToken)">
             <summary>
-            Get mapping of assets to their withdrwal methods
+            Get mapping of assets to their withdrawal methods
             <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
             </summary>
             <param name="ct">Cancellation token</param>
@@ -2448,16 +4456,18 @@
         </member>
         <member name="T:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading">
             <summary>
-            Bitfinex trading endpoints, placing and mananging orders.
+            Bitfinex trading endpoints, placing and managing orders.
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.String,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <summary>
             Get the active orders
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-orders" /></para>
             </summary>
             <param name="symbol">Filter by symbol, for example `tETHUSD`</param>
             <param name="orderIds">Filter by specific order ids</param>
+            <param name="clientOrderId">Filter by client order id. clientOrderId should also be provided</param>
+            <param name="clientOrderIdDate">The date of the clientOrderId</param>
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
@@ -2620,7 +4630,7 @@
         </member>
         <member name="P:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SharedClient">
             <summary>
-            Get the shared socket subscription client. This interface is shared with other exhanges to allow for a common implementation for different exchanges.
+            Get the shared socket subscription client. This interface is shared with other exchanges to allow for a common implementation for different exchanges.
             </summary>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker}},System.Threading.CancellationToken)">
@@ -2643,7 +4653,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexOrderBookEntry[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to order book updates for a symbol. Use SubscribeToFundingOrderBookUpdatesAsync for funding symbol ticker updates
             <para><a href="https://docs.bitfinex.com/reference#ws-public-books" /></para>
@@ -2657,7 +4667,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToFundingOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrderBookFundingEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToFundingOrderBookUpdatesAsync(System.String,Bitfinex.Net.Enums.Precision,Bitfinex.Net.Enums.Frequency,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexOrderBookFundingEntry[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to funding order book updates for a symbol. Use SubscribeToOrderBookUpdatesAsync for trade symbol ticker updates
             <para><a href="https://docs.bitfinex.com/reference#ws-public-books" /></para>
@@ -2671,7 +4681,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToRawOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToRawOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookEntry[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to raw order book updates for a symbol. Use SubscribeToRawFundingOrderBookUpdatesAsync for funding symbol ticker updates
             <para><a href="https://docs.bitfinex.com/reference#ws-public-raw-books" /></para>
@@ -2683,7 +4693,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToRawFundingOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookFundingEntry}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToRawFundingOrderBookUpdatesAsync(System.String,System.Int32,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexRawOrderBookFundingEntry[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Int32}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to raw order book updates for a symbol. Use SubscribeToRawOrderBookUpdatesAsync for trade symbol ticker updates
             <para><a href="https://docs.bitfinex.com/reference#ws-public-raw-books" /></para>
@@ -2695,7 +4705,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexTradeSimple}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexTradeSimple[]}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to public trade updates for a symbol
             <para><a href="https://docs.bitfinex.com/reference#ws-public-trades" /></para>
@@ -2705,7 +4715,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexKline}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToKlineUpdatesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexKline[]}},System.Threading.CancellationToken)">
             <summary>
             Subscribes to kline updates for a symbol
             <para><a href="https://docs.bitfinex.com/reference#ws-public-candles" /></para>
@@ -2716,7 +4726,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToLiquidationUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexLiquidation}}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToLiquidationUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexLiquidation[]}},System.Threading.CancellationToken)">
             <summary>
             Subscribe to liquidation updates
             <para><a href="https://docs.bitfinex.com/reference/ws-public-status" /></para>
@@ -2735,7 +4745,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToUserUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexOrder}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexPosition}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingOffer}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFundingCredit}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexFunding}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{System.Collections.Generic.IEnumerable{Bitfinex.Net.Objects.Models.BitfinexWallet}}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexBalance}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingTrade}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingInfo}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexMarginBase}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexMarginSymbol}},System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.SubscribeToUserUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexOrder[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexPosition[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingOffer[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingCredit[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFunding[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexWallet[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexBalance}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingTrade}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingInfo}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexMarginBase}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexMarginSymbol}},System.Threading.CancellationToken)">
             <summary>
             Subscribe to trading information updates
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-trades" /></para>
@@ -2763,7 +4773,7 @@
             <param name="side">The order side</param>
             <param name="type">The type of the order</param>
             <param name="symbol">The symbol the order is for, for example `tETHUSD`</param>
-            <param name="quantity">The quantity of the order, positive for buying, negative for selling</param>
+            <param name="quantity">The quantity of the order</param>
             <param name="groupId">Group id to assign to the order</param>
             <param name="clientOrderId">Client order id to assign to the order</param>
             <param name="price">Price of the order</param>
@@ -4311,6 +6321,11 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexOrder.QuantityRemaining">
             <summary>
+            The original quantity
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexOrder.QuantityRemainingRaw">
+            <summary>
             The quantity left
             </summary>
         </member>
@@ -4821,7 +6836,7 @@
         </member>
         <member name="P:Bitfinex.Net.Objects.Models.BitfinexMakerFee.DerivativeRebate">
             <summary>
-            Derivatie rebate
+            Derivatives rebate
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.Models.BitfinexTakerFee">
@@ -5438,14 +7453,68 @@
             Text of the notification.
             </summary>
         </member>
-        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWriteResult`1">
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWriteResultFundingOffer">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWriteResultFundingOffer.Data">
             <summary>
-            Result V2.
+            Funding offer
             </summary>
         </member>
-        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWriteResult`1.Data">
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWriteResultFundingAutoRenew">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWriteResultFundingAutoRenew.Data">
             <summary>
-            Data object.
+            Auto renew
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWriteResultDepositAddress">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWriteResultDepositAddress.Data">
+            <summary>
+            Deposit address
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWriteResultTransfer">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWriteResultTransfer.Data">
+            <summary>
+            Transfer info
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWriteResultOrder">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWriteResultOrder.Data">
+            <summary>
+            Order info
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWriteResultPosition">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWriteResultPosition.Data">
+            <summary>
+            Position info
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWriteResultPositionBasic">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWriteResultPositionBasic.Data">
+            <summary>
+            Position info
+            </summary>
+        </member>
+        <member name="T:Bitfinex.Net.Objects.Models.BitfinexWriteResultOrders">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.BitfinexWriteResultOrders.Data">
+            <summary>
+            Orders
             </summary>
         </member>
         <member name="T:Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent`1">
@@ -5731,7 +7800,7 @@
             Spot API options
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Objects.Sockets.Subscriptions.BitfinexSubscription`1.GetMessageType(CryptoExchange.Net.Interfaces.IMessageAccessor)">
+        <member name="M:Bitfinex.Net.Objects.Sockets.Subscriptions.BitfinexSubscription`2.GetMessageType(CryptoExchange.Net.Interfaces.IMessageAccessor)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Objects.Sockets.Subscriptions.BitfinexUserSubscription.GetMessageType(CryptoExchange.Net.Interfaces.IMessageAccessor)">
@@ -5844,11 +7913,6 @@
             <param name="services">The service collection</param>
             <param name="optionsDelegate">Set options for the Bitfinex services</param>
             <returns></returns>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitfinex.Net.Objects.Options.BitfinexRestOptions},System.Action{Bitfinex.Net.Objects.Options.BitfinexSocketOptions},System.Nullable{Microsoft.Extensions.DependencyInjection.ServiceLifetime})">
-            <summary>
-            DEPRECATED; use <see cref="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddBitfinex(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitfinex.Net.Objects.Options.BitfinexOptions})" /> instead
-            </summary>
         </member>
     </members>
 </doc>

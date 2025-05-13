@@ -1,13 +1,16 @@
-﻿using System;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using System;
 using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Funding info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFunding>))]
+    [SerializationModel]
     public record BitfinexFunding
     {
         /// <summary>
@@ -26,7 +29,7 @@ namespace Bitfinex.Net.Objects.Models
         /// The side of the funding
         /// </summary>
         [ArrayProperty(2)]
-        [JsonConverter(typeof(EnumConverter))]
+
         public FundingSide Side { get; set; }
 
         /// <summary>
@@ -55,7 +58,7 @@ namespace Bitfinex.Net.Objects.Models
         /// The order status
         /// </summary>
         [ArrayProperty(7)]
-        [JsonConverter(typeof(EnumConverter))]
+
         public OrderStatus Status { get; set; }
         /// <summary>
         /// The raw order status string
@@ -122,7 +125,8 @@ namespace Bitfinex.Net.Objects.Models
     /// <summary>
     /// Funding credit info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexFundingCredit>))]
+    [SerializationModel]
     public record BitfinexFundingCredit: BitfinexFunding
     {
         /// <summary>

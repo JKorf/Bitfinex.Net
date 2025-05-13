@@ -1,8 +1,10 @@
-﻿namespace Bitfinex.Net.Objects.Models.V1
+using CryptoExchange.Net.Converters.SystemTextJson;
+namespace Bitfinex.Net.Objects.Models.V1
 {
     /// <summary>
     /// Result of withdrawing
     /// </summary>
+    [SerializationModel]
     public record BitfinexWithdrawalResult
     {
         /// <summary>

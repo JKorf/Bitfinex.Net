@@ -1,14 +1,17 @@
-﻿using CryptoExchange.Net.Attributes;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
 using System;
 using System.Collections.Generic;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// User info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexUserInfo>))]
+    [SerializationModel]
     public record BitfinexUserInfo
     {
         /// <summary>
@@ -110,7 +113,7 @@ namespace Bitfinex.Net.Objects.Models
         /// Enabled 2fa methods
         /// </summary>
         [ArrayProperty(26), JsonConversion]
-        public IEnumerable<string>? TwoFactorAuthenticationMethods { get; set; } = Array.Empty<string>();
+        public string[]? TwoFactorAuthenticationMethods { get; set; } = Array.Empty<string>();
         /// <summary>
         /// Whether the account has a securities sub-account
         /// </summary>
@@ -145,12 +148,12 @@ namespace Bitfinex.Net.Objects.Models
         /// Array of country codes based on your verification data (residence and nationality)
         /// </summary>
         [ArrayProperty(49), JsonConversion]
-        public IEnumerable<string>? ComplCountries { get; set; } = Array.Empty<string>();
+        public string[]? ComplCountries { get; set; } = Array.Empty<string>();
         /// <summary>
         /// Array of country codes based on your verification data(residence only)
         /// </summary>
         [ArrayProperty(50), JsonConversion]
-        public IEnumerable<string>? ComplCountriesResidence { get; set; } = Array.Empty<string>();
+        public string[]? ComplCountriesResidence { get; set; } = Array.Empty<string>();
         /// <summary>
         /// Type of verification ("individual" or "corporate")
         /// </summary>

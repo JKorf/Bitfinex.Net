@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Sockets.Queries
 {
-    internal class BitfinexQuery<T> : Query<BitfinexSocketEvent<BitfinexNotification<T>>>
+    internal class BitfinexQuery<T, U> : Query<T> where T : BitfinexSocketEvent<U> where U : BitfinexNotification
     {
         private static readonly MessagePath _1Path = MessagePath.Get().Index(1);
         public override HashSet<string> ListenerIdentifiers { get; set; } = new HashSet<string> { "0" };
@@ -24,15 +24,15 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             if (message.GetValue<string>(_1Path) != "n")
                 return null;
 
-            return typeof(BitfinexSocketEvent<BitfinexNotification<T>>);
+            return typeof(T);
         }
 
-        public override CallResult<BitfinexSocketEvent<BitfinexNotification<T>>> HandleMessage(SocketConnection connection, DataEvent<BitfinexSocketEvent<BitfinexNotification<T>>> message)
+        public override CallResult<T> HandleMessage(SocketConnection connection, DataEvent<T> message)
         {
             if (message.Data.Data.Result != "SUCCESS")
-                return new CallResult<BitfinexSocketEvent<BitfinexNotification<T>>>(new ServerError(message.Data.Data.ErrorMessage!));
+                return new CallResult<T>(new ServerError(message.Data.Data.ErrorMessage!));
 
-            return new CallResult<BitfinexSocketEvent<BitfinexNotification<T>>>(message.Data);
+            return new CallResult<T>(message.Data);
         }
     }
 }

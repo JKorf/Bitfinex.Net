@@ -1,10 +1,14 @@
-﻿using CryptoExchange.Net.Attributes;
+using System.Text.Json.Serialization;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Attributes;
 
 namespace Bitfinex.Net.Enums
 {
     /// <summary>
     /// Precision level
     /// </summary>
+    [JsonConverter(typeof(EnumConverter<Precision>))]
+    [SerializationModel]
     public enum Precision
     {
         /// <summary>

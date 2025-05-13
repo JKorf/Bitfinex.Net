@@ -1,5 +1,6 @@
 ﻿namespace Bitfinex.Net.Objects.Internal
 {
+    [SerializationModel]
     internal class BitfinexAuthentication
     {
         [JsonPropertyName("event")]

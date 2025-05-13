@@ -1,10 +1,14 @@
-﻿using CryptoExchange.Net.Attributes;
+using System.Text.Json.Serialization;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Attributes;
 
 namespace Bitfinex.Net.Enums
 {
     /// <summary>
     /// Stat types
     /// </summary>
+    [JsonConverter(typeof(EnumConverter<StatKey>))]
+    [SerializationModel]
     public enum StatKey
     {
         /// <summary>

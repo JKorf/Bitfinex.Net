@@ -94,14 +94,14 @@ namespace Bitfinex.Net.SymbolOrderBooks
             _initial = true;
         }
 
-        private void ProcessUpdate(DataEvent<IEnumerable<BitfinexOrderBookEntry>> data)
+        private void ProcessUpdate(DataEvent<BitfinexOrderBookEntry[]> data)
         {
             var entries = data.Data;
             if (_initial)
             {
                 _initial = false;
-                var askEntries = entries.Where(e => e.Quantity < 0).ToList();
-                var bidEntries = entries.Where(e => e.Quantity > 0).ToList();
+                var askEntries = entries.Where(e => e.Quantity < 0).ToArray();
+                var bidEntries = entries.Where(e => e.Quantity > 0).ToArray();
                 foreach (var entry in askEntries)
                     entry.Quantity = -entry.Quantity; // Bitfinex sends the asks as negative numbers, invert them
                 
@@ -140,7 +140,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
                     }
                 }
 
-                UpdateOrderBook(DateTime.UtcNow.Ticks, bidEntries, askEntries);
+                UpdateOrderBook(DateTime.UtcNow.Ticks, bidEntries.ToArray(), askEntries.ToArray());
             }
         }
 

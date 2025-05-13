@@ -4,6 +4,7 @@ using Bitfinex.Net.Enums;
 
 namespace Bitfinex.Net.Objects.Internal
 {
+    [SerializationModel]
     internal class BitfinexEvent
     {
         public string Id { get; set; }

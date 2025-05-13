@@ -1,5 +1,6 @@
 ﻿namespace Bitfinex.Net.Objects.Internal
 {
+    [SerializationModel]
     internal class BitfinexUnsubscribeRequest
     {
         [JsonPropertyName("event")]

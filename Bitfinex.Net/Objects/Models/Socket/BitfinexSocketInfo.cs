@@ -1,7 +1,9 @@
-﻿using Bitfinex.Net.Enums;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using Bitfinex.Net.Enums;
 
 namespace Bitfinex.Net.Objects.Models.Socket
 {
+    [SerializationModel]
     internal record BitfinexSocketInfo
     {
         [JsonPropertyName("event")]
@@ -18,10 +20,11 @@ namespace Bitfinex.Net.Objects.Models.Socket
         public string? Message { get; set; }
     }
 
+    [SerializationModel]
     internal record BitfinexSocketInfoDetails
     {
         [JsonPropertyName("status")]
-        [JsonConverter(typeof(EnumConverter))]
+
         public PlatformStatus Status { get; set; }
     }
 }

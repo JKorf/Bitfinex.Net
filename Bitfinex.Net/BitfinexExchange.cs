@@ -1,10 +1,14 @@
-﻿using CryptoExchange.Net.Objects;
+﻿using Bitfinex.Net.Converters;
+using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.RateLimiting;
 using CryptoExchange.Net.RateLimiting.Filters;
 using CryptoExchange.Net.RateLimiting.Guards;
 using CryptoExchange.Net.RateLimiting.Interfaces;
 using CryptoExchange.Net.SharedApis;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Bitfinex.Net
 {
@@ -45,6 +49,8 @@ namespace Bitfinex.Net
         /// </summary>
         public static ExchangeType Type { get; } = ExchangeType.CEX;
 
+        internal static JsonSerializerContext _serializerContext = JsonSerializerContextCache.GetOrCreate<BitfinexSourceGenerationContext>();
+
         /// <summary>
         /// Format a base and quote asset to a Bitfinex recognized symbol 
         /// </summary>
@@ -55,17 +61,22 @@ namespace Bitfinex.Net
         /// <returns></returns>
         public static string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
         {
-            if (baseAsset == "USDT")
-                baseAsset = "UST";
-
-            if (quoteAsset == "USDT")
-                quoteAsset = "UST";
+            baseAsset = AssetAliases.CommonToExchangeName(baseAsset);
+            quoteAsset = AssetAliases.CommonToExchangeName(quoteAsset);
 
             if (baseAsset.Length != 3)
                 return $"t{baseAsset.ToUpperInvariant()}:{quoteAsset.ToUpperInvariant()}";
 
             return $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
         }
+
+        /// <summary>
+        /// Aliases for Bitfinex assets
+        /// </summary>
+        public static AssetAliasConfiguration AssetAliases { get; } = new AssetAliasConfiguration
+        {
+            Aliases = [new AssetAlias("UST", "USDT")]
+        };
 
         /// <summary>
         /// Rate limiter configuration for the Bitfinex API
@@ -84,6 +95,11 @@ namespace Bitfinex.Net
         /// </summary>
         public event Action<RateLimitEvent> RateLimitTriggered;
 
+        /// <summary>
+        /// Event when the rate limit is updated. Note that it's only updated when a request is send, so there are no specific updates when the current usage is decaying.
+        /// </summary>
+        public event Action<RateLimitUpdateEvent> RateLimitUpdated;
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         internal BitfinexRateLimiters()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -93,7 +109,7 @@ namespace Bitfinex.Net
 
         private void Initialize()
         {
-            Overal = new RateLimitGate("Overal");
+            Overall = new RateLimitGate("Overall");
             RestConf = new RateLimitGate("Rest Config")
                 .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, [], 90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding)); // 90 requests per minute shared by all /conf endpoints
             RestStats = new RateLimitGate("Rest Stats")
@@ -102,14 +118,18 @@ namespace Bitfinex.Net
                                     .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, [new HostFilter("wss://api.bitfinex.com"), new LimitItemTypeFilter(RateLimitItemType.Connection)], 5, TimeSpan.FromSeconds(15), RateLimitWindowType.Sliding)) // Limit of 5 connection requests per 15 seconds
                                     .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, [new HostFilter("wss://api-pub.bitfinex.com"), new LimitItemTypeFilter(RateLimitItemType.Connection)], 20, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding)); // Limit of 20 connection requests per 60 seconds
 
-            Overal.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
+            Overall.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
+            Overall.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
             RestConf.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
+            RestConf.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
             RestStats.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
+            RestStats.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
             Websocket.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
+            Websocket.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
         }
 
 
-        internal IRateLimitGate Overal { get; private set; }
+        internal IRateLimitGate Overall { get; private set; }
         internal IRateLimitGate RestConf { get; private set; }
         internal IRateLimitGate RestStats { get; private set; }
         internal IRateLimitGate Websocket { get; private set; }

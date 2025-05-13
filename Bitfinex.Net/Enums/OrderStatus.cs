@@ -1,10 +1,14 @@
-﻿using CryptoExchange.Net.Attributes;
+using System.Text.Json.Serialization;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Attributes;
 
 namespace Bitfinex.Net.Enums
 {
     /// <summary>
     /// Status of an order
     /// </summary>
+    [JsonConverter(typeof(EnumConverter<OrderStatus>))]
+    [SerializationModel]
     public enum OrderStatus
     {
         /// <summary>

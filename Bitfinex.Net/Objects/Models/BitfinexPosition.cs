@@ -1,13 +1,16 @@
-﻿using System;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using System;
 using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Position info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexPosition>))]
+    [SerializationModel]
     public record BitfinexPosition
     {
         /// <summary>
@@ -20,7 +23,7 @@ namespace Bitfinex.Net.Objects.Models
         /// The status of the position
         /// </summary>
         [ArrayProperty(1)]
-        [JsonConverter(typeof(EnumConverter))]
+
         public PositionStatus Status { get; set; }
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace Bitfinex.Net.Objects.Models
         /// The funding type
         /// </summary>
         [ArrayProperty(5)]
-        [JsonConverter(typeof(EnumConverter))]
+
         public MarginFundingType MarginFundingType { get; set; }
 
         /// <summary>
@@ -93,7 +96,7 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// Type of position
         /// </summary>
-        [ArrayProperty(15), JsonConverter(typeof(EnumConverter))]
+        [ArrayProperty(15)]
         public PositionType? Type { get; set; }
 
         /// <summary>

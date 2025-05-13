@@ -1,4 +1,6 @@
-﻿using Bitfinex.Net.Interfaces.Clients.SpotApi;
+using Bitfinex.Net.Enums;
+using Bitfinex.Net.Interfaces.Clients.SpotApi;
+using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.SharedApis;
@@ -12,6 +14,8 @@ namespace Bitfinex.Net.Clients.SpotApi
 {
     internal partial class BitfinexSocketClientSpotApi : IBitfinexSocketClientSpotApiShared
     {
+        private const string _topicId = "BitfinexSpot";
+
         public string Exchange => BitfinexExchange.ExchangeName;
         public TradingMode[] SupportedTradingModes { get; } = new[] { TradingMode.Spot };
 
@@ -27,7 +31,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeResult<UpdateSubscription>(Exchange, validationError);
 
             var symbol = request.Symbol.GetSymbol(FormatSymbol);
-            var result = await SubscribeToTickerUpdatesAsync(symbol, update => handler(update.AsExchangeEvent(Exchange, new SharedSpotTicker(symbol, update.Data.LastPrice, update.Data.HighPrice, update.Data.LowPrice, update.Data.Volume, Math.Round(update.Data.DailyChangePercentage * 100, 2)))), ct).ConfigureAwait(false);
+            var result = await SubscribeToTickerUpdatesAsync(symbol, update => handler(update.AsExchangeEvent(Exchange, new SharedSpotTicker(ExchangeSymbolCache.ParseSymbol(_topicId, symbol), symbol, update.Data.LastPrice, update.Data.HighPrice, update.Data.LowPrice, update.Data.Volume, Math.Round(update.Data.DailyChangePercentage * 100, 2)))), ct).ConfigureAwait(false);
 
             return new ExchangeResult<UpdateSubscription>(Exchange, result);
         }
@@ -36,7 +40,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         #region Trade client
 
         EndpointOptions<SubscribeTradeRequest> ITradeSocketClient.SubscribeTradeOptions { get; } = new EndpointOptions<SubscribeTradeRequest>(false);
-        async Task<ExchangeResult<UpdateSubscription>> ITradeSocketClient.SubscribeToTradeUpdatesAsync(SubscribeTradeRequest request, Action<ExchangeEvent<IEnumerable<SharedTrade>>> handler, CancellationToken ct)
+        async Task<ExchangeResult<UpdateSubscription>> ITradeSocketClient.SubscribeToTradeUpdatesAsync(SubscribeTradeRequest request, Action<ExchangeEvent<SharedTrade[]>> handler, CancellationToken ct)
         {
             var validationError = ((ITradeSocketClient)this).SubscribeTradeOptions.ValidateRequest(Exchange, request, request.Symbol.TradingMode, SupportedTradingModes);
             if (validationError != null)
@@ -48,7 +52,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 if (update.UpdateType == SocketUpdateType.Snapshot || update.StreamId!.EndsWith(".tu"))
                     return;
 
-                handler(update.AsExchangeEvent<IEnumerable<SharedTrade>>(Exchange, update.Data.Select(x => new SharedTrade(x.QuantityAbs, x.Price, x.Timestamp)
+                handler(update.AsExchangeEvent<SharedTrade[]>(Exchange, update.Data.Select(x => new SharedTrade(x.QuantityAbs, x.Price, x.Timestamp)
                 {
                     Side = x.Quantity > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell
                 }).ToArray()));
@@ -68,7 +72,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeResult<UpdateSubscription>(Exchange, validationError);
 
             var symbol = request.Symbol.GetSymbol(FormatSymbol);
-            var result = await SubscribeToTickerUpdatesAsync(symbol, update => handler(update.AsExchangeEvent(Exchange, new SharedBookTicker(update.Data.BestAskPrice, update.Data.BestAskQuantity, update.Data.BestBidPrice, update.Data.BestBidQuantity))), ct).ConfigureAwait(false);
+            var result = await SubscribeToTickerUpdatesAsync(symbol, update => handler(update.AsExchangeEvent(Exchange, new SharedBookTicker(ExchangeSymbolCache.ParseSymbol(_topicId, symbol), symbol, update.Data.BestAskPrice, update.Data.BestAskQuantity, update.Data.BestBidPrice, update.Data.BestBidQuantity))), ct).ConfigureAwait(false);
 
             return new ExchangeResult<UpdateSubscription>(Exchange, result);
         }
@@ -76,7 +80,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Balance client
         EndpointOptions<SubscribeBalancesRequest> IBalanceSocketClient.SubscribeBalanceOptions { get; } = new EndpointOptions<SubscribeBalancesRequest>(false);
-        async Task<ExchangeResult<UpdateSubscription>> IBalanceSocketClient.SubscribeToBalanceUpdatesAsync(SubscribeBalancesRequest request, Action<ExchangeEvent<IEnumerable<SharedBalance>>> handler, CancellationToken ct)
+        async Task<ExchangeResult<UpdateSubscription>> IBalanceSocketClient.SubscribeToBalanceUpdatesAsync(SubscribeBalancesRequest request, Action<ExchangeEvent<SharedBalance[]>> handler, CancellationToken ct)
         {
             var validationError = ((IBalanceSocketClient)this).SubscribeBalanceOptions.ValidateRequest(Exchange, request, request.TradingMode, SupportedTradingModes);
             if (validationError != null)
@@ -87,7 +91,12 @@ namespace Bitfinex.Net.Clients.SpotApi
                     if (update.UpdateType == SocketUpdateType.Snapshot)
                         return;
 
-                    handler(update.AsExchangeEvent<IEnumerable<SharedBalance>>(Exchange, update.Data.Where(x => x.Type == Enums.WalletType.Exchange).Select(x => new SharedBalance(x.Asset, x.Available ?? x.Total, x.Total)).ToArray()));
+                    var updateData = update.Data.Where(x => x.Type == Enums.WalletType.Exchange);
+                    if (!updateData.Any())
+                        return;
+
+                    handler(update.AsExchangeEvent<SharedBalance[]>(Exchange, updateData.Select(x => 
+                        new SharedBalance(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Available ?? x.Total, x.Total)).ToArray()));
                 },
                 ct: ct).ConfigureAwait(false);
 
@@ -97,7 +106,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Spot Order client
         EndpointOptions<SubscribeSpotOrderRequest> ISpotOrderSocketClient.SubscribeSpotOrderOptions { get; } = new EndpointOptions<SubscribeSpotOrderRequest>(false);
-        async Task<ExchangeResult<UpdateSubscription>> ISpotOrderSocketClient.SubscribeToSpotOrderUpdatesAsync(SubscribeSpotOrderRequest request, Action<ExchangeEvent<IEnumerable<SharedSpotOrder>>> handler, CancellationToken ct)
+        async Task<ExchangeResult<UpdateSubscription>> ISpotOrderSocketClient.SubscribeToSpotOrderUpdatesAsync(SubscribeSpotOrderRequest request, Action<ExchangeEvent<SharedSpotOrder[]>> handler, CancellationToken ct)
         {
             var validationError = ((ISpotOrderSocketClient)this).SubscribeSpotOrderOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedTradingModes);
             if (validationError != null)
@@ -109,21 +118,24 @@ namespace Bitfinex.Net.Clients.SpotApi
                     if (update.UpdateType == SocketUpdateType.Snapshot)
                         return;
 
-                    handler(update.AsExchangeEvent<IEnumerable<SharedSpotOrder>>(Exchange, update.Data.Select(x =>
+                    handler(update.AsExchangeEvent<SharedSpotOrder[]>(Exchange, update.Data.Select(x =>
                         new SharedSpotOrder(
+                            ExchangeSymbolCache.ParseSymbol(_topicId, x.Symbol),
                             x.Symbol,
                             x.Id.ToString(),
-                            x.Type == Enums.OrderType.ExchangeLimit ? SharedOrderType.Limit : x.Type == Enums.OrderType.ExchangeMarket ? SharedOrderType.Market : SharedOrderType.Other,
+                            ParseOrderType(x.Type),
                             x.Side == Enums.OrderSide.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
                             x.Status == Enums.OrderStatus.Canceled ? SharedOrderStatus.Canceled : (x.Status == Enums.OrderStatus.Active || x.Status == Enums.OrderStatus.PartiallyFilled) ? SharedOrderStatus.Open : SharedOrderStatus.Filled,
                             x.CreateTime)
                         {
                             ClientOrderId = x.ClientOrderId.ToString(),
-                            OrderPrice = x.Price,
-                            Quantity = x.Quantity,
-                            QuantityFilled = x.Quantity - x.QuantityRemaining,
+                            OrderQuantity = new SharedOrderQuantity(x.Quantity),
+                            QuantityFilled = new SharedOrderQuantity(x.Quantity - x.QuantityRemaining),
                             AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
-                            UpdateTime = x.UpdateTime
+                            UpdateTime = x.UpdateTime,
+                            IsTriggerOrder = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit,
+                            OrderPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.PriceAuxilliaryLimit : x.Price,
+                            TriggerPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.Price : null
                         }
                     ).ToArray()));
                 },
@@ -131,15 +143,27 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             return new ExchangeResult<UpdateSubscription>(Exchange, result);
         }
+
+        private SharedOrderType ParseOrderType(OrderType type)
+        {
+            if (type == OrderType.ExchangeMarket || type == OrderType.ExchangeStop)
+                return SharedOrderType.Market;
+
+            if (type == OrderType.ExchangeLimit || type == OrderType.ExchangeStopLimit)
+                return SharedOrderType.Limit;
+
+            return SharedOrderType.Other;
+        }
         #endregion
 
         #region User Trade client
         EndpointOptions<SubscribeUserTradeRequest> IUserTradeSocketClient.SubscribeUserTradeOptions { get; } = new EndpointOptions<SubscribeUserTradeRequest>(false);
-        async Task<ExchangeResult<UpdateSubscription>> IUserTradeSocketClient.SubscribeToUserTradeUpdatesAsync(SubscribeUserTradeRequest request, Action<ExchangeEvent<IEnumerable<SharedUserTrade>>> handler, CancellationToken ct)
+        async Task<ExchangeResult<UpdateSubscription>> IUserTradeSocketClient.SubscribeToUserTradeUpdatesAsync(SubscribeUserTradeRequest request, Action<ExchangeEvent<SharedUserTrade[]>> handler, CancellationToken ct)
         {
             var result = await SubscribeToUserUpdatesAsync(
-                tradeHandler: update => handler(update.AsExchangeEvent<IEnumerable<SharedUserTrade>>(Exchange, new[] {
+                tradeHandler: update => handler(update.AsExchangeEvent<SharedUserTrade[]>(Exchange, new[] {
                     new SharedUserTrade(
+                        ExchangeSymbolCache.ParseSymbol(_topicId, update.Data.Symbol),
                         update.Data.Symbol,
                         update.Data.OrderId.ToString(),
                         update.Data.Id.ToString(),
@@ -149,7 +173,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         update.Data.Timestamp)
                     {
                         Fee = Math.Abs(update.Data.Fee),
-                        FeeAsset = update.Data.FeeAsset,
+                        FeeAsset = BitfinexExchange.AssetAliases.ExchangeToCommonName(update.Data.FeeAsset),
                         Role = update.Data.Maker == true ? SharedRole.Maker: SharedRole.Taker
                     }
                 })),

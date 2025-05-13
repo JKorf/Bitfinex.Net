@@ -1,19 +1,22 @@
-﻿using Bitfinex.Net.Enums;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
+using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
 {
     /// <summary>
     /// Wallet info
     /// </summary>
-    [JsonConverter(typeof(ArrayConverter))]
+    [JsonConverter(typeof(ArrayConverter<BitfinexWallet>))]
+    [SerializationModel]
     public record BitfinexWallet
     {
         /// <summary>
         /// The type of the wallet
         /// </summary>
         [ArrayProperty(0)]
-        [JsonConverter(typeof(EnumConverter))]
+
         public WalletType Type { get; set; }
 
         /// <summary>
