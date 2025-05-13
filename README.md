@@ -124,6 +124,29 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 9.0.0 - 13 May 2025
+    * Updated CryptoExchange.Net to version 9.0.0, see https://github.com/JKorf/CryptoExchange.Net/releases/
+    * Added support for Native AOT compilation
+    * Added RateLimitUpdated event
+    * Added SharedSymbol response property to all Shared interfaces response models returning a symbol name
+    * Added GenerateClientOrderId method to Spot Shared client
+    * Added OptionalExchangeParameters and Supported properties to EndpointOptions
+    * Added IBookTickerRestClient implementation to Spot Shared client
+    * Added ISpotTriggerOrderRestClient implementation to Spot Shared client
+    * Added IsTriggerOrder, TriggerPrice to SharedSpotOrder response model
+    * Added clientOrderId and clientOrderIdDate property to restClient.SpotApi.Trading.GetOpenOrdersAsync
+    * Added All property to retrieve all available environment on BitfinexEnvironment
+    * Added automatic mapping between UST and USDT asset and symbol names when using the Shared implementations
+    * Refactored Shared clients quantity parameters and responses to use SharedQuantity
+    * Updated all IEnumerable response and model types to array response types
+    * Updated some model types to support AOT compatible deserialization
+    * Fixed InvalidOperationException in user data snapshot updates if there is no data in the snapshot
+    * Fixed empty Shared balance updates if there are no spot changes
+    * Removed Newtonsoft.Json dependency
+    * Removed legacy ISpotClient implementation
+    * Removed legacy AddBitfinex(restOptions, socketOptions) DI overload
+    * Fixed some typos
+
 * Version 9.0.0-beta4 - 01 May 2025
     * Updated CryptoExchange.Net version to 9.0.0-beta5
     * Added property to retrieve all available API environments
