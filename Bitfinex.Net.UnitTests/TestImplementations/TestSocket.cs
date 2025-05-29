@@ -4,6 +4,7 @@ using System.Net.WebSockets;
 using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
@@ -52,7 +53,7 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
         public TimeSpan KeepAliveInterval { get; set; }
         public Func<Task<Uri>> GetReconnectionUrl { get; set; }
 
-        public async Task<CallResult> ConnectAsync()
+        public async Task<CallResult> ConnectAsync(CancellationToken ct)
         {
             await Task.Delay(OpenTime);
             Connected = CanConnect;
