@@ -23,6 +23,7 @@ using CryptoExchange.Net.Converters.MessageParsing;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.SharedApis;
 using Bitfinex.Net.Objects.Sockets;
+using System.Net.WebSockets;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -76,7 +77,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
         /// <inheritdoc />
-        protected override IByteMessageAccessor CreateAccessor() => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
+        protected override IByteMessageAccessor CreateAccessor(WebSocketMessageType type) => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
 
         public IBitfinexSocketClientSpotApiShared SharedClient => this;
 

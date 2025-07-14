@@ -133,5 +133,6 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
         }
 
         public void UpdateProxy(ApiProxy proxy) => throw new NotImplementedException();
+        public bool Send(int id, byte[] data, int weight) => throw new NotImplementedException();
     }
 }

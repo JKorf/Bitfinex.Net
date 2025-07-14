@@ -71,7 +71,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         protected override Error ParseErrorResponse(int httpStatusCode, KeyValuePair<string, string[]>[] responseHeaders, IMessageAccessor accessor, Exception? exception)
         {
-            if (!accessor.IsJson)
+            if (!accessor.IsValid)
                 return new ServerError(null, "Unknown request error", exception: exception);
 
             if (accessor.GetNodeType() != NodeType.Array)
