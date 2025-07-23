@@ -12,22 +12,12 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
 {
     internal class BitfinexQuery<T, U> : Query<T> where T : BitfinexSocketEvent<U> where U : BitfinexNotification
     {
-        private static readonly MessagePath _1Path = MessagePath.Get().Index(1);
-        public override HashSet<string> ListenerIdentifiers { get; set; } = new HashSet<string> { "0" };
-
         public BitfinexQuery(BitfinexSocketQuery request) : base(request, true, 1)
         {
+            MessageMatcher = MessageMatcher.Create<T>("0n", HandleMessage);
         }
 
-        public override Type? GetMessageType(IMessageAccessor message)
-        {
-            if (message.GetValue<string>(_1Path) != "n")
-                return null;
-
-            return typeof(T);
-        }
-
-        public override CallResult<T> HandleMessage(SocketConnection connection, DataEvent<T> message)
+        public CallResult<T> HandleMessage(SocketConnection connection, DataEvent<T> message)
         {
             if (message.Data.Data.Result != "SUCCESS")
                 return new CallResult<T>(new ServerError(message.Data.Data.ErrorMessage!));

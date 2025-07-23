@@ -1,4 +1,5 @@
 ﻿using Bitfinex.Net.Objects.Models.Socket;
+using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
@@ -7,17 +8,18 @@ using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
-    internal class BitfinexInfoSubscription : SystemSubscription<BitfinexSocketInfo>
+    internal class BitfinexInfoSubscription : SystemSubscription
     {
-        public override HashSet<string> ListenerIdentifiers { get; set; } = new HashSet<string> { "info" };
         private readonly bool _bulkUpdates;
 
         public BitfinexInfoSubscription(ILogger logger, bool bulkUpdates) : base(logger, false)
         {
             _bulkUpdates = bulkUpdates;
+
+            MessageMatcher = MessageMatcher.Create<BitfinexSocketInfo>("info", HandleMessage);
         }
 
-        public override CallResult HandleMessage(SocketConnection connection, DataEvent<BitfinexSocketInfo> message)
+        public CallResult HandleMessage(SocketConnection connection, DataEvent<BitfinexSocketInfo> message)
         {
             if (message.Data.Code == null)
             {

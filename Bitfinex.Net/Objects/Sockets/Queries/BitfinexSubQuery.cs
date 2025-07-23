@@ -8,8 +8,6 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
 {
     internal class BitfinexSubQuery : Query<BitfinexResponse>
     {
-        public override HashSet<string> ListenerIdentifiers { get; set; }
-
         public BitfinexSubQuery(string evnt, string channel, string? symbol, string? precision, string? frequency, string? length, string? key) : base(new BitfinexBookRequest
         {
             Channel = channel,
@@ -24,14 +22,10 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             if (string.Equals(evnt, "subscribe", StringComparison.Ordinal) || string.Equals(evnt, "unsubscribe", StringComparison.Ordinal))
                 evnt += "d";
 
-            ListenerIdentifiers = new HashSet<string> 
-            { 
-                evnt + channel + symbol + precision + frequency + length + key, 
-                "error" + channel + symbol + precision + frequency + length + key 
-            };
+            MessageMatcher = MessageMatcher.Create<BitfinexResponse>([evnt + channel + symbol + precision + frequency + length + key, "error" + channel + symbol + precision + frequency + length + key], HandleMessage);
         }
 
-        public override CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DataEvent<BitfinexResponse> message)
+        public CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DataEvent<BitfinexResponse> message)
         {
             if (string.Equals(message.Data.Event, "error", StringComparison.Ordinal))
             {

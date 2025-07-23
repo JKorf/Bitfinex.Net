@@ -7852,12 +7852,6 @@
             Spot API options
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Objects.Sockets.Subscriptions.BitfinexSubscription`2.GetMessageType(CryptoExchange.Net.Interfaces.IMessageAccessor)">
-            <inheritdoc />
-        </member>
-        <member name="M:Bitfinex.Net.Objects.Sockets.Subscriptions.BitfinexUserSubscription.GetMessageType(CryptoExchange.Net.Interfaces.IMessageAccessor)">
-            <inheritdoc />
-        </member>
         <member name="T:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory">
             <summary>
             Bitfinex order book factory
