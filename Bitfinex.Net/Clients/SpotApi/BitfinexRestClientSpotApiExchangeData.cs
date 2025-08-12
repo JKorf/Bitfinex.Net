@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using CryptoExchange.Net.RateLimiting.Guards;
+using CryptoExchange.Net.Objects.Errors;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -240,7 +241,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return ticker.As<BitfinexTicker>(null);
 
             if (!ticker.Data.Any())
-                return ticker.AsError<BitfinexTicker>(new ServerError("Symbol not found"));
+                return ticker.AsError<BitfinexTicker>(new ServerError(null, new ErrorInfo(ErrorType.UnknownSymbol, "Symbol not found")));
 
             return ticker.As(ticker.Data.First());
         }
@@ -255,7 +256,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return ticker.As<BitfinexFundingTicker>(null);
 
             if (!ticker.Data.Any())
-                return ticker.AsError<BitfinexFundingTicker>(new ServerError("Symbol not found"));
+                return ticker.AsError<BitfinexFundingTicker>(new ServerError(null, new ErrorInfo(ErrorType.UnknownSymbol, "Symbol not found")));
 
             return ticker.As(ticker.Data.First());
         }

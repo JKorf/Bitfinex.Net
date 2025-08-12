@@ -42,7 +42,7 @@ namespace Bitfinex.Net.UnitTests
             var result = await CreateClient().SpotApi.ExchangeData.GetOrderBookAsync("TST-TST", default);
 
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Error.Code, Is.EqualTo(10020));
+            Assert.That(result.Error.ErrorCode, Is.EqualTo("10020"));
         }
 
         [Test]

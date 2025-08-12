@@ -98,7 +98,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             };
 
             authentication.Signature = authProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
-            return Task.FromResult<Query?>(new BitfinexAuthQuery(authentication));
+            return Task.FromResult<Query?>(new BitfinexAuthQuery(this, authentication));
         }
 
         /// <inheritdoc />
