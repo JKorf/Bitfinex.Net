@@ -272,7 +272,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var data = result.Data.First();
             if (!data.Success)
-                return result.AsError<BitfinexWithdrawalResult>(new ServerError(null, ErrorInfo.Unknown with { Message = data.Message }));
+                return result.AsError<BitfinexWithdrawalResult>(new ServerError(ErrorInfo.Unknown with { Message = data.Message }));
             return result.As(data);
         }
 

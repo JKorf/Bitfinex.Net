@@ -97,7 +97,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var asset = assetList.Result.Data.SingleOrDefault(x => x.Name == request.Asset);
             if (asset == null)
-                return assetList.Result.AsExchangeError<SharedAsset>(Exchange, new ServerError(null, new ErrorInfo(ErrorType.UnknownAsset, "Not found")));
+                return assetList.Result.AsExchangeError<SharedAsset>(Exchange, new ServerError(new ErrorInfo(ErrorType.UnknownAsset, "Not found")));
 
             var symbol = assetSymbols.Result.Data.SingleOrDefault(y => y.Key == asset.FullName).Value ?? asset.Name;
             var fees = assetFees.Result.Data.SingleOrDefault(y => y.Key.Equals(symbol, StringComparison.OrdinalIgnoreCase));
@@ -398,7 +398,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 result = await Trading.GetClosedOrdersAsync(symbol, new[] { orderId }, ct: ct).ConfigureAwait(false);
 
             if (!result.Data.Any())
-                return result.AsExchangeError<SharedSpotOrder>(Exchange, new ServerError(null, new ErrorInfo(ErrorType.UnknownOrder, $"Order with id {orderId} not found")));
+                return result.AsExchangeError<SharedSpotOrder>(Exchange, new ServerError(new ErrorInfo(ErrorType.UnknownOrder, $"Order with id {orderId} not found")));
 
             var order = result.Data.Single();
             return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedSpotOrder(
@@ -902,7 +902,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 result = await Trading.GetClosedOrdersAsync(symbol, new[] { id }, ct: ct).ConfigureAwait(false);
 
             if (!result.Data.Any())
-                return result.AsExchangeError<SharedSpotTriggerOrder>(Exchange, new ServerError(null, new ErrorInfo(ErrorType.UnknownOrder, $"Order with id {id} not found")));
+                return result.AsExchangeError<SharedSpotTriggerOrder>(Exchange, new ServerError(new ErrorInfo(ErrorType.UnknownOrder, $"Order with id {id} not found")));
 
             var order = result.Data.Single();
             return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedSpotTriggerOrder(

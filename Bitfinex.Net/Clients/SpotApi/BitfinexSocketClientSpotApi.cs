@@ -24,6 +24,7 @@ using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.SharedApis;
 using Bitfinex.Net.Objects.Sockets;
 using System.Net.WebSockets;
+using CryptoExchange.Net.Objects.Errors;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -49,6 +50,8 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         /// <inheritdoc />
         public new BitfinexSocketOptions ClientOptions => (BitfinexSocketOptions)base.ClientOptions;
+
+        protected override ErrorCollection ErrorMapping => BitfinexErrors.Errors;
 
         private readonly string _baseAddressPrivate;
 

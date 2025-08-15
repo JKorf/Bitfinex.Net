@@ -32,7 +32,7 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             {
                 // Additional check for "dup" which means the subscription is already active
                 if (!message.Data.Message.Equals("subscribe: dup", StringComparison.Ordinal))
-                    return new CallResult<BitfinexResponse>(new ServerError(null, ErrorInfo.Unknown with { Message = message.Data.Message! }));
+                    return new CallResult<BitfinexResponse>(new ServerError(ErrorInfo.Unknown with { Message = message.Data.Message! }));
             }
 
             return new CallResult<BitfinexResponse>(message.Data);

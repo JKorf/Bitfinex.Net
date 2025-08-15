@@ -241,7 +241,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return ticker.As<BitfinexTicker>(null);
 
             if (!ticker.Data.Any())
-                return ticker.AsError<BitfinexTicker>(new ServerError(null, new ErrorInfo(ErrorType.UnknownSymbol, "Symbol not found")));
+                return ticker.AsError<BitfinexTicker>(new ServerError(new ErrorInfo(ErrorType.UnknownSymbol, "Symbol not found")));
 
             return ticker.As(ticker.Data.First());
         }
@@ -256,7 +256,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return ticker.As<BitfinexFundingTicker>(null);
 
             if (!ticker.Data.Any())
-                return ticker.AsError<BitfinexFundingTicker>(new ServerError(null, new ErrorInfo(ErrorType.UnknownSymbol, "Symbol not found")));
+                return ticker.AsError<BitfinexFundingTicker>(new ServerError(new ErrorInfo(ErrorType.UnknownSymbol, "Symbol not found")));
 
             return ticker.As(ticker.Data.First());
         }

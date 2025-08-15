@@ -21,7 +21,7 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
         public CallResult<T> HandleMessage(SocketConnection connection, DataEvent<T> message)
         {
             if (message.Data.Data.Result != "SUCCESS")
-                return new CallResult<T>(new ServerError(null, ErrorInfo.Unknown with { Message = message.Data.Data.ErrorMessage! }));
+                return new CallResult<T>(new ServerError(ErrorInfo.Unknown with { Message = message.Data.Data.ErrorMessage! }));
 
             return new CallResult<T>(message.Data);
         }
