@@ -24,6 +24,7 @@ using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.SharedApis;
 using Bitfinex.Net.Objects.Sockets;
 using System.Net.WebSockets;
+using CryptoExchange.Net.Objects.Errors;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -49,6 +50,8 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         /// <inheritdoc />
         public new BitfinexSocketOptions ClientOptions => (BitfinexSocketOptions)base.ClientOptions;
+
+        protected override ErrorMapping ErrorMapping => BitfinexErrors.Errors;
 
         private readonly string _baseAddressPrivate;
 
@@ -98,7 +101,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             };
 
             authentication.Signature = authProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
-            return Task.FromResult<Query?>(new BitfinexAuthQuery(authentication));
+            return Task.FromResult<Query?>(new BitfinexAuthQuery(this, authentication));
         }
 
         /// <inheritdoc />

@@ -3,6 +3,7 @@ using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Objects.Models;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.SharedApis;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var interval = (Enums.KlineInterval)request.Interval;
             if (!Enum.IsDefined(typeof(Enums.KlineInterval), interval))
-                return new ExchangeWebResult<SharedKline[]>(Exchange, new ArgumentError("Interval not supported"));
+                return new ExchangeWebResult<SharedKline[]>(Exchange, ArgumentError.Invalid(nameof(GetKlinesRequest.Interval), "Interval not supported"));
 
             // Determine page token
             DateTime? fromTimestamp = null;
@@ -96,7 +97,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var asset = assetList.Result.Data.SingleOrDefault(x => x.Name == request.Asset);
             if (asset == null)
-                return assetList.Result.AsExchangeError<SharedAsset>(Exchange, new ServerError("Not found"));
+                return assetList.Result.AsExchangeError<SharedAsset>(Exchange, new ServerError(new ErrorInfo(ErrorType.UnknownAsset, "Not found")));
 
             var symbol = assetSymbols.Result.Data.SingleOrDefault(y => y.Key == asset.FullName).Value ?? asset.Name;
             var fees = assetFees.Result.Data.SingleOrDefault(y => y.Key.Equals(symbol, StringComparison.OrdinalIgnoreCase));
@@ -360,7 +361,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             int clientOrderId = 0;
             if (request.ClientOrderId != null && !int.TryParse(request.ClientOrderId, out clientOrderId))
-                return new ExchangeWebResult<SharedId>(Exchange, new ArgumentError("ClientOrderId needs to be parsable to `int` for `Bitfinex`"));
+                return new ExchangeWebResult<SharedId>(Exchange, ArgumentError.Invalid(nameof(PlaceSpotOrderRequest.ClientOrderId), "ClientOrderId needs to be parsable to `int` for `Bitfinex`"));
 
             var result = await Trading.PlaceOrderAsync(
                 request.Symbol!.GetSymbol(FormatSymbol),
@@ -386,7 +387,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeWebResult<SharedSpotOrder>(Exchange, validationError);
 
             if (!long.TryParse(request.OrderId, out var orderId))
-                return new ExchangeWebResult<SharedSpotOrder>(Exchange, new ArgumentError("Invalid order id"));
+                return new ExchangeWebResult<SharedSpotOrder>(Exchange, ArgumentError.Invalid(nameof(GetOrderRequest.OrderId), "Invalid order id"));
 
             var symbol = request.Symbol!.GetSymbol(FormatSymbol);
             var result = await Trading.GetOpenOrdersAsync(symbol, new[] { orderId }, ct: ct).ConfigureAwait(false);
@@ -397,7 +398,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 result = await Trading.GetClosedOrdersAsync(symbol, new[] { orderId }, ct: ct).ConfigureAwait(false);
 
             if (!result.Data.Any())
-                return result.AsExchangeError<SharedSpotOrder>(Exchange, new ServerError($"Order with id {orderId} not found"));
+                return result.AsExchangeError<SharedSpotOrder>(Exchange, new ServerError(new ErrorInfo(ErrorType.UnknownOrder, $"Order with id {orderId} not found")));
 
             var order = result.Data.Single();
             return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedSpotOrder(
@@ -511,7 +512,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeWebResult<SharedUserTrade[]>(Exchange, validationError);
 
             if (!long.TryParse(request.OrderId, out var orderId))
-                return new ExchangeWebResult<SharedUserTrade[]>(Exchange, new ArgumentError("Invalid order id"));
+                return new ExchangeWebResult<SharedUserTrade[]>(Exchange, ArgumentError.Invalid(nameof(GetOrderTradesRequest.OrderId), "Invalid order id"));
 
             var order = await Trading.GetOrderTradesAsync(
                 request.Symbol!.GetSymbol(FormatSymbol), orderId, ct: ct).ConfigureAwait(false);
@@ -586,7 +587,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeWebResult<SharedId>(Exchange, validationError);
 
             if (!long.TryParse(request.OrderId, out var orderId))
-                return new ExchangeWebResult<SharedId>(Exchange, new ArgumentError("Invalid order id"));
+                return new ExchangeWebResult<SharedId>(Exchange, ArgumentError.Invalid(nameof(CancelOrderRequest.OrderId), "Invalid order id"));
 
             var order = await Trading.CancelOrderAsync(orderId, ct: ct).ConfigureAwait(false);
             if (!order)
@@ -805,13 +806,16 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Withdraw client
 
-        WithdrawOptions IWithdrawRestClient.WithdrawOptions { get; } = new WithdrawOptions();
+        WithdrawOptions IWithdrawRestClient.WithdrawOptions { get; } = new WithdrawOptions()
+        {
+            RequiredOptionalParameters = new List<ParameterDescription>
+            {
+                new ParameterDescription(nameof(WithdrawRequest.Network), typeof(string), "Network to use", "tetheruse")
+            }
+        };
 
         async Task<ExchangeWebResult<SharedId>> IWithdrawRestClient.WithdrawAsync(WithdrawRequest request, CancellationToken ct)
         {
-            if (string.IsNullOrEmpty(request.Network))
-                return new ExchangeWebResult<SharedId>(Exchange, new ArgumentError("Network is required"));
-
             var validationError = ((IWithdrawRestClient)this).WithdrawOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedId>(Exchange, validationError);
@@ -861,7 +865,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             int clientOrderId = 0;
             if (request.ClientOrderId != null && !int.TryParse(request.ClientOrderId, out clientOrderId))
-                return new ExchangeWebResult<SharedId>(Exchange, new ArgumentError("ClientOrderId needs to be parsable to `int` for `Bitfinex`"));
+                return new ExchangeWebResult<SharedId>(Exchange, ArgumentError.Invalid(nameof(PlaceSpotTriggerOrderRequest.ClientOrderId), "ClientOrderId needs to be parsable to `int` for `Bitfinex`"));
 
             var result = await Trading.PlaceOrderAsync(
                 request.Symbol!.GetSymbol(FormatSymbol),
@@ -898,7 +902,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 result = await Trading.GetClosedOrdersAsync(symbol, new[] { id }, ct: ct).ConfigureAwait(false);
 
             if (!result.Data.Any())
-                return result.AsExchangeError<SharedSpotTriggerOrder>(Exchange, new ServerError($"Order with id {id} not found"));
+                return result.AsExchangeError<SharedSpotTriggerOrder>(Exchange, new ServerError(new ErrorInfo(ErrorType.UnknownOrder, $"Order with id {id} not found")));
 
             var order = result.Data.Single();
             return result.AsExchangeResult(Exchange, TradingMode.Spot, new SharedSpotTriggerOrder(
@@ -941,7 +945,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 return new ExchangeWebResult<SharedId>(Exchange, validationError);
 
             if (!long.TryParse(request.OrderId, out var orderId))
-                return new ExchangeWebResult<SharedId>(Exchange, new ArgumentError("Invalid order id"));
+                return new ExchangeWebResult<SharedId>(Exchange, ArgumentError.Invalid(nameof(CancelOrderRequest.OrderId), "Invalid order id"));
 
             var order = await Trading.CancelOrderAsync(orderId, ct: ct).ConfigureAwait(false);
             if (!order)

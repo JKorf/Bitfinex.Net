@@ -12,6 +12,7 @@ using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.V1;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using CryptoExchange.Net.RateLimiting.Guards;
+using CryptoExchange.Net.Objects.Errors;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -271,7 +272,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var data = result.Data.First();
             if (!data.Success)
-                return result.AsError<BitfinexWithdrawalResult>(new ServerError(data.Message));
+                return result.AsError<BitfinexWithdrawalResult>(new ServerError(ErrorInfo.Unknown with { Message = data.Message }));
             return result.As(data);
         }
 

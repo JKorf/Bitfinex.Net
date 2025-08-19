@@ -6,6 +6,7 @@ using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Converters.MessageParsing;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using System;
@@ -72,7 +73,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         protected override Error ParseErrorResponse(int httpStatusCode, KeyValuePair<string, string[]>[] responseHeaders, IMessageAccessor accessor, Exception? exception)
         {
             if (!accessor.IsValid)
-                return new ServerError(null, "Unknown request error", exception: exception);
+                return new ServerError(ErrorInfo.Unknown, exception);
 
             if (accessor.GetNodeType() != NodeType.Array)
             {
@@ -80,24 +81,24 @@ namespace Bitfinex.Net.Clients.GeneralApi
                 var errorCode = accessor.GetValue<int?>(MessagePath.Get().Property("code"));
                 var errorDesc = accessor.GetValue<string?>(MessagePath.Get().Property("error_description"));
                 if (error != null && errorCode != null && errorDesc != null)
-                    return new ServerError(errorCode.Value, $"{error}: {errorDesc}", exception);
+                    return new ServerError(errorCode.Value.ToString(), GetErrorInfo(errorCode.Value, $"{error}: {errorDesc}"), exception);
 
                 var message = accessor.GetValue<string?>(MessagePath.Get().Property("message"));
                 if (message != null)
-                    return new ServerError(null, message, exception);
+                    return new ServerError(ErrorInfo.Unknown with { Message = message }, exception);
 
-                return new ServerError(null, "Unknown request error", exception: exception);
+                return new ServerError(ErrorInfo.Unknown, exception: exception);
             }
 
             var code = accessor.GetValue<int?>(MessagePath.Get().Index(1));
             var msg = accessor.GetValue<string>(MessagePath.Get().Index(2));
             if (msg == null)
-                return new ServerError(null, "Unknown request error", exception: exception);
+                return new ServerError(ErrorInfo.Unknown, exception: exception);
 
             if (code == null)
-                return new ServerError(null, msg, exception);
+                return new ServerError(ErrorInfo.Unknown with { Message = msg }, exception);
 
-            return new ServerError(code.Value, msg);
+            return new ServerError(code.Value.ToString(), GetErrorInfo(code.Value, msg), exception);
         }
 
         /// <inheritdoc />
