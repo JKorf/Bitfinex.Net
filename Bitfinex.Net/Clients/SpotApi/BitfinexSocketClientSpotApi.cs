@@ -51,7 +51,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public new BitfinexSocketOptions ClientOptions => (BitfinexSocketOptions)base.ClientOptions;
 
-        protected override ErrorCollection ErrorMapping => BitfinexErrors.Errors;
+        protected override ErrorMapping ErrorMapping => BitfinexErrors.Errors;
 
         private readonly string _baseAddressPrivate;
 

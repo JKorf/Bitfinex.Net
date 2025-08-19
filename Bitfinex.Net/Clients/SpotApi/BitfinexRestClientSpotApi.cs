@@ -27,7 +27,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public new BitfinexRestOptions ClientOptions => (BitfinexRestOptions)base.ClientOptions;
 
-        protected override ErrorCollection ErrorMapping => BitfinexErrors.Errors;
+        protected override ErrorMapping ErrorMapping => BitfinexErrors.Errors;
         #endregion
 
         /// <inheritdoc />

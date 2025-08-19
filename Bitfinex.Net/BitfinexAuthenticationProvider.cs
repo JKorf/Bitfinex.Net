@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Net.Http;
-using System.Text;
-using Bitfinex.Net.Objects.Internal;
+﻿using Bitfinex.Net.Objects.Internal;
+using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Net.Http;
+using System.Text;
 
 namespace Bitfinex.Net
 {
-    internal class BitfinexAuthenticationProvider: AuthenticationProvider
+    internal class BitfinexAuthenticationProvider : AuthenticationProvider
     {
         private readonly INonceProvider _nonceProvider;
         private static readonly IStringMessageSerializer _messageSerializer = new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
@@ -26,51 +27,38 @@ namespace Bitfinex.Net
             _nonceProvider = nonceProvider ?? new BitfinexNonceProvider();
         }
 
-        public override void AuthenticateRequest(
-            RestApiClient apiClient,
-            Uri uri,
-            HttpMethod method,
-            ref IDictionary<string, object>? uriParameters,
-            ref IDictionary<string, object>? bodyParameters,
-            ref Dictionary<string, string>? headers,
-            bool auth,
-            ArrayParametersSerialization arraySerialization,
-            HttpMethodParameterPosition parameterPosition,
-            RequestBodyFormat requestBodyFormat)
+        public override void ProcessRequest(RestApiClient apiClient, RestRequestConfiguration request)
         {
-            if (!auth)
+            if (!request.Authenticated)
                 return;
 
-            headers ??= new Dictionary<string, string>();
-
-            // Auth requests are always POST
-            if (uri.AbsolutePath.Contains("v1"))
+            if (request.Path.Contains("v1"))
             {
-                bodyParameters ??= new Dictionary<string, object>();
-                bodyParameters.Add("request", uri.AbsolutePath);
-                bodyParameters.Add("nonce", _nonceProvider.GetNonce().ToString());
+                request.BodyParameters.Add("request", request.Path);
+                request.BodyParameters.Add("nonce", _nonceProvider.GetNonce().ToString());
+                var requestBody = GetSerializedBody(_messageSerializer, request.BodyParameters);
+                var encodedBody = Convert.ToBase64String(Encoding.ASCII.GetBytes(requestBody));
 
-                var signature = _messageSerializer.Serialize(bodyParameters);
-                var payload = Convert.ToBase64String(Encoding.ASCII.GetBytes(signature));
-                var signedData = Sign(payload);
+                request.Headers.Add("X-BFX-APIKEY", _credentials.Key);
+                request.Headers.Add("X-BFX-PAYLOAD", encodedBody);
+                request.Headers.Add("X-BFX-SIGNATURE", Sign(encodedBody).ToLowerInvariant());
 
-                headers.Add("X-BFX-APIKEY", _credentials.Key);
-                headers.Add("X-BFX-PAYLOAD", payload);
-                headers.Add("X-BFX-SIGNATURE", signedData.ToLower(CultureInfo.InvariantCulture));
+                request.SetBodyContent(requestBody);
             }
-            else if (uri.AbsolutePath.Contains("v2"))
+            else
             {
-                var json = bodyParameters == null ? "{}" : _messageSerializer.Serialize(bodyParameters);
-                var n = _nonceProvider.GetNonce().ToString();
-                var signature = $"/api{uri.AbsolutePath}{n}{json}";
-                var signedData = SignHMACSHA384(signature);
+                var requestBody = GetSerializedBody(_messageSerializer, request.BodyParameters);
+                var nonce = _nonceProvider.GetNonce().ToString();
+                var signature = SignHMACSHA384($"/api{request.Path}{nonce}{requestBody}");
 
-                headers.Add("bfx-apikey", _credentials.Key);
-                headers.Add("bfx-nonce", n);
-                headers.Add("bfx-signature", signedData.ToLower(CultureInfo.InvariantCulture));
+                request.Headers.Add("bfx-apikey", _credentials.Key);
+                request.Headers.Add("bfx-nonce", nonce);
+                request.Headers.Add("bfx-signature", signature.ToLower(CultureInfo.InvariantCulture));
+
+                request.SetBodyContent(requestBody);
             }
         }
 
-        public string Sign(string toSign) => SignHMACSHA384(toSign);        
+        public string Sign(string toSign) => SignHMACSHA384(toSign);
     }
 }
