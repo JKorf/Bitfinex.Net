@@ -31,8 +31,11 @@ namespace Bitfinex.Net
                 if (msg!.Equals("Order not found."))
                     return new ErrorInfo(ErrorType.UnknownOrder, false, "Unknown order", code);
 
-                if (msg!.StartsWith("Invalid order: not enough tradable balance for"))
+                if (msg!.StartsWith("Invalid order: not enough tradable balance for")
+                || msg!.StartsWith("Invalid order: not enough exchange balance for"))
+                {
                     return new ErrorInfo(ErrorType.InsufficientBalance, false, "Insufficient balance", code);
+                }
 
                 return ErrorInfo.Unknown with { Message = msg };
             })
