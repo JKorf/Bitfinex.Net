@@ -12,7 +12,7 @@ namespace Bitfinex.Net
         public static ErrorMapping Errors { get; } = new ErrorMapping(
             [
                 new ErrorInfo(ErrorType.Unauthorized, false, "Invalid API key", "10100"),
-                new ErrorInfo(ErrorType.UnknownSymbol, false, "Unknown symbol", "10020"),
+                new ErrorInfo(ErrorType.UnknownSymbol, false, "Unknown symbol", "10020", "10300"),
             ]
         ,
             [
