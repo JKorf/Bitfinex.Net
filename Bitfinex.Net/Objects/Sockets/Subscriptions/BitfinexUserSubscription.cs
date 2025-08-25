@@ -100,9 +100,9 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 ]);
         }
 
-        public override Query? GetSubQuery(SocketConnection connection) => null;
+        protected override Query? GetSubQuery(SocketConnection connection) => null;
 
-        public override Query? GetUnsubQuery() => null;
+        protected override Query? GetUnsubQuery(SocketConnection connection) => null;
 
         public CallResult DoHandleMessage(SocketConnection connection, DataEvent<BitfinexSocketPositionsEvent> message)
         {

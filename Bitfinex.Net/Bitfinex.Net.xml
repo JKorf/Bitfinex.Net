@@ -223,6 +223,9 @@
         <member name="M:Bitfinex.Net.Clients.BitfinexUserClientProvider.InitializeUserClient(System.String,CryptoExchange.Net.Authentication.ApiCredentials,Bitfinex.Net.BitfinexEnvironment)">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.Clients.BitfinexUserClientProvider.ClearUserClients(System.String)">
+            <inheritdoc />
+        </member>
         <member name="M:Bitfinex.Net.Clients.BitfinexUserClientProvider.GetRestClient(System.String,CryptoExchange.Net.Authentication.ApiCredentials,Bitfinex.Net.BitfinexEnvironment)">
             <inheritdoc />
         </member>
@@ -3752,6 +3755,11 @@
             <param name="userIdentifier">The identifier for the user</param>
             <param name="credentials">The credentials for the user</param>
             <param name="environment">The environment to use</param>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexUserClientProvider.ClearUserClients(System.String)">
+            <summary>
+            Reset the cached clients for a user. This can be useful when a user changes API credentials.
+            </summary>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.IBitfinexUserClientProvider.GetRestClient(System.String,CryptoExchange.Net.Authentication.ApiCredentials,Bitfinex.Net.BitfinexEnvironment)">
             <summary>

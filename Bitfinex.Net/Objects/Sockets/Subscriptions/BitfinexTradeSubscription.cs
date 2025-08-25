@@ -51,11 +51,11 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 ]);
         }
 
-        public override Query? GetSubQuery(SocketConnection connection)
+        protected override Query? GetSubQuery(SocketConnection connection)
         {
             return new BitfinexSubQuery("subscribe", _channel, _symbol, null, null, null, null);
         }
-        public override Query? GetUnsubQuery()
+        protected override Query? GetUnsubQuery(SocketConnection connection)
         {
             if (_channelId == 0)
                 return null;

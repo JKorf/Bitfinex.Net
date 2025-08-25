@@ -51,29 +51,6 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             MessageMatcher = MessageMatcher.Create([]);
         }
 
-        ///// <inheritdoc />
-        //public override Type? GetMessageType(IMessageAccessor message)
-        //{
-        //    var type1 = message.GetNodeType(_1Path);
-
-        //    if (type1 == NodeType.Value)
-        //    {
-        //        var identifier = message.GetValue<string?>(_1Path);
-
-        //        if (string.Equals(identifier, "cs", StringComparison.Ordinal))
-        //            return typeof(BitfinexChecksum);
-
-        //        if (string.Equals(identifier, "hb", StringComparison.Ordinal))
-        //            return typeof(BitfinexStringUpdate);
-
-        //        var nodeType = message.GetNodeType(_20Path);
-        //        return nodeType == NodeType.Array ? typeof(TArrayHandler) : typeof(TSingleHandler);
-        //    }
-
-        //    var nodeType1 = message.GetNodeType(_10Path);
-        //    return nodeType1 == NodeType.Array ? typeof(TArrayHandler) : typeof(TSingleHandler);
-        //}
-
         public override void DoHandleReset()
         {
             _channelId = -1;
@@ -91,11 +68,12 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 ]);
         }
 
-        public override Query? GetSubQuery(SocketConnection connection)
+        protected override Query? GetSubQuery(SocketConnection connection)
         {
             return new BitfinexSubQuery("subscribe", _channel, _sendSymbol ? _symbol : null, _precision, _frequency, _length, _key);
         }
-        public override Query? GetUnsubQuery()
+
+        protected override Query? GetUnsubQuery(SocketConnection connection)
         {
             if (_channelId == 0)
                 return null;
