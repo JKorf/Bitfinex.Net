@@ -5,6 +5,7 @@ using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Objects.Options;
 using Bitfinex.Net.SymbolOrderBooks;
 using CryptoExchange.Net;
+using CryptoExchange.Net.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -98,6 +99,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<IBitfinexOrderBookFactory, BitfinexOrderBookFactory>();
             services.AddTransient<IBitfinexTrackerFactory, BitfinexTrackerFactory>();
+            services.AddTransient<ITrackerFactory, BitfinexTrackerFactory>();
             services.AddSingleton<IBitfinexUserClientProvider, BitfinexUserClientProvider>(x =>
             new BitfinexUserClientProvider(
                 x.GetRequiredService<HttpClient>(),
