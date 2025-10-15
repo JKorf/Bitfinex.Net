@@ -313,11 +313,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
 
         #region Balance client
-        EndpointOptions<GetBalancesRequest> IBalanceRestClient.GetBalancesOptions { get; } = new EndpointOptions<GetBalancesRequest>(true);
+        GetBalancesOptions IBalanceRestClient.GetBalancesOptions { get; } = new GetBalancesOptions(AccountTypeFilter.Funding, AccountTypeFilter.Spot, AccountTypeFilter.Margin);
 
         async Task<ExchangeWebResult<SharedBalance[]>> IBalanceRestClient.GetBalancesAsync(GetBalancesRequest request, CancellationToken ct)
         {
-            var validationError = ((IBalanceRestClient)this).GetBalancesOptions.ValidateRequest(Exchange, request, request.TradingMode, SupportedTradingModes);
+            var validationError = ((IBalanceRestClient)this).GetBalancesOptions.ValidateRequest(Exchange, request, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedBalance[]>(Exchange, validationError);
 
@@ -325,7 +325,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<SharedBalance[]>(Exchange, null, default);
 
-            return result.AsExchangeResult<SharedBalance[]>(Exchange, SupportedTradingModes, result.Data.Where(x => x.Type == WalletType.Exchange).Select(x => 
+            var filterType = request.AccountType?.IsMarginAccount() == true ? WalletType.Margin : request.AccountType == SharedAccountType.Funding ? WalletType.Funding: WalletType.Exchange;
+            return result.AsExchangeResult<SharedBalance[]>(Exchange, SupportedTradingModes, result.Data.Where(x => x.Type == filterType).Select(x => 
                 new SharedBalance(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Available ?? 0, x.Total)).ToArray());
         }
 
@@ -531,7 +532,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 Fee = Math.Abs(x.Fee),
                 FeeAsset = BitfinexExchange.AssetAliases.ExchangeToCommonName(x.FeeAsset),
-                Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null
+                Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null,
+                ClientOrderId = x.ClientOrderId?.ToString()
             }).ToArray());
         }
 
@@ -575,7 +577,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 Fee = Math.Abs(x.Fee),
                 FeeAsset = BitfinexExchange.AssetAliases.ExchangeToCommonName(x.FeeAsset),
-                Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null
+                Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null,
+                ClientOrderId = x.ClientOrderId?.ToString()
             }).ToArray(), nextToken);
         }
 
@@ -953,6 +956,48 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             return order.AsExchangeResult(Exchange, TradingMode.Spot, new SharedId(order.Data.Id.ToString()));
         }
+        #endregion
+
+        #region Transfer client
+
+        TransferOptions ITransferRestClient.TransferOptions { get; } = new TransferOptions([
+            SharedAccountType.Funding,
+            SharedAccountType.Spot,
+            SharedAccountType.CrossMargin,
+            SharedAccountType.IsolatedMargin
+            ]);
+        async Task<ExchangeWebResult<SharedId>> ITransferRestClient.TransferAsync(TransferRequest request, CancellationToken ct)
+        {
+            var validationError = ((ITransferRestClient)this).TransferOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedTradingModes);
+            if (validationError != null)
+                return new ExchangeWebResult<SharedId>(Exchange, validationError);
+
+            var fromAccount = GetTransferType(request.FromAccountType);
+            var toAccount = GetTransferType(request.ToAccountType);
+            if (fromAccount == null || toAccount == null)
+                return new ExchangeWebResult<SharedId>(Exchange, ArgumentError.Invalid("To/From AccountType", "invalid to/from account combination"));
+
+            // Get data
+            var transfer = await Account.WalletTransferAsync(
+                request.Asset,
+                request.Quantity,
+                fromAccount.Value,
+                toAccount.Value,
+                ct: ct).ConfigureAwait(false);
+            if (!transfer)
+                return transfer.AsExchangeResult<SharedId>(Exchange, null, default);
+
+            return transfer.AsExchangeResult(Exchange, TradingMode.Spot, new SharedId(""));
+        }
+
+        private WithdrawWallet? GetTransferType(SharedAccountType type)
+        {
+            if (type == SharedAccountType.Funding) return WithdrawWallet.Deposit;
+            if (type == SharedAccountType.Spot) return WithdrawWallet.Exchange;
+            if (type.IsMarginAccount()) return WithdrawWallet.Trading;
+            return null;
+        }
+
         #endregion
     }
 }

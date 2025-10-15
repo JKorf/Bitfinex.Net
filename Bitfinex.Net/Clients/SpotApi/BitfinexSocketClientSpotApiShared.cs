@@ -174,7 +174,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                     {
                         Fee = Math.Abs(update.Data.Fee),
                         FeeAsset = BitfinexExchange.AssetAliases.ExchangeToCommonName(update.Data.FeeAsset),
-                        Role = update.Data.Maker == true ? SharedRole.Maker: SharedRole.Taker
+                        Role = update.Data.Maker == true ? SharedRole.Maker: SharedRole.Taker,
+                        ClientOrderId = update.Data.ClientOrderId?.ToString()
                     }
                 })),
                 ct: ct).ConfigureAwait(false);
