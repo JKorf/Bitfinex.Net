@@ -64,6 +64,12 @@ namespace Bitfinex.Net
             baseAsset = AssetAliases.CommonToExchangeName(baseAsset);
             quoteAsset = AssetAliases.CommonToExchangeName(quoteAsset);
 
+            if (tradingMode == TradingMode.PerpetualLinear)
+            {
+                baseAsset = $"{baseAsset}F0";
+                quoteAsset = $"{quoteAsset}F0";
+            }
+
             if (baseAsset.Length != 3)
                 return $"t{baseAsset.ToUpperInvariant()}:{quoteAsset.ToUpperInvariant()}";
 
