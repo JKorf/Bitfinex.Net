@@ -35,7 +35,7 @@ namespace Bitfinex.Net.Objects.Options
         /// <summary>
         /// Default affiliate code to use when placing orders
         /// </summary>
-        public string? AffiliateCode { get; set; } = "kCCe-CNBO";
+        public string? AffiliateCode { get; set; }
 
         /// <summary>
         /// Optional nonce provider for signing requests. Careful providing a custom provider; once a nonce is sent to the server, every request after that needs a higher nonce than that
