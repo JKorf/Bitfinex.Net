@@ -183,9 +183,8 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="flags">Additional flags</param>
         /// <param name="leverage">Leverage</param>
         /// <param name="cancelTime">Automatically cancel the order after this time</param>
-        /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <returns></returns>
-        Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null, string? affiliateCode = null);
+        Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null);
 
         /// <summary>
         /// Cancel all orders

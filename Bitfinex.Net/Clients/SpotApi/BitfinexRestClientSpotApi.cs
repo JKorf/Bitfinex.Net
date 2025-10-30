@@ -22,8 +22,6 @@ namespace Bitfinex.Net.Clients.SpotApi
     internal partial class BitfinexRestClientSpotApi : RestApiClient, IBitfinexRestClientSpotApi
     {
         #region fields
-        internal string? AffiliateCode { get; set; }
-
         /// <inheritdoc />
         public new BitfinexRestOptions ClientOptions => (BitfinexRestOptions)base.ClientOptions;
 
@@ -50,8 +48,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             Account = new BitfinexRestClientSpotApiAccount(this);
             ExchangeData = new BitfinexRestClientSpotApiExchangeData(this);
             Trading = new BitfinexRestClientSpotApiTrading(this);
-
-            AffiliateCode = options.AffiliateCode;
         }
 
         #endregion

@@ -574,7 +574,7 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.GetUserTradesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.PlaceOrderAsync(System.String,Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.Decimal,System.Decimal,System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.PlaceOrderAsync(System.String,Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.Decimal,System.Decimal,System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiTrading.CancelOrderAsync(System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
@@ -658,7 +658,7 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToUserUpdatesAsync(System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexOrder[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexPosition[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingOffer[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingCredit[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFunding[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexWallet[]}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexBalance}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexTradeDetails}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingTrade}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexFundingInfo}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexMarginBase}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.BitfinexMarginSymbol}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.String)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime})">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.UpdateOrderAsync(System.Int64,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags})">
@@ -4583,7 +4583,7 @@
             <param name="ct">Cancellation token</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.PlaceOrderAsync(System.String,Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.Decimal,System.Decimal,System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.PlaceOrderAsync(System.String,Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.Decimal,System.Decimal,System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <summary>
             Place a new order
             <para><a href="https://docs.bitfinex.com/reference#rest-auth-submit-order" /></para>
@@ -4593,7 +4593,6 @@
             <param name="type">Type of the order</param>
             <param name="price">The price for the order</param>
             <param name="quantity">The quantity of the order</param>
-            <param name="affiliateCode">Affiliate code for the order</param>
             <param name="ct">Cancellation token</param>
             <param name="flags"></param>
             <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
@@ -4831,7 +4830,7 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns></returns>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime},System.String)">
+        <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.PlaceOrderAsync(Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.String,System.Decimal,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.DateTime})">
             <summary>
             Places a new order
             <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-new" /></para>
@@ -4849,7 +4848,6 @@
             <param name="flags">Additional flags</param>
             <param name="leverage">Leverage</param>
             <param name="cancelTime">Automatically cancel the order after this time</param>
-            <param name="affiliateCode">Affiliate code for the order</param>
             <returns></returns>
         </member>
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexSocketClientSpotApi.CancelAllOrdersAsync">

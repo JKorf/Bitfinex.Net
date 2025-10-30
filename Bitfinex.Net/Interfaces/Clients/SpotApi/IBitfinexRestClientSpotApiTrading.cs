@@ -86,7 +86,6 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="type">Type of the order</param>
         /// <param name="price">The price for the order</param>
         /// <param name="quantity">The quantity of the order</param>
-        /// <param name="affiliateCode">Affiliate code for the order</param>
         /// <param name="ct">Cancellation token</param>
         /// <param name="flags"></param>
         /// <param name="leverage">Set the leverage for a derivative order, supported by derivative symbol orders only. The value should be between 1 and 100 inclusive. The field is optional, if omitted the default leverage value of 10 will be used.</param>
@@ -111,7 +110,6 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
             decimal? priceAuxLimit = null,
             decimal? priceOcoStop = null,
             DateTime? cancelTime = null,
-            string? affiliateCode = null,
             CancellationToken ct = default);
 
         /// <summary>

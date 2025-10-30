@@ -111,7 +111,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             decimal? priceAuxLimit = null,
             decimal? priceOcoStop = null,
             DateTime? cancelTime = null,
-            string? affiliateCode = null,
             CancellationToken ct = default)
         {
             if (side == OrderSide.Sell)
@@ -134,7 +133,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("tif", cancelTime?.ToString("yyyy-MM-dd HH:mm:ss"));
             parameters.AddOptionalParameter("meta", new Dictionary<string, string?>()
             {
-                { "aff_code" , affiliateCode ?? _baseClient.AffiliateCode }
+                { "aff_code" , LibraryHelpers.GetClientReference(() => _baseClient.ClientOptions.AffiliateCode, _baseClient.Exchange) }
             });
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/w/order/submit", BitfinexExchange.RateLimiter.Overall, 1, true,

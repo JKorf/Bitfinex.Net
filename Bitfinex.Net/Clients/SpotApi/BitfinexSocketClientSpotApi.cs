@@ -46,7 +46,6 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region fields
         private readonly Random _random = new Random();
-        private readonly string? _affCode;
 
         /// <inheritdoc />
         public new BitfinexSocketOptions ClientOptions => (BitfinexSocketOptions)base.ClientOptions;
@@ -67,7 +66,6 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             RateLimiter = BitfinexExchange.RateLimiter.Websocket;
 
-            _affCode = options.AffiliateCode;
             _baseAddressPrivate = options.Environment.SocketAddress;
         }
         #endregion
@@ -285,12 +283,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null, string? affiliateCode = null)
+        public async Task<CallResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null)
         {
             _logger.Log(LogLevel.Information, "Going to place order");
             clientOrderId ??= GenerateClientOrderId();
 
-            var affCode = affiliateCode ?? _affCode;
             var query = new BitfinexSocketQuery(clientOrderId.ToString(), BitfinexEventType.OrderNew, new BitfinexNewOrder
             {
                 Amount = side == OrderSide.Buy ? quantity : -quantity,
@@ -305,7 +302,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 PriceTrailing = priceTrailing,
                 Leverage = leverage,
                 CancelAfter = cancelTime,
-                Meta = affCode == null ? null : new BitfinexMeta() { AffiliateCode = affCode }
+                Meta = new BitfinexMeta() { AffiliateCode = LibraryHelpers.GetClientReference(() => ClientOptions.AffiliateCode, Exchange) }
             });
 
             var bitfinexQuery = new BitfinexQuery<BitfinexOrderNotificationEvent, BitfinexOrderNotification>(query);
