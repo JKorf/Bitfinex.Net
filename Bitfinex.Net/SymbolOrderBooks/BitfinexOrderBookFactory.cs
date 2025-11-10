@@ -17,6 +17,9 @@ namespace Bitfinex.Net.SymbolOrderBooks
     {
         private readonly IServiceProvider _serviceProvider;
 
+        /// <inheritdoc />
+        public string ExchangeName => BitfinexExchange.ExchangeName;
+
         /// <summary>
         /// ctor
         /// </summary>

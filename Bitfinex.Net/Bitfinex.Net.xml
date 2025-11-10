@@ -215,6 +215,9 @@
         <member name="T:Bitfinex.Net.Clients.BitfinexUserClientProvider">
             <inheritdoc />
         </member>
+        <member name="P:Bitfinex.Net.Clients.BitfinexUserClientProvider.ExchangeName">
+            <inheritdoc />
+        </member>
         <member name="M:Bitfinex.Net.Clients.BitfinexUserClientProvider.#ctor(System.Action{Bitfinex.Net.Objects.Options.BitfinexOptions})">
             <summary>
             ctor
@@ -7849,6 +7852,9 @@
             <summary>
             Bitfinex order book factory
             </summary>
+        </member>
+        <member name="P:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory.ExchangeName">
+            <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.SymbolOrderBooks.BitfinexOrderBookFactory.#ctor(System.IServiceProvider)">
             <summary>

@@ -23,7 +23,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         public void ResetDefaultExchangeParameters() => ExchangeParameters.ResetStaticParameters();
 
         #region Ticker client
-        EndpointOptions<SubscribeTickerRequest> ITickerSocketClient.SubscribeTickerOptions { get; } = new EndpointOptions<SubscribeTickerRequest>(false);
+        SubscribeTickerOptions ITickerSocketClient.SubscribeTickerOptions { get; } = new SubscribeTickerOptions();
         async Task<ExchangeResult<UpdateSubscription>> ITickerSocketClient.SubscribeToTickerUpdatesAsync(SubscribeTickerRequest request, Action<ExchangeEvent<SharedSpotTicker>> handler, CancellationToken ct)
         {
             var validationError = ((ITickerSocketClient)this).SubscribeTickerOptions.ValidateRequest(Exchange, request, request.TradingMode, SupportedTradingModes);
@@ -52,7 +52,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                 if (update.UpdateType == SocketUpdateType.Snapshot || update.StreamId!.EndsWith(".tu"))
                     return;
 
-                handler(update.AsExchangeEvent<SharedTrade[]>(Exchange, update.Data.Select(x => new SharedTrade(x.QuantityAbs, x.Price, x.Timestamp)
+                handler(update.AsExchangeEvent<SharedTrade[]>(Exchange, update.Data.Select(x => new SharedTrade(
+                    request.Symbol, symbol, x.QuantityAbs, x.Price, x.Timestamp)
                 {
                     Side = x.Quantity > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell
                 }).ToArray()));
@@ -213,7 +214,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                     return;
 
                 foreach (var item in update.Data)
-                    handler(update.AsExchangeEvent(Exchange, new SharedKline(item.OpenTime, item.ClosePrice, item.HighPrice, item.LowPrice, item.OpenPrice, item.Volume)));
+                    handler(update.AsExchangeEvent(Exchange, new SharedKline(request.Symbol, symbol, item.OpenTime, item.ClosePrice, item.HighPrice, item.LowPrice, item.OpenPrice, item.Volume)));
                 }
             , ct).ConfigureAwait(false);
 
