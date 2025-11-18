@@ -25,6 +25,7 @@ using CryptoExchange.Net.SharedApis;
 using Bitfinex.Net.Objects.Sockets;
 using System.Net.WebSockets;
 using CryptoExchange.Net.Objects.Errors;
+using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -77,6 +78,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
                 => BitfinexExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
+
+        public override IMessageConverter CreateMessageConverter(WebSocketMessageType messageType) => new BitfinexSocketClientSpotApiMessageIdentifier();
 
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
@@ -489,5 +492,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             _random.NextBytes(buffer);
             return (long)Math.Round(Math.Abs(BitConverter.ToInt32(buffer, 0)) / 1000m);
         }
+
     }
 }
