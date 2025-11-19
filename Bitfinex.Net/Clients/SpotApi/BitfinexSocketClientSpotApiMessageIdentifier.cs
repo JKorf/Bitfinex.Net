@@ -1,6 +1,8 @@
-﻿using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
+﻿using CryptoExchange.Net.Converters.MessageParsing;
+using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
@@ -9,192 +11,56 @@ using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
-    internal class BitfinexSocketClientSpotApiMessageIdentifier : DynamicJsonConverter
+    internal class BitfinexSocketClientSpotApiMessageIdentifier2 : PreloadJsonConverter
     {
         public override JsonSerializerOptions Options { get; } = SerializerOptions.WithConverters(BitfinexExchange._serializerContext);
 
-
-        // Message types:
-        // Welcome:      { "event": "info", "version":  VERSION,"platform": { "status": 1 } }
-        // Pong:         { "event":"pong", "ts": 1511545528111, "cid": 1234}
-        // Sub response: { "event": "subscribed", "channel": CHANNEL_NAME, "chanId": CHANNEL_ID }
-
-        // Heartbeat:    [ CHANNEL_ID, "hb" ]                                               CHANNEL_ID + [1]
-        // Ticker:       [ CHANNEL_ID,  [ 7616.5, etc ] ]                                   CHANNEL_ID + single
-        // Trade snap:   [ CHANNEL_ID,  [ [ 401597393, etc ], [ 401597394, etc ] ] ]        CHANNEL_ID + array
-        // Trade upd:    [ CHANNEL_ID, "te", [ 401597393, etc ] ]                           CHANNEL_ID + array
-
-        // Account snap: [ 0, "os", [ [ 401597393, etc ] ] ]                                0 + [1]
-        // Account upd:  [ 0, "on", [ 401597393, etc ] ]                                    0 + [1]
-
-        // Account Mar 1: [ 0, "miu", [ "base", [ -13.014640000000007, etc ] ]              0 + [1] + [2].[0]
-        // Account Mar 2: [ 0, "miu", [ "sym", "tETHUST", [ -13.014640000000007, etc ] ]    0 + [1] + [2].[0]
-
-
-        protected override MessageEvaluator[] MessageEvaluators { get; } = [
-
-            new MessageEvaluator {
-                Priority = 1,
-                Fields = [
-                    new MessageFieldReference 
-                    { 
-                        Depth = 1, 
-                        PropertyName = "event", 
-                        Constraint = x => x == "info"
-                    },
-                ],
-                MessageIdentifier = x => x["event"],
-            },
-
-
-            // Account Margin update
-            new MessageEvaluator {
-                Priority = 1,
-                Fields = [
-                    new MessageFieldReference
+        protected override string? GetMessageIdentifier(JsonDocument document)
+        {
+            var type = document.RootElement.ValueKind;
+            if (type == JsonValueKind.Array)
+            {
+                var id = document.RootElement[0].GetInt32().ToString();
+                if (id.Equals("0", StringComparison.Ordinal))
+                {
+                    var topic = document.RootElement[1].GetString();
+                    if (topic!.Equals("miu", StringComparison.Ordinal))
                     {
-                        PropertyName = "id",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 1,
-                        ArrayIndex = 0,
-                        Constraint = x => x == "0"
-                    },
-                    new MessageFieldReference
-                    {
-                        PropertyName = "topic",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 1,
-                        ArrayIndex = 1,
-                        Constraint = x => x == "miu"
-                    },
-                    new MessageFieldReference
-                    {
-                        PropertyName = "marginType",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 2,
-                        ArrayIndex = 0,
-                    },
-                ],
-                MessageIdentifier = x =>  x["id"] + x["topic"]+ x["topic"]
-            },
+                        var marginType = document.RootElement[2][0].GetString();
+                        return id + topic + marginType;
+                    }
 
-            // Account update
-            new MessageEvaluator {
-                Priority = 1,
-                Fields = [
-                    new MessageFieldReference 
-                    { 
-                        SearchName = "id", 
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 1,
-                        ArrayIndex = 0,
-                        Constraint = x => x == "0"
-                    },
-                    new MessageFieldReference 
-                    {
-                        SearchName = "type",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 1, 
-                        ArrayIndex = 1,
-                        Constraint = x => x != "miu"
-                    },
-                ],
-                MessageIdentifier = x =>  x["id"] + x["type"]
-            },
+                    return id + topic;
+                }
+                var nodeType1 = document.RootElement[1].ValueKind;
+                if (nodeType1 != JsonValueKind.Array)
+                {
+                    var nodeValue1 = document.RootElement[1].GetString();
+                    if (nodeValue1!.Equals("hb") || nodeValue1.Equals("cs"))
+                        return id + nodeValue1;
 
-            // Heartbeat/checksum
-            new MessageEvaluator {
-                Priority = 1,
-                Fields = [
-                    new MessageFieldReference
-                    {
-                        SearchName = "id",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 1,
-                        ArrayIndex = 0,
-                        Constraint = (x) => x != "0"
-                    },
-                    new MessageFieldReference
-                    {
-                        SearchName = "type",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 1,
-                        ArrayIndex = 1,
-                        Constraint = x => x == "hb" || x == "cs"
-                    },
-                ],
-                MessageIdentifier = x =>  x["id"] + x["type"]
-            },
+                    var nodeTypeData = document.RootElement[2][0].ValueKind;
+                    return nodeTypeData == JsonValueKind.Array ? id + "array" : id + "single";
+                }
+                else
+                {
+                    var nodeTypeData = document.RootElement[1][0].ValueKind;
+                    return nodeTypeData == JsonValueKind.Array ? id + "array" : id + "single";
+                }
+            }
 
-            // Trade update
-            new MessageEvaluator {
-                Priority = 1,
-                Fields = [
-                    new MessageFieldReference
-                    {
-                        SearchName = "id",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 1,
-                        ArrayIndex = 0,
-                        Constraint = (x) => x != "0"
-                    },
-                    new MessageFieldReference
-                    {
-                        SearchName = "type",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 1,
-                        ArrayIndex = 1,
-                        Constraint = x => x == "te"
-                    },
-                ],
-                MessageIdentifier = x =>  x["id"] + "single"
-            },
+            var evnt = document.RootElement.GetProperty("event").GetString();
+            if (string.Equals(evnt, "info", StringComparison.Ordinal))
+                return "info";
 
-            // Single update
-            new MessageEvaluator {
-                Priority = 1,
-                Fields = [
-                    new MessageFieldReference
-                    {
-                        SearchName = "id",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 1,
-                        ArrayIndex = 0,
-                        Constraint = (x) => x != "0"
-                    },
-                    new MessageFieldReference
-                    {
-                        SearchName = "type",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 2,
-                        ArrayIndex = 0
-                    },
-                ],
-                MessageIdentifier = x =>  x["id"] + "single"
-            },
-
-            // Array update
-            new MessageEvaluator {
-                Priority = 1,
-                Fields = [
-                    new MessageFieldReference
-                    {
-                        SearchName = "id",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 1,
-                        ArrayIndex = 0,
-                        Constraint = (x) => x != "0"
-                    },
-                    new MessageFieldReference
-                    {
-                        SearchName = "type",
-                        FieldType = FieldType.ArrayIndex,
-                        Depth = 3,
-                        ArrayIndex = 0,
-                    },
-                ],
-                MessageIdentifier = x =>  x["id"] + "array"
-            },
-        ];
+            var channel = StringOrEmpty(document, "channel");
+            var symbol = StringOrEmpty(document, "symbol");
+            var prec = StringOrEmpty(document, "prec");
+            var freq = StringOrEmpty(document, "freq");
+            var len = StringOrEmpty(document, "len");
+            var key = StringOrEmpty(document, "key");
+            var chanId = string.Equals(evnt, "unsubscribed", StringComparison.Ordinal) ? StringOrEmpty(document, "chanId") : "";
+            return chanId + evnt + channel + symbol + prec + freq + len + key;
+        }
     }
 }
