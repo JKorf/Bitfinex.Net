@@ -18,12 +18,12 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             MessageMatcher = MessageMatcher.Create<T>("0n", HandleMessage);
         }
 
-        public CallResult<T> HandleMessage(SocketConnection connection, DataEvent<T> message)
+        public CallResult<T> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, T message)
         {
-            if (message.Data.Data.Result != "SUCCESS")
-                return new CallResult<T>(new ServerError(ErrorInfo.Unknown with { Message = message.Data.Data.ErrorMessage! }));
+            if (message.Data.Result != "SUCCESS")
+                return new CallResult<T>(new ServerError(ErrorInfo.Unknown with { Message = message.Data.ErrorMessage! }), originalData);
 
-            return new CallResult<T>(message.Data);
+            return new CallResult<T>(message, originalData, null);
         }
     }
 }

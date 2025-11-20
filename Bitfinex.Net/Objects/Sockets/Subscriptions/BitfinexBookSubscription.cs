@@ -24,12 +24,12 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private string? _length;
         private int _channelId;
         private bool _firstUpdate;
-        private Action<DataEvent<TItem[]>> _handler;
+        private Action<DateTime, string?, SocketUpdateType, TItem[]> _handler;
         private Action<DataEvent<int>>? _checksumHandler;
 
         public BitfinexBookSubscription(ILogger logger,
             string symbol,
-            Action<DataEvent<TItem[]>> handler,
+            Action<DateTime, string?, SocketUpdateType, TItem[]> handler,
             Action<DataEvent<int>>? checksumHandler,
             Precision? precision = null,
             Frequency? frequency = null,
@@ -79,23 +79,28 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             return new BitfinexUnsubQuery(_channelId);
         }
 
-        public CallResult DoHandleMessage(SocketConnection connection, DataEvent<BitfinexChecksum> message)
+        public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexChecksum message)
         {
-            _checksumHandler?.Invoke(message.As(message.Data.Checksum, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+            _checksumHandler?.Invoke(
+                new DataEvent<int>(message.Checksum, receiveTime, originalData)
+                    .WithStreamId(_channel)
+                    .WithSymbol(_symbol)
+                    .WithUpdateType(_firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
+                );
             _firstUpdate = false;
             return CallResult.SuccessResult;
         }
 
-        public CallResult DoHandleMessage(SocketConnection connection, DataEvent<TSingle> message)
+        public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TSingle message)
         {
-            _handler?.Invoke(message.As<TItem[]>([message.Data.Data], _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data]);
             _firstUpdate = false;
             return CallResult.SuccessResult;
         }
 
-        public CallResult DoHandleMessage(SocketConnection connection, DataEvent<TArray> message)
+        public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TArray message)
         {
-            _handler?.Invoke(message.As(message.Data.Data, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data);
             _firstUpdate = false;
             return CallResult.SuccessResult;
         }

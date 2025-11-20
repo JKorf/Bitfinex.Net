@@ -2,7 +2,11 @@
 using Bitfinex.Net.Clients;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
+using Bitfinex.Net.Objects.Options;
+using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Testing;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,13 +16,19 @@ namespace Bitfinex.Net.UnitTests
     [TestFixture]
     public class SocketSubscriptionTests
     {
-        [Test]
-        public async Task ValidateSubscriptions()
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task ValidateSubscriptions(bool newDeserialization)
         {
-            var client = new BitfinexSocketClient(opts =>
+            var logger = new LoggerFactory();
+            logger.AddProvider(new TraceLoggerProvider());
+
+            var client = new BitfinexSocketClient(Options.Create(new BitfinexSocketOptions
             {
-                opts.ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "456");
-            });
+                ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "456"),
+                OutputOriginalData = true,
+                UseUpdatedDeserialization = newDeserialization
+            }), logger);
             var tester = new SocketSubscriptionValidator<BitfinexSocketClient>(client, "Subscriptions/Spot", "wss://api.bitfinex.com/", nestedPropertyForCompare: "1");
             await tester.ValidateAsync<BitfinexStreamTicker>((client, handler) => client.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", handler), "Ticker");
             await tester.ValidateAsync<BitfinexStreamFundingTicker>((client, handler) => client.SpotApi.SubscribeToFundingTickerUpdatesAsync("fUSD", handler), "TickerFunding");

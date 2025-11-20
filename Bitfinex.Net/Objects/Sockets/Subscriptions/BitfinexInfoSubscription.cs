@@ -4,6 +4,7 @@ using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
@@ -19,9 +20,9 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             MessageMatcher = MessageMatcher.Create<BitfinexSocketInfo>("info", HandleMessage);
         }
 
-        public CallResult HandleMessage(SocketConnection connection, DataEvent<BitfinexSocketInfo> message)
+        public CallResult HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketInfo message)
         {
-            if (message.Data.Code == null)
+            if (message.Code == null)
             {
                 // welcome event, send a config message
                 _ = connection.SendAndWaitQueryAsync(new BitfinexConfQuery(
@@ -31,7 +32,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 return CallResult.SuccessResult;
             }
 
-            var code = message.Data.Code;
+            var code = message.Code;
             switch (code)
             {
                 case 20051:

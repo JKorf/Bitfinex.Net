@@ -73,7 +73,7 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             BitfinexSocketClient client;
             client = options != null ? new BitfinexSocketClient(options) : new BitfinexSocketClient();
             client.SpotApi.SocketFactory = Mock.Of<IWebsocketFactory>();
-            Mock.Get(client.SpotApi.SocketFactory).Setup(f => f.CreateWebsocket(It.IsAny<ILogger>(), It.IsAny<WebSocketParameters>())).Returns(socket);
+            Mock.Get(client.SpotApi.SocketFactory).Setup(f => f.CreateWebsocket(It.IsAny<ILogger>(), It.IsAny<SocketConnection>(), It.IsAny<WebSocketParameters>())).Returns(socket);
             return client;
         }
 
