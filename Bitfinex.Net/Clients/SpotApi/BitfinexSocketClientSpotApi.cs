@@ -80,7 +80,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
                 => BitfinexExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
 
-        public override IMessageConverter CreateMessageConverter(WebSocketMessageType messageType) => new BitfinexSocketClientSpotApiMessageIdentifier2();
+        public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new BitfinexSocketClientSpotApiMessageIdentifier2();
 
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));

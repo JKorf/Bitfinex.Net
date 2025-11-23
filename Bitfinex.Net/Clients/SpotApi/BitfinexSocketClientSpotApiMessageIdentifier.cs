@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
-    internal class BitfinexSocketClientSpotApiMessageIdentifier2 : PreloadJsonConverter
+    internal class BitfinexSocketClientSpotApiMessageIdentifier2 : JsonSocketPreloadMessageHandler
     {
         public override JsonSerializerOptions Options { get; } = SerializerOptions.WithConverters(BitfinexExchange._serializerContext);
 
