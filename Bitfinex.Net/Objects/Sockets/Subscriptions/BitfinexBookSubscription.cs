@@ -55,9 +55,9 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _firstUpdate = true;
         }
 
-        public override void HandleSubQueryResponse(BitfinexResponse message)
+        public override void HandleSubQueryResponse(BitfinexResponse? message)
         {
-            _channelId = message.ChannelId!.Value;
+            _channelId = message!.ChannelId!.Value;
             _firstUpdate = true;
 
             MessageMatcher = MessageMatcher.Create([

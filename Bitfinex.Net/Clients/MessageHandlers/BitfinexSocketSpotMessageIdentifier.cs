@@ -9,9 +9,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Bitfinex.Net.Clients.SpotApi
+namespace Bitfinex.Net.Clients.MessageHandlers
 {
-    internal class BitfinexSocketClientSpotApiMessageIdentifier2 : JsonSocketPreloadMessageHandler
+    internal class BitfinexSocketSpotMessageIdentifier : JsonSocketPreloadMessageHandler
     {
         public override JsonSerializerOptions Options { get; } = SerializerOptions.WithConverters(BitfinexExchange._serializerContext);
 

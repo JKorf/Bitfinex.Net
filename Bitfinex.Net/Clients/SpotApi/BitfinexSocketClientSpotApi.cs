@@ -1,31 +1,32 @@
-using CryptoExchange.Net;
-using CryptoExchange.Net.Objects;
-using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using CryptoExchange.Net.Authentication;
-using System.Threading;
-using Bitfinex.Net.Objects.Internal;
-using Bitfinex.Net.Objects.Models.Socket;
-using Bitfinex.Net.Interfaces.Clients.SpotApi;
-using Bitfinex.Net.Objects.Options;
-using CryptoExchange.Net.Objects.Sockets;
-using Bitfinex.Net.Objects.Sockets.Subscriptions;
-using Bitfinex.Net.Objects.Models;
+using Bitfinex.Net.Clients.MessageHandlers;
 using Bitfinex.Net.Enums;
-using System.Collections.Generic;
-using System.Linq;
-using CryptoExchange.Net.Sockets;
-using System.Globalization;
-using Bitfinex.Net.Objects.Sockets.Queries;
-using CryptoExchange.Net.Interfaces;
-using CryptoExchange.Net.Converters.MessageParsing;
-using CryptoExchange.Net.Clients;
-using CryptoExchange.Net.SharedApis;
+using Bitfinex.Net.Interfaces.Clients.SpotApi;
+using Bitfinex.Net.Objects.Internal;
+using Bitfinex.Net.Objects.Models;
+using Bitfinex.Net.Objects.Models.Socket;
+using Bitfinex.Net.Objects.Options;
 using Bitfinex.Net.Objects.Sockets;
-using System.Net.WebSockets;
-using CryptoExchange.Net.Objects.Errors;
+using Bitfinex.Net.Objects.Sockets.Queries;
+using Bitfinex.Net.Objects.Sockets.Subscriptions;
+using CryptoExchange.Net;
+using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Clients;
+using CryptoExchange.Net.Converters.MessageParsing;
 using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
+using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
+using CryptoExchange.Net.Objects.Sockets;
+using CryptoExchange.Net.SharedApis;
+using CryptoExchange.Net.Sockets;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net.WebSockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -80,7 +81,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
                 => BitfinexExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
 
-        public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new BitfinexSocketClientSpotApiMessageIdentifier2();
+        public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new BitfinexSocketSpotMessageIdentifier();
 
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));

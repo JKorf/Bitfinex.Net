@@ -32,6 +32,9 @@ namespace Bitfinex.Net
             if (!request.Authenticated)
                 return;
 
+            request.BodyParameters ??= new Dictionary<string, object>();
+            request.Headers ??= new Dictionary<string, string>();
+
             if (request.Path.Contains("v1"))
             {
                 request.BodyParameters.Add("request", request.Path);
