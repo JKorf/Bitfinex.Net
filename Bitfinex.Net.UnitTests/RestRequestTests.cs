@@ -12,12 +12,14 @@ namespace Bitfinex.Net.UnitTests
     public class RestRequestTests
     {
 
-        [Test]
-        public async Task ValidateSpotAccountCalls()
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task ValidateSpotAccountCalls(bool newDeserialization)
         {
             var client = new BitfinexRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
+                opts.UseUpdatedDeserialization = newDeserialization;
                 opts.ApiCredentials = new ApiCredentials("123", "456");
             });
             var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/Account", "https://api.bitfinex.com", IsAuthenticated);
@@ -42,12 +44,14 @@ namespace Bitfinex.Net.UnitTests
             await tester.ValidateAsync(client => client.SpotApi.Account.GetAccountChangeLogAsync(), "GetAccountChangeLog");
         }
 
-        [Test]
-        public async Task ValidateSpotExchangeDataCalls()
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task ValidateSpotExchangeDataCalls(bool newDeserialization)
         {
             var client = new BitfinexRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
+                opts.UseUpdatedDeserialization = newDeserialization;
                 opts.ApiCredentials = new ApiCredentials("123", "456");
             });
             var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/ExchangeData", "https://api.bitfinex.com", IsAuthenticated);
@@ -95,12 +99,14 @@ namespace Bitfinex.Net.UnitTests
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetVolumeWeightedAveragePriceHistoryAsync("tETHUST"), "GetVolumeWeightedAveragePrice");
         }
 
-        [Test]
-        public async Task ValidateSpotTradingCalls()
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task ValidateSpotTradingCalls(bool newDeserialization)
         {
             var client = new BitfinexRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
+                opts.UseUpdatedDeserialization = newDeserialization;
                 opts.ApiCredentials = new ApiCredentials("123", "456");
             });
             var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/Trading", "https://api.bitfinex.com", IsAuthenticated);
