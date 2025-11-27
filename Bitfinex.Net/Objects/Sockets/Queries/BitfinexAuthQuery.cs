@@ -16,6 +16,7 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
         {
             _client = client;
             MessageMatcher = MessageMatcher.Create<BitfinexResponse>("auth", HandleMessage);
+            MessageRouter = MessageRouter.Create<BitfinexResponse>("auth", HandleMessage);
         }
 
         public CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexResponse message)

@@ -32,6 +32,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _channel = "trades";
 
             MessageMatcher = MessageMatcher.Create([]);
+            MessageRouter = MessageRouter.Create([]);
         }
 
         public override void DoHandleReset()
@@ -45,6 +46,10 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _channelId = message!.ChannelId!.Value;
             _firstUpdate = true;
 
+            MessageRouter = MessageRouter.Create([
+                new MessageRoute<BitfinexTradeUpdate>(_channelId.ToString() + "single", (string?)null, DoHandleMessage),
+                new MessageRoute<BitfinexTradeArrayUpdate>(_channelId.ToString() + "array", (string?)null, DoHandleMessage),
+                ]);
             MessageMatcher = MessageMatcher.Create([
                 new MessageHandlerLink<BitfinexTradeUpdate>(_channelId.ToString() + "single", DoHandleMessage),
                 new MessageHandlerLink<BitfinexTradeArrayUpdate>(_channelId.ToString() + "array", DoHandleMessage),

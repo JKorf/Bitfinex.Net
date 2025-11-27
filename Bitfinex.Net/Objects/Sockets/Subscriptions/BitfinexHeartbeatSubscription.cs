@@ -8,6 +8,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public BitfinexHeartbeatSubscription(ILogger logger) : base(logger, false)
         {
             MessageMatcher = MessageMatcher.Create<string>("hb");
+            MessageRouter = MessageRouter.Create<string>("hb");
         }
     }
 }

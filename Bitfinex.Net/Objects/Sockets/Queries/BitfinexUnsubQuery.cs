@@ -8,6 +8,7 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
     {
         public BitfinexUnsubQuery(int channelId) : base(new BitfinexUnsubscribeRequest(channelId), false, 1)
         {
+            MessageRouter = MessageRouter.Create<BitfinexResponse>(channelId.ToString() + "unsubscribed");
             MessageMatcher = MessageMatcher.Create<BitfinexResponse>(channelId.ToString() + "unsubscribed");
         }
     }

@@ -16,6 +16,7 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
         public BitfinexQuery(BitfinexSocketQuery request) : base(request, true, 1)
         {
             MessageMatcher = MessageMatcher.Create<T>("0n", HandleMessage);
+            MessageRouter = MessageRouter.Create<T>("0n", HandleMessage);
         }
 
         public CallResult<T> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, T message)

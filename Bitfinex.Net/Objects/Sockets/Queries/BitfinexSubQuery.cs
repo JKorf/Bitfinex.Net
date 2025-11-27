@@ -23,6 +23,10 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             if (string.Equals(evnt, "subscribe", StringComparison.Ordinal) || string.Equals(evnt, "unsubscribe", StringComparison.Ordinal))
                 evnt += "d";
 
+            MessageRouter = MessageRouter.Create<BitfinexResponse>(
+                [evnt + channel + symbol + precision + frequency + length + key,
+                "error" + channel + symbol + precision + frequency + length + key],
+                HandleMessage);
             MessageMatcher = MessageMatcher.Create<BitfinexResponse>(
                 [evnt + channel + symbol + precision + frequency + length + key,
                 "error" + channel + symbol + precision + frequency + length + key],

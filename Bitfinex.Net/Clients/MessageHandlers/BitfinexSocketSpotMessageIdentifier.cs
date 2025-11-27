@@ -15,7 +15,7 @@ namespace Bitfinex.Net.Clients.MessageHandlers
     {
         public override JsonSerializerOptions Options { get; } = SerializerOptions.WithConverters(BitfinexExchange._serializerContext);
 
-        protected override string? GetMessageIdentifier(JsonDocument document)
+        protected override string? GetTypeIdentifier(JsonDocument document)
         {
             var type = document.RootElement.ValueKind;
             if (type == JsonValueKind.Array)

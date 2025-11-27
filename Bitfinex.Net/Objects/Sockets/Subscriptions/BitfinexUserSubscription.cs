@@ -56,6 +56,49 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _marginBaseHandler = marginBaseHandler;
             _marginSymbolHandler = marginSymbolHandler;
 
+            MessageRouter = MessageRouter.Create([
+                new MessageRoute<BitfinexSocketPositionsEvent>("0ps", (string?)null,DoHandleMessage),
+                new MessageRoute<BitfinexSocketPositionEvent>("0pn", (string?)null,DoHandleMessage),
+                new MessageRoute<BitfinexSocketPositionEvent>("0pu", (string?)null,DoHandleMessage),
+                new MessageRoute<BitfinexSocketPositionEvent>("0pc",(string?)null, DoHandleMessage),
+
+                new MessageRoute<BitfinexBalanceEvent>("0bu",(string?)null, DoHandleMessage),
+
+                new MessageRoute<BitfinexMarginBaseEvent>("0miubase",(string?)null, DoHandleMessage),
+                new MessageRoute<BitfinexMarginSymbolEvent>("0miusym",(string?)null, DoHandleMessage),
+
+                new MessageRoute<BitfinexFundingInfoEvent>("0fiu", (string?)null,DoHandleMessage),
+
+                new MessageRoute<BitfinexWalletsEvent>("0ws", (string?)null,DoHandleMessage),
+                new MessageRoute<BitfinexWalletEvent>("0wu", (string?)null,DoHandleMessage),
+
+                new MessageRoute<BitfinexOrdersEvent>("0os", (string?)null,DoHandleMessage),
+                new MessageRoute<BitfinexOrderEvent>("0on", (string?)null,DoHandleMessage),
+                new MessageRoute<BitfinexOrderEvent>("0ou", (string?)null,DoHandleMessage),
+                new MessageRoute<BitfinexOrderEvent>("0oc",(string?)null, DoHandleMessage),
+
+                new MessageRoute<BitfinexTradeDetailEvent>("0te", (string?)null,DoHandleMessage),
+                new MessageRoute<BitfinexTradeDetailEvent>("0tu",(string?)null, DoHandleMessage),
+
+                new MessageRoute<BitfinexFundingTradeEvent>("0fte", (string?)null,DoHandleMessage),
+                new MessageRoute<BitfinexFundingTradeEvent>("0ftu", (string?)null,DoHandleMessage),
+
+                new MessageRoute<BitfinexOffersEvent>("0fos",(string?)null, DoHandleMessage),
+                new MessageRoute<BitfinexOfferEvent>("0fon",(string?)null, DoHandleMessage),
+                new MessageRoute<BitfinexOfferEvent>("0fou",(string?)null, DoHandleMessage),
+                new MessageRoute<BitfinexOfferEvent>("0foc", (string?)null,DoHandleMessage),
+
+                new MessageRoute<BitfinexFundingCreditsEvent>("0fcs",(string?)null, DoHandleMessage),
+                new MessageRoute<BitfinexFundingCreditEvent>("0fcn",(string?)null, DoHandleMessage),
+                new MessageRoute<BitfinexFundingCreditEvent>("0fcu",(string?)null, DoHandleMessage),
+                new MessageRoute<BitfinexFundingCreditEvent>("0fcc",(string?)null, DoHandleMessage),
+
+                new MessageRoute<BitfinexFundingsEvent>("0fls", (string?)null,DoHandleMessage),
+                new MessageRoute<BitfinexFundingEvent>("0fln",(string?)null, DoHandleMessage),
+                new MessageRoute<BitfinexFundingEvent>("0flu",(string?)null, DoHandleMessage),
+                new MessageRoute<BitfinexFundingEvent>("0flc", (string?)null, DoHandleMessage),
+                ]);
+
             MessageMatcher = MessageMatcher.Create([
                 new MessageHandlerLink<BitfinexSocketPositionsEvent>("0ps", DoHandleMessage),
                 new MessageHandlerLink<BitfinexSocketPositionEvent>("0pn", DoHandleMessage),
