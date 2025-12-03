@@ -64,8 +64,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _firstUpdate = true;
 
             MessageRouter = MessageRouter.Create([
-                new MessageRoute<TSingle>(_channelId.ToString() + "single", (string?)null, DoHandleMessage),
-                new MessageRoute<TArray>(_channelId.ToString() + "array", (string?)null, DoHandleMessage),
+                MessageRoute<TSingle>.CreateWithoutTopicFilter(_channelId.ToString() + "single", DoHandleMessage),
+                MessageRoute<TArray>.CreateWithoutTopicFilter(_channelId.ToString() + "array", DoHandleMessage),
                 ]);
             MessageMatcher = MessageMatcher.Create([
                 new MessageHandlerLink<TSingle>(_channelId.ToString() + "single", DoHandleMessage),

@@ -9,7 +9,7 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
         public BitfinexConfQuery(int flags) : base(new BitfinexSocketConfig { Event = "conf", Flags = flags }, false, 1)
         {
             MessageMatcher = MessageMatcher.Create<object>("conf");
-            MessageRouter = MessageRouter.Create<object>("conf");
+            MessageRouter = MessageRouter.CreateWithoutHandler<object>("conf");
         }
 
     }
