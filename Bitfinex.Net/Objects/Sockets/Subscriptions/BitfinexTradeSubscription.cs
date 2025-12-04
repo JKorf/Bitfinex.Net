@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
-    internal class BitfinexTradeSubscription: Subscription<BitfinexResponse, BitfinexResponse>
+    internal class BitfinexTradeSubscription: Subscription
     {
         private string _channel;
         private string _symbol;
@@ -41,9 +41,11 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _firstUpdate = true;
         }
 
-        public override void HandleSubQueryResponse(BitfinexResponse? message)
+        public override void HandleSubQueryResponse(object? message)
         {
-            _channelId = message!.ChannelId!.Value;
+            var data = (BitfinexResponse?)message;
+
+            _channelId = data!.ChannelId!.Value;
             _firstUpdate = true;
 
             MessageRouter = MessageRouter.Create([

@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
-    internal class BitfinexUserSubscription : Subscription<BitfinexResponse, BitfinexResponse>
+    internal class BitfinexUserSubscription : Subscription
     {
         private readonly Action<DataEvent<BitfinexPosition[]>>? _positionHandler;
         private readonly Action<DataEvent<BitfinexWallet[]>>? _walletHandler;
