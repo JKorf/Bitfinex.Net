@@ -96,7 +96,7 @@ namespace Bitfinex.Net
     }
 
     /// <summary>
-    /// Rate limiter configuration for the GateIo API
+    /// Rate limiter configuration for the Bitfinex API
     /// </summary>
     public class BitfinexRateLimiters
     {

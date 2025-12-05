@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Binance.Net.UnitTests.TestImplementations
+namespace Bitfinex.Net.UnitTests.TestImplementations
 {
     public abstract class SubscriptionResponse
     {

@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Binance.Net.UnitTests.TestImplementations;
+using Bitfinex.Net.UnitTests.TestImplementations;
 using Bitfinex.Net.UnitTests.TestImplementations;
 using CryptoExchange.Net.Authentication;
 using Bitfinex.Net.Enums;

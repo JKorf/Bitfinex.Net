@@ -1,4 +1,4 @@
-using Binance.Net.Clients.MessageHandlers;
+using Bitfinex.Net.Clients.MessageHandlers;
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Objects.Internal;
