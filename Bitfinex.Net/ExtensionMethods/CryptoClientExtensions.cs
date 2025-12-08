@@ -1,5 +1,6 @@
 ﻿using Bitfinex.Net.Clients;
 using Bitfinex.Net.Interfaces.Clients;
+using CryptoExchange.Net.Interfaces.Clients;
 
 namespace CryptoExchange.Net.Interfaces
 {

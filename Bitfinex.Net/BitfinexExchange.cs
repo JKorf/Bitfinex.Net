@@ -7,8 +7,6 @@ using CryptoExchange.Net.RateLimiting.Guards;
 using CryptoExchange.Net.RateLimiting.Interfaces;
 using CryptoExchange.Net.SharedApis;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Bitfinex.Net
 {

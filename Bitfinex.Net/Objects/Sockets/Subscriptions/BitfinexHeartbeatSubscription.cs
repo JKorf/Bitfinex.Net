@@ -1,4 +1,5 @@
 ﻿using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default;
 using Microsoft.Extensions.Logging;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions

@@ -1,5 +1,4 @@
 using Bitfinex.Net.Clients.MessageHandlers;
-using Bitfinex.Net.Enums;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Options;
@@ -13,7 +12,6 @@ using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;

@@ -1,6 +1,5 @@
 ﻿using Bitfinex.Net.Objects.Internal;
 using CryptoExchange.Net.Sockets;
-using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Sockets.Queries
 {

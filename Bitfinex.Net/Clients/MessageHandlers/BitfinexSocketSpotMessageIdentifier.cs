@@ -1,13 +1,6 @@
-﻿using CryptoExchange.Net.Converters.MessageParsing;
-using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
+﻿using CryptoExchange.Net.Converters.SystemTextJson.MessageHandlers;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Clients.MessageHandlers
 {

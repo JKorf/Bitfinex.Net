@@ -1,13 +1,11 @@
 ﻿using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
-using CryptoExchange.Net.Converters.MessageParsing;
-using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions

@@ -107,7 +107,7 @@
         </member>
         <member name="T:Bitfinex.Net.BitfinexRateLimiters">
             <summary>
-            Rate limiter configuration for the GateIo API
+            Rate limiter configuration for the Bitfinex API
             </summary>
         </member>
         <member name="E:Bitfinex.Net.BitfinexRateLimiters.RateLimitTriggered">
@@ -625,7 +625,7 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateAccessor(System.Net.WebSockets.WebSocketMessageType)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.GetAuthenticationRequestAsync(CryptoExchange.Net.Sockets.SocketConnection)">
+        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.GetAuthenticationRequestAsync(CryptoExchange.Net.Sockets.Default.SocketConnection)">
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker}},System.Threading.CancellationToken)">
@@ -7815,7 +7815,7 @@
         </member>
         <member name="T:Bitfinex.Net.Objects.Options.BitfinexSocketOptions">
             <summary>
-            Options for the BinanceSocketClient
+            Options for the BitfinexSocketClient
             </summary>
         </member>
         <member name="P:Bitfinex.Net.Objects.Options.BitfinexSocketOptions.Default">
@@ -7924,14 +7924,14 @@
             Extensions for the ICryptoRestClient and ICryptoSocketClient interfaces
             </summary>
         </member>
-        <member name="M:CryptoExchange.Net.Interfaces.CryptoClientExtensions.Bitfinex(CryptoExchange.Net.Interfaces.ICryptoRestClient)">
+        <member name="M:CryptoExchange.Net.Interfaces.CryptoClientExtensions.Bitfinex(CryptoExchange.Net.Interfaces.Clients.ICryptoRestClient)">
             <summary>
             Get the Bitfinex REST Api client
             </summary>
             <param name="baseClient"></param>
             <returns></returns>
         </member>
-        <member name="M:CryptoExchange.Net.Interfaces.CryptoClientExtensions.Bitfinex(CryptoExchange.Net.Interfaces.ICryptoSocketClient)">
+        <member name="M:CryptoExchange.Net.Interfaces.CryptoClientExtensions.Bitfinex(CryptoExchange.Net.Interfaces.Clients.ICryptoSocketClient)">
             <summary>
             Get the Bitfinex Websocket Api client
             </summary>

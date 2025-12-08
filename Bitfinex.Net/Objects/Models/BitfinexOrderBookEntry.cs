@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Interfaces;
