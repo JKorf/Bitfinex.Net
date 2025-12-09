@@ -20,6 +20,7 @@ using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.SharedApis;
 using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
+using CryptoExchange.Net.Sockets.HighPerf;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -167,7 +168,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 handler?.Invoke(
                     new DataEvent<BitfinexOrderBookEntry[]>(message, receiveTime, originalData)
-                        .WithStreamId("ticker")
+                        .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
                     );
@@ -198,7 +199,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 handler?.Invoke(
                     new DataEvent<BitfinexOrderBookFundingEntry[]>(message, receiveTime, originalData)
-                        .WithStreamId("ticker")
+                        .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
                     );
@@ -225,7 +226,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 handler?.Invoke(
                     new DataEvent<BitfinexRawOrderBookEntry[]>(message, receiveTime, originalData)
-                        .WithStreamId("ticker")
+                        .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
                     );
@@ -252,7 +253,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 handler?.Invoke(
                     new DataEvent<BitfinexRawOrderBookFundingEntry[]>(message, receiveTime, originalData)
-                        .WithStreamId("ticker")
+                        .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
                     );
@@ -279,7 +280,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             {
                 handler?.Invoke(
                     new DataEvent<BitfinexTradeSimple[]>(message, receiveTime, originalData)
-                        .WithStreamId("ticker")
+                        .WithStreamId("trades")
                         .WithSymbol(symbol)
                         .WithDataTimestamp(message.Max(x => x.Timestamp))
                         .WithUpdateType(updateType)
