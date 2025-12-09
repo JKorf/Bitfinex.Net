@@ -15,6 +15,7 @@ namespace Bitfinex.Net
         private readonly INonceProvider _nonceProvider;
         private static readonly IStringMessageSerializer _messageSerializer = new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
 
+        public override ApiCredentialsType[] SupportedCredentialTypes => [ApiCredentialsType.Hmac];
         public long GetNonce() => _nonceProvider.GetNonce();
 
         public BitfinexAuthenticationProvider(ApiCredentials credentials, INonceProvider? nonceProvider) : base(credentials)
