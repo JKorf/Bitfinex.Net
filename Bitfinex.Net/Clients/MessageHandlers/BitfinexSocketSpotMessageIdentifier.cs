@@ -25,6 +25,7 @@ namespace Bitfinex.Net.Clients.MessageHandlers
 
                     return id + topic;
                 }
+
                 var nodeType1 = document.RootElement[1].ValueKind;
                 if (nodeType1 != JsonValueKind.Array)
                 {

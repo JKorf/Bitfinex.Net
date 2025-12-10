@@ -46,6 +46,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             MessageRouter = MessageRouter.Create([
                 MessageRoute<BitfinexTradeUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "single", DoHandleMessage),
                 MessageRoute<BitfinexTradeArrayUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "array", DoHandleMessage),
+                MessageRoute<BitfinexStringUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "hb", DoHandleHeartbeat),
                 ]);
             MessageMatcher = MessageMatcher.Create([
                 new MessageHandlerLink<BitfinexTradeUpdate>(_channelId.ToString() + "single", DoHandleMessage),
@@ -76,6 +77,11 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         {
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data);
             _firstUpdate = false;
+            return CallResult.SuccessResult;
+        }
+
+        public CallResult DoHandleHeartbeat(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexStringUpdate message)
+        {
             return CallResult.SuccessResult;
         }
     }
