@@ -74,38 +74,6 @@ namespace Bitfinex.Net.Clients.GeneralApi
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
 
         /// <inheritdoc />
-        protected override Error ParseErrorResponse(int httpStatusCode, HttpResponseHeaders responseHeaders, IMessageAccessor accessor, Exception? exception)
-        {
-            if (!accessor.IsValid)
-                return new ServerError(ErrorInfo.Unknown, exception);
-
-            if (accessor.GetNodeType() != NodeType.Array)
-            {
-                var error = accessor.GetValue<string?>(MessagePath.Get().Property("error"));
-                var errorCode = accessor.GetValue<int?>(MessagePath.Get().Property("code"));
-                var errorDesc = accessor.GetValue<string?>(MessagePath.Get().Property("error_description"));
-                if (error != null && errorCode != null && errorDesc != null)
-                    return new ServerError(errorCode.Value.ToString(), GetErrorInfo(errorCode.Value, $"{error}: {errorDesc}"), exception);
-
-                var message = accessor.GetValue<string?>(MessagePath.Get().Property("message"));
-                if (message != null)
-                    return new ServerError(ErrorInfo.Unknown with { Message = message }, exception);
-
-                return new ServerError(ErrorInfo.Unknown, exception: exception);
-            }
-
-            var code = accessor.GetValue<int?>(MessagePath.Get().Index(1));
-            var msg = accessor.GetValue<string>(MessagePath.Get().Index(2));
-            if (msg == null)
-                return new ServerError(ErrorInfo.Unknown, exception: exception);
-
-            if (code == null)
-                return new ServerError(ErrorInfo.Unknown with { Message = msg }, exception);
-
-            return new ServerError(code.Value.ToString(), GetErrorInfo(code.Value, msg), exception);
-        }
-
-        /// <inheritdoc />
         public override TimeSyncInfo? GetTimeSyncInfo() => null;
 
         /// <inheritdoc />
