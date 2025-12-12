@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.UnitTests.TestImplementations;
-using Bitfinex.Net.UnitTests.TestImplementations;
 using CryptoExchange.Net.Authentication;
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Models;
