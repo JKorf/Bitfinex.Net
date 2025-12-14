@@ -89,7 +89,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexChecksum message)
         {
             _checksumHandler?.Invoke(
-                new DataEvent<int>(message.Checksum, receiveTime, originalData)
+                new DataEvent<int>(BitfinexExchange.ExchangeName, message.Checksum, receiveTime, originalData)
                     .WithStreamId(_channel)
                     .WithSymbol(_symbol)
                     .WithUpdateType(_firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update)

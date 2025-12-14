@@ -148,7 +148,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketPositionsEvent message)
         {
             _positionHandler?.Invoke(
-                new DataEvent<BitfinexPosition[]>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexPosition[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("ps")
                     .WithDataTimestamp(message.Data.Any() ? message.Data.Max(x => x.UpdateTime) : null)
@@ -159,7 +159,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketPositionEvent message)
         {
             _positionHandler?.Invoke(
-                new DataEvent<BitfinexPosition[]>([message.Data], receiveTime, originalData)
+                new DataEvent<BitfinexPosition[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
@@ -171,7 +171,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexBalanceEvent message)
         {
             _balanceHandler?.Invoke(
-                new DataEvent<BitfinexBalance>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexBalance>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("bu")
                 );
@@ -181,7 +181,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexMarginBaseEvent message)
         {
             _marginBaseHandler?.Invoke(
-                new DataEvent<BitfinexMarginBase>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexMarginBase>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("miu")
                 );
@@ -191,7 +191,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexMarginSymbolEvent message)
         {
             _marginSymbolHandler?.Invoke(
-                new DataEvent<BitfinexMarginSymbol>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexMarginSymbol>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("miu")
                 );
@@ -201,7 +201,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingInfoEvent message)
         {
             _fundingInfoHandler?.Invoke(
-                new DataEvent<BitfinexFundingInfo>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexFundingInfo>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId("fiu")
@@ -212,7 +212,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexWalletsEvent message)
         {
             _walletHandler?.Invoke(
-                new DataEvent<BitfinexWallet[]>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexWallet[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("ws")
                 );
@@ -222,7 +222,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexWalletEvent message)
         {
             _walletHandler?.Invoke(
-                new DataEvent<BitfinexWallet[]>([message.Data], receiveTime, originalData)
+                new DataEvent<BitfinexWallet[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("wu")
                 );
@@ -232,7 +232,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOrdersEvent message)
         {
             _orderHandler?.Invoke(
-                new DataEvent<BitfinexOrder[]>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexOrder[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("os")
                     .WithDataTimestamp(message.Data.Any() ? message.Data.Max(x => x.UpdateTime) : null)
@@ -243,7 +243,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOrderEvent message)
         {
             _orderHandler?.Invoke(
-                new DataEvent<BitfinexOrder[]>([message.Data], receiveTime, originalData)
+                new DataEvent<BitfinexOrder[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
@@ -255,7 +255,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeDetailEvent message)
         {
             _tradeHandler?.Invoke(
-                new DataEvent<BitfinexTradeDetails>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexTradeDetails>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
@@ -267,7 +267,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingTradeEvent message)
         {
             _fundingTradeHandler?.Invoke(
-                new DataEvent<BitfinexFundingTrade>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexFundingTrade>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
                     .WithDataTimestamp(message.Data.Timestamp)
@@ -278,7 +278,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOffersEvent message)
         {
             _fundingOfferHandler?.Invoke(
-                new DataEvent<BitfinexFundingOffer[]>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexFundingOffer[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("fos")
                     .WithDataTimestamp(message.Data.Any() ? message.Data.Max(x => x.UpdateTime) : null)
@@ -289,7 +289,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOfferEvent message)
         {
             _fundingOfferHandler?.Invoke(
-                new DataEvent<BitfinexFundingOffer[]>([message.Data], receiveTime, originalData)
+                new DataEvent<BitfinexFundingOffer[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
@@ -301,7 +301,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingCreditsEvent message)
         {
             _fundingCreditHandler?.Invoke(
-                new DataEvent<BitfinexFundingCredit[]>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexFundingCredit[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("fcs")
                     .WithDataTimestamp(message.Data.Any() ? message.Data.Max(x => x.UpdateTime) : null)
@@ -312,7 +312,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingCreditEvent message)
         {
             _fundingCreditHandler?.Invoke(
-                new DataEvent<BitfinexFundingCredit[]>([message.Data], receiveTime, originalData)
+                new DataEvent<BitfinexFundingCredit[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
@@ -324,7 +324,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingsEvent message)
         {
             _fundingLoanHandler?.Invoke(
-                new DataEvent<BitfinexFunding[]>(message.Data, receiveTime, originalData)
+                new DataEvent<BitfinexFunding[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("fls")
                     .WithDataTimestamp(message.Data.Any() ? message.Data.Max(x => x.UpdateTime) : null)
@@ -335,7 +335,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingEvent message)
         {
             _fundingLoanHandler?.Invoke(
-                new DataEvent<BitfinexFunding[]>([message.Data], receiveTime, originalData)
+                new DataEvent<BitfinexFunding[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))

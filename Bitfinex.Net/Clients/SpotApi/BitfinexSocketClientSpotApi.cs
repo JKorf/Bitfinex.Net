@@ -115,7 +115,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexStreamTicker[]>((receiveTime, originalData, updateType, message) =>
             {
                 handler?.Invoke(
-                    new DataEvent<BitfinexStreamTicker>(message.First(), receiveTime, originalData)
+                    new DataEvent<BitfinexStreamTicker>(Exchange, message.First(), receiveTime, originalData)
                         .WithStreamId("ticker")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
@@ -139,7 +139,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexStreamFundingTicker[]>((receiveTime, originalData, updateType, message) =>
             {
                 handler?.Invoke(
-                    new DataEvent<BitfinexStreamFundingTicker>(message.First(), receiveTime, originalData)
+                    new DataEvent<BitfinexStreamFundingTicker>(Exchange, message.First(), receiveTime, originalData)
                         .WithStreamId("ticker")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
@@ -167,7 +167,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexOrderBookEntry[]>((receiveTime, originalData, updateType, message) =>
             {
                 handler?.Invoke(
-                    new DataEvent<BitfinexOrderBookEntry[]>(message, receiveTime, originalData)
+                    new DataEvent<BitfinexOrderBookEntry[]>(Exchange, message, receiveTime, originalData)
                         .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
@@ -198,7 +198,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexOrderBookFundingEntry[]>((receiveTime, originalData, updateType, message) =>
             {
                 handler?.Invoke(
-                    new DataEvent<BitfinexOrderBookFundingEntry[]>(message, receiveTime, originalData)
+                    new DataEvent<BitfinexOrderBookFundingEntry[]>(Exchange, message, receiveTime, originalData)
                         .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
@@ -225,7 +225,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexRawOrderBookEntry[]>((receiveTime, originalData, updateType, message) =>
             {
                 handler?.Invoke(
-                    new DataEvent<BitfinexRawOrderBookEntry[]>(message, receiveTime, originalData)
+                    new DataEvent<BitfinexRawOrderBookEntry[]>(Exchange, message, receiveTime, originalData)
                         .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
@@ -252,7 +252,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexRawOrderBookFundingEntry[]>((receiveTime, originalData, updateType, message) =>
             {
                 handler?.Invoke(
-                    new DataEvent<BitfinexRawOrderBookFundingEntry[]>(message, receiveTime, originalData)
+                    new DataEvent<BitfinexRawOrderBookFundingEntry[]>(Exchange, message, receiveTime, originalData)
                         .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
@@ -279,7 +279,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[]>((receiveTime, originalData, updateType, message) =>
             {
                 handler?.Invoke(
-                    new DataEvent<BitfinexTradeSimple[]>(message, receiveTime, originalData)
+                    new DataEvent<BitfinexTradeSimple[]>(Exchange, message, receiveTime, originalData)
                         .WithStreamId("trades")
                         .WithSymbol(symbol)
                         .WithDataTimestamp(message.Max(x => x.Timestamp))
@@ -300,7 +300,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexKline[]>((receiveTime, originalData, updateType, message) =>
             {
                 handler?.Invoke(
-                    new DataEvent<BitfinexKline[]>(message, receiveTime, originalData)
+                    new DataEvent<BitfinexKline[]>(Exchange, message, receiveTime, originalData)
                         .WithStreamId("candles")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
@@ -326,7 +326,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexLiquidation[]>((receiveTime, originalData, updateType, message) =>
             {
                 handler?.Invoke(
-                    new DataEvent<BitfinexLiquidation[]>(message, receiveTime, originalData)
+                    new DataEvent<BitfinexLiquidation[]>(Exchange, message, receiveTime, originalData)
                         .WithStreamId("candles")
                         .WithUpdateType(updateType)
                         .WithDataTimestamp(message.Max(x => x.Timestamp))
@@ -351,7 +351,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexDerivativesStatusUpdate[]>((receiveTime, originalData, updateType, message) =>
             {
                 handler?.Invoke(
-                    new DataEvent<BitfinexDerivativesStatusUpdate>(message.Single(), receiveTime, originalData)
+                    new DataEvent<BitfinexDerivativesStatusUpdate>(Exchange, message.Single(), receiveTime, originalData)
                         .WithStreamId("candles")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
