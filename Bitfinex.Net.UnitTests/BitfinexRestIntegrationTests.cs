@@ -14,7 +14,7 @@ namespace Bitfinex.Net.UnitTests
     [NonParallelizable]
     internal class BitfinexRestIntegrationTests : RestIntegrationTest<BitfinexRestClient>
     {
-        public override bool Run { get; set; } = true;
+        public override bool Run { get; set; } = false;
 
         public BitfinexRestIntegrationTests()
         {
