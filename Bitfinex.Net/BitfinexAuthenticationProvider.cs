@@ -1,5 +1,4 @@
 ﻿using Bitfinex.Net.Objects.Internal;
-using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Interfaces;
@@ -7,7 +6,6 @@ using CryptoExchange.Net.Objects;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Net.Http;
 using System.Text;
 
 namespace Bitfinex.Net
@@ -17,6 +15,7 @@ namespace Bitfinex.Net
         private readonly INonceProvider _nonceProvider;
         private static readonly IStringMessageSerializer _messageSerializer = new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
 
+        public override ApiCredentialsType[] SupportedCredentialTypes => [ApiCredentialsType.Hmac];
         public long GetNonce() => _nonceProvider.GetNonce();
 
         public BitfinexAuthenticationProvider(ApiCredentials credentials, INonceProvider? nonceProvider) : base(credentials)
@@ -31,6 +30,9 @@ namespace Bitfinex.Net
         {
             if (!request.Authenticated)
                 return;
+
+            request.BodyParameters ??= new Dictionary<string, object>();
+            request.Headers ??= new Dictionary<string, string>();
 
             if (request.Path.Contains("v1"))
             {

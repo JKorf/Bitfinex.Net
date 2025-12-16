@@ -15,7 +15,9 @@ using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects.Sockets;
-using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default;
+using CryptoExchange.Net.Sockets.Default.Interfaces;
+using CryptoExchange.Net.Sockets.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -73,7 +75,7 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             BitfinexSocketClient client;
             client = options != null ? new BitfinexSocketClient(options) : new BitfinexSocketClient();
             client.SpotApi.SocketFactory = Mock.Of<IWebsocketFactory>();
-            Mock.Get(client.SpotApi.SocketFactory).Setup(f => f.CreateWebsocket(It.IsAny<ILogger>(), It.IsAny<WebSocketParameters>())).Returns(socket);
+            Mock.Get(client.SpotApi.SocketFactory).Setup(f => f.CreateWebsocket(It.IsAny<ILogger>(), It.IsAny<SocketConnection>(), It.IsAny<WebSocketParameters>())).Returns(socket);
             return client;
         }
 
@@ -103,12 +105,12 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             var response = new Mock<IResponse>();
             response.Setup(c => c.IsSuccessStatusCode).Returns(code == HttpStatusCode.OK);
             response.Setup(c => c.StatusCode).Returns(code);
-            response.Setup(c => c.GetResponseStreamAsync()).Returns(Task.FromResult((Stream)responseStream));
+            response.Setup(c => c.GetResponseStreamAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult((Stream)responseStream));
 
             var request = new Mock<IRequest>();
             request.Setup(c => c.Uri).Returns(new Uri("http://www.test.com"));
             request.Setup(c => c.GetResponseAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(response.Object));
-            request.Setup(c => c.GetHeaders()).Returns(new KeyValuePair<string, string[]>[0]);
+            request.Setup(c => c.GetHeaders()).Returns(new HttpRequestMessage().Headers);
 
             var factory = Mock.Get(client.SpotApi.RequestFactory);
             factory.Setup(c => c.Create(It.IsAny<Version>(), It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))

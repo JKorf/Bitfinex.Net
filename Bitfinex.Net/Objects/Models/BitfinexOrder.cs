@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using System;
 using Bitfinex.Net.Converters;
 using Bitfinex.Net.Enums;

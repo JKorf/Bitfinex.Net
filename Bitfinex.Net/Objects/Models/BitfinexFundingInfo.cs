@@ -1,7 +1,4 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Converters;
-using Bitfinex.Net.Converters;
-using System.ComponentModel;
 
 namespace Bitfinex.Net.Objects.Models
 {

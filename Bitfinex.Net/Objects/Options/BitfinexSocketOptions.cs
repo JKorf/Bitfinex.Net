@@ -5,7 +5,7 @@ using System;
 namespace Bitfinex.Net.Objects.Options
 {
     /// <summary>
-    /// Options for the BinanceSocketClient
+    /// Options for the BitfinexSocketClient
     /// </summary>
     public class BitfinexSocketOptions : SocketExchangeOptions<BitfinexEnvironment>
     {

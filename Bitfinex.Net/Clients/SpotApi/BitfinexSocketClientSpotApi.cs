@@ -1,30 +1,34 @@
-using CryptoExchange.Net;
-using CryptoExchange.Net.Objects;
-using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using CryptoExchange.Net.Authentication;
-using System.Threading;
-using Bitfinex.Net.Objects.Internal;
-using Bitfinex.Net.Objects.Models.Socket;
-using Bitfinex.Net.Interfaces.Clients.SpotApi;
-using Bitfinex.Net.Objects.Options;
-using CryptoExchange.Net.Objects.Sockets;
-using Bitfinex.Net.Objects.Sockets.Subscriptions;
-using Bitfinex.Net.Objects.Models;
+using Bitfinex.Net.Clients.MessageHandlers;
 using Bitfinex.Net.Enums;
-using System.Collections.Generic;
-using System.Linq;
-using CryptoExchange.Net.Sockets;
-using System.Globalization;
-using Bitfinex.Net.Objects.Sockets.Queries;
-using CryptoExchange.Net.Interfaces;
-using CryptoExchange.Net.Converters.MessageParsing;
-using CryptoExchange.Net.Clients;
-using CryptoExchange.Net.SharedApis;
+using Bitfinex.Net.Interfaces.Clients.SpotApi;
+using Bitfinex.Net.Objects.Internal;
+using Bitfinex.Net.Objects.Models;
+using Bitfinex.Net.Objects.Models.Socket;
+using Bitfinex.Net.Objects.Options;
 using Bitfinex.Net.Objects.Sockets;
-using System.Net.WebSockets;
+using Bitfinex.Net.Objects.Sockets.Queries;
+using Bitfinex.Net.Objects.Sockets.Subscriptions;
+using CryptoExchange.Net;
+using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Clients;
+using CryptoExchange.Net.Converters.MessageParsing;
+using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
+using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
+using CryptoExchange.Net.Objects.Sockets;
+using CryptoExchange.Net.SharedApis;
+using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default;
+using CryptoExchange.Net.Sockets.HighPerf;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net.WebSockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Clients.SpotApi
 {
@@ -63,6 +67,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             UnhandledMessageExpected = true;
 
             AddSystemSubscription(new BitfinexInfoSubscription(_logger, options.OrderBookBulkUpdates));
+            AddSystemSubscription(new BitfinexHeartbeatSubscription(_logger));
 
             RateLimiter = BitfinexExchange.RateLimiter.Websocket;
 
@@ -77,6 +82,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
                 => BitfinexExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
+
+        public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new BitfinexSocketSpotMessageIdentifier();
 
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
@@ -105,6 +112,16 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamTicker>> handler, CancellationToken ct = default)
         {
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexStreamTicker[]>((receiveTime, originalData, updateType, message) =>
+            {
+                handler?.Invoke(
+                    new DataEvent<BitfinexStreamTicker>(Exchange, message.First(), receiveTime, originalData)
+                        .WithStreamId("ticker")
+                        .WithSymbol(symbol)
+                        .WithUpdateType(updateType)
+                    );
+            });
+
             var subscription = new BitfinexSubscription<
                 BitfinexStreamTickerUpdate, 
                 BitfinexStreamTickerArrayUpdate, 
@@ -112,13 +129,23 @@ namespace Bitfinex.Net.Clients.SpotApi
                 _logger,
                 "ticker",
                 symbol,
-                x => handler(x.As(x.Data.First())));
+                internalHandler);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToFundingTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamFundingTicker>> handler, CancellationToken ct = default)
         {
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexStreamFundingTicker[]>((receiveTime, originalData, updateType, message) =>
+            {
+                handler?.Invoke(
+                    new DataEvent<BitfinexStreamFundingTicker>(Exchange, message.First(), receiveTime, originalData)
+                        .WithStreamId("ticker")
+                        .WithSymbol(symbol)
+                        .WithUpdateType(updateType)
+                    );
+            });
+
             var subscription = new BitfinexSubscription<
                 BitfinexStreamFundingTickerUpdate, 
                 BitfinexStreamFundingTickerArrayUpdate,
@@ -126,7 +153,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 _logger,
                 "ticker",
                 symbol,
-                x => handler(x.As(x.Data.First())));
+                internalHandler);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 
@@ -137,13 +164,23 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (precision == Precision.R0)
                 throw new ArgumentException("Invalid precision R0, use SubscribeToRawBookUpdatesAsync instead");
 
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexOrderBookEntry[]>((receiveTime, originalData, updateType, message) =>
+            {
+                handler?.Invoke(
+                    new DataEvent<BitfinexOrderBookEntry[]>(Exchange, message, receiveTime, originalData)
+                        .WithStreamId("book")
+                        .WithSymbol(symbol)
+                        .WithUpdateType(updateType)
+                    );
+            });
+
             var subscription = new BitfinexBookSubscription<
                 BitfinexOrderBookEntryUpdate,
                 BitfinexOrderBookEntryArrayUpdate,
                 BitfinexOrderBookEntry>(
                 _logger,
                 symbol,
-                x => handler(x.As(x.Data)),
+                internalHandler,
                 checksumHandler,
                 precision, 
                 frequency, 
@@ -158,13 +195,23 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (precision == Precision.R0)
                 throw new ArgumentException("Invalid precision R0, use SubscribeToFundingRawOrderBookUpdatesAsync instead");
 
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexOrderBookFundingEntry[]>((receiveTime, originalData, updateType, message) =>
+            {
+                handler?.Invoke(
+                    new DataEvent<BitfinexOrderBookFundingEntry[]>(Exchange, message, receiveTime, originalData)
+                        .WithStreamId("book")
+                        .WithSymbol(symbol)
+                        .WithUpdateType(updateType)
+                    );
+            });
+
             var subscription = new BitfinexBookSubscription<
                 BitfinexOrderBookFundingEntryUpdate,
                 BitfinexOrderBookFundingEntryArrayUpdate,
                 BitfinexOrderBookFundingEntry>(
                 _logger,
                 symbol,
-                x => handler(x.As(x.Data)),
+                internalHandler,
                 checksumHandler,
                 precision, 
                 frequency,
@@ -175,13 +222,23 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToRawOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<BitfinexRawOrderBookEntry[]>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
         {
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexRawOrderBookEntry[]>((receiveTime, originalData, updateType, message) =>
+            {
+                handler?.Invoke(
+                    new DataEvent<BitfinexRawOrderBookEntry[]>(Exchange, message, receiveTime, originalData)
+                        .WithStreamId("book")
+                        .WithSymbol(symbol)
+                        .WithUpdateType(updateType)
+                    );
+            });
+
             var subscription = new BitfinexBookSubscription<
                 BitfinexRawOrderBookEntryUpdate,
                 BitfinexRawOrderBookEntryArrayUpdate,
                 BitfinexRawOrderBookEntry>(
                 _logger,
                 symbol,
-                x => handler(x.As(x.Data)),
+                internalHandler,
                 checksumHandler,
                 Precision.R0,
                 Frequency.Realtime,
@@ -192,13 +249,23 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToRawFundingOrderBookUpdatesAsync(string symbol, int limit, Action<DataEvent<BitfinexRawOrderBookFundingEntry[]>> handler, Action<DataEvent<int>>? checksumHandler = null, CancellationToken ct = default)
         {
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexRawOrderBookFundingEntry[]>((receiveTime, originalData, updateType, message) =>
+            {
+                handler?.Invoke(
+                    new DataEvent<BitfinexRawOrderBookFundingEntry[]>(Exchange, message, receiveTime, originalData)
+                        .WithStreamId("book")
+                        .WithSymbol(symbol)
+                        .WithUpdateType(updateType)
+                    );
+            });
+
             var subscription = new BitfinexBookSubscription<
                 BitfinexRawOrderBookFundingEntryUpdate,
                 BitfinexRawOrderBookFundingEntryArrayUpdate,
                 BitfinexRawOrderBookFundingEntry>(
                 _logger,
                 symbol,
-                x => handler(x.As(x.Data)),
+                internalHandler,
                 checksumHandler,
                 Precision.R0,
                 Frequency.Realtime,
@@ -209,16 +276,37 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<BitfinexTradeSimple[]>> handler, CancellationToken ct = default)
         {
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[]>((receiveTime, originalData, updateType, message) =>
+            {
+                handler?.Invoke(
+                    new DataEvent<BitfinexTradeSimple[]>(Exchange, message, receiveTime, originalData)
+                        .WithStreamId("trades")
+                        .WithSymbol(symbol)
+                        .WithDataTimestamp(message.Max(x => x.Timestamp))
+                        .WithUpdateType(updateType)
+                    );
+            });
+
             var subscription = new BitfinexTradeSubscription(
                 _logger,
                 symbol,
-                x => handler(x.As(x.Data).WithDataTimestamp(x.Data.Max(x => x.Timestamp))));
+                internalHandler);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(string symbol, KlineInterval interval, Action<DataEvent<BitfinexKline[]>> handler, CancellationToken ct = default)
         {
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexKline[]>((receiveTime, originalData, updateType, message) =>
+            {
+                handler?.Invoke(
+                    new DataEvent<BitfinexKline[]>(Exchange, message, receiveTime, originalData)
+                        .WithStreamId("candles")
+                        .WithSymbol(symbol)
+                        .WithUpdateType(updateType)
+                    );
+            });
+
             var subscription = new BitfinexSubscription<
                 BitfinexKlineUpdate,
                 BitfinexKlineArrayUpdate,
@@ -226,7 +314,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 _logger,
                 "candles",
                 symbol,
-                x => handler(x.As(x.Data)),
+                internalHandler,
                 key: $"trade:{EnumConverter.GetString(interval)}:" + symbol,
                 sendSymbol: false);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
@@ -235,6 +323,16 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToLiquidationUpdatesAsync(Action<DataEvent<BitfinexLiquidation[]>> handler, CancellationToken ct = default)
         {
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexLiquidation[]>((receiveTime, originalData, updateType, message) =>
+            {
+                handler?.Invoke(
+                    new DataEvent<BitfinexLiquidation[]>(Exchange, message, receiveTime, originalData)
+                        .WithStreamId("candles")
+                        .WithUpdateType(updateType)
+                        .WithDataTimestamp(message.Max(x => x.Timestamp))
+                    );
+            });
+
             var subscription = new BitfinexSubscription<
                 BitfinexLiquidationUpdate,
                 BitfinexLiquidationArrayUpdate,
@@ -242,7 +340,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 _logger,
                 "status",
                 null,
-                x => handler(x.As(x.Data).WithDataTimestamp(x.Data.Max(x => x.Timestamp))),
+                internalHandler,
                 key: $"liq:global");
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
@@ -250,6 +348,17 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToDerivativesUpdatesAsync(string symbol, Action<DataEvent<BitfinexDerivativesStatusUpdate>> handler, CancellationToken ct = default)
         {
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexDerivativesStatusUpdate[]>((receiveTime, originalData, updateType, message) =>
+            {
+                handler?.Invoke(
+                    new DataEvent<BitfinexDerivativesStatusUpdate>(Exchange, message.Single(), receiveTime, originalData)
+                        .WithStreamId("candles")
+                        .WithSymbol(symbol)
+                        .WithUpdateType(updateType)
+                        .WithDataTimestamp(message.Single().Timestamp)
+                    );
+            });
+
             var subscription = new BitfinexSubscription<
                 BitfinexDerivativesStatusUpdateUpdate,
                 BitfinexDerivativesStatusUpdateArrayUpdate,
@@ -257,7 +366,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 _logger,
                 "status",
                 null,
-                x => handler(x.As(x.Data.Single()).WithDataTimestamp(x.Data.Single().Timestamp)),
+                internalHandler,
                 key: $"deriv:" + symbol);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
@@ -489,5 +598,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             _random.NextBytes(buffer);
             return (long)Math.Round(Math.Abs(BitConverter.ToInt32(buffer, 0)) / 1000m);
         }
+
     }
 }

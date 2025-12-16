@@ -1,9 +1,8 @@
 ﻿using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
-using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default;
 using System;
-using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Sockets.Queries
 {
@@ -23,19 +22,26 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             if (string.Equals(evnt, "subscribe", StringComparison.Ordinal) || string.Equals(evnt, "unsubscribe", StringComparison.Ordinal))
                 evnt += "d";
 
-            MessageMatcher = MessageMatcher.Create<BitfinexResponse>([evnt + channel + symbol + precision + frequency + length + key, "error" + channel + symbol + precision + frequency + length + key], HandleMessage);
+            MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitfinexResponse>(
+                [evnt + channel + symbol + precision + frequency + length + key,
+                "error" + channel + symbol + precision + frequency + length + key],
+                HandleMessage);
+            MessageMatcher = MessageMatcher.Create<BitfinexResponse>(
+                [evnt + channel + symbol + precision + frequency + length + key,
+                "error" + channel + symbol + precision + frequency + length + key],
+                HandleMessage);
         }
 
-        public CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DataEvent<BitfinexResponse> message)
+        public CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexResponse message)
         {
-            if (string.Equals(message.Data.Event, "error", StringComparison.Ordinal))
+            if (string.Equals(message.Event, "error", StringComparison.Ordinal))
             {
                 // Additional check for "dup" which means the subscription is already active
-                if (!message.Data.Message.Equals("subscribe: dup", StringComparison.Ordinal))
-                    return new CallResult<BitfinexResponse>(new ServerError(ErrorInfo.Unknown with { Message = message.Data.Message! }));
+                if (!message.Message.Equals("subscribe: dup", StringComparison.Ordinal))
+                    return new CallResult<BitfinexResponse>(new ServerError(ErrorInfo.Unknown with { Message = message.Message! }), originalData);
             }
 
-            return new CallResult<BitfinexResponse>(message.Data);
+            return new CallResult<BitfinexResponse>(message, originalData, null);
         }
     }
 }

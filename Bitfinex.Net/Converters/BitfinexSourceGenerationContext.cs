@@ -5,9 +5,7 @@ using Bitfinex.Net.Objects.Models.Socket;
 using Bitfinex.Net.Objects.Models.V1;
 using Bitfinex.Net.Objects.Sockets;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Bitfinex.Net.Converters
 {

@@ -1,6 +1,6 @@
 ﻿using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using CryptoExchange.Net.Authentication;
-using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Interfaces.Clients;
 using CryptoExchange.Net.Objects.Options;
 
 namespace Bitfinex.Net.Interfaces.Clients

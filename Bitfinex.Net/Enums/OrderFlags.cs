@@ -1,6 +1,3 @@
-using System.Text.Json.Serialization;
-using CryptoExchange.Net.Converters.SystemTextJson;
-using CryptoExchange.Net.Attributes;
 using System;
 
 namespace Bitfinex.Net.Enums

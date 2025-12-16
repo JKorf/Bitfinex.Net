@@ -1,18 +1,19 @@
-using Bitfinex.Net.Enums;
+using Bitfinex.Net.Clients.MessageHandlers;
 using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Converters.MessageParsing;
+using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,6 +27,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         public new BitfinexRestOptions ClientOptions => (BitfinexRestOptions)base.ClientOptions;
 
         protected override ErrorMapping ErrorMapping => BitfinexErrors.Errors;
+
+        protected override IRestMessageHandler MessageHandler { get; } = new BitfinexRestMessageHandler(BitfinexErrors.Errors);
         #endregion
 
         /// <inheritdoc />
@@ -85,37 +88,5 @@ namespace Bitfinex.Net.Clients.SpotApi
         public override TimeSpan? GetTimeOffset() => null;
 
         public IBitfinexRestClientSpotApiShared SharedClient => this;
-
-        /// <inheritdoc />
-        protected override Error ParseErrorResponse(int httpStatusCode, KeyValuePair<string, string[]>[] responseHeaders, IMessageAccessor accessor, Exception? exception)
-        {
-            if (!accessor.IsValid)
-                return new ServerError(ErrorInfo.Unknown, exception);
-
-            if (accessor.GetNodeType() != NodeType.Array)
-            {
-                var error = accessor.GetValue<string?>(MessagePath.Get().Property("error"));
-                var errorCode = accessor.GetValue<int?>(MessagePath.Get().Property("code"));
-                var errorDesc = accessor.GetValue<string?>(MessagePath.Get().Property("error_description"));
-                if (error != null && errorCode != null && errorDesc != null)
-                    return new ServerError(errorCode.Value.ToString(), GetErrorInfo(errorCode.Value, $"{error}: {errorDesc}"));
-                
-                var message = accessor.GetValue<string?>(MessagePath.Get().Property("message"));
-                if (message != null)
-                    return new ServerError(ErrorInfo.Unknown with { Message = message }, exception);
-
-                return new ServerError(ErrorInfo.Unknown, exception: exception);
-            }
-
-            var code = accessor.GetValue<int?>(MessagePath.Get().Index(1));
-            var msg = accessor.GetValue<string>(MessagePath.Get().Index(2));
-            if (msg == null)
-                return new ServerError(ErrorInfo.Unknown, exception: exception);
-
-            if (code == null)
-                return new ServerError(ErrorInfo.Unknown with { Message = msg }, exception);
-
-            return new ServerError(code.Value.ToString(), GetErrorInfo(code.Value, msg), exception);
-        }
     }
 }

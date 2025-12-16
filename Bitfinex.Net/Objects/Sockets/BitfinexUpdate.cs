@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Converters;
-using Bitfinex.Net.Objects.Models;
+﻿using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
 using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;

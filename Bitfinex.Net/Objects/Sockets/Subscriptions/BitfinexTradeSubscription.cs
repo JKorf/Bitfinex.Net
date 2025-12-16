@@ -1,29 +1,24 @@
-﻿using Bitfinex.Net.Enums;
-using Bitfinex.Net.Objects.Internal;
-using Bitfinex.Net.Objects.Models;
+﻿using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Sockets.Queries;
-using CryptoExchange.Net.Converters.MessageParsing;
-using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
-    internal class BitfinexTradeSubscription: Subscription<BitfinexResponse, BitfinexResponse>
+    internal class BitfinexTradeSubscription: Subscription
     {
         private string _channel;
         private string _symbol;
         private int _channelId;
         private bool _firstUpdate;
-        private Action<DataEvent<BitfinexTradeSimple[]>> _handler;
+        private Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[]> _handler;
 
         public BitfinexTradeSubscription(ILogger logger,
             string symbol,
-            Action<DataEvent<BitfinexTradeSimple[]>> handler,
+            Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[]> handler,
             bool authenticated = false)
             : base(logger, authenticated)
         {
@@ -32,6 +27,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _channel = "trades";
 
             MessageMatcher = MessageMatcher.Create([]);
+            MessageRouter = MessageRouter.Create([]);
         }
 
         public override void DoHandleReset()
@@ -40,11 +36,18 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _firstUpdate = true;
         }
 
-        public override void HandleSubQueryResponse(BitfinexResponse message)
+        public override void HandleSubQueryResponse(object? message)
         {
-            _channelId = message.ChannelId!.Value;
+            var data = (BitfinexResponse?)message;
+
+            _channelId = data!.ChannelId!.Value;
             _firstUpdate = true;
 
+            MessageRouter = MessageRouter.Create([
+                MessageRoute<BitfinexTradeUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "single", DoHandleMessage),
+                MessageRoute<BitfinexTradeArrayUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "array", DoHandleMessage),
+                MessageRoute<BitfinexStringUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "hb", DoHandleHeartbeat),
+                ]);
             MessageMatcher = MessageMatcher.Create([
                 new MessageHandlerLink<BitfinexTradeUpdate>(_channelId.ToString() + "single", DoHandleMessage),
                 new MessageHandlerLink<BitfinexTradeArrayUpdate>(_channelId.ToString() + "array", DoHandleMessage),
@@ -63,17 +66,22 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             return new BitfinexUnsubQuery(_channelId);
         }
 
-        public CallResult DoHandleMessage(SocketConnection connection, DataEvent<BitfinexTradeUpdate> message)
+        public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeUpdate message)
         {
-            _handler?.Invoke(message.As<BitfinexTradeSimple[]>([message.Data.Data], _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data]);
             _firstUpdate = false;
             return CallResult.SuccessResult;
         }
 
-        public CallResult DoHandleMessage(SocketConnection connection, DataEvent<BitfinexTradeArrayUpdate> message)
+        public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeArrayUpdate message)
         {
-            _handler?.Invoke(message.As(message.Data.Data, _channel, _symbol, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update));
+            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data);
             _firstUpdate = false;
+            return CallResult.SuccessResult;
+        }
+
+        public CallResult DoHandleHeartbeat(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexStringUpdate message)
+        {
             return CallResult.SuccessResult;
         }
     }

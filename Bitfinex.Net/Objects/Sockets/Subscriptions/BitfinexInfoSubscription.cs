@@ -1,10 +1,10 @@
 ﻿using Bitfinex.Net.Objects.Models.Socket;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
+using System;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
@@ -17,11 +17,12 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _bulkUpdates = bulkUpdates;
 
             MessageMatcher = MessageMatcher.Create<BitfinexSocketInfo>("info", HandleMessage);
+            MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitfinexSocketInfo>("info", HandleMessage);
         }
 
-        public CallResult HandleMessage(SocketConnection connection, DataEvent<BitfinexSocketInfo> message)
+        public CallResult HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketInfo message)
         {
-            if (message.Data.Code == null)
+            if (message.Code == null)
             {
                 // welcome event, send a config message
                 _ = connection.SendAndWaitQueryAsync(new BitfinexConfQuery(
@@ -31,7 +32,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 return CallResult.SuccessResult;
             }
 
-            var code = message.Data.Code;
+            var code = message.Code;
             switch (code)
             {
                 case 20051:

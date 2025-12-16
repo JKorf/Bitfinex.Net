@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Converters;
-using CryptoExchange.Net.Converters;
+﻿using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Internal
 {

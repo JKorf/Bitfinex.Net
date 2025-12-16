@@ -11,7 +11,6 @@ namespace Bitfinex.Net.UnitTests
     [TestFixture]
     public class RestRequestTests
     {
-
         [Test]
         public async Task ValidateSpotAccountCalls()
         {

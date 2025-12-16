@@ -7,8 +7,6 @@ using CryptoExchange.Net.RateLimiting.Guards;
 using CryptoExchange.Net.RateLimiting.Interfaces;
 using CryptoExchange.Net.SharedApis;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Bitfinex.Net
 {
@@ -96,7 +94,7 @@ namespace Bitfinex.Net
     }
 
     /// <summary>
-    /// Rate limiter configuration for the GateIo API
+    /// Rate limiter configuration for the Bitfinex API
     /// </summary>
     public class BitfinexRateLimiters
     {

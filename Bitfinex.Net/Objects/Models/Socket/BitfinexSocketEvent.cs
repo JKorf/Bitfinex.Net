@@ -1,8 +1,6 @@
-using CryptoExchange.Net.Converters.SystemTextJson;
 using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
-using Bitfinex.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models.Socket
 {
