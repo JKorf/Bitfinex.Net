@@ -57,6 +57,9 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public override void HandleSubQueryResponse(object? message)
         {
             var data = (BitfinexResponse?)message;
+            if (data == null)
+                // Timeout or other connection error
+                return;
 
             _channelId = data!.ChannelId!.Value;
             _firstUpdate = true;
