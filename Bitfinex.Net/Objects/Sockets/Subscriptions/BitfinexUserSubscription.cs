@@ -55,6 +55,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _marginSymbolHandler = marginSymbolHandler;
 
             MessageRouter = MessageRouter.Create([
+                MessageRoute<BitfinexSocketStringEvent>.CreateWithoutTopicFilter("0hb", DoHandleMessage),
+
                 MessageRoute<BitfinexSocketPositionsEvent>.CreateWithoutTopicFilter("0ps",DoHandleMessage),
                 MessageRoute<BitfinexSocketPositionEvent>.CreateWithoutTopicFilter("0pn",DoHandleMessage),
                 MessageRoute<BitfinexSocketPositionEvent>.CreateWithoutTopicFilter("0pu",DoHandleMessage),
@@ -98,6 +100,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 ]);
 
             MessageMatcher = MessageMatcher.Create([
+                new MessageHandlerLink<BitfinexSocketStringEvent>("0hb", DoHandleMessage),
+
                 new MessageHandlerLink<BitfinexSocketPositionsEvent>("0ps", DoHandleMessage),
                 new MessageHandlerLink<BitfinexSocketPositionEvent>("0pn", DoHandleMessage),
                 new MessageHandlerLink<BitfinexSocketPositionEvent>("0pu", DoHandleMessage),
@@ -144,6 +148,12 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         protected override Query? GetSubQuery(SocketConnection connection) => null;
 
         protected override Query? GetUnsubQuery(SocketConnection connection) => null;
+
+        public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketStringEvent message)
+        {
+            // Heartbeat
+            return CallResult.SuccessResult;
+        }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketPositionsEvent message)
         {
