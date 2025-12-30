@@ -14,11 +14,11 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private string _symbol;
         private int _channelId;
         private bool _firstUpdate;
-        private Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[]> _handler;
+        private Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[], long, DateTime> _handler;
 
         public BitfinexTradeSubscription(ILogger logger,
             string symbol,
-            Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[]> handler,
+            Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[], long, DateTime> handler,
             bool authenticated = false)
             : base(logger, authenticated)
         {
@@ -71,14 +71,14 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeUpdate message)
         {
-            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data]);
+            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data], message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeArrayUpdate message)
         {
-            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data);
+            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data, message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.SuccessResult;
         }

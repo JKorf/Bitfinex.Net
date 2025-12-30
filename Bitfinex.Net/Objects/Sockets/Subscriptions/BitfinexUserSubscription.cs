@@ -55,7 +55,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _marginSymbolHandler = marginSymbolHandler;
 
             MessageRouter = MessageRouter.Create([
-                MessageRoute<BitfinexSocketStringEvent>.CreateWithoutTopicFilter("0hb", DoHandleMessage),
+                MessageRoute<BitfinexStringUpdate>.CreateWithoutTopicFilter("0hb", DoHandleMessage),
 
                 MessageRoute<BitfinexSocketPositionsEvent>.CreateWithoutTopicFilter("0ps",DoHandleMessage),
                 MessageRoute<BitfinexSocketPositionEvent>.CreateWithoutTopicFilter("0pn",DoHandleMessage),
@@ -100,7 +100,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 ]);
 
             MessageMatcher = MessageMatcher.Create([
-                new MessageHandlerLink<BitfinexSocketStringEvent>("0hb", DoHandleMessage),
+                new MessageHandlerLink<BitfinexStringUpdate>("0hb", DoHandleMessage),
 
                 new MessageHandlerLink<BitfinexSocketPositionsEvent>("0ps", DoHandleMessage),
                 new MessageHandlerLink<BitfinexSocketPositionEvent>("0pn", DoHandleMessage),
@@ -149,7 +149,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         protected override Query? GetUnsubQuery(SocketConnection connection) => null;
 
-        public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketStringEvent message)
+        public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexStringUpdate message)
         {
             // Heartbeat
             return CallResult.SuccessResult;
@@ -161,7 +161,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexPosition[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("ps")
-                    .WithDataTimestamp(message.Data.Any() ? message.Data.Max(x => x.UpdateTime) : null)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -173,7 +173,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Data.UpdateTime)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -184,6 +184,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexBalance>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("bu")
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -194,6 +195,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexMarginBase>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("miu")
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -204,6 +206,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexMarginSymbol>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("miu")
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -215,6 +218,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId("fiu")
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -225,6 +229,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexWallet[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("ws")
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -235,6 +240,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexWallet[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("wu")
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -245,7 +251,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexOrder[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("os")
-                    .WithDataTimestamp(message.Data.Any() ? message.Data.Max(x => x.UpdateTime) : null)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -257,7 +263,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Data.UpdateTime)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -269,7 +275,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Data.Timestamp)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -280,7 +286,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexFundingTrade>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Data.Timestamp)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -291,7 +297,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexFundingOffer[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("fos")
-                    .WithDataTimestamp(message.Data.Any() ? message.Data.Max(x => x.UpdateTime) : null)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -303,7 +309,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Data.UpdateTime)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -314,7 +320,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexFundingCredit[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("fcs")
-                    .WithDataTimestamp(message.Data.Any() ? message.Data.Max(x => x.UpdateTime) : null)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -326,7 +332,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Data.UpdateTime)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -337,7 +343,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 new DataEvent<BitfinexFunding[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("fls")
-                    .WithDataTimestamp(message.Data.Any() ? message.Data.Max(x => x.UpdateTime) : null)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }
@@ -349,7 +355,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Data.UpdateTime)
+                    .WithDataTimestamp(message.Timestamp)
                 );
             return CallResult.SuccessResult;
         }

@@ -26,6 +26,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             {
                 // welcome event, send a config message
                 _ = connection.SendAndWaitQueryAsync(new BitfinexConfQuery(
+                    32768 + // Timestamp in updates
+                    65536 + // Sequence numbers in updates
                     131072 + // Send checksum messages
                     (_bulkUpdates ? 536870912 : 0) // Bulk updates
                     ));

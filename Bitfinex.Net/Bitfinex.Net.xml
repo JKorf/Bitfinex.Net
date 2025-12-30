@@ -7580,6 +7580,16 @@
             The data
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent`1.SequenceNumber">
+            <summary>
+            Sequence number
+            </summary>
+        </member>
+        <member name="P:Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent`1.Timestamp">
+            <summary>
+            Timestamp
+            </summary>
+        </member>
         <member name="M:Bitfinex.Net.Objects.Models.Socket.BitfinexSocketEvent`1.#ctor">
             <summary>
             ctor

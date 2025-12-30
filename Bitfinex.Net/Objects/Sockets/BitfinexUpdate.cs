@@ -2,6 +2,7 @@
 using Bitfinex.Net.Objects.Models.Socket;
 using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
+using System;
 
 namespace Bitfinex.Net.Objects.Sockets
 {
@@ -12,6 +13,10 @@ namespace Bitfinex.Net.Objects.Sockets
         [ArrayProperty(1)]
         [JsonConversion]
         public T Data { get; set; } = default!;
+        [ArrayProperty(2)]
+        public long Sequence { get; set; }
+        [ArrayProperty(3), JsonConverter(typeof(DateTimeConverter))]
+        public DateTime Timestamp { get; set; }
     }
 
     [JsonConverter(typeof(ArrayConverter<BitfinexStringUpdate>))]
@@ -76,7 +81,11 @@ namespace Bitfinex.Net.Objects.Sockets
         [ArrayProperty(1)]
         public string Topic { get; set; } = string.Empty;
         [ArrayProperty(2)]
-        public BitfinexTradeSimple Data { get; set; } = default!;    
+        public BitfinexTradeSimple Data { get; set; } = default!;
+        [ArrayProperty(3)]
+        public long Sequence { get; set; }
+        [ArrayProperty(4), JsonConverter(typeof(DateTimeConverter))]
+        public DateTime Timestamp { get; set; }
     }
 
     [JsonConverter(typeof(ArrayConverter<BitfinexTradeArrayUpdate>))]

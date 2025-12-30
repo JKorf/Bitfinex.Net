@@ -1,6 +1,7 @@
 using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
+using System;
 
 namespace Bitfinex.Net.Objects.Models.Socket
 {
@@ -27,6 +28,17 @@ namespace Bitfinex.Net.Objects.Models.Socket
         [ArrayProperty(2)]
         [JsonConversion]
         public T Data { get; set; } = default!;
+
+        /// <summary>
+        /// Sequence number
+        /// </summary>
+        [ArrayProperty(3)]
+        public long SequenceNumber { get; set; }
+        /// <summary>
+        /// Timestamp
+        /// </summary>
+        [ArrayProperty(5), JsonConverter(typeof(DateTimeConverter))]
+        public DateTime Timestamp { get; set; }
 
         /// <summary>
         /// ctor
