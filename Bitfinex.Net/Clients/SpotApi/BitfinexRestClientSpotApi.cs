@@ -81,12 +81,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             CancellationToken cancellationToken) where T : class
                 => base.SendAsync<T>(uri, definition, parameters, cancellationToken);
 
-        /// <inheritdoc />
-        public override TimeSyncInfo? GetTimeSyncInfo() => null;
-
-        /// <inheritdoc />
-        public override TimeSpan? GetTimeOffset() => null;
-
         public IBitfinexRestClientSpotApiShared SharedClient => this;
     }
 }

@@ -92,23 +92,6 @@ namespace Bitfinex.Net.Clients.SpotApi
         public IBitfinexSocketClientSpotApiShared SharedClient => this;
 
         /// <inheritdoc />
-        protected override Task<Query?> GetAuthenticationRequestAsync(SocketConnection connection)
-        {
-            var authProvider = (BitfinexAuthenticationProvider)AuthenticationProvider!;
-            var n = authProvider.GetNonce().ToString();
-            var authentication = new BitfinexAuthentication
-            {
-                Event = "auth",
-                ApiKey = authProvider.ApiKey,
-                Nonce = n,
-                Payload = "AUTH" + n
-            };
-
-            authentication.Signature = authProvider.Sign(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
-            return Task.FromResult<Query?>(new BitfinexAuthQuery(this, authentication));
-        }
-
-        /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamTicker>> handler, CancellationToken ct = default)
         {
             var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexStreamTicker[], long, DateTime>((receiveTime, originalData, updateType, message, seq, timestamp) =>
@@ -118,7 +101,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         .WithStreamId("ticker")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
-                        .WithDataTimestamp(timestamp)
+                        .WithDataTimestamp(timestamp, GetTimeOffset())
                     );
             });
 
@@ -127,6 +110,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 BitfinexStreamTickerArrayUpdate, 
                 BitfinexStreamTicker>(
                 _logger,
+                this,
                 "ticker",
                 symbol,
                 internalHandler);
@@ -143,7 +127,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         .WithStreamId("ticker")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
-                        .WithDataTimestamp(timestamp)
+                        .WithDataTimestamp(timestamp, GetTimeOffset())
                     );
             });
 
@@ -152,6 +136,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 BitfinexStreamFundingTickerArrayUpdate,
                 BitfinexStreamFundingTicker>(
                 _logger,
+                this,
                 "ticker",
                 symbol,
                 internalHandler);
@@ -172,7 +157,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
-                        .WithDataTimestamp(timestamp)
+                        .WithDataTimestamp(timestamp, GetTimeOffset())
                     );
             });
 
@@ -181,6 +166,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 BitfinexOrderBookEntryArrayUpdate,
                 BitfinexOrderBookEntry>(
                 _logger,
+                this,
                 symbol,
                 internalHandler,
                 checksumHandler,
@@ -204,7 +190,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
-                        .WithDataTimestamp(timestamp)
+                        .WithDataTimestamp(timestamp, GetTimeOffset())
                     );
             });
 
@@ -213,6 +199,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 BitfinexOrderBookFundingEntryArrayUpdate,
                 BitfinexOrderBookFundingEntry>(
                 _logger,
+                this,
                 symbol,
                 internalHandler,
                 checksumHandler,
@@ -232,7 +219,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
-                        .WithDataTimestamp(timestamp)
+                        .WithDataTimestamp(timestamp, GetTimeOffset())
                     );
             });
 
@@ -241,6 +228,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 BitfinexRawOrderBookEntryArrayUpdate,
                 BitfinexRawOrderBookEntry>(
                 _logger,
+                this,
                 symbol,
                 internalHandler,
                 checksumHandler,
@@ -260,7 +248,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         .WithStreamId("book")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
-                        .WithDataTimestamp(timestamp)
+                        .WithDataTimestamp(timestamp, GetTimeOffset())
                     );
             });
 
@@ -269,6 +257,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 BitfinexRawOrderBookFundingEntryArrayUpdate,
                 BitfinexRawOrderBookFundingEntry>(
                 _logger,
+                this,
                 symbol,
                 internalHandler,
                 checksumHandler,
@@ -289,12 +278,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                         .WithSymbol(symbol)
                         .WithDataTimestamp(message.Max(x => x.Timestamp))
                         .WithUpdateType(updateType)
-                        .WithDataTimestamp(timestamp)
+                        .WithDataTimestamp(timestamp, GetTimeOffset())
                     );
             });
 
             var subscription = new BitfinexTradeSubscription(
                 _logger,
+                this,
                 symbol,
                 internalHandler);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
@@ -310,7 +300,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         .WithStreamId("candles")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
-                        .WithDataTimestamp(timestamp)
+                        .WithDataTimestamp(timestamp, GetTimeOffset())
                     );
             });
 
@@ -319,6 +309,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 BitfinexKlineArrayUpdate,
                 BitfinexKline>(
                 _logger,
+                this,
                 "candles",
                 symbol,
                 internalHandler,
@@ -336,7 +327,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                     new DataEvent<BitfinexLiquidation[]>(Exchange, message, receiveTime, originalData)
                         .WithStreamId("candles")
                         .WithUpdateType(updateType)
-                        .WithDataTimestamp(timestamp)
+                        .WithDataTimestamp(timestamp, GetTimeOffset())
                     );
             });
 
@@ -345,6 +336,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 BitfinexLiquidationArrayUpdate,
                 BitfinexLiquidation>(
                 _logger,
+                this,
                 "status",
                 null,
                 internalHandler,
@@ -362,7 +354,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         .WithStreamId("candles")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
-                        .WithDataTimestamp(timestamp)
+                        .WithDataTimestamp(timestamp, GetTimeOffset())
                     );
             });
 
@@ -371,6 +363,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 BitfinexDerivativesStatusUpdateArrayUpdate,
                 BitfinexDerivativesStatusUpdate>(
                 _logger,
+                this,
                 "status",
                 null,
                 internalHandler,
@@ -394,7 +387,7 @@ namespace Bitfinex.Net.Clients.SpotApi
              Action<DataEvent<BitfinexMarginSymbol>>? marginSymbolHandler = null,
              CancellationToken ct = default)
         {
-            var subscription = new BitfinexUserSubscription(_logger, positionHandler, walletHandler, orderHandler, fundingOfferHandler, fundingCreditHandler, fundingLoanHandler, balanceHandler, tradeHandler, fundingTradeHandler, fundingInfoHandler, marginBaseHandler, marginSymbolHandler);
+            var subscription = new BitfinexUserSubscription(_logger, this, positionHandler, walletHandler, orderHandler, fundingOfferHandler, fundingCreditHandler, fundingLoanHandler, balanceHandler, tradeHandler, fundingTradeHandler, fundingInfoHandler, marginBaseHandler, marginSymbolHandler);
             return await SubscribeAsync(_baseAddressPrivate.AppendPath("ws/2"), subscription, ct).ConfigureAwait(false);
         }
 

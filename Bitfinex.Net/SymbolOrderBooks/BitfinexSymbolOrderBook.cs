@@ -104,7 +104,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
                 foreach (var entry in askEntries)
                     entry.Quantity = -entry.Quantity; // Bitfinex sends the asks as negative numbers, invert them
                 
-                SetInitialOrderBook(DateTime.UtcNow.Ticks, bidEntries, askEntries);
+                SetInitialOrderBook(DateTime.UtcNow.Ticks, bidEntries, askEntries, data.DataTime, data.DataTimeLocal);
             }
             else
             {
@@ -139,7 +139,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
                     }
                 }
 
-                UpdateOrderBook(DateTime.UtcNow.Ticks, bidEntries.ToArray(), askEntries.ToArray());
+                UpdateOrderBook(DateTime.UtcNow.Ticks, bidEntries.ToArray(), askEntries.ToArray(), data.DataTime, data.DataTimeLocal);
             }
         }
 

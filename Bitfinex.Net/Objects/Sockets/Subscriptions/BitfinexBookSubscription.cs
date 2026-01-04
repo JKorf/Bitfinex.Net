@@ -1,4 +1,5 @@
-﻿using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Clients.SpotApi;
+using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Objects;
@@ -14,6 +15,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         where TArray : BitfinexUpdate<TItem[]>
         where TSingle : BitfinexUpdate<TItem>
     {
+        private BitfinexSocketClientSpotApi _client;
+
         private string _channel;
         private string? _symbol;
         private string? _precision;
@@ -25,6 +28,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private Action<DataEvent<int>>? _checksumHandler;
 
         public BitfinexBookSubscription(ILogger logger,
+            BitfinexSocketClientSpotApi client,
             string symbol,
             Action<DateTime, string?, SocketUpdateType, TItem[], long, DateTime> handler,
             Action<DataEvent<int>>? checksumHandler,
@@ -34,6 +38,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             bool authenticated = false)
             : base(logger, authenticated)
         {
+            _client = client;
+
             _handler = handler;
             _checksumHandler = checksumHandler;
             _symbol = symbol;
@@ -103,6 +109,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TSingle message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data], message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.SuccessResult;
@@ -110,6 +118,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TArray message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data, message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.SuccessResult;

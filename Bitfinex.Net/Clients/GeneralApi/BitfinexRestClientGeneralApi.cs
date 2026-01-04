@@ -73,10 +73,5 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null) => $"t{baseAsset.ToUpperInvariant()}{quoteAsset.ToUpperInvariant()}";
 
-        /// <inheritdoc />
-        public override TimeSyncInfo? GetTimeSyncInfo() => null;
-
-        /// <inheritdoc />
-        public override TimeSpan? GetTimeOffset() => null;
     }
 }

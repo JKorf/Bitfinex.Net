@@ -1,4 +1,5 @@
-﻿using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Clients.SpotApi;
+using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
@@ -21,9 +22,11 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private string? _key;
         private int _channelId;
         private bool _firstUpdate;
+        private BitfinexSocketClientSpotApi _client;
         private Action<DateTime, string?, SocketUpdateType, TItem[], long, DateTime> _handler;
 
         public BitfinexSubscription(ILogger logger,
+            BitfinexSocketClientSpotApi client,
             string channel,
             string? symbol,
             Action<DateTime, string?, SocketUpdateType, TItem[], long, DateTime> handler,
@@ -35,6 +38,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             bool sendSymbol = true)
             : base(logger, authenticated)
         {
+            _client = client;
+
             _handler = handler;
             _symbol = symbol;
             _key = key;
@@ -90,6 +95,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TSingle message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data], message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.SuccessResult;
@@ -97,6 +104,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TArray message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data, message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.SuccessResult;

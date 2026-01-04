@@ -1,12 +1,16 @@
 ﻿using Bitfinex.Net.Objects.Internal;
+using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Sockets;
+using CryptoExchange.Net.Sockets.Default;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Bitfinex.Net
 {
@@ -43,7 +47,7 @@ namespace Bitfinex.Net
 
                 request.Headers.Add("X-BFX-APIKEY", _credentials.Key);
                 request.Headers.Add("X-BFX-PAYLOAD", encodedBody);
-                request.Headers.Add("X-BFX-SIGNATURE", Sign(encodedBody).ToLowerInvariant());
+                request.Headers.Add("X-BFX-SIGNATURE", SignHMACSHA384(encodedBody).ToLowerInvariant());
 
                 request.SetBodyContent(requestBody);
             }
@@ -61,6 +65,20 @@ namespace Bitfinex.Net
             }
         }
 
-        public string Sign(string toSign) => SignHMACSHA384(toSign);
+        public override Query? GetAuthenticationQuery(SocketApiClient apiClient, SocketConnection connection)
+        {
+            var n = GetNonce().ToString();
+            var authentication = new BitfinexAuthentication
+            {
+                Event = "auth",
+                ApiKey = ApiKey,
+                Nonce = n,
+                Payload = "AUTH" + n
+            };
+
+
+            authentication.Signature = SignHMACSHA384(authentication.Payload).ToLower(CultureInfo.InvariantCulture);
+            return new BitfinexAuthQuery(apiClient, authentication);
+        }
     }
 }

@@ -262,12 +262,6 @@
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.GetTimeSyncInfo">
-            <inheritdoc />
-        </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.GetTimeOffset">
-            <inheritdoc />
-        </member>
         <member name="T:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApiFunding">
             <inheritdoc />
         </member>
@@ -344,12 +338,6 @@
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateAccessor">
-            <inheritdoc />
-        </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetTimeSyncInfo">
-            <inheritdoc />
-        </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.GetTimeOffset">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount">
