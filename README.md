@@ -131,6 +131,13 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 10.2.0 - 07 Jan 2026
+    * Updated CryptoExchange.Net version to 10.1.0, see https://github.com/JKorf/CryptoExchange.Net/releases/ for full release notes
+    * Added DataTimeLocal and DataAge properties to DataEvent object
+    * Added UpdateServerTime, UpdateLocalTime and DataAge properties to (I)SymbolOrderBook
+    * Added check for unnecessary unsubscribe websocket subscription when channelId is not know
+    * Added automatic reconnect of socket if channel id could not be determined during (re)subscription
+
 * Version 10.1.0 - 30 Dec 2025
     * Updated CryptoExchange.Net version to 10.0.2, see https://github.com/JKorf/CryptoExchange.Net/releases/
     * Added timestamp and sequence numbers to websocket configuration request, updated handlers data timestamp to use event timestamp
