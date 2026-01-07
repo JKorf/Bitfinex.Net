@@ -65,7 +65,7 @@ namespace Bitfinex.Net
             }
         }
 
-        public override Query? GetAuthenticationQuery(SocketApiClient apiClient, SocketConnection connection)
+        public override Query? GetAuthenticationQuery(SocketApiClient apiClient, SocketConnection connection, Dictionary<string, object?>? context = null)
         {
             var n = GetNonce().ToString();
             var authentication = new BitfinexAuthentication

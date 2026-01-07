@@ -276,7 +276,6 @@ namespace Bitfinex.Net.Clients.SpotApi
                     new DataEvent<BitfinexTradeSimple[]>(Exchange, message, receiveTime, originalData)
                         .WithStreamId("trades")
                         .WithSymbol(symbol)
-                        .WithDataTimestamp(message.Max(x => x.Timestamp))
                         .WithUpdateType(updateType)
                         .WithDataTimestamp(timestamp, GetTimeOffset())
                     );

@@ -41,12 +41,16 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _firstUpdate = true;
         }
 
-        public override void HandleSubQueryResponse(object? message)
+        public override void HandleSubQueryResponse(SocketConnection connection, object? message)
         {
             var data = (BitfinexResponse?)message;
             if (data == null)
+            {
                 // Timeout or other connection error
+                // We need to reconnect the connection as there might now be a subscription for which we don't know the channel id, which means we also can't unsubscribe it
+                _ = connection.TriggerReconnectAsync();
                 return;
+            }
 
             _channelId = data!.ChannelId!.Value;
             _firstUpdate = true;
@@ -68,7 +72,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         }
         protected override Query? GetUnsubQuery(SocketConnection connection)
         {
-            if (_channelId == 0)
+            if (_channelId == 0 || _channelId == -1)
                 return null;
 
             return new BitfinexUnsubQuery(_channelId);
