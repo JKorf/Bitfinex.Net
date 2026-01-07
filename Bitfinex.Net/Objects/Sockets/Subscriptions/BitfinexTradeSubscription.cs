@@ -1,4 +1,5 @@
-﻿using Bitfinex.Net.Objects.Models;
+﻿using Bitfinex.Net.Clients.SpotApi;
+using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
@@ -10,6 +11,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
     internal class BitfinexTradeSubscription: Subscription
     {
+        private BitfinexSocketClientSpotApi _client;
+
         private string _channel;
         private string _symbol;
         private int _channelId;
@@ -17,11 +20,13 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[], long, DateTime> _handler;
 
         public BitfinexTradeSubscription(ILogger logger,
+            BitfinexSocketClientSpotApi client,
             string symbol,
             Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[], long, DateTime> handler,
             bool authenticated = false)
             : base(logger, authenticated)
         {
+            _client = client;
             _handler = handler;
             _symbol = symbol;
             _channel = "trades";
@@ -36,12 +41,16 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _firstUpdate = true;
         }
 
-        public override void HandleSubQueryResponse(object? message)
+        public override void HandleSubQueryResponse(SocketConnection connection, object? message)
         {
             var data = (BitfinexResponse?)message;
             if (data == null)
+            {
                 // Timeout or other connection error
+                // We need to reconnect the connection as there might now be a subscription for which we don't know the channel id, which means we also can't unsubscribe it
+                _ = connection.TriggerReconnectAsync();
                 return;
+            }
 
             _channelId = data!.ChannelId!.Value;
             _firstUpdate = true;
@@ -63,7 +72,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         }
         protected override Query? GetUnsubQuery(SocketConnection connection)
         {
-            if (_channelId == 0)
+            if (_channelId == 0 || _channelId == -1)
                 return null;
 
             return new BitfinexUnsubQuery(_channelId);
@@ -71,6 +80,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeUpdate message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data], message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.SuccessResult;
@@ -78,6 +89,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeArrayUpdate message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data, message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.SuccessResult;

@@ -1,4 +1,5 @@
-﻿using Bitfinex.Net.Objects.Models;
+﻿using Bitfinex.Net.Clients.SpotApi;
+using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
@@ -12,6 +13,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
     internal class BitfinexUserSubscription : Subscription
     {
+        private BitfinexSocketClientSpotApi _client;
+
         private readonly Action<DataEvent<BitfinexPosition[]>>? _positionHandler;
         private readonly Action<DataEvent<BitfinexWallet[]>>? _walletHandler;
         private readonly Action<DataEvent<BitfinexOrder[]>>? _orderHandler;
@@ -26,6 +29,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private readonly Action<DataEvent<BitfinexFundingInfo>>? _fundingInfoHandler;
 
         public BitfinexUserSubscription(ILogger logger,
+            BitfinexSocketClientSpotApi client,
             Action<DataEvent<BitfinexPosition[]>>? positionHandler,
             Action<DataEvent<BitfinexWallet[]>>? walletHandler,
             Action<DataEvent<BitfinexOrder[]>>? orderHandler,
@@ -41,6 +45,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             )
             : base(logger, true)
         {
+            _client = client;
             _positionHandler = positionHandler;
             _walletHandler = walletHandler;
             _orderHandler = orderHandler;
@@ -157,205 +162,241 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketPositionsEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _positionHandler?.Invoke(
                 new DataEvent<BitfinexPosition[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("ps")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketPositionEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _positionHandler?.Invoke(
                 new DataEvent<BitfinexPosition[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexBalanceEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _balanceHandler?.Invoke(
                 new DataEvent<BitfinexBalance>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("bu")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexMarginBaseEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _marginBaseHandler?.Invoke(
                 new DataEvent<BitfinexMarginBase>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("miu")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexMarginSymbolEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _marginSymbolHandler?.Invoke(
                 new DataEvent<BitfinexMarginSymbol>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("miu")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingInfoEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _fundingInfoHandler?.Invoke(
                 new DataEvent<BitfinexFundingInfo>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId("fiu")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexWalletsEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _walletHandler?.Invoke(
                 new DataEvent<BitfinexWallet[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("ws")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexWalletEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _walletHandler?.Invoke(
                 new DataEvent<BitfinexWallet[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId("wu")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOrdersEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _orderHandler?.Invoke(
                 new DataEvent<BitfinexOrder[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("os")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOrderEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _orderHandler?.Invoke(
                 new DataEvent<BitfinexOrder[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeDetailEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _tradeHandler?.Invoke(
                 new DataEvent<BitfinexTradeDetails>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingTradeEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _fundingTradeHandler?.Invoke(
                 new DataEvent<BitfinexFundingTrade>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOffersEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _fundingOfferHandler?.Invoke(
                 new DataEvent<BitfinexFundingOffer[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("fos")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOfferEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _fundingOfferHandler?.Invoke(
                 new DataEvent<BitfinexFundingOffer[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingCreditsEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _fundingCreditHandler?.Invoke(
                 new DataEvent<BitfinexFundingCredit[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("fcs")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingCreditEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _fundingCreditHandler?.Invoke(
                 new DataEvent<BitfinexFundingCredit[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingsEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _fundingLoanHandler?.Invoke(
                 new DataEvent<BitfinexFunding[]>(BitfinexExchange.ExchangeName, message.Data, receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Snapshot)
                     .WithStreamId("fls")
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingEvent message)
         {
+            _client.UpdateTimeOffset(message.Timestamp);
+
             _fundingLoanHandler?.Invoke(
                 new DataEvent<BitfinexFunding[]>(BitfinexExchange.ExchangeName, [message.Data], receiveTime, originalData)
                     .WithUpdateType(SocketUpdateType.Update)
                     .WithSymbol(message.Data.Symbol)
                     .WithStreamId(EnumConverter.GetString(message.EventType))
-                    .WithDataTimestamp(message.Timestamp)
+                    .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
             return CallResult.SuccessResult;
         }
