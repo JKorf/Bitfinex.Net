@@ -1,4 +1,5 @@
 ﻿using CryptoExchange.Net.Converters;
+using System;
 
 namespace Bitfinex.Net.Objects.Internal
 {
@@ -12,5 +13,9 @@ namespace Bitfinex.Net.Objects.Internal
         public string Topic { get; set; } = string.Empty;
         [ArrayProperty(2)]
         public int Checksum { get; set; }
+        [ArrayProperty(3)]
+        public long Sequence { get; set; }
+        [ArrayProperty(4), JsonConverter(typeof(DateTimeConverter))]
+        public DateTime Timestamp { get; set; }
     }
 }

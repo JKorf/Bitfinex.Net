@@ -62,6 +62,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
             _initialDataTimeout = options?.InitialDataTimeout ?? TimeSpan.FromSeconds(30);
 
             Levels = options?.Limit ?? 25;
+            _sequencesAreConsecutive = false;
             _precision = options?.Precision ?? Precision.PrecisionLevel0;
         }
 
@@ -104,7 +105,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
                 foreach (var entry in askEntries)
                     entry.Quantity = -entry.Quantity; // Bitfinex sends the asks as negative numbers, invert them
                 
-                SetInitialOrderBook(DateTime.UtcNow.Ticks, bidEntries, askEntries, data.DataTime, data.DataTimeLocal);
+                SetSnapshot(data.SequenceNumber!.Value, bidEntries, askEntries, data.DataTime, data.DataTimeLocal);
             }
             else
             {
@@ -139,7 +140,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
                     }
                 }
 
-                UpdateOrderBook(DateTime.UtcNow.Ticks, bidEntries.ToArray(), askEntries.ToArray(), data.DataTime, data.DataTimeLocal);
+                UpdateOrderBook(data.SequenceNumber!.Value, bidEntries.ToArray(), askEntries.ToArray(), data.DataTime, data.DataTimeLocal);
             }
         }
 
@@ -149,7 +150,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
         /// <param name="checksum"></param>
         protected void ProcessChecksum(DataEvent<int> checksum)
         {
-            AddChecksum(checksum.Data);            
+            AddChecksum(checksum.Data, checksum.SequenceNumber);
         }
 
         /// <summary>
