@@ -102,6 +102,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexChecksum message)
         {
+            connection.UpdateSequenceNumber(message.Sequence);
+
             _checksumHandler?.Invoke(
                 new DataEvent<int>(BitfinexExchange.ExchangeName, message.Checksum, receiveTime, originalData)
                     .WithStreamId(_channel)
@@ -115,6 +117,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TSingle message)
         {
             _client.UpdateTimeOffset(message.Timestamp);
+            connection.UpdateSequenceNumber(message.Sequence);
 
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data], message.Sequence, message.Timestamp);
             _firstUpdate = false;
@@ -124,6 +127,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TArray message)
         {
             _client.UpdateTimeOffset(message.Timestamp);
+            connection.UpdateSequenceNumber(message.Sequence);
 
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data, message.Sequence, message.Timestamp);
             _firstUpdate = false;
@@ -132,6 +136,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleHeartbeat(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexStringUpdate message)
         {
+            connection.UpdateSequenceNumber(message.Sequence);
             return CallResult.SuccessResult;
         }
     }

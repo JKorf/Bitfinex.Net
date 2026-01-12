@@ -157,11 +157,13 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexStringUpdate message)
         {
             // Heartbeat
+            connection.UpdateSequenceNumber(message.Sequence);
             return CallResult.SuccessResult;
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketPositionsEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _positionHandler?.Invoke(
@@ -175,6 +177,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketPositionEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _positionHandler?.Invoke(
@@ -189,6 +192,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexBalanceEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _balanceHandler?.Invoke(
@@ -202,6 +206,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexMarginBaseEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _marginBaseHandler?.Invoke(
@@ -215,6 +220,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexMarginSymbolEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _marginSymbolHandler?.Invoke(
@@ -228,6 +234,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingInfoEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _fundingInfoHandler?.Invoke(
@@ -242,6 +249,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexWalletsEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _walletHandler?.Invoke(
@@ -255,6 +263,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexWalletEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _walletHandler?.Invoke(
@@ -268,6 +277,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOrdersEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _orderHandler?.Invoke(
@@ -281,6 +291,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOrderEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _orderHandler?.Invoke(
@@ -295,6 +306,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeDetailEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _tradeHandler?.Invoke(
@@ -309,6 +321,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingTradeEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _fundingTradeHandler?.Invoke(
@@ -322,6 +335,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOffersEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _fundingOfferHandler?.Invoke(
@@ -335,6 +349,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOfferEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _fundingOfferHandler?.Invoke(
@@ -349,6 +364,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingCreditsEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _fundingCreditHandler?.Invoke(
@@ -362,6 +378,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingCreditEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _fundingCreditHandler?.Invoke(
@@ -376,6 +393,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingsEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _fundingLoanHandler?.Invoke(
@@ -389,6 +407,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingEvent message)
         {
+            connection.UpdateSequenceNumber(message.SequenceNumber);
             _client.UpdateTimeOffset(message.Timestamp);
 
             _fundingLoanHandler?.Invoke(

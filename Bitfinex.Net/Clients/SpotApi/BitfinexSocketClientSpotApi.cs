@@ -65,6 +65,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             base(logger, options.Environment.SocketPublicAddress, options, options.SpotOptions)
         {
             UnhandledMessageExpected = true;
+            EnforceSequenceNumbers = true;
 
             AddSystemSubscription(new BitfinexInfoSubscription(_logger, options.OrderBookBulkUpdates));
 
@@ -158,6 +159,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
                         .WithDataTimestamp(timestamp, GetTimeOffset())
+                        .WithSequenceNumber(seq)
                     );
             });
 
