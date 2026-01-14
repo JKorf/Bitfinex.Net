@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -91,6 +92,30 @@ namespace Bitfinex.Net.Clients.SpotApi
         protected override IByteMessageAccessor CreateAccessor(WebSocketMessageType type) => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
 
         public IBitfinexSocketClientSpotApiShared SharedClient => this;
+
+        protected override bool HandleUnhandledMessage(SocketConnection connection, string typeIdentifier, ReadOnlySpan<byte> data)
+        {
+            // Due to the nature of the API it might be sending messages for a channel before we know which channel id it's gotten
+            // This means we're not actually able to handle the message as we don't know what subscription it's for, but we still need to 
+            // update the sequence number
+            var doc = JsonDocument.Parse(data.ToArray());
+            if (doc.RootElement.ValueKind != JsonValueKind.Array)
+                return false;
+
+            // Sequence number is in second to last field
+            var sequenceField = doc.RootElement.GetArrayLength() - 2;
+            try
+            {
+                var sequenceValue = doc.RootElement[sequenceField].GetInt64();
+                _logger.LogDebug($"Setting connection sequence number to {sequenceValue} for unhandled message");
+                connection.UpdateSequenceNumber(sequenceValue);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(string symbol, Action<DataEvent<BitfinexStreamTicker>> handler, CancellationToken ct = default)

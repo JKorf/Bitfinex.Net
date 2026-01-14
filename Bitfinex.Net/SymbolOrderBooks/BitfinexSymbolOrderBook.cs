@@ -26,7 +26,6 @@ namespace Bitfinex.Net.SymbolOrderBooks
         private readonly IBitfinexSocketClient _socketClient;
         private readonly Precision _precision;
         private readonly TimeSpan _initialDataTimeout;
-        private bool _initial = true;
         private readonly bool _clientOwner;
 
         /// <summary>
@@ -91,15 +90,13 @@ namespace Bitfinex.Net.SymbolOrderBooks
         /// <inheritdoc />
         protected override void DoReset()
         {
-            _initial = true;
         }
 
         private void ProcessUpdate(DataEvent<BitfinexOrderBookEntry[]> data)
         {
             var entries = data.Data;
-            if (_initial)
+            if (data.UpdateType == SocketUpdateType.Snapshot)
             {
-                _initial = false;
                 var askEntries = entries.Where(e => e.Quantity < 0).ToArray();
                 var bidEntries = entries.Where(e => e.Quantity > 0).ToArray();
                 foreach (var entry in askEntries)
