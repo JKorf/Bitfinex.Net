@@ -7,9 +7,9 @@
   <PropertyGroup>
     <PackageId>Bitfinex.Net</PackageId>
     <Authors>JKorf</Authors>
-    <PackageVersion>10.3.1</PackageVersion>
-    <AssemblyVersion>10.3.1</AssemblyVersion>
-    <FileVersion>10.3.1</FileVersion>
+    <PackageVersion>10.3.2</PackageVersion>
+    <AssemblyVersion>10.3.2</AssemblyVersion>
+    <FileVersion>10.3.2</FileVersion>
     <Description>Bitfinex.Net is a high performance client library for accessing the Bitfinex REST and Websocket API. All data is mapped to readable models and enum values. Additional features include automatic websocket (re)connection management, an implementation for maintaining a client side order book, easy integration with other exchange client libraries and more.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Bitfinex;Bitfinex.Net;Bitfinex.com;Bitfinex Client;Bitfinex API;CryptoCurrency;CryptoCurrency Exchange;CryptoExchange.Net</PackageTags>

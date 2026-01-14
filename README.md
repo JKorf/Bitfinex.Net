@@ -131,6 +131,10 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 10.3.2 - 14 Jan 2026
+    * Fixed sequence numbers for unhandled messages received before subscription response not getting registered resulting in reconnection
+    * Fixed BitfinexSymbolOrderBook sometimes not correctly recognizing snapshot message
+
 * Version 10.3.1 - 13 Jan 2026
     * Updated CryptoExchange.Net to version 10.2.2 to fix issue with socket message sequencing when having duplicate subscriptions
 
