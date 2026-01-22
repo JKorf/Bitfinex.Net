@@ -69,7 +69,7 @@ namespace Bitfinex.Net.Objects.Models
         /// <summary>
         /// If was maker
         /// </summary>
-        [ArrayProperty(8)]
+        [ArrayProperty(8), JsonConverter(typeof(BoolConverter))]
         public bool? Maker { get; set; }
 
         /// <summary>
