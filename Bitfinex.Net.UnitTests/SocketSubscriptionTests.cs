@@ -16,9 +16,8 @@ namespace Bitfinex.Net.UnitTests
     [TestFixture]
     public class SocketSubscriptionTests
     {
-        [TestCase(false)]
-        [TestCase(true)]
-        public async Task ValidateSubscriptions(bool newDeserialization)
+        [Test]
+        public async Task ValidateSubscriptions()
         {
             var logger = new LoggerFactory();
             logger.AddProvider(new TraceLoggerProvider());
@@ -27,7 +26,6 @@ namespace Bitfinex.Net.UnitTests
             {
                 ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "456"),
                 OutputOriginalData = true,
-                UseUpdatedDeserialization = newDeserialization
             }), logger);
             var tester = new SocketSubscriptionValidator<BitfinexSocketClient>(client, "Subscriptions/Spot", "wss://api.bitfinex.com/", nestedPropertyForCompare: "1");
             await tester.ValidateAsync<BitfinexStreamTicker>((client, handler) => client.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", handler), "Ticker");

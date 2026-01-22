@@ -26,10 +26,6 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
                 [evnt + channel + symbol + precision + frequency + length + key,
                 "error" + channel + symbol + precision + frequency + length + key],
                 HandleMessage);
-            MessageMatcher = MessageMatcher.Create<BitfinexResponse>(
-                [evnt + channel + symbol + precision + frequency + length + key,
-                "error" + channel + symbol + precision + frequency + length + key],
-                HandleMessage);
         }
 
         public CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexResponse message)

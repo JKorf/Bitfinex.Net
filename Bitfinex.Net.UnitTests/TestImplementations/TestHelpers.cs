@@ -14,11 +14,13 @@ using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using CryptoExchange.Net.Sockets.Default.Interfaces;
 using CryptoExchange.Net.Sockets.Interfaces;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Bitfinex.Net.UnitTests.TestImplementations
@@ -65,19 +67,22 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             return self == to;
         }
 
-        public static BitfinexSocketClient CreateAuthenticatedSocketClient(IWebsocket socket, Action<BitfinexSocketOptions> options = null)
-        {
-            return CreateSocketClient(socket, options ?? new Action<BitfinexSocketOptions>((x) => { x.ApiCredentials = new ApiCredentials("Test", "Test"); }));
-        }
+        //public static BitfinexSocketClient CreateAuthenticatedSocketClient(IWebsocket socket, Action<BitfinexSocketOptions> options = null)
+        //{
+        //    return CreateSocketClient(socket, options ?? new Action<BitfinexSocketOptions>((x) => { x.ApiCredentials = new ApiCredentials("Test", "Test"); }));
+        //}
 
-        public static BitfinexSocketClient CreateSocketClient(IWebsocket socket, Action<BitfinexSocketOptions> options = null)
-        {
-            BitfinexSocketClient client;
-            client = options != null ? new BitfinexSocketClient(options) : new BitfinexSocketClient();
-            client.SpotApi.SocketFactory = Mock.Of<IWebsocketFactory>();
-            Mock.Get(client.SpotApi.SocketFactory).Setup(f => f.CreateWebsocket(It.IsAny<ILogger>(), It.IsAny<SocketConnection>(), It.IsAny<WebSocketParameters>())).Returns(socket);
-            return client;
-        }
+        //public static BitfinexSocketClient CreateSocketClient(IWebsocket socket, Action<BitfinexSocketOptions> options = null)
+        //{
+        //    var logger = new LoggerFactory();
+        //    logger.AddProvider(new TraceLoggerProvider());
+
+        //    BitfinexSocketClient client;
+        //    client = options != null ? new BitfinexSocketClient(options) : new BitfinexSocketClient(Options.Create(new BitfinexSocketOptions()), logger);
+        //    client.SpotApi.SocketFactory = new TestWebsocketFactory();
+        //    Mock.Get(client.SpotApi.SocketFactory).Setup(f => f.CreateWebsocket(It.IsAny<ILogger>(), It.IsAny<SocketConnection>(), It.IsAny<WebSocketParameters>())).Returns(socket);
+        //    return client;
+        //}
 
         public static IBitfinexRestClient CreateClient(Action<BitfinexRestOptions> options = null)
         {

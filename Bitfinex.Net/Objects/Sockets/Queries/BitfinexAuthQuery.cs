@@ -14,7 +14,6 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
         public BitfinexAuthQuery(SocketApiClient client, BitfinexAuthentication authRequest) : base(authRequest, true)
         {
             _client = client;
-            MessageMatcher = MessageMatcher.Create<BitfinexResponse>("auth", HandleMessage);
             MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitfinexResponse>("auth", HandleMessage);
         }
 

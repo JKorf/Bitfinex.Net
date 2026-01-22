@@ -104,50 +104,6 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 MessageRoute<BitfinexFundingEvent>.CreateWithoutTopicFilter("0flc", DoHandleMessage),
                 ]);
 
-            MessageMatcher = MessageMatcher.Create([
-                new MessageHandlerLink<BitfinexStringUpdate>("0hb", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexSocketPositionsEvent>("0ps", DoHandleMessage),
-                new MessageHandlerLink<BitfinexSocketPositionEvent>("0pn", DoHandleMessage),
-                new MessageHandlerLink<BitfinexSocketPositionEvent>("0pu", DoHandleMessage),
-                new MessageHandlerLink<BitfinexSocketPositionEvent>("0pc", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexBalanceEvent>("0bu", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexMarginBaseEvent>("0miubase", DoHandleMessage),
-                new MessageHandlerLink<BitfinexMarginSymbolEvent>("0miusym", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexFundingInfoEvent>("0fiu", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexWalletsEvent>("0ws", DoHandleMessage),
-                new MessageHandlerLink<BitfinexWalletEvent>("0wu", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexOrdersEvent>("0os", DoHandleMessage),
-                new MessageHandlerLink<BitfinexOrderEvent>("0on", DoHandleMessage),
-                new MessageHandlerLink<BitfinexOrderEvent>("0ou", DoHandleMessage),
-                new MessageHandlerLink<BitfinexOrderEvent>("0oc", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexTradeDetailEvent>("0te", DoHandleMessage),
-                new MessageHandlerLink<BitfinexTradeDetailEvent>("0tu", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexFundingTradeEvent>("0fte", DoHandleMessage),
-                new MessageHandlerLink<BitfinexFundingTradeEvent>("0ftu", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexOffersEvent>("0fos", DoHandleMessage),
-                new MessageHandlerLink<BitfinexOfferEvent>("0fon", DoHandleMessage),
-                new MessageHandlerLink<BitfinexOfferEvent>("0fou", DoHandleMessage),
-                new MessageHandlerLink<BitfinexOfferEvent>("0foc", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexFundingCreditsEvent>("0fcs", DoHandleMessage),
-                new MessageHandlerLink<BitfinexFundingCreditEvent>("0fcn", DoHandleMessage),
-                new MessageHandlerLink<BitfinexFundingCreditEvent>("0fcu", DoHandleMessage),
-                new MessageHandlerLink<BitfinexFundingCreditEvent>("0fcc", DoHandleMessage),
-
-                new MessageHandlerLink<BitfinexFundingsEvent>("0fls", DoHandleMessage),
-                new MessageHandlerLink<BitfinexFundingEvent>("0fln", DoHandleMessage),
-                new MessageHandlerLink<BitfinexFundingEvent>("0flu", DoHandleMessage),
-                new MessageHandlerLink<BitfinexFundingEvent>("0flc", DoHandleMessage),
-                ]);
         }
 
         protected override Query? GetSubQuery(SocketConnection connection) => null;

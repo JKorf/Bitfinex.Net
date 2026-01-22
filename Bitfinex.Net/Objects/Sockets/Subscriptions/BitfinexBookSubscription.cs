@@ -50,7 +50,6 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _frequency = frequency == null ? null : EnumConverter.GetString(frequency);
             _length = length?.ToString();
 
-            MessageMatcher = MessageMatcher.Create([]);
             MessageRouter = MessageRouter.Create([]);
         }
 
@@ -79,12 +78,6 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 MessageRoute<TArray>.CreateWithoutTopicFilter(_channelId.ToString() + "array", DoHandleMessage),
                 MessageRoute<BitfinexChecksum>.CreateWithoutTopicFilter(_channelId.ToString() + "cs", DoHandleMessage),
                 MessageRoute<BitfinexStringUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "hb", DoHandleHeartbeat),
-                ]);
-
-            MessageMatcher = MessageMatcher.Create([
-                new MessageHandlerLink<TSingle>(_channelId.ToString() + "single", DoHandleMessage),
-                new MessageHandlerLink<TArray>(_channelId.ToString() + "array", DoHandleMessage),
-                new MessageHandlerLink<BitfinexChecksum>(_channelId.ToString() + "cs", DoHandleMessage),
                 ]);
         }
 

@@ -31,7 +31,6 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _symbol = symbol;
             _channel = "trades";
 
-            MessageMatcher = MessageMatcher.Create([]);
             MessageRouter = MessageRouter.Create([]);
         }
 
@@ -59,10 +58,6 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 MessageRoute<BitfinexTradeUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "single", DoHandleMessage),
                 MessageRoute<BitfinexTradeArrayUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "array", DoHandleMessage),
                 MessageRoute<BitfinexStringUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "hb", DoHandleHeartbeat),
-                ]);
-            MessageMatcher = MessageMatcher.Create([
-                new MessageHandlerLink<BitfinexTradeUpdate>(_channelId.ToString() + "single", DoHandleMessage),
-                new MessageHandlerLink<BitfinexTradeArrayUpdate>(_channelId.ToString() + "array", DoHandleMessage),
                 ]);
         }
 

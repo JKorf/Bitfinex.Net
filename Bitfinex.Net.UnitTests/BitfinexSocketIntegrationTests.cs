@@ -20,7 +20,7 @@ namespace Bitfinex.Net.UnitTests
         {
         }
 
-        public override BitfinexSocketClient GetClient(ILoggerFactory loggerFactory, bool useUpdatedDeserialization)
+        public override BitfinexSocketClient GetClient(ILoggerFactory loggerFactory)
         {
             var key = Environment.GetEnvironmentVariable("APIKEY");
             var sec = Environment.GetEnvironmentVariable("APISECRET");
@@ -29,17 +29,15 @@ namespace Bitfinex.Net.UnitTests
             return new BitfinexSocketClient(Options.Create(new BitfinexSocketOptions
             {
                 OutputOriginalData = true,
-                UseUpdatedDeserialization = useUpdatedDeserialization,
                 ApiCredentials = Authenticated ? new CryptoExchange.Net.Authentication.ApiCredentials(key, sec) : null
             }), loggerFactory);
         }
 
-        [TestCase(false)]
-        [TestCase(true)]
-        public async Task TestSubscriptions(bool useUpdatedDeserialization)
+        [Test]
+        public async Task TestSubscriptions()
         {
-            await RunAndCheckUpdate<BitfinexStreamTicker>(useUpdatedDeserialization , (client, updateHandler) => client.SpotApi.SubscribeToUserUpdatesAsync(default, default, default, default, default, default, default, default, default , default , default , default , default), false, true);
-            await RunAndCheckUpdate<BitfinexStreamTicker>(useUpdatedDeserialization , (client, updateHandler) => client.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", updateHandler, default), true, false);
+            await RunAndCheckUpdate<BitfinexStreamTicker>((client, updateHandler) => client.SpotApi.SubscribeToUserUpdatesAsync(default, default, default, default, default, default, default, default, default , default , default , default , default), false, true);
+            await RunAndCheckUpdate<BitfinexStreamTicker>((client, updateHandler) => client.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", updateHandler, default), true, false);
         } 
     }
 }

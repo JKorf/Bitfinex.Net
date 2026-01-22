@@ -55,6 +55,11 @@
             Bitfinex exchange information and configuration
             </summary>
         </member>
+        <member name="P:Bitfinex.Net.BitfinexExchange.Metadata">
+            <summary>
+            Platform metadata
+            </summary>
+        </member>
         <member name="P:Bitfinex.Net.BitfinexExchange.ExchangeName">
             <summary>
             Exchange name
@@ -256,9 +261,6 @@
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateSerializer">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.CreateAccessor">
-            <inheritdoc />
-        </member>
         <member name="M:Bitfinex.Net.Clients.GeneralApi.BitfinexRestClientGeneralApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
             <inheritdoc />
         </member>
@@ -335,9 +337,6 @@
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateSerializer">
-            <inheritdoc />
-        </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApi.CreateAccessor">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.Clients.SpotApi.BitfinexRestClientSpotApiAccount">
@@ -604,9 +603,6 @@
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateSerializer">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CreateAccessor(System.Net.WebSockets.WebSocketMessageType)">
-            <inheritdoc />
-        </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.SubscribeToTickerUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitfinex.Net.Objects.Models.Socket.BitfinexStreamTicker}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
@@ -668,9 +664,6 @@
             <inheritdoc />
         </member>
         <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.CancelFundingOfferAsync(System.Int64)">
-            <inheritdoc />
-        </member>
-        <member name="M:Bitfinex.Net.Clients.SpotApi.BitfinexSocketClientSpotApi.GetListenerIdentifier(CryptoExchange.Net.Interfaces.IMessageAccessor)">
             <inheritdoc />
         </member>
         <member name="P:Bitfinex.Net.Converters.BitfinexSourceGenerationContext.Boolean">

@@ -36,19 +36,6 @@ namespace Bitfinex.Net.Clients.SpotApi
     /// <inheritdoc cref="IBitfinexSocketClientSpotApi" />
     internal partial class BitfinexSocketClientSpotApi : SocketApiClient, IBitfinexSocketClientSpotApi
     {
-        private static readonly MessagePath _0Path = MessagePath.Get().Index(0);
-        private static readonly MessagePath _1Path = MessagePath.Get().Index(1);
-        private static readonly MessagePath _10Path = MessagePath.Get().Index(1).Index(0);
-        private static readonly MessagePath _20Path = MessagePath.Get().Index(2).Index(0);
-        private static readonly MessagePath _eventPath = MessagePath.Get().Property("event");
-        private static readonly MessagePath _channelPath = MessagePath.Get().Property("channel");
-        private static readonly MessagePath _symbolPath = MessagePath.Get().Property("symbol");
-        private static readonly MessagePath _precPath = MessagePath.Get().Property("prec");
-        private static readonly MessagePath _freqPath = MessagePath.Get().Property("freq");
-        private static readonly MessagePath _lenPath = MessagePath.Get().Property("len");
-        private static readonly MessagePath _keyPath = MessagePath.Get().Property("key");
-        private static readonly MessagePath _chanIdPath = MessagePath.Get().Property("chanId");
-
         #region fields
         private readonly Random _random = new Random();
 
@@ -88,9 +75,6 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
-        /// <inheritdoc />
-        protected override IByteMessageAccessor CreateAccessor(WebSocketMessageType type) => new SystemTextJsonByteMessageAccessor(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
-
         public IBitfinexSocketClientSpotApiShared SharedClient => this;
 
         protected override bool HandleUnhandledMessage(SocketConnection connection, string typeIdentifier, ReadOnlySpan<byte> data)
@@ -569,61 +553,11 @@ namespace Bitfinex.Net.Clients.SpotApi
             return result.As<BitfinexFundingOffer>(result.Data?.Data.Data);
         }
 
-        /// <inheritdoc />
-        public override string? GetListenerIdentifier(IMessageAccessor message)
-        {
-            var type = message.GetNodeType();
-            if (type == NodeType.Array)
-            {
-                var id = message.GetValue<int>(_0Path).ToString();
-                if (id.Equals("0", StringComparison.Ordinal))
-                {
-                    var topic = message.GetValue<string>(_1Path);
-                    if (topic!.Equals("miu", StringComparison.Ordinal))
-                    {
-                        var marginType = message.GetValue<string>(_20Path);
-                        return id + topic + marginType;
-                    }
-
-                    return id + topic;
-                }
-                var nodeType1 = message.GetNodeType(_1Path);
-                if (nodeType1 == NodeType.Value)
-                {
-                    var nodeValue1 = message.GetValue<string>(_1Path);
-                    if (nodeValue1!.Equals("hb") || nodeValue1.Equals("cs"))
-                        return id + nodeValue1;
-
-                    var nodeTypeData = message.GetNodeType(_20Path);
-                    return nodeTypeData == NodeType.Array ? id + "array" : id + "single";
-                }
-                else
-                {
-                    var nodeTypeData = message.GetNodeType(_10Path);
-                    return nodeTypeData == NodeType.Array ? id + "array" : id + "single";
-                }
-            }
-
-            var evnt = message.GetValue<string>(_eventPath);
-            if (string.Equals(evnt, "info", StringComparison.Ordinal))
-                return "info";
-
-            var channel = message.GetValue<string>(_channelPath);
-            var symbol = message.GetValue<string>(_symbolPath);
-            var prec = message.GetValue<string>(_precPath);
-            var freq = message.GetValue<string>(_freqPath);
-            var len = message.GetValue<string>(_lenPath);
-            var key = message.GetValue<string>(_keyPath);
-            var chanId = string.Equals(evnt, "unsubscribed", StringComparison.Ordinal) ? message.GetValue<string>(_chanIdPath) : "";
-            return chanId + evnt + channel + symbol + prec + freq + len + key;
-        }
-
         private long GenerateClientOrderId()
         {
             var buffer = new byte[8];
             _random.NextBytes(buffer);
             return (long)Math.Round(Math.Abs(BitConverter.ToInt32(buffer, 0)) / 1000m);
         }
-
     }
 }

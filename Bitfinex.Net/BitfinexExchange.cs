@@ -16,6 +16,19 @@ namespace Bitfinex.Net
     public static class BitfinexExchange
     {
         /// <summary>
+        /// Platform metadata
+        /// </summary>
+        public static PlatformInfo Metadata { get; } = new PlatformInfo(
+                "Bitfinex",
+                "Bitfinex",
+                "https://raw.githubusercontent.com/JKorf/Bitfinex.Net/master/Bitfinex.Net/Icon/icon.png",
+                "https://www.bitfinex.com",
+                ["https://docs.bitfinex.com/docs/introduction"],
+                PlatformType.CryptoCurrencyExchange,
+                CentralizationType.Centralized
+                );
+
+        /// <summary>
         /// Exchange name
         /// </summary>
         public static string ExchangeName => "Bitfinex";
