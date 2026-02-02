@@ -151,6 +151,9 @@
         <member name="M:Bitfinex.Net.BitfinexTrackerFactory.CreateTradeTracker(CryptoExchange.Net.SharedApis.SharedSymbol,System.Nullable{System.Int32},System.Nullable{System.TimeSpan})">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.BitfinexTrackerFactory.CreateUserSpotDataTracker(System.String,CryptoExchange.Net.Trackers.UserData.UserDataTrackerConfig,CryptoExchange.Net.Authentication.ApiCredentials,Bitfinex.Net.BitfinexEnvironment)">
+            <inheritdoc />
+        </member>
         <member name="T:Bitfinex.Net.Clients.BitfinexRestClient">
             <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient" />
         </member>
