@@ -64,7 +64,7 @@ namespace Bitfinex.Net.Clients
         /// <inheritdoc />
         public IBitfinexRestClient GetRestClient(string userIdentifier, ApiCredentials? credentials = null, BitfinexEnvironment? environment = null)
         {
-            if (!_restClients.TryGetValue(userIdentifier, out var client))
+            if (!_restClients.TryGetValue(userIdentifier, out var client) || client.Disposed)
                 client = CreateRestClient(userIdentifier, credentials, environment);
 
             return client;
@@ -73,7 +73,7 @@ namespace Bitfinex.Net.Clients
         /// <inheritdoc />
         public IBitfinexSocketClient GetSocketClient(string userIdentifier, ApiCredentials? credentials = null, BitfinexEnvironment? environment = null)
         {
-            if (!_socketClients.TryGetValue(userIdentifier, out var client))
+            if (!_socketClients.TryGetValue(userIdentifier, out var client) || client.Disposed)
                 client = CreateSocketClient(userIdentifier, credentials, environment);
 
             return client;
