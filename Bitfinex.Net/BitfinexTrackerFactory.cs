@@ -6,6 +6,8 @@ using CryptoExchange.Net.SharedApis;
 using CryptoExchange.Net.Trackers.Klines;
 using CryptoExchange.Net.Trackers.Trades;
 using CryptoExchange.Net.Trackers.UserData;
+using CryptoExchange.Net.Trackers.UserData.Interfaces;
+using CryptoExchange.Net.Trackers.UserData.Objects;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -78,7 +80,8 @@ namespace Bitfinex.Net
                 );
         }
 
-        public IUserSpotDataTracker CreateUserSpotDataTracker(UserDataTrackerConfig config)
+        /// <inheritdoc />
+        public IUserSpotDataTracker CreateUserSpotDataTracker(SpotUserDataTrackerConfig config)
         {
             var restClient = _serviceProvider?.GetRequiredService<IBitfinexRestClient>() ?? new BitfinexRestClient();
             var socketClient = _serviceProvider?.GetRequiredService<IBitfinexSocketClient>() ?? new BitfinexSocketClient();
@@ -92,7 +95,7 @@ namespace Bitfinex.Net
         }
 
         /// <inheritdoc />
-        public IUserSpotDataTracker CreateUserSpotDataTracker(string userIdentifier, UserDataTrackerConfig config, ApiCredentials credentials, BitfinexEnvironment? environment = null)
+        public IUserSpotDataTracker CreateUserSpotDataTracker(string userIdentifier, SpotUserDataTrackerConfig config, ApiCredentials credentials, BitfinexEnvironment? environment = null)
         {
             var clientProvider = _serviceProvider?.GetRequiredService<IBitfinexUserClientProvider>() ?? new BitfinexUserClientProvider();
             var restClient = clientProvider.GetRestClient(userIdentifier, credentials, environment);
