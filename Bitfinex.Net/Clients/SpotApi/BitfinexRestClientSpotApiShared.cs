@@ -738,7 +738,14 @@ namespace Bitfinex.Net.Clients.SpotApi
                 nextToken = new DateTimeToken(deposits.Data.Min(x => x.StartTime));
 
             return deposits.AsExchangeResult<SharedDeposit[]>(Exchange, TradingMode.Spot, data.Where(x => x.Quantity > 0).Select(x => 
-                new SharedDeposit(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Quantity, x.Status == "COMPLETED", x.StartTime)
+                new SharedDeposit(
+                    BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), 
+                    x.Quantity,
+                    x.Status == "COMPLETED",
+                    x.StartTime, 
+                    x.Status == "COMPLETED" ? SharedTransferStatus.Completed :
+                    x.Status == "CANCELED" ? SharedTransferStatus.Failed:
+                    SharedTransferStatus.InProgress)
                 {
                     Id = x.Id,
                     TransactionId = x.TransactionId
