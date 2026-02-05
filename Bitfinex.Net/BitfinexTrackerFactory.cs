@@ -81,7 +81,7 @@ namespace Bitfinex.Net
         }
 
         /// <inheritdoc />
-        public IUserSpotDataTracker CreateUserSpotDataTracker(SpotUserDataTrackerConfig config)
+        public IUserSpotDataTracker CreateUserSpotDataTracker(SpotUserDataTrackerConfig? config = null)
         {
             var restClient = _serviceProvider?.GetRequiredService<IBitfinexRestClient>() ?? new BitfinexRestClient();
             var socketClient = _serviceProvider?.GetRequiredService<IBitfinexSocketClient>() ?? new BitfinexSocketClient();
@@ -95,7 +95,7 @@ namespace Bitfinex.Net
         }
 
         /// <inheritdoc />
-        public IUserSpotDataTracker CreateUserSpotDataTracker(string userIdentifier, SpotUserDataTrackerConfig config, ApiCredentials credentials, BitfinexEnvironment? environment = null)
+        public IUserSpotDataTracker CreateUserSpotDataTracker(string userIdentifier, ApiCredentials credentials, SpotUserDataTrackerConfig? config = null, BitfinexEnvironment? environment = null)
         {
             var clientProvider = _serviceProvider?.GetRequiredService<IBitfinexUserClientProvider>() ?? new BitfinexUserClientProvider();
             var restClient = clientProvider.GetRestClient(userIdentifier, credentials, environment);

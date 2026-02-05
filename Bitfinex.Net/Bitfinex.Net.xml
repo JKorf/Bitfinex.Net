@@ -154,7 +154,7 @@
         <member name="M:Bitfinex.Net.BitfinexTrackerFactory.CreateUserSpotDataTracker(CryptoExchange.Net.Trackers.UserData.Objects.SpotUserDataTrackerConfig)">
             <inheritdoc />
         </member>
-        <member name="M:Bitfinex.Net.BitfinexTrackerFactory.CreateUserSpotDataTracker(System.String,CryptoExchange.Net.Trackers.UserData.Objects.SpotUserDataTrackerConfig,CryptoExchange.Net.Authentication.ApiCredentials,Bitfinex.Net.BitfinexEnvironment)">
+        <member name="M:Bitfinex.Net.BitfinexTrackerFactory.CreateUserSpotDataTracker(System.String,CryptoExchange.Net.Authentication.ApiCredentials,CryptoExchange.Net.Trackers.UserData.Objects.SpotUserDataTrackerConfig,Bitfinex.Net.BitfinexEnvironment)">
             <inheritdoc />
         </member>
         <member name="T:Bitfinex.Net.BitfinexUserSpotDataTracker">
@@ -4955,7 +4955,7 @@
             Tracker factory
             </summary>
         </member>
-        <member name="M:Bitfinex.Net.Interfaces.IBitfinexTrackerFactory.CreateUserSpotDataTracker(System.String,CryptoExchange.Net.Trackers.UserData.Objects.SpotUserDataTrackerConfig,CryptoExchange.Net.Authentication.ApiCredentials,Bitfinex.Net.BitfinexEnvironment)">
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexTrackerFactory.CreateUserSpotDataTracker(System.String,CryptoExchange.Net.Authentication.ApiCredentials,CryptoExchange.Net.Trackers.UserData.Objects.SpotUserDataTrackerConfig,Bitfinex.Net.BitfinexEnvironment)">
             <summary>
             Create a new Spot user data tracker
             </summary>

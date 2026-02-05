@@ -17,11 +17,11 @@ namespace Bitfinex.Net.Interfaces
         /// <param name="config">Configuration</param>
         /// <param name="credentials">Credentials</param>
         /// <param name="environment">Environment</param>
-        IUserSpotDataTracker CreateUserSpotDataTracker(string userIdentifier, SpotUserDataTrackerConfig config, ApiCredentials credentials, BitfinexEnvironment? environment = null);
+        IUserSpotDataTracker CreateUserSpotDataTracker(string userIdentifier, ApiCredentials credentials, SpotUserDataTrackerConfig? config = null, BitfinexEnvironment? environment = null);
         /// <summary>
         /// Create a new spot user data tracker
         /// </summary>
         /// <param name="config">Configuration</param>
-        IUserSpotDataTracker CreateUserSpotDataTracker(SpotUserDataTrackerConfig config);
+        IUserSpotDataTracker CreateUserSpotDataTracker(SpotUserDataTrackerConfig? config = null);
     }
 }

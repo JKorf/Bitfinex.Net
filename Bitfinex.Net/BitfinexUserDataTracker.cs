@@ -14,7 +14,7 @@ namespace Bitfinex.Net
             IBitfinexRestClient restClient,
             IBitfinexSocketClient socketClient,
             string? userIdentifier,
-            SpotUserDataTrackerConfig config) : base(
+            SpotUserDataTrackerConfig? config) : base(
                 logger,
                 restClient.SpotApi.SharedClient,
                 null,
@@ -24,7 +24,7 @@ namespace Bitfinex.Net
                 socketClient.SpotApi.SharedClient,
                 socketClient.SpotApi.SharedClient,
                 userIdentifier,
-                config)
+                config ?? new SpotUserDataTrackerConfig())
         {
         }
     }
