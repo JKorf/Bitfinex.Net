@@ -151,6 +151,18 @@
         <member name="M:Bitfinex.Net.BitfinexTrackerFactory.CreateTradeTracker(CryptoExchange.Net.SharedApis.SharedSymbol,System.Nullable{System.Int32},System.Nullable{System.TimeSpan})">
             <inheritdoc />
         </member>
+        <member name="M:Bitfinex.Net.BitfinexTrackerFactory.CreateUserSpotDataTracker(CryptoExchange.Net.Trackers.UserData.Objects.SpotUserDataTrackerConfig)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexTrackerFactory.CreateUserSpotDataTracker(System.String,CryptoExchange.Net.Authentication.ApiCredentials,CryptoExchange.Net.Trackers.UserData.Objects.SpotUserDataTrackerConfig,Bitfinex.Net.BitfinexEnvironment)">
+            <inheritdoc />
+        </member>
+        <member name="T:Bitfinex.Net.BitfinexUserSpotDataTracker">
+            <inheritdoc/>
+        </member>
+        <member name="M:Bitfinex.Net.BitfinexUserSpotDataTracker.#ctor(Microsoft.Extensions.Logging.ILogger{Bitfinex.Net.BitfinexUserSpotDataTracker},Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient,Bitfinex.Net.Interfaces.Clients.IBitfinexSocketClient,System.String,CryptoExchange.Net.Trackers.UserData.Objects.SpotUserDataTrackerConfig)">
+            <inheritdoc/>
+        </member>
         <member name="T:Bitfinex.Net.Clients.BitfinexRestClient">
             <inheritdoc cref="T:Bitfinex.Net.Interfaces.Clients.IBitfinexRestClient" />
         </member>
@@ -4942,6 +4954,21 @@
             <summary>
             Tracker factory
             </summary>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexTrackerFactory.CreateUserSpotDataTracker(System.String,CryptoExchange.Net.Authentication.ApiCredentials,CryptoExchange.Net.Trackers.UserData.Objects.SpotUserDataTrackerConfig,Bitfinex.Net.BitfinexEnvironment)">
+            <summary>
+            Create a new Spot user data tracker
+            </summary>
+            <param name="userIdentifier">User identifier</param>
+            <param name="config">Configuration</param>
+            <param name="credentials">Credentials</param>
+            <param name="environment">Environment</param>
+        </member>
+        <member name="M:Bitfinex.Net.Interfaces.IBitfinexTrackerFactory.CreateUserSpotDataTracker(CryptoExchange.Net.Trackers.UserData.Objects.SpotUserDataTrackerConfig)">
+            <summary>
+            Create a new spot user data tracker
+            </summary>
+            <param name="config">Configuration</param>
         </member>
         <member name="T:Bitfinex.Net.Objects.BitfinexApiAddresses">
             <summary>

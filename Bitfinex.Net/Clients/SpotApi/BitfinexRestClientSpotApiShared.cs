@@ -229,7 +229,44 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             return (BitfinexExchange.AssetAliases.ExchangeToCommonName(baseAsset), BitfinexExchange.AssetAliases.ExchangeToCommonName(quoteAsset));
         }
+        async Task<ExchangeResult<SharedSymbol[]>> ISpotSymbolRestClient.GetSpotSymbolsForBaseAssetAsync(string baseAsset)
+        {
+            if (!ExchangeSymbolCache.HasCached(_topicId))
+            {
+                var symbols = await ((ISpotSymbolRestClient)this).GetSpotSymbolsAsync(new GetSymbolsRequest()).ConfigureAwait(false);
+                if (!symbols)
+                    return new ExchangeResult<SharedSymbol[]>(Exchange, symbols.Error!);
+            }
 
+            return new ExchangeResult<SharedSymbol[]>(Exchange, ExchangeSymbolCache.GetSymbolsForBaseAsset(_topicId, baseAsset));
+        }
+
+        async Task<ExchangeResult<bool>> ISpotSymbolRestClient.SupportsSpotSymbolAsync(SharedSymbol symbol)
+        {
+            if (symbol.TradingMode != TradingMode.Spot)
+                throw new ArgumentException(nameof(symbol), "Only Spot symbols allowed");
+
+            if (!ExchangeSymbolCache.HasCached(_topicId))
+            {
+                var symbols = await ((ISpotSymbolRestClient)this).GetSpotSymbolsAsync(new GetSymbolsRequest()).ConfigureAwait(false);
+                if (!symbols)
+                    return new ExchangeResult<bool>(Exchange, symbols.Error!);
+            }
+
+            return new ExchangeResult<bool>(Exchange, ExchangeSymbolCache.SupportsSymbol(_topicId, symbol));
+        }
+
+        async Task<ExchangeResult<bool>> ISpotSymbolRestClient.SupportsSpotSymbolAsync(string symbolName)
+        {
+            if (!ExchangeSymbolCache.HasCached(_topicId))
+            {
+                var symbols = await ((ISpotSymbolRestClient)this).GetSpotSymbolsAsync(new GetSymbolsRequest()).ConfigureAwait(false);
+                if (!symbols)
+                    return new ExchangeResult<bool>(Exchange, symbols.Error!);
+            }
+
+            return new ExchangeResult<bool>(Exchange, ExchangeSymbolCache.SupportsSymbol(_topicId, symbolName));
+        }
         #endregion
 
         #region Ticker client
@@ -701,7 +738,14 @@ namespace Bitfinex.Net.Clients.SpotApi
                 nextToken = new DateTimeToken(deposits.Data.Min(x => x.StartTime));
 
             return deposits.AsExchangeResult<SharedDeposit[]>(Exchange, TradingMode.Spot, data.Where(x => x.Quantity > 0).Select(x => 
-                new SharedDeposit(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Quantity, x.Status == "COMPLETED", x.StartTime)
+                new SharedDeposit(
+                    BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), 
+                    x.Quantity,
+                    x.Status == "COMPLETED",
+                    x.StartTime, 
+                    x.Status == "COMPLETED" ? SharedTransferStatus.Completed :
+                    x.Status == "CANCELED" ? SharedTransferStatus.Failed:
+                    SharedTransferStatus.InProgress)
                 {
                     Id = x.Id,
                     TransactionId = x.TransactionId

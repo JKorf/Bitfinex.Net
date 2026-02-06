@@ -1,11 +1,16 @@
 ﻿using Bitfinex.Net.Clients;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Interfaces.Clients;
+using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.SharedApis;
 using CryptoExchange.Net.Trackers.Klines;
 using CryptoExchange.Net.Trackers.Trades;
+using CryptoExchange.Net.Trackers.UserData;
+using CryptoExchange.Net.Trackers.UserData.Interfaces;
+using CryptoExchange.Net.Trackers.UserData.Objects;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 
 namespace Bitfinex.Net
@@ -72,6 +77,35 @@ namespace Bitfinex.Net
                 symbol,
                 limit,
                 period
+                );
+        }
+
+        /// <inheritdoc />
+        public IUserSpotDataTracker CreateUserSpotDataTracker(SpotUserDataTrackerConfig? config = null)
+        {
+            var restClient = _serviceProvider?.GetRequiredService<IBitfinexRestClient>() ?? new BitfinexRestClient();
+            var socketClient = _serviceProvider?.GetRequiredService<IBitfinexSocketClient>() ?? new BitfinexSocketClient();
+            return new BitfinexUserSpotDataTracker(
+                _serviceProvider?.GetRequiredService<ILogger<BitfinexUserSpotDataTracker>>() ?? new NullLogger<BitfinexUserSpotDataTracker>(),
+                restClient,
+                socketClient,
+                null,
+                config
+                );
+        }
+
+        /// <inheritdoc />
+        public IUserSpotDataTracker CreateUserSpotDataTracker(string userIdentifier, ApiCredentials credentials, SpotUserDataTrackerConfig? config = null, BitfinexEnvironment? environment = null)
+        {
+            var clientProvider = _serviceProvider?.GetRequiredService<IBitfinexUserClientProvider>() ?? new BitfinexUserClientProvider();
+            var restClient = clientProvider.GetRestClient(userIdentifier, credentials, environment);
+            var socketClient = clientProvider.GetSocketClient(userIdentifier, credentials, environment);
+            return new BitfinexUserSpotDataTracker(
+                _serviceProvider?.GetRequiredService<ILogger<BitfinexUserSpotDataTracker>>() ?? new NullLogger<BitfinexUserSpotDataTracker>(),
+                restClient,
+                socketClient,
+                userIdentifier,
+                config
                 );
         }
     }
