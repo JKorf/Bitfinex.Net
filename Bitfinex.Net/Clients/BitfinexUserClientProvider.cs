@@ -12,8 +12,8 @@ namespace Bitfinex.Net.Clients
     /// <inheritdoc />
     public class BitfinexUserClientProvider : IBitfinexUserClientProvider
     {
-        private static ConcurrentDictionary<string, IBitfinexRestClient> _restClients = new ConcurrentDictionary<string, IBitfinexRestClient>();
-        private static ConcurrentDictionary<string, IBitfinexSocketClient> _socketClients = new ConcurrentDictionary<string, IBitfinexSocketClient>();
+        private ConcurrentDictionary<string, IBitfinexRestClient> _restClients = new ConcurrentDictionary<string, IBitfinexRestClient>();
+        private ConcurrentDictionary<string, IBitfinexSocketClient> _socketClients = new ConcurrentDictionary<string, IBitfinexSocketClient>();
 
         private readonly IOptions<BitfinexRestOptions> _restOptions;
         private readonly IOptions<BitfinexSocketOptions> _socketOptions;
