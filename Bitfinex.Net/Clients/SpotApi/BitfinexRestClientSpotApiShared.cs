@@ -38,24 +38,21 @@ namespace Bitfinex.Net.Clients.SpotApi
             var direction = request.Direction ?? DataDirection.Ascending;
             var symbol = request.Symbol!.GetSymbol(FormatSymbol);
             var limit = request.Limit ?? 10000;
-            var (startTime, endTime, fromId) = ExchangeHelpers.ApplyPaginationRequestFilters(
+            var paginationParameters = ExchangeHelpers.ApplyPaginationParameters(
+                direction,
+                pageRequest,
                 ExchangeHelpers.PaginationFilterType.Time,
                 ExchangeHelpers.PaginationFilterType.Time,
-                direction,
-                direction,
+                ExchangeHelpers.TimeParameterSetType.Both,
                 request.StartTime,
-                request.EndTime,
-                pageRequest?.StartTime,
-                pageRequest?.EndTime,
-                null,
-                pageRequest?.FromId);
+                request.EndTime);
 
             // Get data
             var result = await ExchangeData.GetKlinesAsync(
                 symbol,
                 interval,
-                startTime: startTime,
-                endTime: endTime,
+                startTime: paginationParameters.StartTime,
+                endTime: paginationParameters.EndTime,
                 limit: limit,
                 sorting: direction == DataDirection.Ascending ? Sorting.OldFirst : Sorting.NewFirst,
                 ct: ct
@@ -64,15 +61,23 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<SharedKline[]>(Exchange, null, default);
 
-            PageRequest? nextPageRequest = null;
-            if (ExchangeHelpers.CheckForNextPage(result.Data.Length, result.Data.Select(x => x.OpenTime), request.StartTime, request.EndTime, limit, direction))
-            {
-                // Data might be available on next page
-                if (direction == DataDirection.Ascending)
-                    nextPageRequest = PageRequest.FromNextStartTimeAsc(result.Data.Select(x => x.OpenTime));
-                else
-                    nextPageRequest = PageRequest.FromNextEndTimeDesc(result.Data.Select(x => x.OpenTime));
-            }
+            var nextPageRequest = ExchangeHelpers.GetNextPageRequest(
+               () =>
+               {
+                   if (direction == DataDirection.Ascending)
+                       return PageRequest.NextStartTimeAsc(result.Data.Select(x => x.OpenTime));
+                   else
+                       return PageRequest.NextEndTimeDesc(result.Data.Select(x => x.OpenTime));
+               },
+                result.Data.Length,
+                result.Data.Select(x => x.OpenTime),
+                limit,
+                pageRequest,
+                ExchangeHelpers.TimeParameterSetType.OnlyMatchingDirection,
+                paginationParameters.StartTime,
+                direction,
+                request.StartTime,
+                request.EndTime);
 
             // Return
             return result.AsExchangeResult(
@@ -523,34 +528,39 @@ namespace Bitfinex.Net.Clients.SpotApi
             var symbol = request.Symbol!.GetSymbol(FormatSymbol);
             var limit = request.Limit ?? 2500;
 
-            var (startTime, endTime, fromId) = ExchangeHelpers.ApplyPaginationRequestFilters(
-                ExchangeHelpers.PaginationFilterType.Time,
-                ExchangeHelpers.PaginationFilterType.Time,
-                DataDirection.Descending,
+            var paginationParameters = ExchangeHelpers.ApplyPaginationParameters(
                 direction,
-                request.StartTime,
-                request.EndTime,
-                pageRequest?.StartTime,
-                pageRequest?.EndTime,
+                pageRequest,
                 null,
-                pageRequest?.FromId);
+                ExchangeHelpers.PaginationFilterType.Time,
+                ExchangeHelpers.TimeParameterSetType.Both,
+                request.StartTime,
+                request.EndTime);
 
             // Get data
             var result = await Trading.GetClosedOrdersAsync(
                 symbol,
-                startTime: startTime,
-                endTime: endTime,
+                startTime: paginationParameters.StartTime,
+                endTime: paginationParameters.EndTime,
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<SharedSpotOrder[]>(Exchange, null, null);
 
-            PageRequest? nextPageRequest = null;
-            if (ExchangeHelpers.CheckForNextPage(result.Data.Length, result.Data.Select(x => x.CreateTime), request.StartTime, request.EndTime, request.Limit ?? 1000, direction))
-            {
-                // Data might be available on next page
-                nextPageRequest = PageRequest.FromNextEndTimeDesc(result.Data.Select(x => x.CreateTime));
-            }
+            var nextPageRequest = ExchangeHelpers.GetNextPageRequest(
+                () =>
+                {
+                    return PageRequest.NextEndTimeDesc(result.Data.Select(x => x.CreateTime));
+                },
+                result.Data.Length,
+                result.Data.Select(x => x.CreateTime),
+                limit,
+                pageRequest,
+                ExchangeHelpers.TimeParameterSetType.Both,
+                paginationParameters.StartTime,
+                direction,
+                request.StartTime,
+                request.EndTime);
 
             // Return
             return result.AsExchangeResult(
@@ -621,35 +631,39 @@ namespace Bitfinex.Net.Clients.SpotApi
             var direction = DataDirection.Descending;
             var symbol = request.Symbol!.GetSymbol(FormatSymbol);
             var limit = request.Limit ?? 1000;
-
-            var (startTime, endTime, fromId) = ExchangeHelpers.ApplyPaginationRequestFilters(
-                ExchangeHelpers.PaginationFilterType.Time,
-                ExchangeHelpers.PaginationFilterType.Time,
-                DataDirection.Descending,
+            var paginationParameters = ExchangeHelpers.ApplyPaginationParameters(
                 direction,
-                request.StartTime,
-                request.EndTime,
-                pageRequest?.StartTime,
-                pageRequest?.EndTime,
+                pageRequest,
                 null,
-                pageRequest?.FromId);
+                ExchangeHelpers.PaginationFilterType.Time,
+                ExchangeHelpers.TimeParameterSetType.Both,
+                request.StartTime,
+                request.EndTime);
 
             // Get data
             var result = await Trading.GetUserTradesAsync(
                 symbol,
-                startTime: startTime,
-                endTime: endTime,
+                startTime: paginationParameters.StartTime,
+                endTime: paginationParameters.EndTime,
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<SharedUserTrade[]>(Exchange, null, default);
 
-            PageRequest? nextPageRequest = null;
-            if (ExchangeHelpers.CheckForNextPage(result.Data.Length, result.Data.Select(x => x.Timestamp), request.StartTime, request.EndTime, request.Limit ?? 1000, direction))
-            {
-                // Data might be available on next page
-                nextPageRequest = PageRequest.FromNextEndTimeDesc(result.Data.Select(x => x.Timestamp));
-            }
+            var nextPageRequest = ExchangeHelpers.GetNextPageRequest(
+                () =>
+                {
+                    return PageRequest.NextEndTimeDesc(result.Data.Select(x => x.Timestamp));
+                },
+                result.Data.Length,
+                result.Data.Select(x => x.Timestamp),
+                limit,
+                pageRequest,
+                ExchangeHelpers.TimeParameterSetType.Both,
+                paginationParameters.StartTime,
+                direction,
+                request.StartTime,
+                request.EndTime);
 
             // Return
             return result.AsExchangeResult(
@@ -768,35 +782,37 @@ namespace Bitfinex.Net.Clients.SpotApi
             var direction = DataDirection.Descending;
             var limit = request.Limit ?? 1000;
 
-            var (startTime, endTime, fromId) = ExchangeHelpers.ApplyPaginationRequestFilters(
-                ExchangeHelpers.PaginationFilterType.Time,
-                ExchangeHelpers.PaginationFilterType.Time,
-                DataDirection.Descending,
+            var paginationParameters = ExchangeHelpers.ApplyPaginationParameters(
                 direction,
-                request.StartTime,
-                request.EndTime,
-                pageRequest?.StartTime,
-                pageRequest?.EndTime,
+                pageRequest,
                 null,
-                pageRequest?.FromId);
+                ExchangeHelpers.PaginationFilterType.Time,
+                ExchangeHelpers.TimeParameterSetType.Both,
+                request.StartTime,
+                request.EndTime);
 
             // Get data
             var result = await Account.GetMovementsAsync(
                 request.Asset,
-                startTime: startTime,
-                endTime: endTime,
+                startTime: paginationParameters.StartTime,
+                endTime: paginationParameters.EndTime,
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<SharedDeposit[]>(Exchange, null, default);
 
+            var nextPageRequest = ExchangeHelpers.GetNextPageRequest(
+                () => PageRequest.NextEndTimeDesc(result.Data.Select(x => x.StartTime)),
+                result.Data.Length,
+                result.Data.Select(x => x.StartTime),
+                limit,
+                pageRequest,
+                ExchangeHelpers.TimeParameterSetType.Both,
+                paginationParameters.StartTime,
+                direction,
+                request.StartTime,
+                request.EndTime);
             var data = result.Data.Where(x => x.Quantity > 0);
-            PageRequest? nextPageRequest = null;
-            if (ExchangeHelpers.CheckForNextPage(result.Data.Length, data.Select(x => x.StartTime), request.StartTime, request.EndTime, limit, direction))
-            {
-                // Data might be available on next page
-                nextPageRequest = PageRequest.FromNextEndTimeDesc(result.Data.Select(x => x.StartTime));
-            }
 
             // Return
             return result.AsExchangeResult(
@@ -854,37 +870,42 @@ namespace Bitfinex.Net.Clients.SpotApi
             var symbol = request.Symbol!.GetSymbol(FormatSymbol);
             var limit = request.Limit ?? 10000;
 
-            var (startTime, endTime, fromId) = ExchangeHelpers.ApplyPaginationRequestFilters(
+            var paginationParameters = ExchangeHelpers.ApplyPaginationParameters(
+                direction,
+                pageRequest,
                 ExchangeHelpers.PaginationFilterType.Time,
                 ExchangeHelpers.PaginationFilterType.Time,
-                direction,
-                direction,
+                ExchangeHelpers.TimeParameterSetType.Both,
                 request.StartTime,
-                request.EndTime,
-                pageRequest?.StartTime,
-                pageRequest?.EndTime,
-                null,
-                pageRequest?.FromId);
+                request.EndTime);
 
             var result = await ExchangeData.GetTradeHistoryAsync(
                 symbol,
-                startTime: startTime,
-                endTime: endTime,
+                startTime: paginationParameters.StartTime,
+                endTime: paginationParameters.EndTime,
                 limit: limit,
                 sorting: direction == DataDirection.Ascending ? Sorting.OldFirst : Sorting.NewFirst,
                 ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<SharedTrade[]>(Exchange, null, default);
 
-            PageRequest? nextPageRequest = null;
-            if (ExchangeHelpers.CheckForNextPage(result.Data.Length, result.Data.Select(x => x.Timestamp), request.StartTime, request.EndTime, limit, direction))
-            {
-                // Data might be available on next page
-                if (direction == DataDirection.Ascending)
-                    nextPageRequest = PageRequest.FromNextStartTimeAsc(result.Data.Select(x => x.Timestamp));
-                else
-                    nextPageRequest = PageRequest.FromNextEndTimeDesc(result.Data.Select(x => x.Timestamp));
-            }
+            var nextPageRequest = ExchangeHelpers.GetNextPageRequest(
+                () =>
+                {
+                    if (direction == DataDirection.Ascending)
+                        return PageRequest.NextStartTimeAsc(result.Data.Select(x => x.Timestamp));
+                    else
+                        return PageRequest.NextEndTimeDesc(result.Data.Select(x => x.Timestamp));
+                },
+                result.Data.Length,
+                result.Data.Select(x => x.Timestamp),
+                limit,
+                pageRequest,
+                ExchangeHelpers.TimeParameterSetType.OnlyMatchingDirection,
+                paginationParameters.StartTime,
+                direction,
+                request.StartTime,
+                request.EndTime);
 
             // Return
             return result.AsExchangeResult(
@@ -911,35 +932,37 @@ namespace Bitfinex.Net.Clients.SpotApi
             var direction = DataDirection.Descending;
             var limit = request.Limit ?? 1000;
 
-            var (startTime, endTime, fromId) = ExchangeHelpers.ApplyPaginationRequestFilters(
-                ExchangeHelpers.PaginationFilterType.Time,
-                ExchangeHelpers.PaginationFilterType.Time,
-                DataDirection.Descending,
+            var paginationParameters = ExchangeHelpers.ApplyPaginationParameters(
                 direction,
-                request.StartTime,
-                request.EndTime,
-                pageRequest?.StartTime,
-                pageRequest?.EndTime,
+                pageRequest,
                 null,
-                pageRequest?.FromId);
+                ExchangeHelpers.PaginationFilterType.Time,
+                ExchangeHelpers.TimeParameterSetType.Both,
+                request.StartTime,
+                request.EndTime);
 
             // Get data
             var result = await Account.GetMovementsAsync(
                 request.Asset,
-                startTime: startTime,
-                endTime: endTime,
+                startTime: paginationParameters.StartTime,
+                endTime: paginationParameters.EndTime,
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<SharedWithdrawal[]>(Exchange, null, default);
 
+            var nextPageRequest = ExchangeHelpers.GetNextPageRequest(
+                () => PageRequest.NextEndTimeDesc(result.Data.Select(x => x.StartTime)),
+                result.Data.Length,
+                result.Data.Select(x => x.StartTime),
+                limit,
+                pageRequest,
+                ExchangeHelpers.TimeParameterSetType.Both,
+                paginationParameters.StartTime,
+                direction,
+                request.StartTime,
+                request.EndTime);
             var data = result.Data.Where(x => x.Quantity < 0);
-            PageRequest? nextPageRequest = null;
-            if (ExchangeHelpers.CheckForNextPage(result.Data.Length, data.Select(x => x.StartTime), request.StartTime, request.EndTime, limit, direction))
-            {
-                // Data might be available on next page
-                nextPageRequest = PageRequest.FromNextEndTimeDesc(result.Data.Select(x => x.StartTime));
-            }
 
             // Return
             return result.AsExchangeResult(
