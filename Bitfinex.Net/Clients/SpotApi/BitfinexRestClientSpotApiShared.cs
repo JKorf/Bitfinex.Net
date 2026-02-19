@@ -527,7 +527,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var direction = DataDirection.Descending;
             var symbol = request.Symbol!.GetSymbol(FormatSymbol);
             var limit = request.Limit ?? 2500;
-            var pageParams = Pagination.GetPaginationParameters(direction, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             // Get data
             var result = await Trading.GetClosedOrdersAsync(
@@ -545,8 +545,6 @@ namespace Bitfinex.Net.Clients.SpotApi
                     result.Data.Select(x => x.CreateTime),
                     request.StartTime,
                     request.EndTime ?? DateTime.UtcNow,
-                    limit,
-                    direction,
                     pageParams);
 
             // Return
@@ -618,7 +616,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var direction = DataDirection.Descending;
             var symbol = request.Symbol!.GetSymbol(FormatSymbol);
             var limit = request.Limit ?? 1000;
-            var pageParams = Pagination.GetPaginationParameters(direction, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             // Get data
             var result = await Trading.GetUserTradesAsync(
@@ -636,8 +634,6 @@ namespace Bitfinex.Net.Clients.SpotApi
                     result.Data.Select(x => x.Timestamp),
                     request.StartTime,
                     request.EndTime ?? DateTime.UtcNow,
-                    limit,
-                    direction,
                     pageParams);
 
             // Return
@@ -756,7 +752,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var direction = DataDirection.Descending;
             var limit = request.Limit ?? 1000;
-            var pageParams = Pagination.GetPaginationParameters(direction, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             // Get data
             var result = await Account.GetMovementsAsync(
@@ -774,8 +770,6 @@ namespace Bitfinex.Net.Clients.SpotApi
                     result.Data.Select(x => x.StartTime),
                     request.StartTime,
                     request.EndTime ?? DateTime.UtcNow,
-                    limit,
-                    direction,
                     pageParams);
             
             var data = result.Data.Where(x => x.Quantity > 0);
@@ -835,7 +829,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             var direction = request.Direction ?? DataDirection.Ascending;
             var symbol = request.Symbol!.GetSymbol(FormatSymbol);
             var limit = request.Limit ?? 10000;
-            var pageParams = Pagination.GetPaginationParameters(direction, request.StartTime, request.EndTime, pageRequest);
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             var result = await ExchangeData.GetTradeHistoryAsync(
                 symbol,
@@ -854,9 +848,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                     result.Data.Length,
                     result.Data.Select(x => x.Timestamp),
                     request.StartTime,
-                    request.EndTime,
-                    limit,
-                    direction,
+                    request.EndTime ?? DateTime.UtcNow,
                     pageParams,
                     TimeSpan.FromDays(90));
 
@@ -884,7 +876,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var direction = DataDirection.Descending;
             var limit = request.Limit ?? 1000;
-            var pageParams = Pagination.GetPaginationParameters(direction, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             // Get data
             var result = await Account.GetMovementsAsync(
@@ -904,8 +896,6 @@ namespace Bitfinex.Net.Clients.SpotApi
                     result.Data.Select(x => x.StartTime),
                     request.StartTime,
                     request.EndTime ?? DateTime.UtcNow,
-                    limit,
-                    direction,
                     pageParams);
 
             var data = result.Data.Where(x => x.Quantity < 0);
