@@ -9,6 +9,7 @@ using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
+using CryptoExchange.Net.RateLimiting.Interfaces;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using System;
@@ -78,6 +79,23 @@ namespace Bitfinex.Net.Clients.SpotApi
             ParameterCollection? parameters,
             CancellationToken cancellationToken) where T : class
                 => base.SendAsync<T>(uri, definition, parameters, cancellationToken);
+
+        protected override async ValueTask<bool> ShouldRetryRequestAsync<T>(IRateLimitGate? gate, WebCallResult<T> callResult, int tries)
+        {
+            if (await base.ShouldRetryRequestAsync(gate, callResult, tries).ConfigureAwait(false))
+                return true;
+
+            if (callResult.Error?.ErrorType != ErrorType.InvalidTimestamp)
+                return false;
+
+            if (tries <= 3)
+            {
+                _logger.Log(LogLevel.Warning, "Received nonce error; retrying request");
+                return true;
+            }
+
+            return false;
+        }
 
         public IBitfinexRestClientSpotApiShared SharedClient => this;
     }

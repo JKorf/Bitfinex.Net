@@ -8,6 +8,8 @@ namespace Bitfinex.Net
             [
                 new ErrorInfo(ErrorType.Unauthorized, false, "Invalid API key", "10100"),
                 new ErrorInfo(ErrorType.UnknownSymbol, false, "Unknown symbol", "10020", "10300"),
+
+                new ErrorInfo(ErrorType.InvalidTimestamp, false, "Invalid nonce", "10114"),
             ]
         ,
             [
