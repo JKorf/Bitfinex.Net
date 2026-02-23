@@ -38,21 +38,14 @@ namespace Bitfinex.Net.Clients.SpotApi
             var direction = request.Direction ?? DataDirection.Ascending;
             var symbol = request.Symbol!.GetSymbol(FormatSymbol);
             var limit = request.Limit ?? 10000;
-            var paginationParameters = ExchangeHelpers.ApplyPaginationParameters(
-                direction,
-                pageRequest,
-                ExchangeHelpers.PaginationFilterType.Time,
-                ExchangeHelpers.PaginationFilterType.Time,
-                ExchangeHelpers.TimeParameterSetType.Both,
-                request.StartTime,
-                request.EndTime);
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             // Get data
             var result = await ExchangeData.GetKlinesAsync(
                 symbol,
                 interval,
-                startTime: paginationParameters.StartTime,
-                endTime: paginationParameters.EndTime,
+                startTime: pageParams.StartTime,
+                endTime: pageParams.EndTime,
                 limit: limit,
                 sorting: direction == DataDirection.Ascending ? Sorting.OldFirst : Sorting.NewFirst,
                 ct: ct
@@ -61,24 +54,16 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!result)
                 return result.AsExchangeResult<SharedKline[]>(Exchange, null, default);
 
-            var nextPageRequest = ExchangeHelpers.GetNextPageRequest(
-               () =>
-               {
-                   if (direction == DataDirection.Ascending)
-                       return PageRequest.NextStartTimeAsc(result.Data.Select(x => x.OpenTime));
-                   else
-                       return PageRequest.NextEndTimeDesc(result.Data.Select(x => x.OpenTime));
-               },
-                result.Data.Length,
-                result.Data.Select(x => x.OpenTime),
-                limit,
-                pageRequest,
-                ExchangeHelpers.TimeParameterSetType.OnlyMatchingDirection,
-                paginationParameters.StartTime,
-                direction,
-                request.StartTime,
-                request.EndTime);
-
+            var nextPageRequest = Pagination.GetNextPageRequest(
+                    () => direction == DataDirection.Ascending 
+                    ? Pagination.NextPageFromTime(pageParams, result.Data.Max(x => x.OpenTime))
+                    : Pagination.NextPageFromTime(pageParams, result.Data.Min(x => x.OpenTime)),
+                    result.Data.Length,
+                    result.Data.Select(x => x.OpenTime),
+                    request.StartTime,
+                    request.EndTime ?? DateTime.UtcNow,
+                    pageParams);
+            
             // Return
             return result.AsExchangeResult(
                 Exchange,
