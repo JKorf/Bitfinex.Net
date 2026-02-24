@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Net.Http;
+using System.Threading;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -92,8 +93,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 return new BitfinexRestClient(client, serviceProvider.GetRequiredService<ILoggerFactory>(), serviceProvider.GetRequiredService<IOptions<BitfinexRestOptions>>());
             }).ConfigurePrimaryHttpMessageHandler((serviceProvider) => {
                 var options = serviceProvider.GetRequiredService<IOptions<BitfinexRestOptions>>().Value;
-                return LibraryHelpers.CreateHttpClientMessageHandler(options.Proxy, options.HttpKeepAliveInterval);
-            });
+                return LibraryHelpers.CreateHttpClientMessageHandler(options);
+            }).SetHandlerLifetime(Timeout.InfiniteTimeSpan);
             services.Add(new ServiceDescriptor(typeof(IBitfinexSocketClient), x => { return new BitfinexSocketClient(x.GetRequiredService<IOptions<BitfinexSocketOptions>>(), x.GetRequiredService<ILoggerFactory>()); }, socketClientLifeTime ?? ServiceLifetime.Singleton));
 
             services.AddTransient<IBitfinexOrderBookFactory, BitfinexOrderBookFactory>();
@@ -101,7 +102,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ITrackerFactory, BitfinexTrackerFactory>();
             services.AddSingleton<IBitfinexUserClientProvider, BitfinexUserClientProvider>(x =>
             new BitfinexUserClientProvider(
-                x.GetRequiredService<HttpClient>(),
+                x.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(IBitfinexRestClient).Name),
                 x.GetRequiredService<ILoggerFactory>(),
                 x.GetRequiredService<IOptions<BitfinexRestOptions>>(),
                 x.GetRequiredService<IOptions<BitfinexSocketOptions>>()));

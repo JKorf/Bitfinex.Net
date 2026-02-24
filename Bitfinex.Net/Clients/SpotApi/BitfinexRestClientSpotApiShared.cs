@@ -24,9 +24,8 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Kline client
 
-        GetKlinesOptions IKlineRestClient.GetKlinesOptions { get; } = new GetKlinesOptions(SharedPaginationSupport.Descending, true, 10000, false);
-
-        async Task<ExchangeWebResult<SharedKline[]>> IKlineRestClient.GetKlinesAsync(GetKlinesRequest request, INextPageToken? pageToken, CancellationToken ct)
+        GetKlinesOptions IKlineRestClient.GetKlinesOptions { get; } = new GetKlinesOptions(true, true, true, 10000, false);
+        async Task<ExchangeWebResult<SharedKline[]>> IKlineRestClient.GetKlinesAsync(GetKlinesRequest request, PageRequest? pageRequest, CancellationToken ct)
         {
             var validationError = ((IKlineRestClient)this).GetKlinesOptions.ValidateRequest(Exchange, request, request.TradingMode, SupportedTradingModes);
             if (validationError != null)
@@ -36,37 +35,43 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (!Enum.IsDefined(typeof(Enums.KlineInterval), interval))
                 return new ExchangeWebResult<SharedKline[]>(Exchange, ArgumentError.Invalid(nameof(GetKlinesRequest.Interval), "Interval not supported"));
 
-            // Determine page token
-            DateTime? fromTimestamp = null;
-            if (pageToken is DateTimeToken dateTimeToken)
-                fromTimestamp = dateTimeToken.LastTime;
+            var direction = request.Direction ?? DataDirection.Ascending;
+            var symbol = request.Symbol!.GetSymbol(FormatSymbol);
+            var limit = request.Limit ?? 10000;
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             // Get data
-            var limit = request.Limit ?? 10000;
-            var symbol = request.Symbol!.GetSymbol(FormatSymbol);
             var result = await ExchangeData.GetKlinesAsync(
                 symbol,
                 interval,
-                startTime: request.StartTime,
-                endTime: fromTimestamp ?? request.EndTime?.AddSeconds(-1),
+                startTime: pageParams.StartTime,
+                endTime: pageParams.EndTime,
                 limit: limit,
-                sorting: Sorting.NewFirst,
+                sorting: direction == DataDirection.Ascending ? Sorting.OldFirst : Sorting.NewFirst,
                 ct: ct
                 ).ConfigureAwait(false);
 
             if (!result)
                 return result.AsExchangeResult<SharedKline[]>(Exchange, null, default);
 
-            // Get next token
-            DateTimeToken? nextToken = null;
-            if (result.Data.Count() == limit)
-            {
-                var minOpenTime = result.Data.Min(x => x.OpenTime);
-                nextToken = new DateTimeToken(minOpenTime.AddSeconds(-(int)interval));
-            }
-
-            return result.AsExchangeResult<SharedKline[]>(Exchange, request.Symbol.TradingMode, result.Data.Select(x =>
-                new SharedKline(request.Symbol, symbol, x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume)).ToArray(), nextToken);
+            var nextPageRequest = Pagination.GetNextPageRequest(
+                    () => direction == DataDirection.Ascending 
+                    ? Pagination.NextPageFromTime(pageParams, result.Data.Max(x => x.OpenTime))
+                    : Pagination.NextPageFromTime(pageParams, result.Data.Min(x => x.OpenTime)),
+                    result.Data.Length,
+                    result.Data.Select(x => x.OpenTime),
+                    request.StartTime,
+                    request.EndTime ?? DateTime.UtcNow,
+                    pageParams);
+            
+            // Return
+            return result.AsExchangeResult(
+                Exchange,
+                TradingMode.Spot,
+                ExchangeHelpers.ApplyFilter(result.Data, x => x.OpenTime, request.StartTime, request.EndTime, direction)
+                    .Select(x =>
+                        new SharedKline(request.Symbol, symbol, x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume))
+                    .ToArray(), nextPageRequest);
         }
 
         #endregion
@@ -497,53 +502,61 @@ namespace Bitfinex.Net.Clients.SpotApi
             }).ToArray());
         }
 
-        PaginatedEndpointOptions<GetClosedOrdersRequest> ISpotOrderRestClient.GetClosedSpotOrdersOptions { get; } = new PaginatedEndpointOptions<GetClosedOrdersRequest>(SharedPaginationSupport.Descending, true, 2500, true);
-
-        async Task<ExchangeWebResult<SharedSpotOrder[]>> ISpotOrderRestClient.GetClosedSpotOrdersAsync(GetClosedOrdersRequest request, INextPageToken? pageToken, CancellationToken ct)
+        GetClosedOrdersOptions ISpotOrderRestClient.GetClosedSpotOrdersOptions { get; } = new GetClosedOrdersOptions(false, true, true, 2500);
+        async Task<ExchangeWebResult<SharedSpotOrder[]>> ISpotOrderRestClient.GetClosedSpotOrdersAsync(GetClosedOrdersRequest request, PageRequest? pageRequest, CancellationToken ct)
         {
             var validationError = ((ISpotOrderRestClient)this).GetClosedSpotOrdersOptions.ValidateRequest(Exchange, request, request.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedSpotOrder[]>(Exchange, validationError);
 
-            // Determine page token
-            DateTime? fromTimestamp = null;
-            if (pageToken is DateTimeToken dateTimeToken)
-                fromTimestamp = dateTimeToken.LastTime;
+            var direction = DataDirection.Descending;
+            var symbol = request.Symbol!.GetSymbol(FormatSymbol);
+            var limit = request.Limit ?? 2500;
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             // Get data
-            var limit = request.Limit ?? 100;
-            var result = await Trading.GetClosedOrdersAsync(request.Symbol!.GetSymbol(FormatSymbol),
-                startTime: request.StartTime,
-                endTime: fromTimestamp ?? request.EndTime,
+            var result = await Trading.GetClosedOrdersAsync(
+                symbol,
+                startTime: pageParams.StartTime,
+                endTime: pageParams.EndTime,
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<SharedSpotOrder[]>(Exchange, null, null);
 
-            // Get next token
-            DateTimeToken? nextToken = null;
-            if (result.Data.Count() == limit)
-                nextToken = new DateTimeToken(result.Data.Min(o => o.CreateTime).AddMilliseconds(-1));
+            var nextPageRequest = Pagination.GetNextPageRequest(
+                    () => Pagination.NextPageFromTime(pageParams, result.Data.Min(x => x.CreateTime)),
+                    result.Data.Length,
+                    result.Data.Select(x => x.CreateTime),
+                    request.StartTime,
+                    request.EndTime ?? DateTime.UtcNow,
+                    pageParams);
 
-            return result.AsExchangeResult<SharedSpotOrder[]>(Exchange, TradingMode.Spot, result.Data.Select(x => new SharedSpotOrder(
-                ExchangeSymbolCache.ParseSymbol(_topicId, x.Symbol), 
-                x.Symbol,
-                x.Id.ToString(),
-                ParseOrderType(x.Type, x.Flags),
-                x.Side == OrderSide.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
-                ParseOrderStatus(x.Status),
-                x.CreateTime)
-            {
-                ClientOrderId = x.ClientOrderId?.ToString(),
-                AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
-                OrderQuantity = new SharedOrderQuantity(x.Quantity),
-                QuantityFilled = new SharedOrderQuantity(x.Quantity - x.QuantityRemaining),
-                TimeInForce = ParseTimeInForce(x.Type, x.Flags),
-                UpdateTime = x.UpdateTime,
-                IsTriggerOrder = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit,
-                OrderPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.PriceAuxilliaryLimit : x.Price,
-                TriggerPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.Price : null
-            }).ToArray(), nextToken);
+            // Return
+            return result.AsExchangeResult(
+                Exchange,
+                TradingMode.Spot,
+                ExchangeHelpers.ApplyFilter(result.Data, x => x.CreateTime, request.StartTime, request.EndTime, direction)
+                .Select(x => 
+                    new SharedSpotOrder(
+                        ExchangeSymbolCache.ParseSymbol(_topicId, x.Symbol), 
+                        x.Symbol,
+                        x.Id.ToString(),
+                        ParseOrderType(x.Type, x.Flags),
+                        x.Side == OrderSide.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
+                        ParseOrderStatus(x.Status),
+                        x.CreateTime)
+                        {
+                            ClientOrderId = x.ClientOrderId?.ToString(),
+                            AveragePrice = x.PriceAverage == 0 ? null : x.PriceAverage,
+                            OrderQuantity = new SharedOrderQuantity(x.Quantity),
+                            QuantityFilled = new SharedOrderQuantity(x.Quantity - x.QuantityRemaining),
+                            TimeInForce = ParseTimeInForce(x.Type, x.Flags),
+                            UpdateTime = x.UpdateTime,
+                            IsTriggerOrder = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit,
+                            OrderPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.PriceAuxilliaryLimit : x.Price,
+                            TriggerPrice = x.Type == OrderType.ExchangeStop || x.Type == OrderType.ExchangeStopLimit ? x.Price : null
+                        }).ToArray(), nextPageRequest);
         }
 
         EndpointOptions<GetOrderTradesRequest> ISpotOrderRestClient.GetSpotOrderTradesOptions { get; } = new EndpointOptions<GetOrderTradesRequest>(true);
@@ -578,49 +591,57 @@ namespace Bitfinex.Net.Clients.SpotApi
             }).ToArray());
         }
 
-        PaginatedEndpointOptions<GetUserTradesRequest> ISpotOrderRestClient.GetSpotUserTradesOptions { get; } = new PaginatedEndpointOptions<GetUserTradesRequest>(SharedPaginationSupport.Descending, true, 2500, true);
-        async Task<ExchangeWebResult<SharedUserTrade[]>> ISpotOrderRestClient.GetSpotUserTradesAsync(GetUserTradesRequest request, INextPageToken? pageToken, CancellationToken ct)
+        GetUserTradesOptions ISpotOrderRestClient.GetSpotUserTradesOptions { get; } = new GetUserTradesOptions(false, true, true, 2500);
+        async Task<ExchangeWebResult<SharedUserTrade[]>> ISpotOrderRestClient.GetSpotUserTradesAsync(GetUserTradesRequest request, PageRequest? pageRequest, CancellationToken ct)
         {
             var validationError = ((ISpotOrderRestClient)this).GetSpotUserTradesOptions.ValidateRequest(Exchange, request, request.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedUserTrade[]>(Exchange, validationError);
 
-            // Determine page token
-            DateTime? fromTimestamp = null;
-            if (pageToken is DateTimeToken dateTimeToken)
-                fromTimestamp = dateTimeToken.LastTime;
+            var direction = DataDirection.Descending;
+            var symbol = request.Symbol!.GetSymbol(FormatSymbol);
+            var limit = request.Limit ?? 1000;
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             // Get data
-            var limit = request.Limit ?? 1000;
-            var order = await Trading.GetUserTradesAsync(
-                request.Symbol!.GetSymbol(FormatSymbol),
-                startTime: request.StartTime,
-                endTime: fromTimestamp ?? request.EndTime,
+            var result = await Trading.GetUserTradesAsync(
+                symbol,
+                startTime: pageParams.StartTime,
+                endTime: pageParams.EndTime,
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
-            if (!order)
-                return order.AsExchangeResult<SharedUserTrade[]>(Exchange, null, default);
+            if (!result)
+                return result.AsExchangeResult<SharedUserTrade[]>(Exchange, null, default);
 
-            // Get next token
-            DateTimeToken? nextToken = null;
-            if (order.Data.Count() == limit)
-                nextToken = new DateTimeToken(order.Data.Min(o => o.Timestamp).AddMilliseconds(-1));
+            var nextPageRequest = Pagination.GetNextPageRequest(
+                    () => Pagination.NextPageFromTime(pageParams, result.Data.Min(x => x.Timestamp)),
+                    result.Data.Length,
+                    result.Data.Select(x => x.Timestamp),
+                    request.StartTime,
+                    request.EndTime ?? DateTime.UtcNow,
+                    pageParams);
 
-            return order.AsExchangeResult<SharedUserTrade[]>(Exchange, TradingMode.Spot, order.Data.Select(x => new SharedUserTrade(
-                ExchangeSymbolCache.ParseSymbol(_topicId, x.Symbol), 
-                x.Symbol,
-                x.OrderId.ToString(),
-                x.Id.ToString(),
-                x.QuantityRaw > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell,
-                x.Quantity,
-                x.Price,
-                x.Timestamp)
-            {
-                Fee = Math.Abs(x.Fee),
-                FeeAsset = BitfinexExchange.AssetAliases.ExchangeToCommonName(x.FeeAsset),
-                Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null,
-                ClientOrderId = x.ClientOrderId?.ToString()
-            }).ToArray(), nextToken);
+            // Return
+            return result.AsExchangeResult(
+                Exchange,
+                TradingMode.Spot,
+                ExchangeHelpers.ApplyFilter(result.Data, x => x.Timestamp, request.StartTime, request.EndTime, direction)
+                .Select(x => new SharedUserTrade(
+                    ExchangeSymbolCache.ParseSymbol(_topicId, x.Symbol), 
+                    x.Symbol,
+                    x.OrderId.ToString(),
+                    x.Id.ToString(),
+                    x.QuantityRaw > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell,
+                    x.Quantity,
+                    x.Price,
+                    x.Timestamp)
+                {
+                    Fee = Math.Abs(x.Fee),
+                    FeeAsset = BitfinexExchange.AssetAliases.ExchangeToCommonName(x.FeeAsset),
+                    Role = x.Maker == true ? SharedRole.Maker : x.Maker == false ? SharedRole.Taker : null,
+                    ClientOrderId = x.ClientOrderId?.ToString()
+                })
+                .ToArray(), nextPageRequest);
         }
 
         EndpointOptions<CancelOrderRequest> ISpotOrderRestClient.CancelSpotOrderOptions { get; } = new EndpointOptions<CancelOrderRequest>(true);
@@ -707,49 +728,56 @@ namespace Bitfinex.Net.Clients.SpotApi
             });
         }
 
-        GetDepositsOptions IDepositRestClient.GetDepositsOptions { get; } = new GetDepositsOptions(SharedPaginationSupport.Descending, true, 1000);
-        async Task<ExchangeWebResult<SharedDeposit[]>> IDepositRestClient.GetDepositsAsync(GetDepositsRequest request, INextPageToken? pageToken, CancellationToken ct)
+        GetDepositsOptions IDepositRestClient.GetDepositsOptions { get; } = new GetDepositsOptions(false, true, true, 1000);
+        async Task<ExchangeWebResult<SharedDeposit[]>> IDepositRestClient.GetDepositsAsync(GetDepositsRequest request, PageRequest? pageRequest, CancellationToken ct)
         {
             var validationError = ((IDepositRestClient)this).GetDepositsOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedDeposit[]>(Exchange, validationError);
 
-            // Determine page token
-            DateTime? offset = null;
-            if (pageToken is DateTimeToken timeToken)
-                offset = timeToken.LastTime;
+            var direction = DataDirection.Descending;
+            var limit = request.Limit ?? 1000;
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             // Get data
-            var limit = request.Limit ?? 1000;
-            var deposits = await Account.GetMovementsAsync(
+            var result = await Account.GetMovementsAsync(
                 request.Asset,
-                startTime: request.StartTime,
-                endTime: offset ?? request.EndTime,
+                startTime: pageParams.StartTime,
+                endTime: pageParams.EndTime,
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
-            if (!deposits)
-                return deposits.AsExchangeResult<SharedDeposit[]>(Exchange, null, default);
+            if (!result)
+                return result.AsExchangeResult<SharedDeposit[]>(Exchange, null, default);
 
-            var data = deposits.Data.Where(x => x.Quantity < 0);
+            var nextPageRequest = Pagination.GetNextPageRequest(
+                    () => Pagination.NextPageFromTime(pageParams, result.Data.Min(x => x.StartTime)),
+                    result.Data.Length,
+                    result.Data.Select(x => x.StartTime),
+                    request.StartTime,
+                    request.EndTime ?? DateTime.UtcNow,
+                    pageParams);
+            
+            var data = result.Data.Where(x => x.Quantity > 0);
 
-            // Determine next token
-            DateTimeToken? nextToken = null;
-            if (deposits.Data.Count() == limit)
-                nextToken = new DateTimeToken(deposits.Data.Min(x => x.StartTime));
-
-            return deposits.AsExchangeResult<SharedDeposit[]>(Exchange, TradingMode.Spot, data.Where(x => x.Quantity > 0).Select(x => 
-                new SharedDeposit(
-                    BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), 
-                    x.Quantity,
-                    x.Status == "COMPLETED",
-                    x.StartTime, 
-                    x.Status == "COMPLETED" ? SharedTransferStatus.Completed :
-                    x.Status == "CANCELED" ? SharedTransferStatus.Failed:
-                    SharedTransferStatus.InProgress)
-                {
-                    Id = x.Id,
-                    TransactionId = x.TransactionId
-                }).ToArray(), nextToken);
+            // Return
+            return result.AsExchangeResult(
+                Exchange,
+                TradingMode.Spot,
+                ExchangeHelpers.ApplyFilter(data, x => x.StartTime, request.StartTime, request.EndTime, direction)
+                .Select(x => 
+                    new SharedDeposit(
+                        BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), 
+                        x.Quantity,
+                        x.Status == "COMPLETED",
+                        x.StartTime, 
+                        x.Status == "COMPLETED" ? SharedTransferStatus.Completed :
+                        x.Status == "CANCELED" ? SharedTransferStatus.Failed:
+                        SharedTransferStatus.InProgress)
+                    {
+                        Id = x.Id,
+                        TransactionId = x.TransactionId
+                    })
+                .ToArray(), nextPageRequest);
         }
 
         #endregion
@@ -776,83 +804,99 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Trade History client
 
-        GetTradeHistoryOptions ITradeHistoryRestClient.GetTradeHistoryOptions { get; } = new GetTradeHistoryOptions(SharedPaginationSupport.Descending, true, 10000, false);
-        async Task<ExchangeWebResult<SharedTrade[]>> ITradeHistoryRestClient.GetTradeHistoryAsync(GetTradeHistoryRequest request, INextPageToken? pageToken, CancellationToken ct)
+        GetTradeHistoryOptions ITradeHistoryRestClient.GetTradeHistoryOptions { get; } = new GetTradeHistoryOptions(true, true, true, 10000, false);
+        async Task<ExchangeWebResult<SharedTrade[]>> ITradeHistoryRestClient.GetTradeHistoryAsync(GetTradeHistoryRequest request, PageRequest? pageRequest, CancellationToken ct)
         {
             var validationError = ((ITradeHistoryRestClient)this).GetTradeHistoryOptions.ValidateRequest(Exchange, request, request.TradingMode, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedTrade[]>(Exchange, validationError);
 
-            // Determine page token
-            DateTime? fromTimestamp = null;
-            if (pageToken is DateTimeToken dateTimeToken)
-                fromTimestamp = dateTimeToken.LastTime;
-
-            // Get data
-            var limit = request.Limit ?? 10000;
+            var direction = request.Direction ?? DataDirection.Ascending;
             var symbol = request.Symbol!.GetSymbol(FormatSymbol);
+            var limit = request.Limit ?? 10000;
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
+
             var result = await ExchangeData.GetTradeHistoryAsync(
                 symbol,
-                startTime: request.StartTime,
-                endTime: fromTimestamp ?? request.EndTime,
+                startTime: pageParams.StartTime,
+                endTime: pageParams.EndTime,
                 limit: limit,
-                sorting: Sorting.NewFirst,
+                sorting: direction == DataDirection.Ascending ? Sorting.OldFirst : Sorting.NewFirst,
                 ct: ct).ConfigureAwait(false);
             if (!result)
                 return result.AsExchangeResult<SharedTrade[]>(Exchange, null, default);
 
-            // Get next token
-            DateTimeToken? nextToken = null;
-            if (result.Data.Count() == limit)
-                nextToken = new DateTimeToken(result.Data.Min(o => o.Timestamp.AddMilliseconds(-1)));
+            var nextPageRequest = Pagination.GetNextPageRequest(
+                    () => direction == DataDirection.Ascending
+                        ? Pagination.NextPageFromTime(pageParams, result.Data.Max(x => x.Timestamp))
+                        : Pagination.NextPageFromTime(pageParams, result.Data.Min(x => x.Timestamp)),
+                    result.Data.Length,
+                    result.Data.Select(x => x.Timestamp),
+                    request.StartTime,
+                    request.EndTime ?? DateTime.UtcNow,
+                    pageParams,
+                    TimeSpan.FromDays(90));
 
             // Return
-            return result.AsExchangeResult<SharedTrade[]>(Exchange, request.Symbol.TradingMode, result.Data.Select(x => 
-            new SharedTrade(request.Symbol, symbol, Math.Abs(x.Quantity), x.Price, x.Timestamp)
-            {
-                Side = x.Quantity > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell
-            }).ToArray(), nextToken);
+            return result.AsExchangeResult(
+                Exchange,
+                TradingMode.Spot,
+                ExchangeHelpers.ApplyFilter(result.Data, x => x.Timestamp, request.StartTime, request.EndTime, direction)
+                    .Select(x => 
+                        new SharedTrade(request.Symbol, symbol, Math.Abs(x.Quantity), x.Price, x.Timestamp)
+                        {
+                            Side = x.Quantity > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell
+                        }).ToArray(), nextPageRequest);
         }
         #endregion
 
         #region Withdrawal client
 
-        GetWithdrawalsOptions IWithdrawalRestClient.GetWithdrawalsOptions { get; } = new GetWithdrawalsOptions(SharedPaginationSupport.Descending, true, 1000);
-        async Task<ExchangeWebResult<SharedWithdrawal[]>> IWithdrawalRestClient.GetWithdrawalsAsync(GetWithdrawalsRequest request, INextPageToken? pageToken, CancellationToken ct)
+        GetWithdrawalsOptions IWithdrawalRestClient.GetWithdrawalsOptions { get; } = new GetWithdrawalsOptions(false, true, true, 1000);
+        async Task<ExchangeWebResult<SharedWithdrawal[]>> IWithdrawalRestClient.GetWithdrawalsAsync(GetWithdrawalsRequest request, PageRequest? pageRequest, CancellationToken ct)
         {
             var validationError = ((IWithdrawalRestClient)this).GetWithdrawalsOptions.ValidateRequest(Exchange, request, TradingMode.Spot, SupportedTradingModes);
             if (validationError != null)
                 return new ExchangeWebResult<SharedWithdrawal[]>(Exchange, validationError);
 
-            // Determine page token
-            DateTime? offset = null;
-            if (pageToken is DateTimeToken timeToken)
-                offset = timeToken.LastTime;
+            var direction = DataDirection.Descending;
+            var limit = request.Limit ?? 1000;
+            var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest);
 
             // Get data
-            var limit = request.Limit ?? 1000;
-            var withdrawals = await Account.GetMovementsAsync(
+            var result = await Account.GetMovementsAsync(
                 request.Asset,
-                startTime: request.StartTime,
-                endTime: offset ?? request.EndTime,
+                startTime: pageParams.StartTime,
+                endTime: pageParams.EndTime,
                 limit: limit,
                 ct: ct).ConfigureAwait(false);
-            if (!withdrawals)
-                return withdrawals.AsExchangeResult<SharedWithdrawal[]>(Exchange, null, default);
+            if (!result)
+                return result.AsExchangeResult<SharedWithdrawal[]>(Exchange, null, default);
 
-            var data = withdrawals.Data.Where(x => x.Quantity < 0);
+            var nextPageRequest = Pagination.GetNextPageRequest(
+                    () => direction == DataDirection.Ascending
+                        ? Pagination.NextPageFromTime(pageParams, result.Data.Max(x => x.StartTime))
+                        : Pagination.NextPageFromTime(pageParams, result.Data.Min(x => x.StartTime)),
+                    result.Data.Length,
+                    result.Data.Select(x => x.StartTime),
+                    request.StartTime,
+                    request.EndTime ?? DateTime.UtcNow,
+                    pageParams);
 
-            // Determine next token
-            DateTimeToken? nextToken = null;
-            if (withdrawals.Data.Count() == limit)
-                nextToken = new DateTimeToken(withdrawals.Data.Min(x => x.StartTime));
+            var data = result.Data.Where(x => x.Quantity < 0);
 
-            return withdrawals.AsExchangeResult<SharedWithdrawal[]>(Exchange, TradingMode.Spot, 
-                data.Select(x => new SharedWithdrawal(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Address, Math.Abs(x.Quantity), x.Status == "COMPLETED", x.StartTime)
-                {
-                    Id = x.Id,
-                    TransactionId = x.TransactionId
-                }).ToArray(), nextToken);
+            // Return
+            return result.AsExchangeResult(
+                Exchange,
+                TradingMode.Spot,
+                ExchangeHelpers.ApplyFilter(data, x => x.StartTime, request.StartTime, request.EndTime, direction)
+                .Select(x => 
+                    new SharedWithdrawal(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Address, Math.Abs(x.Quantity), x.Status == "COMPLETED", x.StartTime)
+                    {
+                        Id = x.Id,
+                        TransactionId = x.TransactionId
+                    })
+                .ToArray(), nextPageRequest);
         }
 
         #endregion

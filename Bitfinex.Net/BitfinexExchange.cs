@@ -134,7 +134,7 @@ namespace Bitfinex.Net
             RestConf = new RateLimitGate("Rest Config")
                 .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, [], 90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding)); // 90 requests per minute shared by all /conf endpoints
             RestStats = new RateLimitGate("Rest Stats")
-                .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, [], 15, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding)); // 15 requests per minute shared by all /stats endpoints
+                .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, [], 15, TimeSpan.FromSeconds(60), RateLimitWindowType.FixedAfterFirst)); // 15 requests per minute shared by all /stats endpoints
             Websocket = new RateLimitGate("Websocket")
                                     .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, [new HostFilter("wss://api.bitfinex.com"), new LimitItemTypeFilter(RateLimitItemType.Connection)], 5, TimeSpan.FromSeconds(15), RateLimitWindowType.Sliding)) // Limit of 5 connection requests per 15 seconds
                                     .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, [new HostFilter("wss://api-pub.bitfinex.com"), new LimitItemTypeFilter(RateLimitItemType.Connection)], 20, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding)); // Limit of 20 connection requests per 60 seconds
