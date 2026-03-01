@@ -15,7 +15,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     {
         /// <summary>
         /// Get the active orders
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-orders" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-orders" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/orders
+        /// </para>
         /// </summary>
         /// <param name="symbol">Filter by symbol, for example `tETHUSD`</param>
         /// <param name="orderIds">Filter by specific order ids</param>
@@ -32,7 +37,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the order history for a symbol for this account
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-orders-history" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-orders-history" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/orders/{symbol}/hist
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol to get the history for, for example `tETHUSD`</param>
         /// <param name="orderIds">Filter by specific order ids</param>
@@ -45,7 +55,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the individual trades for an order
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-order-trades" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-order-trades" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/order/{symbol}:{orderId}/trades
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol of the order, for example `tETHUSD`</param>
         /// <param name="orderId">The order Id</param>
@@ -55,7 +70,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the trade history for a symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-trades" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-trades" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/trades/{symbol}/hist
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol to get history for, for example `tETHUSD`</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -68,7 +88,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get a list of historical positions
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-positions-hist" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-positions-hist" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/positions/hist
+        /// </para>
         /// </summary>
         /// <param name="startTime">Start time of the data to return</param>
         /// <param name="endTime">End time of the data to return</param>
@@ -79,7 +104,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Place a new order
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-submit-order" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-submit-order" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/order/submit
+        /// </para>
         /// </summary>
         /// <param name="symbol">Symbol to place order for, for example `tETHUSD`</param>
         /// <param name="side">Side of the order</param>
@@ -114,7 +144,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Cancel a specific order
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-cancel-order" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-cancel-order" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/order/cancel
+        /// </para>
         /// </summary>
         /// <param name="orderId">The id of the order to cancel</param>
         /// <param name="clientOrderId">The client order id of the order to cancel</param>
@@ -125,7 +160,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Cancels open orders
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-cancel-orders-multiple" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-cancel-orders-multiple" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/order/cancel/multi
+        /// </para>
         /// </summary>
         /// <param name="orderIds">Ids of orders to cancel</param>
         /// <param name="groupIds">Group ids to cancel</param>
@@ -137,7 +177,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// The claim feature allows the use of funds you have in your Margin Wallet to settle a leveraged position as an exchange buy or sale
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-position-claim" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-position-claim" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/position/claim
+        /// </para>
         /// </summary>
         /// <param name="id">The id of the position to claim</param>
         /// <param name="quantity">The (partial) quantity to be claimed</param>
@@ -147,7 +192,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Essentially a reverse of the Claim Position feature, the Increase Position feature allows you to create a new position using the funds in your margin wallet
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-position-increase" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-position-increase" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/position/increase
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="quantity">Quantity</param>
@@ -157,7 +207,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Returns information relevant to the increase position endpoint.
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-increase-position-info" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-increase-position-info" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/position/increase/info
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="quantity">Quantity</param>
@@ -167,7 +222,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the active positions
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-positions" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-positions" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/positions
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -175,7 +235,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get positions by id
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-positions-audit" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-positions-audit" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/positions/audit
+        /// </para>
         /// </summary>
         /// <param name="ids">The id's of positions to return</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -187,7 +252,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Returns position snapshots of user positions between the specified start and end perimiters. Snapshots are taken daily.
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-positions-snap" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-positions-snap" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/positions/snap
+        /// </para>
         /// </summary>
         /// <param name="startTime">Start time of the data to return</param>
         /// <param name="endTime">End time of the data to return</param>

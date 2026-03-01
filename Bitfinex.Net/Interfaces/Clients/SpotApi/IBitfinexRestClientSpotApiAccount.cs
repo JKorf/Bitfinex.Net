@@ -16,7 +16,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     {
         /// <summary>
         /// Get all balances
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-wallets" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-wallets" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/wallets
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -24,7 +29,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the base margin info
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/info/margin/base
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -32,7 +42,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the margin info for a symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/info/margin/{symbol}
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol to get the info for, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
@@ -41,7 +56,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the withdrawal/deposit history
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-movements" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-movements" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/movements/{asset}/hist
+        /// </para>
         /// </summary>
         /// <param name="asset">Asset to get history for, for example `ETH`</param>
         /// <param name="ids">Filter by ids</param>
@@ -55,7 +75,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get detailed information about a deposit/withdrawal
-        /// <para><a href="https://docs.bitfinex.com/reference/movement-info" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/movement-info" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/movements/info
+        /// </para>
         /// </summary>
         /// <param name="id">Id of the movement</param>
         /// <param name="ct">Cancellation token</param>
@@ -64,7 +89,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the list of alerts
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-alerts" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-alerts" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/alerts
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -72,7 +102,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Set an alert
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-alert-set" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-alert-set" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/alert/set
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol to set the alert for, for example `tETHUSD`</param>
         /// <param name="price">The price to set the alert for</param>
@@ -82,7 +117,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Delete an existing alert
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-alert-del" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-alert-del" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/alert/price:{symbol}:{price}/del
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol of the alert to delete, for example `tETHUSD`</param>
         /// <param name="price">The price of the alert to delete</param>
@@ -92,7 +132,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Calculates the available balance for a symbol at a specific rate
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-calc-order-avail" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-calc-order-avail" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/calc/order/avail
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="side">Buy or sell</param>
@@ -105,7 +150,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get changes in your balance for an asset
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-ledgers" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-ledgers" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/ledgers/{asset}/hist
+        /// </para>
         /// </summary>
         /// <param name="asset">The asset to check the ledger for, for example `ETH`</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -118,7 +168,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Gets information about the user associated with the api key/secret
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-user" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-info-user" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/info/user
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -126,7 +181,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Provides an overview of the different fee rates for the account as well as the LEO discount level and the average amount of LEO held over the last 30 days.
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-summary" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-summary" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/summary
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -134,7 +194,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Gets a deposit address for an asset
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-deposit" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/v1/reference#rest-auth-deposit" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/deposit/address
+        /// </para>
         /// </summary>
         /// <param name="method">The method to get address for. Methods can be retrieved via ExchangeData.GetAssetDepositWithdrawalMethodsAsync</param>
         /// <param name="toWallet">The type of wallet the deposit is for</param>
@@ -145,7 +210,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Transfers funds from one wallet to another
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-transfer" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-transfer" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/transfer
+        /// </para>
         /// </summary>
         /// <param name="asset">The asset to transfer, for example `ETH`</param>
         /// <param name="fromWallet">The wallet to remove funds from</param>
@@ -163,7 +233,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// All withdrawals need the withdrawType, wallet and quantity parameters
         /// CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
         /// Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.
-        /// <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-withdrawal" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/v1/reference#rest-auth-withdrawal" /><br />
+        /// Endpoint:<br />
+        /// POST /v1/withdraw
+        /// </para>
         /// </summary>
         /// <param name="withdrawType">The type of funds to withdraw</param>
         /// <param name="wallet">The wallet to withdraw from</param>
@@ -225,7 +300,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Withdraw funds
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-withdraw" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-withdraw" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/withdraw
+        /// </para>
         /// </summary>
         /// <param name="method">Method of withdrawal, methods can be retrieved with <see cref="IBitfinexRestClientSpotApiExchangeData.GetAssetDepositWithdrawalMethodsAsync">ExchangeData.GetAssetDepositWithdrawalMethodsAsync</see></param>
         /// <param name="wallet">Wallet type</param>
@@ -248,7 +328,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
                                                                          CancellationToken ct = default);
         /// <summary>
         /// Get login history
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-logins-hist" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-logins-hist" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/logins/hist
+        /// </para>
         /// </summary>
         /// <param name="startTime">Start time of the data to return</param>
         /// <param name="endTime">End time of the data to return</param>
@@ -259,7 +344,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get api key permissions
-        /// <para><a href="https://docs.bitfinex.com/reference/key-permissions" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/key-permissions" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/permissions
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -267,7 +357,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get account change log
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-audit-hist" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-audit-hist" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/audit/hist
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>

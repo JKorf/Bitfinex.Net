@@ -15,7 +15,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     {
         /// <summary>
         /// Gets the platform status
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-platform-status" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-platform-status" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/platform/status
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Whether Bitfinex platform is running normally or not</returns>
@@ -23,7 +28,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Gets a list of supported assets
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:map:currency:label
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -31,7 +41,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Returns basic market data for the provided symbols
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-ticker" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-ticker" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/tickers
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol to get data for, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
@@ -40,7 +55,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Returns basic market data for the provided funding symbols
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-ticker" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-ticker" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/tickers
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol to get data for, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
@@ -49,7 +69,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Returns basic market data for the provided symbols
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-tickers" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-tickers" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/tickers
+        /// </para>
         /// </summary>
         /// <param name="symbols">The symbols to get data for, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
@@ -58,7 +83,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Returns basic market data for the provided funding symbols
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-tickers" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-tickers" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/tickers
+        /// </para>
         /// </summary>
         /// <param name="symbols">The symbols to get data for, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
@@ -78,7 +108,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get recent trades for a symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-trades" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-trades" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/trades/{symbol}/hist
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol to get trades for, for example `tETHUSD`</param>
         /// <param name="limit">The amount of results</param>
@@ -91,7 +126,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Gets the order book for a trading symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/book/{symbol}/{precision}
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol to get the order book for, for example `tETHUSD`</param>
         /// <param name="precision">The precision of the data</param>
@@ -102,7 +142,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Gets the order book for a funding symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/book/{symbol}/{precision}
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol to get the order book for, for example `tETHUSD`</param>
         /// <param name="precision">The precision of the data</param>
@@ -113,7 +158,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the raw order book for a trading symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/book/{symbol}/R0
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="limit">The amount of results in the book</param>
@@ -123,7 +173,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the raw order book for a funding symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/book/{symbol}/R0
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="limit">The amount of results in the book</param>
@@ -133,7 +188,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get the last kline for a symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-candles" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-candles" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/candles/trade:{interval}:{symbol}/last
+        /// </para>
         /// </summary>
         /// <param name="interval">The time frame of the kline</param>
         /// <param name="symbol">The symbol to get the kline for, for example `tETHUSD`</param>
@@ -144,7 +204,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Gets klines for a symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-candles" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-candles" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/candles/trade:{interval}:{symbol}/hist
+        /// </para>
         /// </summary>
         /// <param name="interval">The time frame of the klines</param>
         /// <param name="symbol">The symbol to get the klines for, for example `tETHUSD`</param>
@@ -159,7 +224,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Calculate the average execution price
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-calc-market-average-price" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-calc-market-average-price" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/calc/trade/avg
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol to calculate for, for example `tETHUSD`</param>
         /// <param name="quantity">The quantity to execute</param>
@@ -171,7 +241,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Returns the exchange rate for the assets
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-public-calc-foreign-exchange-rate" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-public-calc-foreign-exchange-rate" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/calc/fx
+        /// </para>
         /// </summary>
         /// <param name="asset1">The first asset, for example `ETH`</param>
         /// <param name="asset2">The second asset, for example `ETH`</param>
@@ -181,7 +256,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get derivatives status info
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-derivatives-status" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-derivatives-status" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/status/deriv
+        /// </para>
         /// </summary>
         /// <param name="symbols">Filter symbols, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
@@ -190,7 +270,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get derivatives status info history
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-derivatives-status-history" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-derivatives-status-history" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/status/deriv/{symbol}/hist
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="limit">The amount of results</param>
@@ -203,7 +288,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get liquidation history
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-liquidations" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-liquidations" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/liquidations/hist
+        /// </para>
         /// </summary>
         /// <param name="limit">The amount of results</param>
         /// <param name="startTime">The start time of the data</param>
@@ -215,7 +305,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get a list of the most recent funding data for the given asset: FRR, average period, total amount provided, total amount used
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-funding-stats" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-funding-stats" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/funding/stats/{symbol}/hist
+        /// </para>
         /// </summary>
         /// <param name="symbol">Symbol, for example `tETHUSD`</param>
         /// <param name="limit">Max number of results</param>
@@ -227,7 +322,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get total active funding in specified asset
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/funding.size:1m:{asset}/last
+        /// </para>
         /// </summary>
         /// <param name="asset">The asset, for example `ETH`</param>
         /// <param name="ct">Cancellation token</param>
@@ -236,7 +336,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get total active funding in specified asset
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/funding.size:1m:{asset}/hist
+        /// </para>
         /// </summary>
         /// <param name="asset">The asset, for example `ETH`</param>
         /// <param name="limit">Max number of results</param>
@@ -249,7 +354,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get total funding used in positions in specified asset
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/credits.size:1m:{asset}/last
+        /// </para>
         /// </summary>
         /// <param name="asset">The asset, for example `ETH`</param>
         /// <param name="ct">Cancellation token</param>
@@ -258,7 +368,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get total funding used in positions in specified asset
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/credits.size:1m:{asset}/hist
+        /// </para>
         /// </summary>
         /// <param name="asset">The asset, for example `ETH`</param>
         /// <param name="limit">Max number of results</param>
@@ -271,7 +386,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get total funding used in positions on a specific symbol in specified asset
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/credits.size.sym:1m:{asset}:{symbol}/last
+        /// </para>
         /// </summary>
         /// <param name="asset">The asset, for example `ETH`</param>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
@@ -281,7 +401,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get total funding used in positions on a specific symbol in specified asset
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/credits.size.sym:1m:{asset}:{symbol}/hist
+        /// </para>
         /// </summary>
         /// <param name="asset">The asset, for example `ETH`</param>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
@@ -295,7 +420,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/pos.size:1m:{symbol}:{side}/last
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="side">Position side</param>
@@ -305,7 +435,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/pos.size:1m:{symbol}:{side}/hist
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="side">Position side</param>
@@ -319,7 +454,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get trading volume on the platform
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/vol.{period}d:30m:BFX/last
+        /// </para>
         /// </summary>
         /// <param name="period">The period in days to get the data for. 1, 7 or 30</param>
         /// <param name="ct">Cancellation token</param>
@@ -328,7 +468,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get trading volume on the platform
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/vol.{period}d:30m:BFX/hist
+        /// </para>
         /// </summary>
         /// <param name="period">The period in days to get the data for. 1, 7 or 30</param>
         /// <param name="limit">Max number of results</param>
@@ -341,7 +486,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get volume weighted average price for the day
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/vwap:1d:{symbol}/last
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
@@ -350,7 +500,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get volume weighted average price for the day
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/stats1/vwap:1d:{symbol}/hist
+        /// </para>
         /// </summary>
         /// <param name="symbol">The symbol, for example `tETHUSD`</param>
         /// <param name="limit">Max number of results</param>
@@ -363,7 +518,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get symbol names
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:list:pair:{type}
+        /// </para>
         /// </summary>
         /// <param name="type">The types of symbol</param>
         /// <param name="ct">Cancellation token</param>
@@ -372,7 +532,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get asset names
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:list:currency
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -380,7 +545,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get mapping of assets to their API symbol
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:map:currency:sym
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -388,7 +558,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get mapping of assets to their full name
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:map:currency:label
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -396,7 +571,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get mapping of assets to their unit of measure where applicable
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:map:currency:unit
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -404,7 +584,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get mapping of derivative assets to their underlying asset
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:map:currency:undl
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -412,7 +597,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get mapping of assets to the network they operate on
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:map:currency:pool
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -420,7 +610,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get mapping of assets to their block explorer urls
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:map:currency:explorer
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -428,7 +623,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get mapping of assets to their withdrawal fees
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:map:currency:tx:fee
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -436,7 +636,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get mapping of assets to their withdrawal methods
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:map:tx:method
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -444,7 +649,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get list of market information for each trading pair
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:info:pair
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -452,7 +662,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get list of market information for each derivative trading pair
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:info:pair:futures
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -460,7 +675,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get deposit/withdrawal status info for assets
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:info:tx:status
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -468,7 +688,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get lists of active haircuts and risk coefficients on margin pairs
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:spec:margin
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
@@ -476,7 +701,12 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
 
         /// <summary>
         /// Get derivatives fees config
-        /// <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/conf/pub:fees
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
