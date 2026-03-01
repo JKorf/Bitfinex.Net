@@ -3806,7 +3806,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetBalancesAsync(System.Threading.CancellationToken)">
             <summary>
             Get all balances
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-wallets" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-wallets" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/wallets
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -3814,7 +3819,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetBaseMarginInfoAsync(System.Threading.CancellationToken)">
             <summary>
             Get the base margin info
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/info/margin/base
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -3822,7 +3832,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetSymbolMarginInfoAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get the margin info for a symbol
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/info/margin/{symbol}
+            </para>
             </summary>
             <param name="symbol">The symbol to get the info for, for example `tETHUSD`</param>
             <param name="ct">Cancellation token</param>
@@ -3831,7 +3846,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetMovementsAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the withdrawal/deposit history
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-movements" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-movements" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/movements/{asset}/hist
+            </para>
             </summary>
             <param name="asset">Asset to get history for, for example `ETH`</param>
             <param name="ids">Filter by ids</param>
@@ -3845,7 +3865,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetMovementsDetailsAsync(System.Int64,System.Threading.CancellationToken)">
             <summary>
             Get detailed information about a deposit/withdrawal
-            <para><a href="https://docs.bitfinex.com/reference/movement-info" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/movement-info" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/movements/info
+            </para>
             </summary>
             <param name="id">Id of the movement</param>
             <param name="ct">Cancellation token</param>
@@ -3854,7 +3879,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetAlertListAsync(System.Threading.CancellationToken)">
             <summary>
             Get the list of alerts
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-alerts" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-alerts" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/alerts
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -3862,7 +3892,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.SetAlertAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
             <summary>
             Set an alert
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-alert-set" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-alert-set" /><br />
+            Endpoint:<br />
+            POST /v2/auth/w/alert/set
+            </para>
             </summary>
             <param name="symbol">The symbol to set the alert for, for example `tETHUSD`</param>
             <param name="price">The price to set the alert for</param>
@@ -3872,7 +3907,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.DeleteAlertAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
             <summary>
             Delete an existing alert
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-alert-del" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-alert-del" /><br />
+            Endpoint:<br />
+            POST /v2/auth/w/alert/price:{symbol}:{price}/del
+            </para>
             </summary>
             <param name="symbol">The symbol of the alert to delete, for example `tETHUSD`</param>
             <param name="price">The price of the alert to delete</param>
@@ -3882,7 +3922,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetAvailableBalanceAsync(System.String,Bitfinex.Net.Enums.OrderSide,System.Decimal,Bitfinex.Net.Enums.WalletType,System.Nullable{System.Decimal},System.Threading.CancellationToken)">
             <summary>
             Calculates the available balance for a symbol at a specific rate
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-calc-order-avail" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-calc-order-avail" /><br />
+            Endpoint:<br />
+            POST /v2/auth/calc/order/avail
+            </para>
             </summary>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
             <param name="side">Buy or sell</param>
@@ -3895,7 +3940,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetLedgerEntriesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get changes in your balance for an asset
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-ledgers" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-ledgers" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/ledgers/{asset}/hist
+            </para>
             </summary>
             <param name="asset">The asset to check the ledger for, for example `ETH`</param>
             <param name="startTime">Start time of the data to return</param>
@@ -3908,7 +3958,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetUserInfoAsync(System.Threading.CancellationToken)">
             <summary>
             Gets information about the user associated with the api key/secret
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-user" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-info-user" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/info/user
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -3916,7 +3971,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.Get30DaySummaryAndFeesAsync(System.Threading.CancellationToken)">
             <summary>
             Provides an overview of the different fee rates for the account as well as the LEO discount level and the average amount of LEO held over the last 30 days.
-            <para><a href="https://docs.bitfinex.com/reference/rest-auth-summary" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-auth-summary" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/summary
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -3924,7 +3984,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetDepositAddressAsync(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <summary>
             Gets a deposit address for an asset
-            <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-deposit" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/v1/reference#rest-auth-deposit" /><br />
+            Endpoint:<br />
+            POST /v2/auth/w/deposit/address
+            </para>
             </summary>
             <param name="method">The method to get address for. Methods can be retrieved via ExchangeData.GetAssetDepositWithdrawalMethodsAsync</param>
             <param name="toWallet">The type of wallet the deposit is for</param>
@@ -3935,7 +4000,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.WalletTransferAsync(System.String,System.Decimal,Bitfinex.Net.Enums.WithdrawWallet,Bitfinex.Net.Enums.WithdrawWallet,System.String,System.String,System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <summary>
             Transfers funds from one wallet to another
-            <para><a href="https://docs.bitfinex.com/reference/rest-auth-transfer" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-auth-transfer" /><br />
+            Endpoint:<br />
+            POST /v2/auth/w/transfer
+            </para>
             </summary>
             <param name="asset">The asset to transfer, for example `ETH`</param>
             <param name="fromWallet">The wallet to remove funds from</param>
@@ -3953,7 +4023,12 @@
             All withdrawals need the withdrawType, wallet and quantity parameters
             CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
             Wire withdrawals need the bank parameters. In some cases your bank will require the use of an intermediary bank, if this is the case, please supply those fields as well.
-            <para><a href="https://docs.bitfinex.com/v1/reference#rest-auth-withdrawal" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/v1/reference#rest-auth-withdrawal" /><br />
+            Endpoint:<br />
+            POST /v1/withdraw
+            </para>
             </summary>
             <param name="withdrawType">The type of funds to withdraw</param>
             <param name="wallet">The wallet to withdraw from</param>
@@ -3988,7 +4063,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.WithdrawV2Async(System.String,Bitfinex.Net.Enums.WithdrawWallet,System.Decimal,System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Threading.CancellationToken)">
             <summary>
             Withdraw funds
-            <para><a href="https://docs.bitfinex.com/reference/rest-auth-withdraw" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-auth-withdraw" /><br />
+            Endpoint:<br />
+            POST /v2/auth/w/withdraw
+            </para>
             </summary>
             <param name="method">Method of withdrawal, methods can be retrieved with <see cref="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetDepositWithdrawalMethodsAsync(System.Threading.CancellationToken)">ExchangeData.GetAssetDepositWithdrawalMethodsAsync</see></param>
             <param name="wallet">Wallet type</param>
@@ -4004,7 +4084,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetLoginHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get login history
-            <para><a href="https://docs.bitfinex.com/reference/rest-auth-logins-hist" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-auth-logins-hist" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/logins/hist
+            </para>
             </summary>
             <param name="startTime">Start time of the data to return</param>
             <param name="endTime">End time of the data to return</param>
@@ -4015,7 +4100,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetApiKeyPermissionsAsync(System.Threading.CancellationToken)">
             <summary>
             Get api key permissions
-            <para><a href="https://docs.bitfinex.com/reference/key-permissions" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/key-permissions" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/permissions
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4023,7 +4113,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiAccount.GetAccountChangeLogAsync(System.Threading.CancellationToken)">
             <summary>
             Get account change log
-            <para><a href="https://docs.bitfinex.com/reference/rest-auth-audit-hist" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-auth-audit-hist" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/audit/hist
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4036,7 +4131,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetPlatformStatusAsync(System.Threading.CancellationToken)">
             <summary>
             Gets the platform status
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-platform-status" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-platform-status" /><br />
+            Endpoint:<br />
+            GET /v2/platform/status
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns>Whether Bitfinex platform is running normally or not</returns>
@@ -4044,7 +4144,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetsListAsync(System.Threading.CancellationToken)">
             <summary>
             Gets a list of supported assets
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:map:currency:label
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4052,7 +4157,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetTickerAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Returns basic market data for the provided symbols
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-ticker" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-ticker" /><br />
+            Endpoint:<br />
+            GET /v2/tickers
+            </para>
             </summary>
             <param name="symbol">The symbol to get data for, for example `tETHUSD`</param>
             <param name="ct">Cancellation token</param>
@@ -4061,7 +4171,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetFundingTickerAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Returns basic market data for the provided funding symbols
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-ticker" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-ticker" /><br />
+            Endpoint:<br />
+            GET /v2/tickers
+            </para>
             </summary>
             <param name="symbol">The symbol to get data for, for example `tETHUSD`</param>
             <param name="ct">Cancellation token</param>
@@ -4070,7 +4185,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetTickersAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
             <summary>
             Returns basic market data for the provided symbols
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-tickers" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-tickers" /><br />
+            Endpoint:<br />
+            GET /v2/tickers
+            </para>
             </summary>
             <param name="symbols">The symbols to get data for, for example `tETHUSD`</param>
             <param name="ct">Cancellation token</param>
@@ -4079,7 +4199,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetFundingTickersAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
             <summary>
             Returns basic market data for the provided funding symbols
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-tickers" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-tickers" /><br />
+            Endpoint:<br />
+            GET /v2/tickers
+            </para>
             </summary>
             <param name="symbols">The symbols to get data for, for example `tETHUSD`</param>
             <param name="ct">Cancellation token</param>
@@ -4099,7 +4224,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetTradeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get recent trades for a symbol
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-trades" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-trades" /><br />
+            Endpoint:<br />
+            GET /v2/trades/{symbol}/hist
+            </para>
             </summary>
             <param name="symbol">The symbol to get trades for, for example `tETHUSD`</param>
             <param name="limit">The amount of results</param>
@@ -4112,7 +4242,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetOrderBookAsync(System.String,Bitfinex.Net.Enums.Precision,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets the order book for a trading symbol
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+            Endpoint:<br />
+            GET /v2/book/{symbol}/{precision}
+            </para>
             </summary>
             <param name="symbol">The symbol to get the order book for, for example `tETHUSD`</param>
             <param name="precision">The precision of the data</param>
@@ -4123,7 +4258,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetFundingOrderBookAsync(System.String,Bitfinex.Net.Enums.Precision,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Gets the order book for a funding symbol
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+            Endpoint:<br />
+            GET /v2/book/{symbol}/{precision}
+            </para>
             </summary>
             <param name="symbol">The symbol to get the order book for, for example `tETHUSD`</param>
             <param name="precision">The precision of the data</param>
@@ -4134,7 +4274,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetRawOrderBookAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the raw order book for a trading symbol
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+            Endpoint:<br />
+            GET /v2/book/{symbol}/R0
+            </para>
             </summary>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
             <param name="limit">The amount of results in the book</param>
@@ -4144,7 +4289,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetRawFundingOrderBookAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the raw order book for a funding symbol
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-book" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+            Endpoint:<br />
+            GET /v2/book/{symbol}/R0
+            </para>
             </summary>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
             <param name="limit">The amount of results in the book</param>
@@ -4154,7 +4304,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastKlineAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.String,System.Threading.CancellationToken)">
             <summary>
             Get the last kline for a symbol
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-candles" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-candles" /><br />
+            Endpoint:<br />
+            GET /v2/candles/trade:{interval}:{symbol}/last
+            </para>
             </summary>
             <param name="interval">The time frame of the kline</param>
             <param name="symbol">The symbol to get the kline for, for example `tETHUSD`</param>
@@ -4165,7 +4320,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetKlinesAsync(System.String,Bitfinex.Net.Enums.KlineInterval,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Gets klines for a symbol
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-candles" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-candles" /><br />
+            Endpoint:<br />
+            GET /v2/candles/trade:{interval}:{symbol}/hist
+            </para>
             </summary>
             <param name="interval">The time frame of the klines</param>
             <param name="symbol">The symbol to get the klines for, for example `tETHUSD`</param>
@@ -4180,7 +4340,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAveragePriceAsync(System.String,System.Decimal,System.Nullable{System.Decimal},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Calculate the average execution price
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-calc-market-average-price" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-calc-market-average-price" /><br />
+            Endpoint:<br />
+            POST /v2/calc/trade/avg
+            </para>
             </summary>
             <param name="symbol">The symbol to calculate for, for example `tETHUSD`</param>
             <param name="quantity">The quantity to execute</param>
@@ -4192,7 +4357,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetForeignExchangeRateAsync(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Returns the exchange rate for the assets
-            <para><a href="https://docs.bitfinex.com/reference#rest-public-calc-foreign-exchange-rate" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-public-calc-foreign-exchange-rate" /><br />
+            Endpoint:<br />
+            POST /v2/calc/fx
+            </para>
             </summary>
             <param name="asset1">The first asset, for example `ETH`</param>
             <param name="asset2">The second asset, for example `ETH`</param>
@@ -4202,7 +4372,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetDerivativesStatusAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
             <summary>
             Get derivatives status info
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-derivatives-status" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-derivatives-status" /><br />
+            Endpoint:<br />
+            GET /v2/status/deriv
+            </para>
             </summary>
             <param name="symbols">Filter symbols, for example `tETHUSD`</param>
             <param name="ct">Cancellation token</param>
@@ -4211,7 +4386,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetDerivativesStatusHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get derivatives status info history
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-derivatives-status-history" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-derivatives-status-history" /><br />
+            Endpoint:<br />
+            GET /v2/status/deriv/{symbol}/hist
+            </para>
             </summary>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
             <param name="limit">The amount of results</param>
@@ -4224,7 +4404,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLiquidationsAsync(System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get liquidation history
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-liquidations" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-liquidations" /><br />
+            Endpoint:<br />
+            GET /v2/liquidations/hist
+            </para>
             </summary>
             <param name="limit">The amount of results</param>
             <param name="startTime">The start time of the data</param>
@@ -4236,7 +4421,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetFundingStatisticsAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <summary>
             Get a list of the most recent funding data for the given asset: FRR, average period, total amount provided, total amount used
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-funding-stats" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-funding-stats" /><br />
+            Endpoint:<br />
+            GET /v2/funding/stats/{symbol}/hist
+            </para>
             </summary>
             <param name="symbol">Symbol, for example `tETHUSD`</param>
             <param name="limit">Max number of results</param>
@@ -4248,7 +4438,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastFundingSizeAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get total active funding in specified asset
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/funding.size:1m:{asset}/last
+            </para>
             </summary>
             <param name="asset">The asset, for example `ETH`</param>
             <param name="ct">Cancellation token</param>
@@ -4257,7 +4452,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetFundingSizeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get total active funding in specified asset
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/funding.size:1m:{asset}/hist
+            </para>
             </summary>
             <param name="asset">The asset, for example `ETH`</param>
             <param name="limit">Max number of results</param>
@@ -4270,7 +4470,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastCreditSizeAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get total funding used in positions in specified asset
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/credits.size:1m:{asset}/last
+            </para>
             </summary>
             <param name="asset">The asset, for example `ETH`</param>
             <param name="ct">Cancellation token</param>
@@ -4279,7 +4484,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetCreditSizeHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get total funding used in positions in specified asset
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/credits.size:1m:{asset}/hist
+            </para>
             </summary>
             <param name="asset">The asset, for example `ETH`</param>
             <param name="limit">Max number of results</param>
@@ -4292,7 +4502,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastCreditSizeAsync(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Get total funding used in positions on a specific symbol in specified asset
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/credits.size.sym:1m:{asset}:{symbol}/last
+            </para>
             </summary>
             <param name="asset">The asset, for example `ETH`</param>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
@@ -4302,7 +4517,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetCreditSizeHistoryAsync(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get total funding used in positions on a specific symbol in specified asset
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/credits.size.sym:1m:{asset}:{symbol}/hist
+            </para>
             </summary>
             <param name="asset">The asset, for example `ETH`</param>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
@@ -4316,7 +4536,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastLongsShortsTotalsAsync(System.String,Bitfinex.Net.Enums.StatSide,System.Threading.CancellationToken)">
             <summary>
             Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/pos.size:1m:{symbol}:{side}/last
+            </para>
             </summary>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
             <param name="side">Position side</param>
@@ -4326,7 +4551,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLongsShortsTotalsHistoryAsync(System.String,Bitfinex.Net.Enums.StatSide,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/pos.size:1m:{symbol}:{side}/hist
+            </para>
             </summary>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
             <param name="side">Position side</param>
@@ -4340,7 +4570,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastTradingVolumeAsync(System.Int32,System.Threading.CancellationToken)">
             <summary>
             Get trading volume on the platform
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/vol.{period}d:30m:BFX/last
+            </para>
             </summary>
             <param name="period">The period in days to get the data for. 1, 7 or 30</param>
             <param name="ct">Cancellation token</param>
@@ -4349,7 +4584,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetTradingVolumeHistoryAsync(System.Int32,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get trading volume on the platform
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/vol.{period}d:30m:BFX/hist
+            </para>
             </summary>
             <param name="period">The period in days to get the data for. 1, 7 or 30</param>
             <param name="limit">Max number of results</param>
@@ -4362,7 +4602,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetLastVolumeWeightedAveragePriceAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Get volume weighted average price for the day
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/vwap:1d:{symbol}/last
+            </para>
             </summary>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
             <param name="ct">Cancellation token</param>
@@ -4371,7 +4616,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetVolumeWeightedAveragePriceHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{Bitfinex.Net.Enums.Sorting},System.Threading.CancellationToken)">
             <summary>
             Get volume weighted average price for the day
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/stats1/vwap:1d:{symbol}/hist
+            </para>
             </summary>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
             <param name="limit">Max number of results</param>
@@ -4384,7 +4634,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetSymbolNamesAsync(Bitfinex.Net.Enums.SymbolType,System.Threading.CancellationToken)">
             <summary>
             Get symbol names
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:list:pair:{type}
+            </para>
             </summary>
             <param name="type">The types of symbol</param>
             <param name="ct">Cancellation token</param>
@@ -4393,7 +4648,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetNamesAsync(System.Threading.CancellationToken)">
             <summary>
             Get asset names
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:list:currency
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4401,7 +4661,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetSymbolsAsync(System.Threading.CancellationToken)">
             <summary>
             Get mapping of assets to their API symbol
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:map:currency:sym
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4409,7 +4674,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetFullNamesAsync(System.Threading.CancellationToken)">
             <summary>
             Get mapping of assets to their full name
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:map:currency:label
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4417,7 +4687,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetUnitsAsync(System.Threading.CancellationToken)">
             <summary>
             Get mapping of assets to their unit of measure where applicable
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:map:currency:unit
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4425,7 +4700,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetUnderlyingsAsync(System.Threading.CancellationToken)">
             <summary>
             Get mapping of derivative assets to their underlying asset
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:map:currency:undl
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4433,7 +4713,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetNetworksAsync(System.Threading.CancellationToken)">
             <summary>
             Get mapping of assets to the network they operate on
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:map:currency:pool
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4441,7 +4726,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetBlockExplorerUrlsAsync(System.Threading.CancellationToken)">
             <summary>
             Get mapping of assets to their block explorer urls
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:map:currency:explorer
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4449,7 +4739,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetWithdrawalFeesAsync(System.Threading.CancellationToken)">
             <summary>
             Get mapping of assets to their withdrawal fees
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:map:currency:tx:fee
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4457,7 +4752,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetAssetDepositWithdrawalMethodsAsync(System.Threading.CancellationToken)">
             <summary>
             Get mapping of assets to their withdrawal methods
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:map:tx:method
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4465,7 +4765,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetSymbolsAsync(System.Threading.CancellationToken)">
             <summary>
             Get list of market information for each trading pair
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:info:pair
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4473,7 +4778,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetFuturesSymbolsAsync(System.Threading.CancellationToken)">
             <summary>
             Get list of market information for each derivative trading pair
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:info:pair:futures
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4481,7 +4791,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetDepositWithdrawalStatusAsync(System.Threading.CancellationToken)">
             <summary>
             Get deposit/withdrawal status info for assets
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:info:tx:status
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4489,7 +4804,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetMarginInfoAsync(System.Threading.CancellationToken)">
             <summary>
             Get lists of active haircuts and risk coefficients on margin pairs
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:spec:margin
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4497,7 +4817,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiExchangeData.GetDerivativesFeesAsync(System.Threading.CancellationToken)">
             <summary>
             Get derivatives fees config
-            <para><a href="https://docs.bitfinex.com/reference/rest-public-conf" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
+            Endpoint:<br />
+            GET /v2/conf/pub:fees
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4515,7 +4840,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetOpenOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.String,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <summary>
             Get the active orders
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-orders" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-orders" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/orders
+            </para>
             </summary>
             <param name="symbol">Filter by symbol, for example `tETHUSD`</param>
             <param name="orderIds">Filter by specific order ids</param>
@@ -4527,7 +4857,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetClosedOrdersAsync(System.String,System.Collections.Generic.IEnumerable{System.Int64},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the order history for a symbol for this account
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-orders-history" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-orders-history" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/orders/{symbol}/hist
+            </para>
             </summary>
             <param name="symbol">The symbol to get the history for, for example `tETHUSD`</param>
             <param name="orderIds">Filter by specific order ids</param>
@@ -4540,7 +4875,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetOrderTradesAsync(System.String,System.Int64,System.Threading.CancellationToken)">
             <summary>
             Get the individual trades for an order
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-order-trades" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-order-trades" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/order/{symbol}:{orderId}/trades
+            </para>
             </summary>
             <param name="symbol">The symbol of the order, for example `tETHUSD`</param>
             <param name="orderId">The order Id</param>
@@ -4550,7 +4890,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetUserTradesAsync(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get the trade history for a symbol
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-trades" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-trades" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/trades/{symbol}/hist
+            </para>
             </summary>
             <param name="symbol">The symbol to get history for, for example `tETHUSD`</param>
             <param name="startTime">Start time of the data to return</param>
@@ -4562,7 +4907,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetPositionHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get a list of historical positions
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-positions-hist" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-positions-hist" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/positions/hist
+            </para>
             </summary>
             <param name="startTime">Start time of the data to return</param>
             <param name="endTime">End time of the data to return</param>
@@ -4573,7 +4923,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.PlaceOrderAsync(System.String,Bitfinex.Net.Enums.OrderSide,Bitfinex.Net.Enums.OrderType,System.Decimal,System.Decimal,System.Nullable{Bitfinex.Net.Enums.OrderFlags},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <summary>
             Place a new order
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-submit-order" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-submit-order" /><br />
+            Endpoint:<br />
+            POST /v2/auth/w/order/submit
+            </para>
             </summary>
             <param name="symbol">Symbol to place order for, for example `tETHUSD`</param>
             <param name="side">Side of the order</param>
@@ -4594,7 +4949,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.CancelOrderAsync(System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
             <summary>
             Cancel a specific order
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-cancel-order" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-cancel-order" /><br />
+            Endpoint:<br />
+            POST /v2/auth/w/order/cancel
+            </para>
             </summary>
             <param name="orderId">The id of the order to cancel</param>
             <param name="clientOrderId">The client order id of the order to cancel</param>
@@ -4605,7 +4965,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.CancelOrdersAsync(System.Collections.Generic.IEnumerable{System.Int64},System.Collections.Generic.IEnumerable{System.Int64},System.Collections.Generic.Dictionary{System.Int64,System.DateTime},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <summary>
             Cancels open orders
-            <para><a href="https://docs.bitfinex.com/reference/rest-auth-cancel-orders-multiple" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-auth-cancel-orders-multiple" /><br />
+            Endpoint:<br />
+            POST /v2/auth/w/order/cancel/multi
+            </para>
             </summary>
             <param name="orderIds">Ids of orders to cancel</param>
             <param name="groupIds">Group ids to cancel</param>
@@ -4617,7 +4982,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.ClaimPositionAsync(System.Int64,System.Decimal,System.Threading.CancellationToken)">
             <summary>
             The claim feature allows the use of funds you have in your Margin Wallet to settle a leveraged position as an exchange buy or sale
-            <para><a href="https://docs.bitfinex.com/reference/rest-auth-position-claim" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-auth-position-claim" /><br />
+            Endpoint:<br />
+            POST /v2/auth/w/position/claim
+            </para>
             </summary>
             <param name="id">The id of the position to claim</param>
             <param name="quantity">The (partial) quantity to be claimed</param>
@@ -4627,7 +4997,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.IncreasePositionAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
             <summary>
             Essentially a reverse of the Claim Position feature, the Increase Position feature allows you to create a new position using the funds in your margin wallet
-            <para><a href="https://docs.bitfinex.com/reference/rest-auth-position-increase" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-auth-position-increase" /><br />
+            Endpoint:<br />
+            POST /v2/auth/w/position/increase
+            </para>
             </summary>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
             <param name="quantity">Quantity</param>
@@ -4637,7 +5012,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetIncreasePositionInfoAsync(System.String,System.Decimal,System.Threading.CancellationToken)">
             <summary>
             Returns information relevant to the increase position endpoint.
-            <para><a href="https://docs.bitfinex.com/reference/rest-auth-increase-position-info" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-auth-increase-position-info" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/position/increase/info
+            </para>
             </summary>
             <param name="symbol">The symbol, for example `tETHUSD`</param>
             <param name="quantity">Quantity</param>
@@ -4647,7 +5027,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetPositionsAsync(System.Threading.CancellationToken)">
             <summary>
             Get the active positions
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-positions" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-positions" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/positions
+            </para>
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
@@ -4655,7 +5040,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetPositionsByIdAsync(System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Get positions by id
-            <para><a href="https://docs.bitfinex.com/reference#rest-auth-positions-audit" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference#rest-auth-positions-audit" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/positions/audit
+            </para>
             </summary>
             <param name="ids">The id's of positions to return</param>
             <param name="startTime">Start time of the data to return</param>
@@ -4667,7 +5057,12 @@
         <member name="M:Bitfinex.Net.Interfaces.Clients.SpotApi.IBitfinexRestClientSpotApiTrading.GetPositionSnapshotsAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Returns position snapshots of user positions between the specified start and end perimiters. Snapshots are taken daily.
-            <para><a href="https://docs.bitfinex.com/reference/rest-auth-positions-snap" /></para>
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitfinex.com/reference/rest-auth-positions-snap" /><br />
+            Endpoint:<br />
+            POST /v2/auth/r/positions/snap
+            </para>
             </summary>
             <param name="startTime">Start time of the data to return</param>
             <param name="endTime">End time of the data to return</param>
