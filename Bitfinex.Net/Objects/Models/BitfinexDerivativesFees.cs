@@ -20,17 +20,17 @@ namespace Bitfinex.Net.Objects.Models
     public record BitfinexPerpDerivativesFees
     {
         /// <summary>
-        /// Correction clamp min
+        /// ["<c>correction_clamp_min</c>"] Correction clamp min
         /// </summary>
         [JsonPropertyName("correction_clamp_min")]
         public decimal CorrectionClampMin { get; set; }
         /// <summary>
-        /// Correction clamp insurance
+        /// ["<c>correction_clamp_insurance</c>"] Correction clamp insurance
         /// </summary>
         [JsonPropertyName("correction_clamp_insurance")]
         public decimal CorrectionClampInsurance { get; set; }
         /// <summary>
-        /// Correction slope
+        /// ["<c>correction_slope</c>"] Correction slope
         /// </summary>
         [JsonPropertyName("correction_slope")]
         public decimal CorrectionSlope { get; set; }

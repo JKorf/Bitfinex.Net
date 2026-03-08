@@ -40,12 +40,12 @@ namespace Bitfinex.Net.Objects.Models
     public record BitfinexLeoInfo
     {
         /// <summary>
-        /// Leo discount level
+        /// ["<c>leo_lev</c>"] Leo discount level
         /// </summary>
         [JsonPropertyName("leo_lev")]
         public int LeoDiscountLevel { get; set; }
         /// <summary>
-        /// Leo average quantity
+        /// ["<c>leo_amount_avg</c>"] Leo average quantity
         /// </summary>
         [JsonPropertyName("leo_amount_avg")]
         public decimal LeoAverageQuantity { get; set; }
@@ -168,48 +168,48 @@ namespace Bitfinex.Net.Objects.Models
     public record Bitfinex30DaySummaryVolumeEntry
     {
         /// <summary>
-        /// The asset
+        /// ["<c>curr</c>"] The asset
         /// </summary>
         [JsonPropertyName("curr")]
         public string Asset { get; set; } = string.Empty;
 
         /// <summary>
-        /// The volume
+        /// ["<c>vol</c>"] The volume
         /// </summary>
         [JsonPropertyName("vol")]
         public decimal Volume { get; set; }
         /// <summary>
-        /// The safe volume
+        /// ["<c>vol_safe</c>"] The safe volume
         /// </summary>
         [JsonPropertyName("vol_safe")]
         public decimal VolumeSafe { get; set; }
         /// <summary>
-        /// The maker volume
+        /// ["<c>vol_maker</c>"] The maker volume
         /// </summary>
         [JsonPropertyName("vol_maker")]
         public decimal VolumeMaker { get; set; }
         /// <summary>
-        /// The volume on Bitfinex
+        /// ["<c>vol_BFX</c>"] The volume on Bitfinex
         /// </summary>
         [JsonPropertyName("vol_BFX")]
         public decimal VolumeBFX { get; set; }
         /// <summary>
-        /// The safe volume on Bitfinex
+        /// ["<c>vol_BFX_safe</c>"] The safe volume on Bitfinex
         /// </summary>
         [JsonPropertyName("vol_BFX_safe")]
         public decimal VolumeBFXSafe { get; set; } 
         /// <summary>
-        /// The maker volume on Bitfinex
+        /// ["<c>vol_BFX_maker</c>"] The maker volume on Bitfinex
         /// </summary>
         [JsonPropertyName("vol_BFX_maker")]
         public decimal VolumeBFXMaker { get; set; } 
         /// <summary>
-        /// The volume on EthFinex
+        /// ["<c>vol_ETHFX</c>"] The volume on EthFinex
         /// </summary>
         [JsonPropertyName("vol_ETHFX")]
         public decimal VolumeETHFX { get; set; }
         /// <summary>
-        /// The maker volume on EthFinex
+        /// ["<c>vol_ETHFX_maker</c>"] The maker volume on EthFinex
         /// </summary>
         [JsonPropertyName("vol_ETHFX_maker")]
         public decimal VolumeETHFXMaker { get; set; }

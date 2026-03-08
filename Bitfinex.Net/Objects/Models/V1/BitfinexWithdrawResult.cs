@@ -12,22 +12,22 @@ namespace Bitfinex.Net.Objects.Models.V1
         [JsonIgnore]
         public bool Success => Status == "success";
         /// <summary>
-        /// Status string
+        /// ["<c>status</c>"] Status string
         /// </summary>
         [JsonPropertyName("status")]
         public string Status { get; set; } = string.Empty;
         /// <summary>
-        /// Additional info
+        /// ["<c>message</c>"] Additional info
         /// </summary>
         [JsonPropertyName("message")]
         public string Message { get; set; } = string.Empty;
         /// <summary>
-        /// The id of the withdrawal
+        /// ["<c>withdrawal_id</c>"] The id of the withdrawal
         /// </summary>
         [JsonPropertyName("withdrawal_id")]
         public long WithdrawalId { get; set; }
         /// <summary>
-        /// The fees paid
+        /// ["<c>fees</c>"] The fees paid
         /// </summary>
         [JsonPropertyName("fees")]
         public decimal Fees { get; set; }

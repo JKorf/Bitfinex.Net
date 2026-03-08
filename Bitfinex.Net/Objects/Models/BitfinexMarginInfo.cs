@@ -9,17 +9,17 @@ namespace Bitfinex.Net.Objects.Models
     public record BitfinexMarginInfo
     {
         /// <summary>
-        /// Conf
+        /// ["<c>conf</c>"] Conf
         /// </summary>
         [JsonPropertyName("conf")]
         public Dictionary<string, decimal> Conf { get; set; } = new Dictionary<string, decimal>();
         /// <summary>
-        /// Initial
+        /// ["<c>initial</c>"] Initial
         /// </summary>
         [JsonPropertyName("initial")]
         public Dictionary<string, decimal> Initial { get; set; } = new Dictionary<string, decimal>();
         /// <summary>
-        /// Minimum
+        /// ["<c>minimum</c>"] Minimum
         /// </summary>
         [JsonPropertyName("minimum")]
         public Dictionary<string, decimal> Minimum { get; set; } = new Dictionary<string, decimal>();
