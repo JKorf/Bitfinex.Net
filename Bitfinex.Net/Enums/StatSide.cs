@@ -10,12 +10,12 @@ namespace Bitfinex.Net.Enums
     public enum StatSide
     {
         /// <summary>
-        /// Long
+        /// ["<c>long</c>"] Long
         /// </summary>
         [Map("long")]
         Long,
         /// <summary>
-        /// Short
+        /// ["<c>short</c>"] Short
         /// </summary>
         [Map("short")]
         Short

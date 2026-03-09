@@ -10,12 +10,12 @@ namespace Bitfinex.Net.Enums
     public enum FundingType
     {
         /// <summary>
-        /// Lend
+        /// ["<c>lend</c>"] Lend
         /// </summary>
         [Map("lend")] 
         Lend,
         /// <summary>
-        /// Loan
+        /// ["<c>loan</c>"] Loan
         /// </summary>
         [Map("loan")]
         Loan

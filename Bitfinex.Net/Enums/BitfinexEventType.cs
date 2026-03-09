@@ -10,215 +10,215 @@ namespace Bitfinex.Net.Enums
     public enum BitfinexEventType
     {
         /// <summary>
-        /// Heartbeat
+        /// ["<c>hb</c>"] Heartbeat
         /// </summary>
         [Map("hb")]
         HeartBeat,
 
         /// <summary>
-        /// Balance update
+        /// ["<c>bu</c>"] Balance update
         /// </summary>
         [Map("bu")]
         BalanceUpdate,
 
         /// <summary>
-        /// Position snapshot
+        /// ["<c>ps</c>"] Position snapshot
         /// </summary>
         [Map("ps")]
         PositionSnapshot,
         /// <summary>
-        /// New position
+        /// ["<c>pn</c>"] New position
         /// </summary>
         [Map("pn")]
         PositionNew,
         /// <summary>
-        /// Position update
+        /// ["<c>pu</c>"] Position update
         /// </summary>
         [Map("pu")]
         PositionUpdate,
         /// <summary>
-        /// Position closed
+        /// ["<c>pc</c>"] Position closed
         /// </summary>
         [Map("pc")]
         PositionClose,
 
         /// <summary>
-        /// Wallet snapshot
+        /// ["<c>ws</c>"] Wallet snapshot
         /// </summary>
         [Map("ws")]
         WalletSnapshot,
         /// <summary>
-        /// Wallet update
+        /// ["<c>wu</c>"] Wallet update
         /// </summary>
         [Map("wu")]
         WalletUpdate,
 
         /// <summary>
-        /// Orders snapshot
+        /// ["<c>os</c>"] Orders snapshot
         /// </summary>
         [Map("os")]
         OrderSnapshot,
         /// <summary>
-        /// New order
+        /// ["<c>on</c>"] New order
         /// </summary>
         [Map("on")]
         OrderNew,
         /// <summary>
-        /// New order request
+        /// ["<c>on-req</c>"] New order request
         /// </summary>
         [Map("on-req")]
         OrderNewRequest,
         /// <summary>
-        /// Order update
+        /// ["<c>ou</c>"] Order update
         /// </summary>
         [Map("ou")]
         OrderUpdate,
         /// <summary>
-        /// Order update request
+        /// ["<c>ou-req</c>"] Order update request
         /// </summary>
         [Map("ou-req")]
         OrderUpdateRequest,
         /// <summary>
-        /// Order canceled
+        /// ["<c>oc</c>"] Order canceled
         /// </summary>
         [Map("oc")]
         OrderCancel,
         /// <summary>
-        /// Order cancel request
+        /// ["<c>oc-req</c>"] Order cancel request
         /// </summary>
         [Map("oc-req")]
         OrderCancelRequest,
         /// <summary>
-        /// Multiple orders canceled
+        /// ["<c>oc_multi</c>"] Multiple orders canceled
         /// </summary>
         [Map("oc_multi")]
         OrderCancelMulti,
         /// <summary>
-        /// Multiple orders cancel request
+        /// ["<c>oc_multi-req</c>"] Multiple orders cancel request
         /// </summary>
         [Map("oc_multi-req")]
         OrderCancelMultiRequest,
 
         /// <summary>
-        /// Trade executed
+        /// ["<c>te</c>"] Trade executed
         /// </summary>
         [Map("te")]
         TradeExecuted,
         /// <summary>
-        /// Trade execution update
+        /// ["<c>tu</c>"] Trade execution update
         /// </summary>
         [Map("tu")]
         TradeExecutionUpdate,
 
         /// <summary>
-        /// Funding trade execution
+        /// ["<c>fte</c>"] Funding trade execution
         /// </summary>
         [Map("fte")]
         FundingTradeExecution,
         /// <summary>
-        /// Funding trade update
+        /// ["<c>ftu</c>"] Funding trade update
         /// </summary>
         [Map("ftu")]
         FundingTradeUpdate,
 
         /// <summary>
-        /// Funding info update
+        /// ["<c>fiu</c>"] Funding info update
         /// </summary>
         [Map("fiu")]
         FundingInfoUpdate,
 
         /// <summary>
-        /// Margin info snapshot
+        /// ["<c>mis</c>"] Margin info snapshot
         /// </summary>
         [Map("mis")]
         MarginInfoSnapshot,
         /// <summary>
-        /// Margin info update
+        /// ["<c>miu</c>"] Margin info update
         /// </summary>
         [Map("miu")]
         MarginInfoUpdate,
 
         /// <summary>
-        /// Notification
+        /// ["<c>n</c>"] Notification
         /// </summary>
         [Map("n")]
         Notification,
 
         /// <summary>
-        /// Funding offer snapshot
+        /// ["<c>fos</c>"] Funding offer snapshot
         /// </summary>
         [Map("fos")]
         FundingOfferSnapshot,
         /// <summary>
-        /// New funding offer
+        /// ["<c>fon</c>"] New funding offer
         /// </summary>
         [Map("fon")]
         FundingOfferNew,
         /// <summary>
-        /// New funding offer request
+        /// ["<c>fon-req</c>"] New funding offer request
         /// </summary>
         [Map("fon-req")]
         FundingOfferNewRequest,
         /// <summary>
-        /// Funding offer update
+        /// ["<c>fou</c>"] Funding offer update
         /// </summary>
         [Map("fou")]
         FundingOfferUpdate,
         /// <summary>
-        /// Funding offer canceled
+        /// ["<c>foc</c>"] Funding offer canceled
         /// </summary>
         [Map("foc")]
         FundingOfferCancel,
         /// <summary>
-        /// Funding offer cancel request
+        /// ["<c>foc-req</c>"] Funding offer cancel request
         /// </summary>
         [Map("foc-req")]
         FundingOfferCancelRequest,
 
         /// <summary>
-        /// Funding credits snapshot
+        /// ["<c>fcs</c>"] Funding credits snapshot
         /// </summary>
         [Map("fcs")]
         FundingCreditsSnapshot,
         /// <summary>
-        /// New funding credits
+        /// ["<c>fcn</c>"] New funding credits
         /// </summary>
         [Map("fcn")]
         FundingCreditsNew,
         /// <summary>
-        /// Funding credits update
+        /// ["<c>fcu</c>"] Funding credits update
         /// </summary>
         [Map("fcu")]
         FundingCreditsUpdate,
         /// <summary>
-        /// Funding credits closed
+        /// ["<c>fcc</c>"] Funding credits closed
         /// </summary>
         [Map("fcc")]
         FundingCreditsClose,
         
         /// <summary>
-        /// Funding loan snapshot
+        /// ["<c>fls</c>"] Funding loan snapshot
         /// </summary>
         [Map("fls")]
         FundingLoanSnapshot,
         /// <summary>
-        /// New funding loan
+        /// ["<c>fln</c>"] New funding loan
         /// </summary>
         [Map("fln")]
         FundingLoanNew,
         /// <summary>
-        /// Funding loan update
+        /// ["<c>flu</c>"] Funding loan update
         /// </summary>
         [Map("flu")]
         FundingLoanUpdate,
         /// <summary>
-        /// Funding loan closed
+        /// ["<c>flc</c>"] Funding loan closed
         /// </summary>
         [Map("flc")]
         FundingLoanClose,
 
         /// <summary>
-        /// Custom user price alert
+        /// ["<c>uac</c>"] Custom user price alert
         /// </summary>
         [Map("uac")]
         UserCustomPriceAlert

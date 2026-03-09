@@ -10,12 +10,12 @@ namespace Bitfinex.Net.Enums
     public enum PlatformStatus
     {
         /// <summary>
-        /// In maintenance
+        /// ["<c>0</c>"] In maintenance
         /// </summary>
         [Map("0")]
         Maintenance,
         /// <summary>
-        /// Working normally
+        /// ["<c>1</c>"] Working normally
         /// </summary>
         [Map("1")]
         Operative

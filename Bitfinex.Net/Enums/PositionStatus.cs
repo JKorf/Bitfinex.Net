@@ -10,12 +10,12 @@ namespace Bitfinex.Net.Enums
     public enum PositionStatus
     {
         /// <summary>
-        /// Active
+        /// ["<c>ACTIVE</c>"] Active
         /// </summary>
         [Map("ACTIVE")]
         Active,
         /// <summary>
-        /// Closed
+        /// ["<c>CLOSED</c>"] Closed
         /// </summary>
         [Map("CLOSED")]
         Closed

@@ -10,12 +10,12 @@ namespace Bitfinex.Net.Enums
     public enum Sorting
     {
         /// <summary>
-        /// Newest first
+        /// ["<c>-1</c>"] Newest first
         /// </summary>
         [Map("-1")]
         NewFirst,
         /// <summary>
-        /// Oldest first
+        /// ["<c>1</c>"] Oldest first
         /// </summary>
         [Map("1")]
         OldFirst

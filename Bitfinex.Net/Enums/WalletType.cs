@@ -10,17 +10,17 @@ namespace Bitfinex.Net.Enums
     public enum WalletType
     {
         /// <summary>
-        /// Exchange
+        /// ["<c>exchange</c>"] Exchange
         /// </summary>
         [Map("exchange")]
         Exchange,
         /// <summary>
-        /// Margin
+        /// ["<c>margin</c>"] Margin
         /// </summary>
         [Map("margin")]
         Margin,
         /// <summary>
-        /// Funding
+        /// ["<c>funding</c>"] Funding
         /// </summary>
         [Map("funding")]
         Funding

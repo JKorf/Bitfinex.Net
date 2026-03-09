@@ -10,27 +10,27 @@ namespace Bitfinex.Net.Enums
     public enum OrderStatus
     {
         /// <summary>
-        /// Active
+        /// ["<c>ACTIVE</c>"] Active
         /// </summary>
         [Map("ACTIVE")]
         Active,
         /// <summary>
-        /// Fully filled
+        /// ["<c>EXECUTED</c>"] Fully filled
         /// </summary>
         [Map("EXECUTED")]
         Executed,
         /// <summary>
-        /// Partially filled
+        /// ["<c>FORCED EXECUTED</c>"] Partially filled
         /// </summary>
         [Map("FORCED EXECUTED")]
         ForcefullyExecuted,
         /// <summary>
-        /// Partially filled
+        /// ["<c>PARTIALLY FILLED</c>"] Partially filled
         /// </summary>
         [Map("PARTIALLY FILLED")]
         PartiallyFilled,
         /// <summary>
-        /// Canceled
+        /// ["<c>CANCELED</c>"] Canceled
         /// </summary>
         [Map("CANCELED")]
         Canceled,

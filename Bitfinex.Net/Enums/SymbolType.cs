@@ -10,22 +10,22 @@ namespace Bitfinex.Net.Enums
     public enum SymbolType
     {
         /// <summary>
-        /// Exchange
+        /// ["<c>exchange</c>"] Exchange
         /// </summary>
         [Map("exchange")]
         Exchange,
         /// <summary>
-        /// Margin
+        /// ["<c>margin</c>"] Margin
         /// </summary>
         [Map("margin")]
         Margin,
         /// <summary>
-        /// Futures
+        /// ["<c>futures</c>"] Futures
         /// </summary>
         [Map("futures")]
         Futures,
         /// <summary>
-        /// Securities
+        /// ["<c>securities</c>"] Securities
         /// </summary>
         [Map("securities")]
         Securities

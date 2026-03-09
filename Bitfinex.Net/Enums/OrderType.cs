@@ -10,72 +10,72 @@ namespace Bitfinex.Net.Enums
     public enum OrderType
     {
         /// <summary>
-        /// Limit order
+        /// ["<c>LIMIT</c>"] Limit order
         /// </summary>
         [Map("LIMIT")]
         Limit,
         /// <summary>
-        /// Market order
+        /// ["<c>MARKET</c>"] Market order
         /// </summary>
         [Map("MARKET")]
         Market,
         /// <summary>
-        /// Stop order
+        /// ["<c>STOP</c>"] Stop order
         /// </summary>
         [Map("STOP")]
         Stop,
         /// <summary>
-        /// Stop limit order
+        /// ["<c>STOP LIMIT</c>"] Stop limit order
         /// </summary>
         [Map("STOP LIMIT")]
         StopLimit,
         /// <summary>
-        /// Trailing stop order
+        /// ["<c>TRAILING STOP</c>"] Trailing stop order
         /// </summary>
         [Map("TRAILING STOP")]
         TrailingStop,
         /// <summary>
-        /// Exchange market order
+        /// ["<c>EXCHANGE MARKET</c>"] Exchange market order
         /// </summary>
         [Map("EXCHANGE MARKET")]
         ExchangeMarket,
         /// <summary>
-        /// Exchange limit order
+        /// ["<c>EXCHANGE LIMIT</c>"] Exchange limit order
         /// </summary>
         [Map("EXCHANGE LIMIT")]
         ExchangeLimit,
         /// <summary>
-        /// Exchange stop order
+        /// ["<c>EXCHANGE STOP</c>"] Exchange stop order
         /// </summary>
         [Map("EXCHANGE STOP")]
         ExchangeStop,
         /// <summary>
-        /// Exchange stop limit order
+        /// ["<c>EXCHANGE STOP LIMIT</c>"] Exchange stop limit order
         /// </summary>
         [Map("EXCHANGE STOP LIMIT")]
         ExchangeStopLimit,
         /// <summary>
-        /// Exchange trailing stop order
+        /// ["<c>EXCHANGE TRAILING STOP</c>"] Exchange trailing stop order
         /// </summary>
         [Map("EXCHANGE TRAILING STOP")]
         ExchangeTrailingStop,
         /// <summary>
-        /// Fill or kill order
+        /// ["<c>FOK</c>"] Fill or kill order
         /// </summary>
         [Map("FOK")]
         FillOrKill,
         /// <summary>
-        /// Exchange fill or kill order
+        /// ["<c>EXCHANGE FOK</c>"] Exchange fill or kill order
         /// </summary>
         [Map("EXCHANGE FOK")]
         ExchangeFillOrKill,
         /// <summary>
-        /// Immediate or cancel order
+        /// ["<c>IOC</c>"] Immediate or cancel order
         /// </summary>
         [Map("IOC")]
         ImmediateOrCancel,
         /// <summary>
-        /// Immediate or cancel order
+        /// ["<c>EXCHANGE IOC</c>"] Immediate or cancel order
         /// </summary>
         [Map("EXCHANGE IOC")]
         ExchangeImmediateOrCancel

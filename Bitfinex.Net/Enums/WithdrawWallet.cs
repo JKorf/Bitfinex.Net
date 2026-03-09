@@ -10,17 +10,17 @@ namespace Bitfinex.Net.Enums
     public enum WithdrawWallet
     {
         /// <summary>
-        /// Trading
+        /// ["<c>trading</c>"] Trading
         /// </summary>
         [Map("trading")]
         Trading,
         /// <summary>
-        /// Exchange
+        /// ["<c>exchange</c>"] Exchange
         /// </summary>
         [Map("exchange")]
         Exchange,
         /// <summary>
-        /// Deposit
+        /// ["<c>deposit</c>"] Deposit
         /// </summary>
         [Map("deposit")]
         Deposit

@@ -10,12 +10,12 @@ namespace Bitfinex.Net.Enums
     public enum PositionType
     {
         /// <summary>
-        /// Margin position
+        /// ["<c>0</c>"] Margin position
         /// </summary>
         [Map("0")]
         MarginPosition,
         /// <summary>
-        /// Derivatives position
+        /// ["<c>1</c>"] Derivatives position
         /// </summary>
         [Map("1")]
         DerivativesPosition

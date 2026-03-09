@@ -10,12 +10,12 @@ namespace Bitfinex.Net.Enums
     public enum StatSection
     {
         /// <summary>
-        /// Last
+        /// ["<c>last</c>"] Last
         /// </summary>
         [Map("last")]
         Last,
         /// <summary>
-        /// History
+        /// ["<c>hist</c>"] History
         /// </summary>
         [Map("hist")]
         History

@@ -10,12 +10,12 @@ namespace Bitfinex.Net.Enums
     public enum MarginFundingType
     {
         /// <summary>
-        /// Daily
+        /// ["<c>0</c>"] Daily
         /// </summary>
         [Map("0")]
         Daily,
         /// <summary>
-        /// Term
+        /// ["<c>1</c>"] Term
         /// </summary>
         [Map("1")]
         Term

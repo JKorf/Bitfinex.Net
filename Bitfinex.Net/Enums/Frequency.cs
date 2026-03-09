@@ -10,12 +10,12 @@ namespace Bitfinex.Net.Enums
     public enum Frequency
     {
         /// <summary>
-        /// Realtime
+        /// ["<c>F0</c>"] Realtime
         /// </summary>
         [Map("F0")]
         Realtime,
         /// <summary>
-        /// Two seconds
+        /// ["<c>F1</c>"] Two seconds
         /// </summary>
         [Map("F1")]
         TwoSeconds

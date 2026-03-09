@@ -10,17 +10,17 @@ namespace Bitfinex.Net.Enums
     public enum FundingOfferType
     {
         /// <summary>
-        /// Lend
+        /// ["<c>LIMIT</c>"] Lend
         /// </summary>
         [Map("LIMIT")]
         Limit,
         /// <summary>
-        /// FFR delta var
+        /// ["<c>FRRDELTAVAR</c>"] FFR delta var
         /// </summary>
         [Map("FRRDELTAVAR")]
         FlashReturnRateDeltaVariable,
         /// <summary>
-        /// FFR delta fix
+        /// ["<c>FRRDELTAFIX</c>"] FFR delta fix
         /// </summary>
         [Map("FRRDELTAFIX")]
         FlashReturnRateDeltaFixed

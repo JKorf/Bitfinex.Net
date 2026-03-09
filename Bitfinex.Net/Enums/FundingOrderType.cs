@@ -10,17 +10,17 @@ namespace Bitfinex.Net.Enums
     public enum FundingOrderType
     {
         /// <summary>
-        /// Place an order at an explicit, static rate.
+        /// ["<c>LIMIT</c>"] Place an order at an explicit, static rate.
         /// </summary>
         [Map("LIMIT")]
         Limit,
         /// <summary>
-        /// Place an order at an implicit, static rate, relative to the FRR.
+        /// ["<c>FRRDELTAVAR</c>"] Place an order at an implicit, static rate, relative to the FRR.
         /// </summary>
         [Map("FRRDELTAVAR")]
         FRRDeltaVar,
         /// <summary>
-        /// Place an order at an implicit, dynamic rate, relative to the FRR.
+        /// ["<c>FRRDELTAFIX</c>"] Place an order at an implicit, dynamic rate, relative to the FRR.
         /// </summary>
         [Map("FRRDELTAFIX")]
         FRRDeltaFix,

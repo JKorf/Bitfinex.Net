@@ -10,12 +10,12 @@ namespace Bitfinex.Net.Enums
     public enum OrderSide
     {
         /// <summary>
-        /// Buy
+        /// ["<c>buy</c>"] Buy
         /// </summary>
         [Map("buy")]
         Buy,
         /// <summary>
-        /// Sell
+        /// ["<c>sell</c>"] Sell
         /// </summary>
         [Map("sell")]
         Sell
