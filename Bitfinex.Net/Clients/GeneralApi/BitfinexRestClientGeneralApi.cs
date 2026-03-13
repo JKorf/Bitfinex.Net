@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 namespace Bitfinex.Net.Clients.GeneralApi
 {
     /// <inheritdoc cref="IBitfinexRestClientGeneralApi" />
-    internal class BitfinexRestClientGeneralApi : RestApiClient, IBitfinexRestClientGeneralApi
+    internal class BitfinexRestClientGeneralApi : RestApiClient<BitfinexEnvironment, BitfinexAuthenticationProvider, BitfinexCredentials>, IBitfinexRestClientGeneralApi
     {
         #region fields
         internal string? AffiliateCode { get; set; }
@@ -49,7 +49,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         #endregion
 
         /// <inheritdoc />
-        protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
+        protected override BitfinexAuthenticationProvider CreateAuthenticationProvider(BitfinexCredentials credentials)
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
         internal Task<WebCallResult<T>> SendAsync<T>(

@@ -29,7 +29,7 @@ namespace Bitfinex.Net.UnitTests
             return new BitfinexRestClient(null, loggerFactory, Options.Create(new Objects.Options.BitfinexRestOptions
             {
                 OutputOriginalData = true,
-                ApiCredentials = Authenticated ? new CryptoExchange.Net.Authentication.ApiCredentials(key, sec) : null
+                ApiCredentials = Authenticated ? new BitfinexCredentials(key, sec) : null
             }));
         }
 

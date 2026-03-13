@@ -21,7 +21,7 @@ namespace Bitfinex.Net.UnitTests
             var client = new BitfinexSocketClient(Options.Create(new BitfinexSocketOptions
             {
                 RequestTimeout = TimeSpan.FromSeconds(1),
-                ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "456")
+                ApiCredentials = new BitfinexCredentials("123", "456")
             }), fact);
             return client;
         }

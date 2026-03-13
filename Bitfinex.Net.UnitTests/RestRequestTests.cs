@@ -17,7 +17,7 @@ namespace Bitfinex.Net.UnitTests
             var client = new BitfinexRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
-                opts.ApiCredentials = new ApiCredentials("123", "456");
+                opts.ApiCredentials = new BitfinexCredentials("123", "456");
             });
             var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/Account", "https://api.bitfinex.com", IsAuthenticated);
             await tester.ValidateAsync(client => client.SpotApi.Account.GetBalancesAsync(), "GetBalances");
@@ -47,7 +47,7 @@ namespace Bitfinex.Net.UnitTests
             var client = new BitfinexRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
-                opts.ApiCredentials = new ApiCredentials("123", "456");
+                opts.ApiCredentials = new BitfinexCredentials("123", "456");
             });
             var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/ExchangeData", "https://api.bitfinex.com", IsAuthenticated);
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetTickersAsync(), "GetTickers");
@@ -100,7 +100,7 @@ namespace Bitfinex.Net.UnitTests
             var client = new BitfinexRestClient(opts =>
             {
                 opts.AutoTimestamp = false;
-                opts.ApiCredentials = new ApiCredentials("123", "456");
+                opts.ApiCredentials = new BitfinexCredentials("123", "456");
             });
             var tester = new RestRequestValidator<BitfinexRestClient>(client, "Endpoints/Spot/Trading", "https://api.bitfinex.com", IsAuthenticated);
             await tester.ValidateAsync(client => client.SpotApi.Trading.GetOpenOrdersAsync(), "GetOpenOrders");

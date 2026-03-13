@@ -49,7 +49,7 @@ namespace Bitfinex.Net.Clients
         }
 
         /// <inheritdoc />
-        public void InitializeUserClient(string userIdentifier, ApiCredentials credentials, BitfinexEnvironment? environment = null)
+        public void InitializeUserClient(string userIdentifier, BitfinexCredentials credentials, BitfinexEnvironment? environment = null)
         {
             CreateRestClient(userIdentifier, credentials, environment);
             CreateSocketClient(userIdentifier, credentials, environment);
@@ -63,7 +63,7 @@ namespace Bitfinex.Net.Clients
         }
 
         /// <inheritdoc />
-        public IBitfinexRestClient GetRestClient(string userIdentifier, ApiCredentials? credentials = null, BitfinexEnvironment? environment = null)
+        public IBitfinexRestClient GetRestClient(string userIdentifier, BitfinexCredentials? credentials = null, BitfinexEnvironment? environment = null)
         {
             if (!_restClients.TryGetValue(userIdentifier, out var client) || client.Disposed)
                 client = CreateRestClient(userIdentifier, credentials, environment);
@@ -72,7 +72,7 @@ namespace Bitfinex.Net.Clients
         }
 
         /// <inheritdoc />
-        public IBitfinexSocketClient GetSocketClient(string userIdentifier, ApiCredentials? credentials = null, BitfinexEnvironment? environment = null)
+        public IBitfinexSocketClient GetSocketClient(string userIdentifier, BitfinexCredentials? credentials = null, BitfinexEnvironment? environment = null)
         {
             if (!_socketClients.TryGetValue(userIdentifier, out var client) || client.Disposed)
                 client = CreateSocketClient(userIdentifier, credentials, environment);
@@ -80,7 +80,7 @@ namespace Bitfinex.Net.Clients
             return client;
         }
 
-        private IBitfinexRestClient CreateRestClient(string userIdentifier, ApiCredentials? credentials, BitfinexEnvironment? environment)
+        private IBitfinexRestClient CreateRestClient(string userIdentifier, BitfinexCredentials? credentials, BitfinexEnvironment? environment)
         {
             var clientRestOptions = SetRestEnvironment(environment);
             var client = new BitfinexRestClient(_httpClient, _loggerFactory, clientRestOptions);
@@ -92,7 +92,7 @@ namespace Bitfinex.Net.Clients
             return client;
         }
 
-        private IBitfinexSocketClient CreateSocketClient(string userIdentifier, ApiCredentials? credentials, BitfinexEnvironment? environment)
+        private IBitfinexSocketClient CreateSocketClient(string userIdentifier, BitfinexCredentials? credentials, BitfinexEnvironment? environment)
         {
             var clientSocketOptions = SetSocketEnvironment(environment);
             var client = new BitfinexSocketClient(clientSocketOptions!, _loggerFactory);

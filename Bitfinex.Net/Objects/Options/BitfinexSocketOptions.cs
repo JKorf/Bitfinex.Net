@@ -7,7 +7,7 @@ namespace Bitfinex.Net.Objects.Options
     /// <summary>
     /// Options for the BitfinexSocketClient
     /// </summary>
-    public class BitfinexSocketOptions : SocketExchangeOptions<BitfinexEnvironment>
+    public class BitfinexSocketOptions : SocketExchangeOptions<BitfinexEnvironment, BitfinexCredentials>
     {
         /// <summary>
         /// Default options for new clients
@@ -45,7 +45,7 @@ namespace Bitfinex.Net.Objects.Options
         /// <summary>
         /// Spot API options
         /// </summary>
-        public SocketApiOptions SpotOptions { get; private set; } = new SocketApiOptions();
+        public SocketApiOptions<BitfinexCredentials> SpotOptions { get; private set; } = new SocketApiOptions<BitfinexCredentials>();
 
         internal BitfinexSocketOptions Set(BitfinexSocketOptions targetOptions)
         {

@@ -12,7 +12,7 @@ using CryptoExchange.Net.Objects.Options;
 namespace Bitfinex.Net.Clients
 {
     /// <inheritdoc cref="IBitfinexSocketClient" />
-    public class BitfinexSocketClient : BaseSocketClient, IBitfinexSocketClient
+    public class BitfinexSocketClient : BaseSocketClient<BitfinexEnvironment, BitfinexCredentials>, IBitfinexSocketClient
     {
         #region Api clients
 
@@ -45,11 +45,6 @@ namespace Bitfinex.Net.Clients
         }
 
         #endregion
-        /// <inheritdoc />
-        public void SetOptions(UpdateOptions options)
-        {
-            SpotApi.SetOptions(options);
-        }
 
         /// <summary>
         /// Set the default options to be used when creating new clients
@@ -58,12 +53,6 @@ namespace Bitfinex.Net.Clients
         public static void SetDefaultOptions(Action<BitfinexSocketOptions> optionsDelegate)
         {
             BitfinexSocketOptions.Default = ApplyOptionsDelegate(optionsDelegate);
-        }
-
-        /// <inheritdoc />
-        public void SetApiCredentials(ApiCredentials credentials)
-        {
-            SpotApi.SetApiCredentials(credentials);
         }
     }
 }

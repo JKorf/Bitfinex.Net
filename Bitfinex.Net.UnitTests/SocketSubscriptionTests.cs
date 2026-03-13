@@ -24,7 +24,7 @@ namespace Bitfinex.Net.UnitTests
 
             var client = new BitfinexSocketClient(Options.Create(new BitfinexSocketOptions
             {
-                ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "456"),
+                ApiCredentials = new BitfinexCredentials("123", "456"),
                 OutputOriginalData = true,
             }), logger);
             var tester = new SocketSubscriptionValidator<BitfinexSocketClient>(client, "Subscriptions/Spot", "wss://api.bitfinex.com/", nestedPropertyForCompare: "1");

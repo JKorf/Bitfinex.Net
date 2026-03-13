@@ -6,7 +6,7 @@ namespace Bitfinex.Net.Objects.Options
     /// <summary>
     /// Options for the BitfinexRestClient
     /// </summary>
-    public class BitfinexRestOptions : RestExchangeOptions<BitfinexEnvironment>
+    public class BitfinexRestOptions : RestExchangeOptions<BitfinexEnvironment, BitfinexCredentials>
     {
         /// <summary>
         /// Default options for new clients
@@ -37,7 +37,7 @@ namespace Bitfinex.Net.Objects.Options
         /// <summary>
         /// Spot API options
         /// </summary>
-        public RestApiOptions SpotOptions { get; private set; } = new RestApiOptions();
+        public RestApiOptions<BitfinexCredentials> SpotOptions { get; private set; } = new RestApiOptions<BitfinexCredentials>();
 
         internal BitfinexRestOptions Set(BitfinexRestOptions targetOptions)
         {

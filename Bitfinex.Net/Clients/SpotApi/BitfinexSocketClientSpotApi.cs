@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc cref="IBitfinexSocketClientSpotApi" />
-    internal partial class BitfinexSocketClientSpotApi : SocketApiClient, IBitfinexSocketClientSpotApi
+    internal partial class BitfinexSocketClientSpotApi : SocketApiClient<BitfinexEnvironment, BitfinexAuthenticationProvider, BitfinexCredentials>, IBitfinexSocketClientSpotApi
     {
         #region fields
         private readonly Random _random = new Random();
@@ -64,7 +64,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
 
         /// <inheritdoc />
-        protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
+        protected override BitfinexAuthenticationProvider CreateAuthenticationProvider(BitfinexCredentials credentials)
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
         /// <inheritdoc />

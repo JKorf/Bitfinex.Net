@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Bitfinex.Net
 {
-    internal class BitfinexAuthenticationProvider : AuthenticationProvider
+    internal class BitfinexAuthenticationProvider : AuthenticationProvider<BitfinexCredentials, HMACCredential>
     {
         private readonly INonceProvider _nonceProvider;
         private static readonly IStringMessageSerializer _messageSerializer = new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
@@ -22,11 +22,8 @@ namespace Bitfinex.Net
         public override ApiCredentialsType[] SupportedCredentialTypes => [ApiCredentialsType.Hmac];
         public long GetNonce() => _nonceProvider.GetNonce();
 
-        public BitfinexAuthenticationProvider(ApiCredentials credentials, INonceProvider? nonceProvider) : base(credentials)
+        public BitfinexAuthenticationProvider(BitfinexCredentials credentials, INonceProvider? nonceProvider) : base(credentials)
         {
-            if (credentials.CredentialType != ApiCredentialsType.Hmac)
-                throw new Exception("Only Hmac authentication is supported");
-
             _nonceProvider = nonceProvider ?? new BitfinexNonceProvider();
         }
 
@@ -45,7 +42,7 @@ namespace Bitfinex.Net
                 var requestBody = GetSerializedBody(_messageSerializer, request.BodyParameters);
                 var encodedBody = Convert.ToBase64String(Encoding.ASCII.GetBytes(requestBody));
 
-                request.Headers.Add("X-BFX-APIKEY", _credentials.Key);
+                request.Headers.Add("X-BFX-APIKEY", Credential.PublicKey);
                 request.Headers.Add("X-BFX-PAYLOAD", encodedBody);
                 request.Headers.Add("X-BFX-SIGNATURE", SignHMACSHA384(encodedBody).ToLowerInvariant());
 
@@ -57,7 +54,7 @@ namespace Bitfinex.Net
                 var nonce = _nonceProvider.GetNonce().ToString();
                 var signature = SignHMACSHA384($"/api{request.Path}{nonce}{requestBody}");
 
-                request.Headers.Add("bfx-apikey", _credentials.Key);
+                request.Headers.Add("bfx-apikey", Credential.PublicKey);
                 request.Headers.Add("bfx-nonce", nonce);
                 request.Headers.Add("bfx-signature", signature.ToLower(CultureInfo.InvariantCulture));
 
@@ -71,7 +68,7 @@ namespace Bitfinex.Net
             var authentication = new BitfinexAuthentication
             {
                 Event = "auth",
-                ApiKey = ApiKey,
+                ApiKey = Credential.PublicKey,
                 Nonce = n,
                 Payload = "AUTH" + n
             };
