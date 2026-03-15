@@ -1,4 +1,5 @@
 ﻿using CryptoExchange.Net.Authentication;
+using System;
 
 namespace Bitfinex.Net
 {
@@ -8,19 +9,26 @@ namespace Bitfinex.Net
     public class BitfinexCredentials : ApiCredentials
     {
         /// <summary>
-        /// ctor
         /// </summary>
-        /// <param name="apiKey">The API key</param>
-        /// <param name="secret">The API secret</param>
-        public BitfinexCredentials(string apiKey, string secret) : this(new HMACCredential(apiKey, secret)) { }
-       
+        [Obsolete("Parameterless constructor is only for deserialization purposes and should not be used directly. Use parameterized constructor instead.")]
+        public BitfinexCredentials() { }
+
         /// <summary>
-        /// ctor
+        /// Create credentials using an HMAC key and secret.
         /// </summary>
-        /// <param name="credential">The HMAC credentials</param>
+        /// <param name="apiKey">API key</param>
+        /// <param name="secret">API secret</param>
+        public BitfinexCredentials(string apiKey, string secret) : this(new HMACCredential(apiKey, secret)) { }
+
+        /// <summary>
+        /// Create credentials using HMAC credentials
+        /// </summary>
+        /// <param name="credential">HMAC credentials</param>
         public BitfinexCredentials(HMACCredential credential) : base(credential) { }
 
         /// <inheritdoc />
-        public override ApiCredentials Copy() => new BitfinexCredentials(Hmac!);
+#pragma warning disable CS0618 // Type or member is obsolete
+        public override ApiCredentials Copy() => new BitfinexCredentials { CredentialPairs = CredentialPairs };
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 }
