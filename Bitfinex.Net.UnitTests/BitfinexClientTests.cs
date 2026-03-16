@@ -168,10 +168,10 @@ namespace Bitfinex.Net.UnitTests
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    { "ApiCredentials:Hmac:Key", "123" },
-                    { "ApiCredentials:Hmac:Secret", "456" },
-                    { "Socket:ApiCredentials:Hmac:Key", "456" },
-                    { "Socket:ApiCredentials:Hmac:Secret", "789" },
+                    { "ApiCredentials:HMAC:Key", "123" },
+                    { "ApiCredentials:HMAC:Secret", "456" },
+                    { "Socket:ApiCredentials:HMAC:Key", "456" },
+                    { "Socket:ApiCredentials:HMAC:Secret", "789" },
                     { "Rest:OutputOriginalData", "true" },
                     { "Socket:OutputOriginalData", "false" },
                     { "Rest:Proxy:Host", "host" },
