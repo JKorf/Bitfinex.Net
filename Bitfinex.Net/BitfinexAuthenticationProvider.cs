@@ -42,7 +42,7 @@ namespace Bitfinex.Net
                 var requestBody = GetSerializedBody(_messageSerializer, request.BodyParameters);
                 var encodedBody = Convert.ToBase64String(Encoding.ASCII.GetBytes(requestBody));
 
-                request.Headers.Add("X-BFX-APIKEY", Credential.PublicKey);
+                request.Headers.Add("X-BFX-APIKEY", Credential.Key);
                 request.Headers.Add("X-BFX-PAYLOAD", encodedBody);
                 request.Headers.Add("X-BFX-SIGNATURE", SignHMACSHA384(encodedBody).ToLowerInvariant());
 
@@ -54,7 +54,7 @@ namespace Bitfinex.Net
                 var nonce = _nonceProvider.GetNonce().ToString();
                 var signature = SignHMACSHA384($"/api{request.Path}{nonce}{requestBody}");
 
-                request.Headers.Add("bfx-apikey", Credential.PublicKey);
+                request.Headers.Add("bfx-apikey", Credential.Key);
                 request.Headers.Add("bfx-nonce", nonce);
                 request.Headers.Add("bfx-signature", signature.ToLower(CultureInfo.InvariantCulture));
 
@@ -68,7 +68,7 @@ namespace Bitfinex.Net
             var authentication = new BitfinexAuthentication
             {
                 Event = "auth",
-                ApiKey = Credential.PublicKey,
+                ApiKey = Credential.Key,
                 Nonce = n,
                 Payload = "AUTH" + n
             };
