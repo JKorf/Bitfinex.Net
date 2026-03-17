@@ -661,11 +661,16 @@ namespace Bitfinex.Net.Clients.SpotApi
             return order.AsExchangeResult(Exchange, request.TradingMode, new SharedId(order.Data.ToString()));
         }
 
-        private SharedOrderStatus ParseOrderStatus(Enums.OrderStatus status)
+        private SharedOrderStatus ParseOrderStatus(OrderStatus status)
         {
-            if (status == Enums.OrderStatus.Active || status == Enums.OrderStatus.PartiallyFilled) return SharedOrderStatus.Open;
-            if (status == Enums.OrderStatus.Canceled) return SharedOrderStatus.Canceled;
-            return SharedOrderStatus.Filled;
+            if (status == Enums.OrderStatus.Canceled)
+                return SharedOrderStatus.Canceled;
+            if (status == Enums.OrderStatus.Active || status == Enums.OrderStatus.PartiallyFilled)
+                return SharedOrderStatus.Open;
+            if (status == OrderStatus.Executed || status == OrderStatus.ForcefullyExecuted)
+                return SharedOrderStatus.Filled;
+
+            return SharedOrderStatus.Unknown;
         }
 
         private SharedOrderType ParseOrderType(Enums.OrderType type, OrderFlags? flags)
@@ -771,8 +776,8 @@ namespace Bitfinex.Net.Clients.SpotApi
                         x.Status == "COMPLETED",
                         x.StartTime, 
                         x.Status == "COMPLETED" ? SharedTransferStatus.Completed :
-                        x.Status == "CANCELED" ? SharedTransferStatus.Failed:
-                        SharedTransferStatus.InProgress)
+                        x.Status == "CANCELED" ? SharedTransferStatus.Failed :
+                        SharedTransferStatus.Unknown)
                     {
                         Id = x.Id,
                         TransactionId = x.TransactionId
@@ -1031,7 +1036,10 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (order.Status == OrderStatus.Canceled)
                 return SharedTriggerOrderStatus.CanceledOrRejected;
 
-            return SharedTriggerOrderStatus.Active;
+            if (order.Status == OrderStatus.Active || order.Status == OrderStatus.PartiallyFilled)
+                return SharedTriggerOrderStatus.Active;
+
+            return SharedTriggerOrderStatus.Unknown;
         }
 
         EndpointOptions<CancelOrderRequest> ISpotTriggerOrderRestClient.CancelSpotTriggerOrderOptions { get; } = new EndpointOptions<CancelOrderRequest>(true);
