@@ -14,15 +14,14 @@ using System.Threading.Tasks;
 
 namespace Bitfinex.Net
 {
-    internal class BitfinexAuthenticationProvider : AuthenticationProvider<BitfinexCredentials, HMACCredential>
+    internal class BitfinexAuthenticationProvider : AuthenticationProvider<BitfinexCredentials, BitfinexCredentials>
     {
         private readonly INonceProvider _nonceProvider;
         private static readonly IStringMessageSerializer _messageSerializer = new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
 
-        public override ApiCredentialsType[] SupportedCredentialTypes => [ApiCredentialsType.HMAC];
         public long GetNonce() => _nonceProvider.GetNonce();
 
-        public BitfinexAuthenticationProvider(BitfinexCredentials credentials, INonceProvider? nonceProvider) : base(credentials)
+        public BitfinexAuthenticationProvider(BitfinexCredentials credentials, INonceProvider? nonceProvider) : base(credentials, credentials)
         {
             _nonceProvider = nonceProvider ?? new BitfinexNonceProvider();
         }

@@ -1,5 +1,6 @@
 ﻿using Bitfinex.Net.Clients;
 using Bitfinex.Net.Objects.Options;
+using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Testing;
 using Microsoft.Extensions.Logging;

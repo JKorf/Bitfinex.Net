@@ -1,6 +1,7 @@
 ﻿using Bitfinex.Net;
 using Bitfinex.Net.Clients;
 using Bitfinex.Net.SymbolOrderBooks;
+using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Testing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

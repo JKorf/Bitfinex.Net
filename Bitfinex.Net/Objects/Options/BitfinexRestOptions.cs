@@ -1,4 +1,5 @@
-﻿using CryptoExchange.Net.Interfaces;
+﻿using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects.Options;
 
 namespace Bitfinex.Net.Objects.Options
@@ -37,7 +38,7 @@ namespace Bitfinex.Net.Objects.Options
         /// <summary>
         /// Spot API options
         /// </summary>
-        public RestApiOptions<BitfinexCredentials> SpotOptions { get; private set; } = new RestApiOptions<BitfinexCredentials>();
+        public RestApiOptions SpotOptions { get; private set; } = new RestApiOptions();
 
         internal BitfinexRestOptions Set(BitfinexRestOptions targetOptions)
         {
