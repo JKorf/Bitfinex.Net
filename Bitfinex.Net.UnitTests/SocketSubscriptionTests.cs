@@ -3,6 +3,7 @@ using Bitfinex.Net.Clients;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
 using Bitfinex.Net.Objects.Options;
+using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Testing;
 using Microsoft.Extensions.Logging;
@@ -24,7 +25,7 @@ namespace Bitfinex.Net.UnitTests
 
             var client = new BitfinexSocketClient(Options.Create(new BitfinexSocketOptions
             {
-                ApiCredentials = new CryptoExchange.Net.Authentication.ApiCredentials("123", "456"),
+                ApiCredentials = new BitfinexCredentials("123", "456"),
                 OutputOriginalData = true,
             }), logger);
             var tester = new SocketSubscriptionValidator<BitfinexSocketClient>(client, "Subscriptions/Spot", "wss://api.bitfinex.com/", nestedPropertyForCompare: "1");

@@ -6,7 +6,7 @@ namespace Bitfinex.Net.Objects.Options
     /// <summary>
     /// Bitfinex options
     /// </summary>
-    public class BitfinexOptions : LibraryOptions<BitfinexRestOptions, BitfinexSocketOptions, ApiCredentials, BitfinexEnvironment>
+    public class BitfinexOptions : LibraryOptions<BitfinexRestOptions, BitfinexSocketOptions, BitfinexCredentials, BitfinexEnvironment>
     {
     }
 }

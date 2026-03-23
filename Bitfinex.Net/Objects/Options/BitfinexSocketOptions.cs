@@ -1,4 +1,5 @@
-﻿using CryptoExchange.Net.Interfaces;
+﻿using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects.Options;
 using System;
 
@@ -7,7 +8,7 @@ namespace Bitfinex.Net.Objects.Options
     /// <summary>
     /// Options for the BitfinexSocketClient
     /// </summary>
-    public class BitfinexSocketOptions : SocketExchangeOptions<BitfinexEnvironment>
+    public class BitfinexSocketOptions : SocketExchangeOptions<BitfinexEnvironment, BitfinexCredentials>
     {
         /// <summary>
         /// Default options for new clients

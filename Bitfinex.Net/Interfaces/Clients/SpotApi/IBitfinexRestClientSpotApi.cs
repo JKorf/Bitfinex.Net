@@ -1,4 +1,5 @@
-﻿using CryptoExchange.Net.Interfaces.Clients;
+﻿using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Interfaces.Clients;
 using System;
 
 namespace Bitfinex.Net.Interfaces.Clients.SpotApi
@@ -6,7 +7,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// <summary>
     /// Spot API endpoints
     /// </summary>
-    public interface IBitfinexRestClientSpotApi : IRestApiClient, IDisposable
+    public interface IBitfinexRestClientSpotApi : IRestApiClient<BitfinexCredentials>, IDisposable
     {
         /// <summary>
         /// Endpoints related to account settings, info or actions

@@ -13,6 +13,7 @@ using CryptoExchange.Net.Testing.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Bitfinex.Net.Interfaces.Clients;
+using Bitfinex.Net.Clients.SpotApi;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -39,17 +40,17 @@ namespace Bitfinex.Net.UnitTests
         {
             // arrange
             // act
-            var authProvider = new BitfinexAuthenticationProvider(new ApiCredentials("TestKey", "TestSecret"), null);
+            var authProvider = new BitfinexAuthenticationProvider(new BitfinexCredentials("TestKey", "TestSecret"), null);
 
             // assert
-            Assert.That(authProvider.ApiKey == "TestKey");
+            Assert.That(authProvider.Key == "TestKey");
         }
 
         [Test]
         public async Task MakingAuthv2Call_Should_SendAuthHeaders()
         {
             // arrange
-            var client = TestHelpers.CreateClient(x => { x.ApiCredentials = new ApiCredentials("TestKey", "t"); });
+            var client = TestHelpers.CreateClient(x => { x.ApiCredentials = new BitfinexCredentials("TestKey", "t"); });
             var request = TestHelpers.SetResponse((BitfinexRestClient)client, "{}");
 
             // act
@@ -65,7 +66,7 @@ namespace Bitfinex.Net.UnitTests
         public void CheckSignatureExample1()
         {
             var authProvider = new BitfinexAuthenticationProvider(
-                new ApiCredentials("hO6oQotzTE0S5FRYze2Jx2wGx7eVnJGMolpA1nZyehsoMgCcgKNWQHd4QgTFZuwl4Zt4xMe2PqGBegWXO4A", "mheO6dR8ovSsxZQCOYEFCtelpuxcWGTfHw7te326y6jOwq5WpvFQ9JNljoTwBXZGv5It07m9RXSPpDQEK2w"), 
+                new BitfinexCredentials("hO6oQotzTE0S5FRYze2Jx2wGx7eVnJGMolpA1nZyehsoMgCcgKNWQHd4QgTFZuwl4Zt4xMe2PqGBegWXO4A", "mheO6dR8ovSsxZQCOYEFCtelpuxcWGTfHw7te326y6jOwq5WpvFQ9JNljoTwBXZGv5It07m9RXSPpDQEK2w"), 
                 new TestNonceProvider(1696751141337)
                 );
             var client = (RestApiClient)new BitfinexRestClient().SpotApi;
@@ -188,8 +189,8 @@ namespace Bitfinex.Net.UnitTests
 
             Assert.That(((BaseApiClient)restClient.SpotApi).OutputOriginalData, Is.True);
             Assert.That(((BaseApiClient)socketClient.SpotApi).OutputOriginalData, Is.False);
-            Assert.That(((BaseApiClient)restClient.SpotApi).AuthenticationProvider.ApiKey, Is.EqualTo("123"));
-            Assert.That(((BaseApiClient)socketClient.SpotApi).AuthenticationProvider.ApiKey, Is.EqualTo("456"));
+            Assert.That(((BitfinexRestClientSpotApi)restClient.SpotApi).AuthenticationProvider.Key, Is.EqualTo("123"));
+            Assert.That(((BitfinexSocketClientSpotApi)socketClient.SpotApi).AuthenticationProvider.Key, Is.EqualTo("456"));
             Assert.That(((BaseApiClient)restClient.SpotApi).ClientOptions.Proxy.Host, Is.EqualTo("host"));
             Assert.That(((BaseApiClient)restClient.SpotApi).ClientOptions.Proxy.Port, Is.EqualTo(80));
             Assert.That(((BaseApiClient)socketClient.SpotApi).ClientOptions.Proxy.Host, Is.EqualTo("host2"));

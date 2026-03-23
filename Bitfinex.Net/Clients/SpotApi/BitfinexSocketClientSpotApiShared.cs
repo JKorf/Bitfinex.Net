@@ -125,7 +125,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                             x.Id.ToString(),
                             ParseOrderType(x.Type),
                             x.Side == Enums.OrderSide.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
-                            x.Status == Enums.OrderStatus.Canceled ? SharedOrderStatus.Canceled : (x.Status == Enums.OrderStatus.Active || x.Status == Enums.OrderStatus.PartiallyFilled) ? SharedOrderStatus.Open : SharedOrderStatus.Filled,
+                            ParseOrderStatus(x.Status),
                             x.CreateTime)
                         {
                             ClientOrderId = x.ClientOrderId.ToString(),
@@ -142,6 +142,18 @@ namespace Bitfinex.Net.Clients.SpotApi
                 ct: ct).ConfigureAwait(false);
 
             return new ExchangeResult<UpdateSubscription>(Exchange, result);
+        }
+
+        private SharedOrderStatus ParseOrderStatus(OrderStatus status)
+        {
+            if (status == Enums.OrderStatus.Canceled)
+                return SharedOrderStatus.Canceled;
+            if (status == Enums.OrderStatus.Active || status == Enums.OrderStatus.PartiallyFilled)
+                return SharedOrderStatus.Open;
+            if (status == OrderStatus.Executed || status == OrderStatus.ForcefullyExecuted)
+                return SharedOrderStatus.Filled;
+
+            return SharedOrderStatus.Unknown;
         }
 
         private SharedOrderType ParseOrderType(OrderType type)

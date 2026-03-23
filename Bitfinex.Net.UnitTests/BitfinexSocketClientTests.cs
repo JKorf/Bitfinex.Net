@@ -356,7 +356,7 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var client = new BitfinexSocketClient(x =>
             {
-                x.ApiCredentials = new ApiCredentials("1", "2");
+                x.ApiCredentials = new BitfinexCredentials("1", "2");
             });
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
@@ -388,7 +388,7 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var client = new BitfinexSocketClient(x =>
             {
-                x.ApiCredentials = new ApiCredentials("1", "2");
+                x.ApiCredentials = new BitfinexCredentials("1", "2");
             });
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
             var order = new BitfinexOrder() { ClientOrderId = 123 };
@@ -411,7 +411,7 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var client = new BitfinexSocketClient(x =>
             {
-                x.ApiCredentials = new ApiCredentials("1", "2");
+                x.ApiCredentials = new BitfinexCredentials("1", "2");
                 x.RequestTimeout = TimeSpan.FromMilliseconds(100);
             });
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
@@ -431,7 +431,7 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var client = new BitfinexSocketClient(x =>
             {
-                x.ApiCredentials = new ApiCredentials("1", "2");
+                x.ApiCredentials = new BitfinexCredentials("1", "2");
             });
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
@@ -464,7 +464,7 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var client = new BitfinexSocketClient(x =>
             {
-                x.ApiCredentials = new ApiCredentials("1", "2");
+                x.ApiCredentials = new BitfinexCredentials("1", "2");
             });
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
@@ -499,7 +499,7 @@ namespace Bitfinex.Net.UnitTests
             // arrange
             var client = new BitfinexSocketClient(x =>
             {
-                x.ApiCredentials = new ApiCredentials("1", "2");
+                x.ApiCredentials = new BitfinexCredentials("1", "2");
             });
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 

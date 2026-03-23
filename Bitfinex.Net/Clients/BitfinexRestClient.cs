@@ -15,7 +15,7 @@ using CryptoExchange.Net.Objects.Options;
 namespace Bitfinex.Net.Clients
 {
     /// <inheritdoc cref="IBitfinexRestClient" />
-    public class BitfinexRestClient : BaseRestClient, IBitfinexRestClient
+    public class BitfinexRestClient : BaseRestClient<BitfinexEnvironment, BitfinexCredentials>, IBitfinexRestClient
     {
         #region Api clients
 
@@ -51,14 +51,6 @@ namespace Bitfinex.Net.Clients
         }
         #endregion
 
-        #region methods
-        /// <inheritdoc />
-        public void SetOptions(UpdateOptions options)
-        {
-            GeneralApi.SetOptions(options);
-            SpotApi.SetOptions(options);
-        }
-
         /// <summary>
         /// Set the default options to be used when creating new clients
         /// </summary>
@@ -68,12 +60,5 @@ namespace Bitfinex.Net.Clients
             BitfinexRestOptions.Default = ApplyOptionsDelegate(optionsDelegate);
         }
 
-        /// <inheritdoc />
-        public void SetApiCredentials(ApiCredentials credentials)
-        {
-            GeneralApi.SetApiCredentials(credentials);
-            SpotApi.SetApiCredentials(credentials);
-        }
-        #endregion
     }
 }

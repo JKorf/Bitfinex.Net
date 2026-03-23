@@ -1,6 +1,7 @@
 ﻿using Bitfinex.Net;
 using Bitfinex.Net.Clients;
 using Bitfinex.Net.SymbolOrderBooks;
+using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Testing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -29,7 +30,7 @@ namespace Bitfinex.Net.UnitTests
             return new BitfinexRestClient(null, loggerFactory, Options.Create(new Objects.Options.BitfinexRestOptions
             {
                 OutputOriginalData = true,
-                ApiCredentials = Authenticated ? new CryptoExchange.Net.Authentication.ApiCredentials(key, sec) : null
+                ApiCredentials = Authenticated ? new BitfinexCredentials(key, sec) : null
             }));
         }
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
+using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces.Clients;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
@@ -14,7 +15,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
     /// <summary>
     /// Bitfinex spot streams
     /// </summary>
-    public interface IBitfinexSocketClientSpotApi : ISocketApiClient, IDisposable
+    public interface IBitfinexSocketClientSpotApi : ISocketApiClient<BitfinexCredentials>, IDisposable
     {
         /// <summary>
         /// Get the shared socket subscription client. This interface is shared with other exchanges to allow for a common implementation for different exchanges.

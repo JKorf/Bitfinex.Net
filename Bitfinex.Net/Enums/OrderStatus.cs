@@ -20,7 +20,7 @@ namespace Bitfinex.Net.Enums
         [Map("EXECUTED")]
         Executed,
         /// <summary>
-        /// ["<c>FORCED EXECUTED</c>"] Partially filled
+        /// ["<c>FORCED EXECUTED</c>"] Forcefully executed
         /// </summary>
         [Map("FORCED EXECUTED")]
         ForcefullyExecuted,

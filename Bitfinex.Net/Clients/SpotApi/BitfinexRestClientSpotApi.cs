@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 namespace Bitfinex.Net.Clients.SpotApi
 {
     /// <inheritdoc cref="IBitfinexRestClientSpotApi" />
-    internal partial class BitfinexRestClientSpotApi : RestApiClient, IBitfinexRestClientSpotApi
+    internal partial class BitfinexRestClientSpotApi : RestApiClient<BitfinexEnvironment, BitfinexAuthenticationProvider, BitfinexCredentials>, IBitfinexRestClientSpotApi
     {
         #region fields
         /// <inheritdoc />
@@ -57,7 +57,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
 
         /// <inheritdoc />
-        protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
+        protected override BitfinexAuthenticationProvider CreateAuthenticationProvider(BitfinexCredentials credentials)
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
         /// <inheritdoc />
