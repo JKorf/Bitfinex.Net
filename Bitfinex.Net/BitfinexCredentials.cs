@@ -43,5 +43,8 @@ namespace Bitfinex.Net
             Secret = secret;
             return this;
         }
+
+        /// <inheritdoc />
+        public override ApiCredentials Copy() => new BitfinexCredentials(this);
     }
 }
