@@ -45,8 +45,7 @@ Bitfinex.Net is available on [GitHub packages](https://github.com/JKorf/Bitfinex
 The NuGet package files are added along side the source with the latest GitHub release which can found [here](https://github.com/JKorf/Bitfinex.Net/releases).
 
 ## How to use
-*REST Endpoints*  
-
+*Basic request:*
 ```csharp
 // Get the ETH/USDT ticker via rest request
 var restClient = new BitfinexRestClient();
@@ -54,8 +53,22 @@ var tickerResult = await restClient.SpotApi.ExchangeData.GetTickerAsync("tETHUST
 var lastPrice = tickerResult.Data.LastPrice;
 ```
 
-*Websocket streams*  
+*Place order:*
+```csharp
+var restClient = new BitfinexRestClient(opts => {
+	opts.ApiCredentials = new BitfinexCredentials("APIKEY", "APISECRET");
+});
 
+// Place Limit order for 0.1 ETH at 2000
+var orderResult = await restClient.SpotApi.Trading.PlaceOrderAsync(
+    "tETHUST",
+    OrderSide.Buy,
+    OrderType.ExchangeLimit,
+    0.1m,
+    2000);
+```
+
+*WebSocket subscription:*
 ```csharp
 // Subscribe to ETH/USDT ticker updates via the websocket API
 var socketClient = new BitfinexSocketClient();
