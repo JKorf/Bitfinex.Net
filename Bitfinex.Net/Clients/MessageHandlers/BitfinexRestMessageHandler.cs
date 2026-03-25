@@ -39,8 +39,8 @@ namespace Bitfinex.Net.Clients.MessageHandlers
                 var errorMsg = document.RootElement.TryGetProperty("msg", out var msgProp) ? msgProp.GetString() : null;
                 int? errorCode = document!.RootElement.TryGetProperty("code", out var codeProp) ? codeProp.GetInt32() : null;
                 var errorDesc = document.RootElement.TryGetProperty("error_description", out var descProp) ? descProp.GetString() : null;
-                if (error != null && errorCode != null && errorDesc != null)
-                    return new ServerError(errorCode.Value.ToString(), _errorMapping.GetErrorInfo(errorCode.Value.ToString(), $"{error}: {errorDesc}"));
+                if (errorCode != null && errorDesc != null)
+                    return new ServerError(errorCode.Value.ToString(), _errorMapping.GetErrorInfo(errorCode.Value.ToString(), $"{errorCode}: {errorDesc}"));
 
                 var message = document.RootElement.TryGetProperty("message", out var messageProp) ? messageProp.GetString() : null;
                 if (message != null)
