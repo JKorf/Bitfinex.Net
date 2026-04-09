@@ -5,6 +5,7 @@ using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using System;
+using CryptoExchange.Net.Sockets.Default.Routing;
 
 namespace Bitfinex.Net.Objects.Sockets.Queries
 {

@@ -5,6 +5,7 @@ using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using Microsoft.Extensions.Logging;
 using System;
+using CryptoExchange.Net.Sockets.Default.Routing;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
