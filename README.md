@@ -146,6 +146,10 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 10.10.2 - 09 Apr 2026
+    * Updated CryptoExchange.Net to version 11.1.0, see https://github.com/JKorf/CryptoExchange.Net/releases/ for full release notes
+    * Fixed REST error parsing scenario
+
 * Version 10.10.1 - 24 Mar 2026
     * Fix issue in credentials copying
 
