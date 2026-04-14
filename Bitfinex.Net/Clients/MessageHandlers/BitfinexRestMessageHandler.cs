@@ -1,10 +1,10 @@
-﻿using CryptoExchange.Net.Converters.SystemTextJson.MessageHandlers;
-using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.Objects.Errors;
-using System.IO;
+﻿using System.IO;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using CryptoExchange.Net.Converters.SystemTextJson.MessageHandlers;
+using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
 
 namespace Bitfinex.Net.Clients.MessageHandlers
 {
@@ -30,9 +30,9 @@ namespace Bitfinex.Net.Clients.MessageHandlers
 
             if (document!.RootElement.ValueKind == JsonValueKind.Array)
             {
-                var code = document.RootElement[1].GetInt32();
+                var code = document.RootElement[1].ValueKind == JsonValueKind.Null ? string.Empty : document.RootElement[1].GetInt32().ToString();
                 var msg = document.RootElement[2].GetString();
-                return new ServerError(code.ToString(), _errorMapping.GetErrorInfo(code.ToString(), msg));
+                return new ServerError(code, _errorMapping.GetErrorInfo(code, msg));
             }
             else
             {
