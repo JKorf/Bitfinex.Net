@@ -6,6 +6,7 @@ using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using Microsoft.Extensions.Logging;
 using System;
+using CryptoExchange.Net.Sockets.Default.Routing;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
@@ -56,6 +57,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         {
             _channelId = -1;
             _firstUpdate = true;
+
+            MessageRouter = MessageRouter.Create([]);
         }
 
         public override void HandleSubQueryResponse(SocketConnection connection, object? message)
