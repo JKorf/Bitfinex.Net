@@ -30,9 +30,9 @@ namespace Bitfinex.Net.Clients.MessageHandlers
 
             if (document!.RootElement.ValueKind == JsonValueKind.Array)
             {
-                var code = document.RootElement[1].GetInt32();
+                var code = document.RootElement[1].ValueKind == JsonValueKind.Null ? string.Empty : document.RootElement[1].GetInt32().ToString();
                 var msg = document.RootElement[2].GetString();
-                return new ServerError(code.ToString(), _errorMapping.GetErrorInfo(code.ToString(), msg));
+                return new ServerError(code, _errorMapping.GetErrorInfo(code, msg));
             }
             else
             {
