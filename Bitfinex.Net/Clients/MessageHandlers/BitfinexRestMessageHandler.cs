@@ -1,10 +1,10 @@
-﻿using System.IO;
+﻿using CryptoExchange.Net.Converters.SystemTextJson.MessageHandlers;
+using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
+using System.IO;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
-using CryptoExchange.Net.Converters.SystemTextJson.MessageHandlers;
-using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.Objects.Errors;
 
 namespace Bitfinex.Net.Clients.MessageHandlers
 {
