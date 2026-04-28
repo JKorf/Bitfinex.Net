@@ -147,6 +147,9 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 10.10.4 - 28 Apr 2026
+    * Fixed error parsing when no code is provided
+
 * Version 10.10.3 - 13 Apr 2026
     * Fixed subscription not getting closed when BitfinexSymbolOrderBook start fails
 
