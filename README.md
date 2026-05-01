@@ -147,6 +147,12 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 10.11.0 - 01 May 2026
+    * Added missing OrderStatus enum mappings
+    * Added protectSelfMatch, visibleOnHit parameters on restClient.SpotApi.Trading.PlaceOrderAsync endpoint
+    * Fixed Shared SpotApi PlaceOrderAsync not marked as supporting limit maker orders
+    * Fixed OrderStatus defaulting to Active for unknown values
+
 * Version 10.10.4 - 28 Apr 2026
     * Fixed error parsing when no code is provided
 
