@@ -23,13 +23,17 @@ namespace Bitfinex.Net.Converters
             if (statusStr == "PARTIALLY FILLED")
                 return OrderStatus.PartiallyFilled;
 
-            if (statusStr.Contains("CANCELED"))
+            if (statusStr.Contains("CANCELED")
+                || statusStr.Contains("INSUFFICIENT BALANCE")
+                || statusStr.Contains("RSN")) 
+            {
                 return OrderStatus.Canceled;
+            }
 
             if (statusStr.Contains("EXECUTED @"))
                 return OrderStatus.Executed;
 
-            return OrderStatus.Active;
+            return (OrderStatus)(-9); // Return unknown
         }
 
         public override void Write(Utf8JsonWriter writer, OrderStatus value, JsonSerializerOptions options)
