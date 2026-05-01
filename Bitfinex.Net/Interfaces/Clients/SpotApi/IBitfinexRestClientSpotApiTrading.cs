@@ -124,7 +124,9 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="priceTrailing">["price_trailing"] The trailing price for a trailing stop order</param>
         /// <param name="priceAuxLimit">["price_aux_limit"] Auxiliary Limit price (for STOP LIMIT)</param>
         /// <param name="priceOcoStop">["price_oco_stop"] OCO stop price</param>
-        /// <param name="cancelTime">["tif"] datetime for automatic order cancelation</param>
+        /// <param name="cancelTime">["tif"] DateTime for automatic order cancelation</param>
+        /// <param name="protectSelfMatch">["meta.protect_selfmatch"] Protect from self trades</param>
+        /// <param name="visibleOnHit">["meta.make_visible"] Turn on 'visible on hit' for hidden orders </param>
         /// <returns></returns>
         Task<WebCallResult<BitfinexWriteResultOrder>> PlaceOrderAsync(
             string symbol,
@@ -140,6 +142,8 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
             decimal? priceAuxLimit = null,
             decimal? priceOcoStop = null,
             DateTime? cancelTime = null,
+            bool? protectSelfMatch = null,
+            bool? visibleOnHit = null,
             CancellationToken ct = default);
 
         /// <summary>

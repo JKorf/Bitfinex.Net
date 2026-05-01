@@ -111,6 +111,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             decimal? priceAuxLimit = null,
             decimal? priceOcoStop = null,
             DateTime? cancelTime = null,
+            bool? protectSelfMatch = null,
+            bool? visibleOnHit = null,
             CancellationToken ct = default)
         {
             if (side == OrderSide.Sell)
@@ -131,10 +133,16 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("price_aux_limit", priceAuxLimit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("price_oco_stop", priceOcoStop?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("tif", cancelTime?.ToString("yyyy-MM-dd HH:mm:ss"));
-            parameters.AddOptionalParameter("meta", new Dictionary<string, string?>()
+            var metaParameters = new Dictionary<string, object?>()
             {
                 { "aff_code" , LibraryHelpers.GetClientReference(() => _baseClient.ClientOptions.AffiliateCode, _baseClient.Exchange) }
-            });
+            };
+            if (protectSelfMatch != null)
+                metaParameters.Add("protect_selfmatch", protectSelfMatch == true ? 1 : 0);
+            if (visibleOnHit != null)
+                metaParameters.Add("make_visible", visibleOnHit == true ? 1 : 0);
+
+            parameters.AddOptionalParameter("meta", metaParameters);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/w/order/submit", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
