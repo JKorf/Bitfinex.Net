@@ -1,0 +1,106 @@
+---
+description: Conventions for using Bitfinex.Net library when working with Bitfinex in C#/.NET. Apply when generating code that interacts with the Bitfinex API.
+globs:
+  - "**/*.cs"
+  - "**/*.csproj"
+alwaysApply: false
+---
+
+# Bitfinex.Net Conventions
+
+This codebase uses **Bitfinex.Net** for Bitfinex exchange access. Do not write raw `HttpClient` calls to Bitfinex endpoints.
+
+## Client setup pattern
+
+```csharp
+using Bitfinex.Net;
+using Bitfinex.Net.Clients;
+
+var restClient = new BitfinexRestClient(options =>
+{
+    options.ApiCredentials = new BitfinexCredentials("API_KEY", "API_SECRET");
+});
+```
+
+For public market data only, no credentials are needed: `new BitfinexRestClient()`.
+
+## Result pattern
+
+All methods return `WebCallResult<T>` (REST) or `CallResult<T>` (WebSocket). Always check `.Success` before reading `.Data`:
+
+```csharp
+var ticker = await restClient.SpotApi.ExchangeData.GetTickerAsync("tBTCUSD");
+if (!ticker.Success) { /* ticker.Error */ return; }
+var price = ticker.Data.LastPrice;
+```
+
+## API surface
+
+- `restClient.SpotApi.ExchangeData` for public market, funding market, derivatives status and symbol metadata
+- `restClient.SpotApi.Account` for wallets, deposits, withdrawals, margin info, ledgers and account info
+- `restClient.SpotApi.Trading` for orders, trades and positions
+- `restClient.GeneralApi.Funding` for authenticated funding offers, loans, credits and auto-renew
+- `socketClient.SpotApi` for public and authenticated WebSocket streams and socket order/funding actions
+
+Bitfinex symbol conventions matter:
+
+- Trading symbols: `tBTCUSD`, `tETHUSD`
+- Funding symbols: `fUSD`, `fBTC`
+- Derivatives symbols: `tBTCF0:USTF0`
+
+## Order placement
+
+Let the library auto-generate `clientOrderId`. Do not pass a custom one unless required for an existing operational flow:
+
+```csharp
+var order = await restClient.SpotApi.Trading.PlaceOrderAsync(
+    "tBTCUSD", OrderSide.Buy, OrderType.ExchangeLimit,
+    quantity: 0.001m, price: 50000m);
+```
+
+## WebSocket pattern
+
+```csharp
+var socketClient = new BitfinexSocketClient();
+var sub = await socketClient.SpotApi.SubscribeToTickerUpdatesAsync(
+    "tBTCUSD",
+    update => { /* update.Data.LastPrice */ });
+if (!sub.Success) { /* sub.Error */ return; }
+
+// On shutdown:
+await socketClient.UnsubscribeAsync(sub.Data);
+```
+
+## Multi-exchange code
+
+For exchange-agnostic code, use `CryptoExchange.Net.SharedApis`:
+
+```csharp
+using CryptoExchange.Net.SharedApis;
+
+var shared = new BitfinexRestClient().SpotApi.SharedClient;
+var ticker = await shared.GetSpotTickerAsync(
+    new GetTickerRequest(new SharedSymbol(TradingMode.Spot, "BTC", "USD")));
+```
+
+Same pattern works against other CryptoExchange.Net libraries.
+
+## Hard rules
+
+- Never write raw `HttpClient` to Bitfinex endpoints.
+- Never use `.Result` or `.Wait()`; use async all the way.
+- Never instantiate clients per request; reuse them or use DI.
+- Never skip checking `WebCallResult.Success`.
+- Prefer `BitfinexRestClient` and `BitfinexSocketClient`.
+- Never pass a custom `clientOrderId` to `PlaceOrderAsync` unless required.
+- Always use `BitfinexCredentials("key", "secret")`, not generic `ApiCredentials`.
+- Always store WebSocket subscriptions and unsubscribe on shutdown.
+- Use `GeneralApi.Funding` for authenticated funding operations.
+- Use Bitfinex symbol prefixes (`t` for trading, `f` for funding).
+
+## Reference
+
+- Skill: `CLAUDE.md` in repo root has fuller examples
+- `llms.txt` in repo root for AI context
+- Examples: `Examples/ai-friendly/`
+

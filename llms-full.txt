@@ -1,0 +1,297 @@
+# Bitfinex.Net Full LLM Context
+
+> Detailed AI/LLM reference for generating correct C#/.NET code with Bitfinex.Net. Use this file when `llms.txt` is too brief and the task needs concrete examples, endpoint routing guidance, or anti-hallucination rules.
+
+Bitfinex.Net is a strongly typed .NET client library for the Bitfinex REST and WebSocket APIs. It is part of the CryptoExchange.Net ecosystem and uses the same result, shared API, logging, rate limiting, and socket patterns as the other JKorf exchange libraries.
+
+Current package version in this repository: 10.11.0.
+CryptoExchange.Net dependency: 11.1.0.
+Target frameworks: netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
+Native AOT: supported on compatible .NET targets.
+
+Primary documentation:
+- README.md: overview, installation, feature table, release notes, basic examples
+- docs site: https://cryptoexchange.jkorf.dev/Bitfinex.Net/
+- API quick map: `docs/ai-api-map.md`
+- source interfaces: `Bitfinex.Net/Interfaces/Clients/**`
+- AI examples: `Examples/ai-friendly/`
+
+## Golden Rules For AI Code Generation
+
+- Use `BitfinexRestClient` for REST and `BitfinexSocketClient` for WebSocket. Do not generate raw `HttpClient` calls to Bitfinex endpoints.
+- Use `BitfinexCredentials("key", "secret")`, not generic `ApiCredentials`, for API key setup.
+- Include `using Bitfinex.Net;` when using `BitfinexCredentials` or `BitfinexEnvironment`.
+- Always check `.Success` before reading `.Data`.
+- REST methods return `WebCallResult<T>` or `WebCallResult`.
+- WebSocket subscriptions return `CallResult<UpdateSubscription>`.
+- Reuse clients. Do not instantiate a REST or socket client per request in production code.
+- Prefer dependency injection for long-running services.
+- Store WebSocket subscriptions and unsubscribe during shutdown.
+- Do not call `.Result` or `.Wait()` on async methods.
+- Do not invent endpoint names. If unsure, inspect `Bitfinex.Net/Interfaces/Clients/**`.
+- Use `SpotApi` for market/account/trading and `GeneralApi.Funding` for authenticated funding.
+- Use Bitfinex symbols with prefixes: `tBTCUSD` for trading, `fUSD` for funding, `tBTCF0:USTF0` for derivatives.
+- Do not pass custom client order IDs unless the user explicitly needs correlation with an external system.
+- For multi-exchange code, use `CryptoExchange.Net.SharedApis` interfaces from each exchange's `.SharedClient`.
+
+## Installation
+
+```bash
+dotnet add package Bitfinex.Net
+```
+
+## Required Usings
+
+```csharp
+using Bitfinex.Net;
+using Bitfinex.Net.Clients;
+using Bitfinex.Net.Enums;
+```
+
+Shared API code:
+
+```csharp
+using Bitfinex.Net.Clients;
+using CryptoExchange.Net.SharedApis;
+```
+
+Retry/error helper code may also need:
+
+```csharp
+using CryptoExchange.Net.Objects;
+```
+
+## Client Setup
+
+Public market data does not require credentials:
+
+```csharp
+var client = new BitfinexRestClient();
+
+var ticker = await client.SpotApi.ExchangeData.GetTickerAsync("tBTCUSD");
+if (!ticker.Success)
+{
+    Console.WriteLine(ticker.Error);
+    return;
+}
+
+Console.WriteLine(ticker.Data.LastPrice);
+```
+
+Private account and trading endpoints require credentials:
+
+```csharp
+var client = new BitfinexRestClient(options =>
+{
+    options.ApiCredentials = new BitfinexCredentials("API_KEY", "API_SECRET");
+});
+```
+
+Socket client with credentials:
+
+```csharp
+var socketClient = new BitfinexSocketClient(options =>
+{
+    options.ApiCredentials = new BitfinexCredentials("API_KEY", "API_SECRET");
+});
+```
+
+## Dependency Injection
+
+```csharp
+services.AddBitfinex(options =>
+{
+    options.ApiCredentials = new BitfinexCredentials("API_KEY", "API_SECRET");
+});
+```
+
+Inject:
+
+```csharp
+public class MyService
+{
+    private readonly IBitfinexRestClient _restClient;
+    private readonly IBitfinexSocketClient _socketClient;
+
+    public MyService(IBitfinexRestClient restClient, IBitfinexSocketClient socketClient)
+    {
+        _restClient = restClient;
+        _socketClient = socketClient;
+    }
+}
+```
+
+Interface namespace:
+
+```csharp
+using Bitfinex.Net.Interfaces.Clients;
+```
+
+## Main API Surface
+
+REST:
+
+```text
+BitfinexRestClient
+  .SpotApi
+    .ExchangeData
+    .Account
+    .Trading
+    .SharedClient
+  .GeneralApi
+    .Funding
+```
+
+WebSocket:
+
+```text
+BitfinexSocketClient
+  .SpotApi
+    .SharedClient
+    SubscribeToTickerUpdatesAsync(...)
+    SubscribeToOrderBookUpdatesAsync(...)
+    SubscribeToTradeUpdatesAsync(...)
+    SubscribeToKlineUpdatesAsync(...)
+    SubscribeToUserUpdatesAsync(...)
+    PlaceOrderAsync(...)
+    SubmitFundingOfferAsync(...)
+```
+
+## Spot Order Example
+
+```csharp
+using Bitfinex.Net;
+using Bitfinex.Net.Clients;
+using Bitfinex.Net.Enums;
+
+var client = new BitfinexRestClient(options =>
+{
+    options.ApiCredentials = new BitfinexCredentials("API_KEY", "API_SECRET");
+});
+
+var order = await client.SpotApi.Trading.PlaceOrderAsync(
+    symbol: "tBTCUSD",
+    side: OrderSide.Buy,
+    type: OrderType.ExchangeLimit,
+    quantity: 0.001m,
+    price: 50000m);
+
+if (!order.Success)
+{
+    Console.WriteLine(order.Error);
+    return;
+}
+
+Console.WriteLine(order.Data.Data.Id);
+```
+
+For exchange wallet market buys, use `OrderType.ExchangeMarket`. For margin market orders, use `OrderType.Market`.
+
+## Funding Example
+
+```csharp
+using Bitfinex.Net;
+using Bitfinex.Net.Clients;
+using Bitfinex.Net.Enums;
+
+var client = new BitfinexRestClient(options =>
+{
+    options.ApiCredentials = new BitfinexCredentials("API_KEY", "API_SECRET");
+});
+
+var offer = await client.GeneralApi.Funding.SubmitFundingOfferAsync(
+    FundingOrderType.Limit,
+    "fUSD",
+    quantity: 100m,
+    rate: 0.0002m,
+    period: 2);
+
+if (!offer.Success)
+{
+    Console.WriteLine(offer.Error);
+    return;
+}
+```
+
+## WebSocket Subscription Example
+
+```csharp
+using Bitfinex.Net.Clients;
+using Bitfinex.Net.Enums;
+
+var socketClient = new BitfinexSocketClient();
+
+var tickerSub = await socketClient.SpotApi.SubscribeToTickerUpdatesAsync(
+    "tBTCUSD",
+    update => Console.WriteLine(update.Data.LastPrice));
+
+if (!tickerSub.Success)
+{
+    Console.WriteLine(tickerSub.Error);
+    return;
+}
+
+Console.ReadLine();
+
+await socketClient.UnsubscribeAsync(tickerSub.Data);
+```
+
+## SharedApis Multi-Exchange Pattern
+
+```csharp
+using Bitfinex.Net.Clients;
+using CryptoExchange.Net.SharedApis;
+
+ISpotTickerRestClient tickerClient = new BitfinexRestClient().SpotApi.SharedClient;
+var symbol = new SharedSymbol(TradingMode.Spot, "BTC", "USD");
+
+var ticker = await tickerClient.GetSpotTickerAsync(new GetTickerRequest(symbol));
+if (!ticker.Success)
+{
+    Console.WriteLine(ticker.Error);
+    return;
+}
+
+Console.WriteLine(ticker.Data.LastPrice);
+```
+
+## AI-Friendly Examples
+
+Use these examples when generating code:
+
+```text
+Examples/ai-friendly/01-spot-quickstart.cs
+Examples/ai-friendly/02-margin-funding.cs
+Examples/ai-friendly/03-websocket.cs
+Examples/ai-friendly/04-multi-exchange.cs
+Examples/ai-friendly/05-error-handling.cs
+```
+
+These files are intended to be copied into a console `Program.cs` after `dotnet add package Bitfinex.Net`.
+
+## Anti-Hallucination Checklist
+
+- Does it compile with the current package?
+- Does it use `SpotApi` and `GeneralApi.Funding` correctly?
+- Does it use `BitfinexCredentials` for private endpoints?
+- Does every REST/socket result check `.Success` before `.Data`?
+- Does it avoid raw Bitfinex URLs and manual signing?
+- Does it avoid custom client order IDs unless requested?
+- Does it avoid `.Result` and `.Wait()`?
+- Are WebSocket subscriptions unsubscribed on shutdown?
+- For shared socket interfaces, does it keep the concrete socket client for `UnsubscribeAsync(sub.Data)`?
+- Are symbols prefixed, for example `tBTCUSD` or `fUSD`?
+
+## Source Of Truth For Method Names
+
+When unsure, inspect these files instead of guessing:
+
+```text
+Bitfinex.Net/Interfaces/Clients/IBitfinexRestClient.cs
+Bitfinex.Net/Interfaces/Clients/IBitfinexSocketClient.cs
+Bitfinex.Net/Interfaces/Clients/SpotApi/IBitfinexRestClientSpotApi*.cs
+Bitfinex.Net/Interfaces/Clients/SpotApi/IBitfinexSocketClientSpotApi*.cs
+Bitfinex.Net/Interfaces/Clients/GeneralApi/IBitfinexRestClientGeneralApi*.cs
+```
+
+Prefer the interface files over memory when generating endpoint names, parameters, callback names, and return types.
