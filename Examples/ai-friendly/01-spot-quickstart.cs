@@ -27,7 +27,7 @@ Console.WriteLine($"{symbol} last price: {ticker.Data.LastPrice}");
 Console.WriteLine($"{symbol} 24h volume: {ticker.Data.Volume}");
 
 // ---- 2. AUTHENTICATED ACCOUNT DATA ----
-var wallets = await client.SpotApi.Account.GetWalletsAsync();
+var wallets = await client.SpotApi.Account.GetBalancesAsync();
 if (!wallets.Success)
 {
     Console.WriteLine($"Wallets failed: {wallets.Error}");
