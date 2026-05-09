@@ -67,5 +67,5 @@ For code that needs to work across multiple exchanges, use `CryptoExchange.Net.S
 
 ## Reference
 
-For detailed patterns and pitfalls see `CLAUDE.md`, `llms.txt`, `docs/ai-api-map.md`, and `Examples/ai-friendly/`.
+For detailed patterns and pitfalls see `AGENTS.md`, `llms.txt`, `docs/ai-api-map.md`, and `Examples/ai-friendly/`.
 

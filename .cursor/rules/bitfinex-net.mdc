@@ -100,7 +100,7 @@ Same pattern works against other CryptoExchange.Net libraries.
 
 ## Reference
 
-- Skill: `CLAUDE.md` in repo root has fuller examples
+- Skill: `AGENTS.md` in repo root has fuller examples
 - `llms.txt` in repo root for AI context
 - Examples: `Examples/ai-friendly/`
 
