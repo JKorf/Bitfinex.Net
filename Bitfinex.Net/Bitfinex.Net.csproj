@@ -12,7 +12,7 @@
     <FileVersion>10.11.0</FileVersion>
     <Description>A high-performance .NET client library for the Bitfinex REST and WebSocket APIs, providing strongly typed models, automatic WebSocket reconnection, client-side rate limiting, local order book support, and seamless integration with other CryptoExchange.Net based clients.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>Bitfinex;Bitfinex.Net;Bitfinex.com;Bitfinex Client;Bitfinex API;CryptoCurrency;CryptoCurrency Exchange;CryptoExchange.Net</PackageTags>
+    <PackageTags>Bitfinex;Bitfinex.Net;Bitfinex.com;Bitfinex Client;Bitfinex API;CryptoCurrency;CryptoCurrency Exchange;CryptoExchange.Net;ccxt</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/JKorf/Bitfinex.Net.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/JKorf/Bitfinex.Net</PackageProjectUrl>
