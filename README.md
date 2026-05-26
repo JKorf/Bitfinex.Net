@@ -155,6 +155,11 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 10.12.0 - 26 May 2026
+    * Updated CryptoExchange.Net to version 11.2.0
+    * Updated PlaceOrderAsync groupId and clientOrderId parameter to long
+    * Fixed exception when websocket subscribe request return error
+
 * Version 10.11.0 - 01 May 2026
     * Added missing OrderStatus enum mappings
     * Added protectSelfMatch, visibleOnHit parameters on restClient.SpotApi.Trading.PlaceOrderAsync endpoint
