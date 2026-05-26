@@ -72,6 +72,12 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                 return;
             }
 
+            if (data.ChannelId == null)
+            {
+                // Subscription failed, we can ignore this as the subscription will be cleared
+                return;
+            }
+
             _channelId = data!.ChannelId!.Value;
             _firstUpdate = true;
 
