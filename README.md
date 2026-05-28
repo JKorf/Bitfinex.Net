@@ -1,6 +1,6 @@
 # ![.Bitfinex.Net](https://github.com/JKorf/Bitfinex.Net/blob/master/Bitfinex.Net/Icon/icon.png?raw=true) Bitfinex.Net
 
-[![.NET](https://img.shields.io/github/actions/workflow/status/JKorf/Bitfinex.Net/dotnet.yml?style=for-the-badge)](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml) ![License](https://img.shields.io/github/license/JKorf/Bitfinex.Net?style=for-the-badge)
+[![.NET](https://img.shields.io/github/actions/workflow/status/JKorf/Bitfinex.Net/dotnet.yml?style=for-the-badge)](https://github.com/JKorf/Bitfinex.Net/actions/workflows/dotnet.yml) ![License](https://img.shields.io/github/license/JKorf/Bitfinex.Net?style=for-the-badge) ![Since](https://img.shields.io/badge/since-2017-brightgreen?style=for-the-badge)
 
 Bitfinex.Net is a strongly typed client library for accessing the [Bitfinex REST and Websocket API](https://docs.bitfinex.com/docs).
 
