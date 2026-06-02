@@ -1,5 +1,5 @@
+using Bitfinex.Net;
 using Bitfinex.Net.Interfaces.Clients;
-using CryptoExchange.Net.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +14,7 @@ builder.Services.AddBitfinex();
 /*
 builder.Services.AddBitfinex(options =>
 {    
-   options.ApiCredentials = new ApiCredentials("<APIKEY>", "<APISECRET>");
+   options.ApiCredentials = new BitfinexCredentials("<APIKEY>", "<APISECRET>");
    options.Rest.RequestTimeout = TimeSpan.FromSeconds(5);
 });
 */
@@ -28,14 +28,18 @@ app.UseHttpsRedirection();
 app.MapGet("/{Symbol}", async ([FromServices] IBitfinexRestClient client, string symbol) =>
 {
     var result = await client.SpotApi.ExchangeData.GetTickersAsync(new[] { symbol });
-    return (object)(result.Success ? result.Data.Single() : result.Error!);
+    return result.Success
+        ? Results.Ok(result.Data.Single())
+        : Results.Problem(result.Error?.Message, statusCode: 502);
 })
 .WithOpenApi();
 
 app.MapGet("/Balances", async ([FromServices] IBitfinexRestClient client) =>
 {
     var result = await client.SpotApi.Account.GetBalancesAsync();
-    return (object)(result.Success ? result.Data : result.Error!);
+    return result.Success
+        ? Results.Ok(result.Data)
+        : Results.Problem(result.Error?.Message, statusCode: 502);
 })
 .WithOpenApi();
 

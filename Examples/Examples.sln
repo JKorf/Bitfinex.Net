@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bitfinex.Examples.OrderBook
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bitfinex.Examples.Tracker", "Bitfinex.Examples.Tracker\Bitfinex.Examples.Tracker.csproj", "{5D819C4C-32FE-41B6-B4E4-0C0413A26FFE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bitfinex.Examples.OrderPlacement", "Bitfinex.Examples.OrderPlacement\Bitfinex.Examples.OrderPlacement.csproj", "{7F8D90F1-428B-4D70-A38A-6F532BC1532D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5D819C4C-32FE-41B6-B4E4-0C0413A26FFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D819C4C-32FE-41B6-B4E4-0C0413A26FFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D819C4C-32FE-41B6-B4E4-0C0413A26FFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F8D90F1-428B-4D70-A38A-6F532BC1532D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F8D90F1-428B-4D70-A38A-6F532BC1532D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F8D90F1-428B-4D70-A38A-6F532BC1532D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F8D90F1-428B-4D70-A38A-6F532BC1532D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
