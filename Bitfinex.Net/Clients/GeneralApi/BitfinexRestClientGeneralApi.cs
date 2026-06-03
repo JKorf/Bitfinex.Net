@@ -1,4 +1,4 @@
-﻿using Bitfinex.Net.Clients.MessageHandlers;
+using Bitfinex.Net.Clients.MessageHandlers;
 using Bitfinex.Net.Interfaces.Clients.GeneralApi;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Options;
@@ -54,14 +54,14 @@ namespace Bitfinex.Net.Clients.GeneralApi
 
         internal Task<WebCallResult<T>> SendAsync<T>(
             RequestDefinition definition,
-            ParameterCollection? parameters,
+            Parameters? parameters,
             CancellationToken cancellationToken) where T : class
                 => SendToAddressAsync<T>(BaseAddress, definition, parameters, cancellationToken);
 
         internal Task<WebCallResult<T>> SendToAddressAsync<T>(
             string uri,
             RequestDefinition definition,
-            ParameterCollection? parameters,
+            Parameters? parameters,
             CancellationToken cancellationToken) where T : class
                 => base.SendAsync<T>(uri, definition, parameters, cancellationToken);
 

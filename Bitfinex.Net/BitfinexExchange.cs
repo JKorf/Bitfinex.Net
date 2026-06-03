@@ -1,4 +1,4 @@
-﻿using Bitfinex.Net.Converters;
+using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.RateLimiting;
@@ -61,6 +61,10 @@ namespace Bitfinex.Net
         public static ExchangeType Type { get; } = ExchangeType.CEX;
 
         internal static JsonSerializerContext _serializerContext = JsonSerializerContextCache.GetOrCreate<BitfinexSourceGenerationContext>();
+        internal static ParameterSerializationSettings _parameterSerializationSettings = new ParameterSerializationSettings
+        {
+            Decimal = DecimalSerialization.String
+        };
 
         /// <summary>
         /// Format a base and quote asset to a Bitfinex recognized symbol 

@@ -237,7 +237,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         public async Task<WebCallResult<BitfinexTicker>> GetTickerAsync(string symbol, CancellationToken ct = default)
         {
             var ticker = await GetTickersAsync(new[] { symbol }, ct).ConfigureAwait(false);
-            if(!ticker)
+            if(!ticker.Success)
                 return ticker.As<BitfinexTicker>(null);
 
             if (!ticker.Data.Any())
@@ -266,7 +266,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexTicker[]>> GetTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
@@ -281,7 +281,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexFundingTicker[]>> GetFundingTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
@@ -296,13 +296,13 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexTickerHistory[]>> GetTickerHistoryAsync(IEnumerable<string>? symbols = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 {"symbols", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/tickers/hist", BitfinexExchange.RateLimiter.Overall, 1);
             return await _baseClient.SendAsync<BitfinexTickerHistory[]>(request, parameters, ct).ConfigureAwait(false);
@@ -314,11 +314,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         public async Task<WebCallResult<BitfinexTradeSimple[]>> GetTradeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 10000);
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalEnum("sort", sorting);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("sort", sorting);
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/trades/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(15, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -334,8 +334,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (precision == Precision.R0)
                 throw new ArgumentException("Precision can not be R0. Use PrecisionLevel0 to get aggregated trades for each price point or GetRawOrderBook to get the raw order book instead");
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("len", limit?.ToString(CultureInfo.InvariantCulture));
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(precision)}", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -364,8 +364,8 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (precision == Precision.R0)
                 throw new ArgumentException("Precision can not be R0. Use PrecisionLevel0 to get aggregated trades for each price point or GetRawOrderBook to get the raw order book instead");
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("len", limit?.ToString(CultureInfo.InvariantCulture));
             
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(precision)}", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -392,8 +392,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntValues("limit", 25, 100);
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("len", limit?.ToString(CultureInfo.InvariantCulture));
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(Precision.R0)}", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -420,8 +420,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntValues("limit", 25, 100);
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("len", limit?.ToString(CultureInfo.InvariantCulture));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("len", limit?.ToString(CultureInfo.InvariantCulture));
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"v2/book/{symbol}/{EnumConverter.GetString(Precision.R0)}", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(240, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -468,11 +468,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 10000);
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalEnum("sort", sorting); 
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("sort", sorting); 
 
             string endpoint;
             if (fundingPeriod != null)
@@ -494,13 +494,13 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexAveragePrice>> GetAveragePriceAsync(string symbol, decimal quantity, decimal? rateLimit = null, int? period = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "symbol", symbol },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-            parameters.AddOptionalParameter("period", period?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("rate_limit", rateLimit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("period", period?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("rate_limit", rateLimit?.ToString(CultureInfo.InvariantCulture));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/calc/trade/avg", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -515,7 +515,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             asset1.ValidateNotNull(nameof(asset1));
             asset2.ValidateNotNull(nameof(asset2));
 
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "ccy1", asset1 },
                 { "ccy2", asset2 }
@@ -531,7 +531,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexDerivativesStatus[]>> GetDerivativesStatusAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 {"keys", symbols?.Any() == true ? string.Join(",", symbols): "ALL"}
             };
@@ -546,11 +546,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexDerivativesStatus[]>> GetDerivativesStatusHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalEnum("sort", sorting);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("sort", sorting);
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/status/deriv/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -562,11 +562,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexLiquidation[]>> GetLiquidationsAsync(int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalEnum("sort", sorting);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("sort", sorting);
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/liquidations/hist", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(3, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -582,10 +582,10 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexFundingStats[]>> GetFundingStatisticsAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/funding/stats/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1);
             return await _baseClient.SendAsync<BitfinexFundingStats[]>(request, parameters, ct).ConfigureAwait(false);
@@ -596,11 +596,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats[]>> GetFundingSizeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalEnum("sort", sorting);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("sort", sorting);
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/funding.size:1m:{symbol}/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
             return await _baseClient.SendAsync<BitfinexStats[]>(request, parameters, ct).ConfigureAwait(false);
@@ -629,11 +629,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats[]>> GetCreditSizeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalEnum("sort", sorting);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("sort", sorting);
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/credits.size:1m:{symbol}/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
             return await _baseClient.SendAsync<BitfinexStats[]>(request, parameters, ct).ConfigureAwait(false);
@@ -650,11 +650,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats[]>> GetCreditSizeHistoryAsync(string asset, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalEnum("sort", sorting);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("sort", sorting);
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/credits.size.sym:1m:{asset}:{symbol}/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
             return await _baseClient.SendAsync<BitfinexStats[]>(request, parameters, ct).ConfigureAwait(false);
@@ -670,11 +670,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats[]>> GetLongsShortsTotalsHistoryAsync(string symbol, StatSide side, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalEnum("sort", sorting);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("sort", sorting);
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/pos.size:1m:{symbol}:{EnumConverter.GetString(side)}/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
             return await _baseClient.SendAsync<BitfinexStats[]>(request, parameters, ct).ConfigureAwait(false);
@@ -690,11 +690,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats[]>> GetTradingVolumeHistoryAsync(int period, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalEnum("sort", sorting);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("sort", sorting);
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/vol.{period}d:30m:BFX/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
             return await _baseClient.SendAsync<BitfinexStats[]>(request, parameters, ct).ConfigureAwait(false);
@@ -710,11 +710,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexStats[]>> GetVolumeWeightedAveragePriceHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalEnum("sort", sorting);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("sort", sorting);
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/stats1/vwap:1d:{symbol}/{EnumConverter.GetString(StatSection.History)}", BitfinexExchange.RateLimiter.RestStats, 1);
             return await _baseClient.SendAsync<BitfinexStats[]>(request, parameters, ct).ConfigureAwait(false);

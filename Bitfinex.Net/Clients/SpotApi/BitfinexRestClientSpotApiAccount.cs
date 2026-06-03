@@ -56,12 +56,12 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexMovement[]>> GetMovementsAsync(string? asset = null, IEnumerable<long>? ids = null, string? address = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("id", ids);
-            parameters.AddOptionalParameter("address", address);
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.AddRaw("id", ids);
+            parameters.Add("address", address);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/" + (asset == null ? "auth/r/movements/hist" : $"auth/r/movements/{asset}/hist"), BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -71,7 +71,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexMovementDetails>> GetMovementsDetailsAsync(long id, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection()
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "id", id }
             };
@@ -84,7 +84,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexAlert[]>> GetAlertListAsync(CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "type", "price" }
             };
@@ -97,7 +97,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexAlert>> SetAlertAsync(string symbol, decimal price, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "type", "price" },
                 { "symbol", symbol },
@@ -120,14 +120,14 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal price, WalletType type, decimal? leverage = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "symbol", symbol },
                 { "dir", side == OrderSide.Buy ? 1: -1 },
                 { "rate", price.ToString(CultureInfo.InvariantCulture) }
             };
-            parameters.AddEnum("type", type);
-            parameters.AddOptionalParameter("lev", leverage?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("type", type);
+            parameters.Add("lev", leverage?.ToString(CultureInfo.InvariantCulture));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"/v2/auth/calc/order/avail", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -139,11 +139,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("category", category);
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("category", category);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var url = string.IsNullOrEmpty(asset)
                 ? "/v2/auth/r/ledgers/hist" : $"/v2/auth/r/ledgers/{asset}/hist";
@@ -172,12 +172,12 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResultDepositAddress>> GetDepositAddressAsync(string method, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "method", method }
             };
-            parameters.AddEnum("wallet", toWallet);
-            parameters.AddOptionalParameter("op_renew", forceNew == null ? null : forceNew == true ? 1 : 0);
+            parameters.Add("wallet", toWallet);
+            parameters.Add("op_renew", forceNew == null ? null : forceNew == true ? 1 : 0);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/w/deposit/address", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(10, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -188,16 +188,16 @@ namespace Bitfinex.Net.Clients.SpotApi
         public async Task<WebCallResult<BitfinexWriteResultTransfer>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, string? toAsset = null, string? emailDestination = null, long? userIdDestination = null, CancellationToken ct = default)
         {
             asset.ValidateNotNull(nameof(asset));
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "currency", asset },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-            parameters.AddEnum("from", fromWallet);
-            parameters.AddEnum("to", toWallet);
-            parameters.AddOptionalParameter("currency_to", toAsset);
-            parameters.AddOptionalParameter("email_dst", emailDestination);
-            parameters.AddOptionalParameter("user_id_dst", userIdDestination);
+            parameters.Add("from", fromWallet);
+            parameters.Add("to", toWallet);
+            parameters.Add("currency_to", toAsset);
+            parameters.Add("email_dst", emailDestination);
+            parameters.Add("user_id_dst", userIdDestination);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/w/transfer", BitfinexExchange.RateLimiter.Overall, 1, true);
             return await _baseClient.SendAsync<BitfinexWriteResultTransfer>(request, parameters, ct).ConfigureAwait(false);
@@ -234,36 +234,36 @@ namespace Bitfinex.Net.Clients.SpotApi
                                                                          CancellationToken ct = default)
         {
             withdrawType.ValidateNotNull(nameof(withdrawType));
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "withdraw_type", withdrawType },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-            parameters.AddEnum("walletselected", wallet);
-            parameters.AddOptionalParameter("address", address);
-            parameters.AddOptionalParameter("payment_id", paymentId);
-            parameters.AddOptionalParameter("account_name", accountName);
-            parameters.AddOptionalParameter("account_number", accountNumber);
-            parameters.AddOptionalParameter("swift", bankSwift);
-            parameters.AddOptionalParameter("bank_name", bankName);
-            parameters.AddOptionalParameter("bank_address", bankAddress);
-            parameters.AddOptionalParameter("bank_city", bankCity);
-            parameters.AddOptionalParameter("bank_country", bankCountry);
-            parameters.AddOptionalParameter("detail_payment", paymentDetails);
-            parameters.AddOptionalParameter("expressWire", expressWire == null ? null : expressWire == true ? "1" : "0");
-            parameters.AddOptionalParameter("intermediary_bank_name", intermediaryBankName);
-            parameters.AddOptionalParameter("intermediary_bank_address", intermediaryBankAddress);
-            parameters.AddOptionalParameter("intermediary_bank_city", intermediaryBankCity);
-            parameters.AddOptionalParameter("intermediary_bank_country", intermediaryBankCountry);
-            parameters.AddOptionalParameter("intermediary_bank_account", intermediaryBankAccount);
-            parameters.AddOptionalParameter("intermediary_bank_swift", intermediaryBankSwift);
-            parameters.AddOptionalParameter("travel_rule_tos", travelRuleTos);
-            parameters.AddOptionalParameter("vasp_did", vaspDid);
-            parameters.AddOptionalParameter("vasp_name", vaspName);
-            parameters.AddOptionalParameter("beneficiary_self", beneficiarySelf);
-            parameters.AddOptionalParameter("dest_firstname", destFirstname);
-            parameters.AddOptionalParameter("dest_lastname", destLastname);
-            parameters.AddOptionalParameter("dest_corp_name", destCorpName);
+            parameters.Add("walletselected", wallet);
+            parameters.Add("address", address);
+            parameters.Add("payment_id", paymentId);
+            parameters.Add("account_name", accountName);
+            parameters.Add("account_number", accountNumber);
+            parameters.Add("swift", bankSwift);
+            parameters.Add("bank_name", bankName);
+            parameters.Add("bank_address", bankAddress);
+            parameters.Add("bank_city", bankCity);
+            parameters.Add("bank_country", bankCountry);
+            parameters.Add("detail_payment", paymentDetails);
+            parameters.Add("expressWire", expressWire == null ? null : expressWire == true ? "1" : "0");
+            parameters.Add("intermediary_bank_name", intermediaryBankName);
+            parameters.Add("intermediary_bank_address", intermediaryBankAddress);
+            parameters.Add("intermediary_bank_city", intermediaryBankCity);
+            parameters.Add("intermediary_bank_country", intermediaryBankCountry);
+            parameters.Add("intermediary_bank_account", intermediaryBankAccount);
+            parameters.Add("intermediary_bank_swift", intermediaryBankSwift);
+            parameters.Add("travel_rule_tos", travelRuleTos);
+            parameters.Add("vasp_did", vaspDid);
+            parameters.Add("vasp_name", vaspName);
+            parameters.Add("beneficiary_self", beneficiarySelf);
+            parameters.Add("dest_firstname", destFirstname);
+            parameters.Add("dest_lastname", destLastname);
+            parameters.Add("dest_corp_name", destCorpName);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v1/withdraw", BitfinexExchange.RateLimiter.Overall, 1, true);
             var result = await _baseClient.SendAsync<BitfinexWithdrawalResult[]>(request, parameters, ct).ConfigureAwait(false);
@@ -288,17 +288,17 @@ namespace Bitfinex.Net.Clients.SpotApi
                                                                          CancellationToken ct = default)
         {
             method.ValidateNotNull(nameof(method));
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "method", method },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-            parameters.AddEnum("wallet", wallet);
-            parameters.AddOptionalParameter("address", address);
-            parameters.AddOptionalParameter("payment_id", paymentId);
-            parameters.AddOptionalParameter("invoice", invoice);
-            parameters.AddOptionalParameter("note", note);
-            parameters.AddOptionalParameter("fee_deduct", feeFromWithdrawalAmount == null ? null : feeFromWithdrawalAmount == true ? 1 : 0);
+            parameters.Add("wallet", wallet);
+            parameters.Add("address", address);
+            parameters.Add("payment_id", paymentId);
+            parameters.Add("invoice", invoice);
+            parameters.Add("note", note);
+            parameters.Add("fee_deduct", feeFromWithdrawalAmount == null ? null : feeFromWithdrawalAmount == true ? 1 : 0);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/w/withdraw", BitfinexExchange.RateLimiter.Overall, 1, true);
             return await _baseClient.SendAsync<BitfinexWithdrawalResultV2>(request, parameters, ct).ConfigureAwait(false);
@@ -309,10 +309,10 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 250);
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/logins/hist", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));

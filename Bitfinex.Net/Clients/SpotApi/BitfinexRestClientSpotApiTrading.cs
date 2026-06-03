@@ -37,10 +37,10 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (symbol != null)
                 url += "/" + symbol;
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("id", orderIds);
-            parameters.AddOptional("cid", clientOrderId);
-            parameters.AddOptional("cid_date", clientOrderIdDate?.ToString("yyyy-MM-dd"));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.AddRaw("id", orderIds);
+            parameters.Add("cid", clientOrderId);
+            parameters.Add("cid_date", clientOrderIdDate?.ToString("yyyy-MM-dd"));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, url, BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -58,11 +58,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("id", orderIds);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.AddRaw("id", orderIds);
 
             var url = string.IsNullOrEmpty(symbol)
                 ? "/v2/auth/r/orders/hist" : $"v2/auth/r/orders/{symbol}/hist";
@@ -84,10 +84,10 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 1000);
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var url = string.IsNullOrEmpty(symbol)
                 ? "v2/auth/r/trades/hist" : $"v2/auth/r/trades/{symbol}/hist";
@@ -118,21 +118,21 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (side == OrderSide.Sell)
                 quantity = -quantity;
 
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "symbol", symbol },
                 { "price", price.ToString(CultureInfo.InvariantCulture) },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
-            parameters.AddEnum("type", type);
-            parameters.AddOptionalParameter("gid", groupId);
-            parameters.AddOptionalParameter("cid", clientOrderId);
-            parameters.AddOptionalParameter("flags", (int?)flags);
-            parameters.AddOptionalParameter("lev", leverage);
-            parameters.AddOptionalParameter("price_trailing", priceTrailing?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("price_aux_limit", priceAuxLimit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("price_oco_stop", priceOcoStop?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("tif", cancelTime?.ToString("yyyy-MM-dd HH:mm:ss"));
+            parameters.Add("type", type);
+            parameters.Add("gid", groupId);
+            parameters.Add("cid", clientOrderId);
+            parameters.Add("flags", (int?)flags);
+            parameters.Add("lev", leverage);
+            parameters.Add("price_trailing", priceTrailing?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("price_aux_limit", priceAuxLimit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("price_oco_stop", priceOcoStop?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("tif", cancelTime?.ToString("yyyy-MM-dd HH:mm:ss"));
             var metaParameters = new Dictionary<string, object?>()
             {
                 { "aff_code" , LibraryHelpers.GetClientReference(() => _baseClient.ClientOptions.AffiliateCode, _baseClient.Exchange) }
@@ -142,7 +142,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (visibleOnHit != null)
                 metaParameters.Add("make_visible", visibleOnHit == true ? 1 : 0);
 
-            parameters.AddOptionalParameter("meta", metaParameters);
+            parameters.Add("meta", metaParameters);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/w/order/submit", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -176,10 +176,10 @@ namespace Bitfinex.Net.Clients.SpotApi
             if (clientOrderId != null && clientOrderIdDate == null)
                 throw new ArgumentException("The date of the order has to be provided if canceling by clientOrderId");
 
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("id", orderId);
-            parameters.AddOptionalParameter("cid", clientOrderId);
-            parameters.AddOptionalParameter("cid_date", clientOrderIdDate?.ToString("yyyy-MM-dd"));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("id", orderId);
+            parameters.Add("cid", clientOrderId);
+            parameters.Add("cid_date", clientOrderIdDate?.ToString("yyyy-MM-dd"));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/w/order/cancel", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -190,10 +190,10 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResultOrders>> CancelOrdersAsync(IEnumerable<long>? orderIds = null, IEnumerable<long>? groupIds = null, Dictionary<long, DateTime>? clientOrderIds = null, bool? all = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("id", orderIds);
-            parameters.AddOptionalParameter("gid", groupIds);
-            parameters.AddOptionalParameter("all", all == true ? (bool?)true : null);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.AddRaw("id", orderIds);
+            parameters.AddRaw("gid", groupIds);
+            parameters.Add("all", all == true ? (bool?)true : null);
             if (clientOrderIds != null)
                 parameters.Add("cid", clientOrderIds.ToDictionary(c => c.Key, c => c.Value.ToString("yyyy-MM-dd")));
 
@@ -206,10 +206,10 @@ namespace Bitfinex.Net.Clients.SpotApi
         public async Task<WebCallResult<BitfinexPosition[]>> GetPositionHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 50);
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/r/positions/hist", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -219,7 +219,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResultPosition>> ClaimPositionAsync(long id, decimal quantity, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "id", id },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
@@ -232,7 +232,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResultPositionBasic>> IncreasePositionAsync(string symbol, decimal quantity, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "symbol", symbol },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
@@ -245,7 +245,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexIncreasePositionInfo>> GetIncreasePositionInfoAsync(string symbol, decimal quantity, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "symbol", symbol },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
@@ -266,10 +266,10 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexPosition[]>> GetPositionSnapshotsAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/r/positions/snap", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -281,13 +281,13 @@ namespace Bitfinex.Net.Clients.SpotApi
         {
             ids.ValidateNotNull(nameof(ids));
             limit?.ValidateIntBetween(nameof(limit), 1, 250);
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "id", ids }
             };
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/auth/r/positions/audit", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));

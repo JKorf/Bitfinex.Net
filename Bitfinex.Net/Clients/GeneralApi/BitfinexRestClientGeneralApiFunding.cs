@@ -36,10 +36,10 @@ namespace Bitfinex.Net.Clients.GeneralApi
         public async Task<WebCallResult<BitfinexFundingOffer[]>> GetFundingOfferHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/auth/r/funding/offers/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -49,15 +49,15 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResultFundingOffer>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal quantity, decimal rate, int period, int? flags = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection()
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "symbol", symbol },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) },
                 { "rate", rate.ToString(CultureInfo.InvariantCulture) },
                 { "period", period },
             };
-            parameters.AddEnum("type", fundingOrderType);
-            parameters.AddOptionalParameter("flags", flags);
+            parameters.Add("type", fundingOrderType);
+            parameters.Add("flags", flags);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/auth/w/funding/offer/submit", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -67,7 +67,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResult>> CloseFundingAsync(int id, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection()
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "id", id }
             };
@@ -80,7 +80,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResultFundingOffer>> CancelFundingOfferAsync(long offerId, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "id", offerId }
             };
@@ -93,11 +93,11 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResult>> KeepFundingAsync(FundType type, IEnumerable<long>? ids = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "type", EnumConverter.GetString(type) }
             };
-            parameters.AddOptionalParameter("id", ids);
+            parameters.AddRaw("id", ids);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/auth/w/funding/keep", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -107,8 +107,8 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResult>> CancelAllFundingOffersAsync(string? asset = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("currency", asset);
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("currency", asset);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/auth/w/funding/offer/cancel/all", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -126,10 +126,10 @@ namespace Bitfinex.Net.Clients.GeneralApi
         public async Task<WebCallResult<BitfinexFunding[]>> GetFundingLoansHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/auth/r/funding/loans/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -148,10 +148,10 @@ namespace Bitfinex.Net.Clients.GeneralApi
         public async Task<WebCallResult<BitfinexFundingCredit[]>> GetFundingCreditsHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/auth/r/funding/credits/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -162,10 +162,10 @@ namespace Bitfinex.Net.Clients.GeneralApi
         public async Task<WebCallResult<BitfinexFundingTrade[]>> GetFundingTradesHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
+            parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/auth/r/funding/trades/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -183,14 +183,14 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexWriteResultFundingAutoRenew>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection()
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "currency", asset },
                 { "status", status ? 1 : 0 },
             };
-            parameters.AddOptionalParameter("amount", quantity?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("rate", rate?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("period", period?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("amount", quantity?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("rate", rate?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("period", period?.ToString(CultureInfo.InvariantCulture));
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/auth/w/funding/auto", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -200,7 +200,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         /// <inheritdoc />
         public async Task<WebCallResult<BitfinexFundingAutoRenewStatus>> GetFundingAutoRenewStatusAsync(string asset, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection()
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "currency", asset },
             };

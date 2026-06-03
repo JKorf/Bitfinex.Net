@@ -523,7 +523,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(FundingOfferType type, string symbol, decimal quantity, decimal price, int period, int? flags = null)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "type", EnumConverter.GetString(type) },
                 { "symbol", symbol },
@@ -531,7 +531,7 @@ namespace Bitfinex.Net.Clients.SpotApi
                 { "rate", price },
                 { "period", period },
             };
-            parameters.AddOptionalParameter("flags", flags);
+            parameters.Add("flags", flags);
 
             var query = new BitfinexSocketQuery(ExchangeHelpers.NextId().ToString(CultureInfo.InvariantCulture), BitfinexEventType.FundingOfferNew, parameters);
             var bitfinexQuery = new BitfinexQuery<BitfinexFundingOfferNotificationEvent, BitfinexFundingOfferNotification>(query);
@@ -542,7 +542,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         public async Task<CallResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long id)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
                 { "id", id }
             };

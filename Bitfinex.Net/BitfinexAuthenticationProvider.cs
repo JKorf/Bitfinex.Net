@@ -1,4 +1,4 @@
-﻿using Bitfinex.Net.Objects.Internal;
+using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
@@ -31,7 +31,7 @@ namespace Bitfinex.Net
             if (!request.Authenticated)
                 return;
 
-            request.BodyParameters ??= new Dictionary<string, object>();
+            request.BodyParameters ??= new Parameters(BitfinexExchange._parameterSerializationSettings);
             request.Headers ??= new Dictionary<string, string>();
 
             if (request.Path.Contains("v1"))
