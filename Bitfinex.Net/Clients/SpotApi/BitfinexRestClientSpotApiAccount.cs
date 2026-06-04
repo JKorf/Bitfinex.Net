@@ -29,7 +29,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexWallet[]>> GetBalancesAsync(CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexWallet[]>> GetBalancesAsync(CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/wallets", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -38,7 +38,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexMarginBase>> GetBaseMarginInfoAsync(CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexMarginBase>> GetBaseMarginInfoAsync(CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/info/margin/base", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -46,7 +46,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexMarginSymbol>> GetSymbolMarginInfoAsync(string symbol, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexMarginSymbol>> GetSymbolMarginInfoAsync(string symbol, CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"v2/auth/r/info/margin/{symbol}", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -54,7 +54,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexMovement[]>> GetMovementsAsync(string? asset = null, IEnumerable<long>? ids = null, string? address = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexMovement[]>> GetMovementsAsync(string? asset = null, IEnumerable<long>? ids = null, string? address = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
             parameters.AddRaw("id", ids);
@@ -69,7 +69,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexMovementDetails>> GetMovementsDetailsAsync(long id, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexMovementDetails>> GetMovementsDetailsAsync(long id, CancellationToken ct = default)
         {
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
@@ -82,7 +82,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexAlert[]>> GetAlertListAsync(CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexAlert[]>> GetAlertListAsync(CancellationToken ct = default)
         {
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
@@ -95,7 +95,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexAlert>> SetAlertAsync(string symbol, decimal price, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexAlert>> SetAlertAsync(string symbol, decimal price, CancellationToken ct = default)
         {
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
@@ -110,7 +110,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexSuccessResult>> DeleteAlertAsync(string symbol, decimal price, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexSuccessResult>> DeleteAlertAsync(string symbol, decimal price, CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, $"/v2/auth/w/alert/price:{symbol}:{price.ToString(CultureInfo.InvariantCulture)}/del", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -118,7 +118,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal price, WalletType type, decimal? leverage = null, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexAvailableBalance>> GetAvailableBalanceAsync(string symbol, OrderSide side, decimal price, WalletType type, decimal? leverage = null, CancellationToken ct = default)
         {
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
@@ -135,7 +135,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 500);
 
@@ -154,7 +154,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexUserInfo>> GetUserInfoAsync(CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexUserInfo>> GetUserInfoAsync(CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/info/user", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -162,7 +162,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexSummary>> Get30DaySummaryAndFeesAsync(CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexSummary>> Get30DaySummaryAndFeesAsync(CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/summary", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -170,7 +170,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexWriteResultDepositAddress>> GetDepositAddressAsync(string method, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexWriteResultDepositAddress>> GetDepositAddressAsync(string method, WithdrawWallet toWallet, bool? forceNew = null, CancellationToken ct = default)
         {
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
@@ -185,7 +185,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexWriteResultTransfer>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, string? toAsset = null, string? emailDestination = null, long? userIdDestination = null, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexWriteResultTransfer>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, string? toAsset = null, string? emailDestination = null, long? userIdDestination = null, CancellationToken ct = default)
         {
             asset.ValidateNotNull(nameof(asset));
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
@@ -204,7 +204,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexWithdrawalResult>> WithdrawAsync(string withdrawType,
+        public async Task<HttpResult<BitfinexWithdrawalResult>> WithdrawAsync(string withdrawType,
                                                                          WithdrawWallet wallet,
                                                                          decimal quantity,
                                                                          string? address = null,
@@ -267,17 +267,18 @@ namespace Bitfinex.Net.Clients.SpotApi
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v1/withdraw", BitfinexExchange.RateLimiter.Overall, 1, true);
             var result = await _baseClient.SendAsync<BitfinexWithdrawalResult[]>(request, parameters, ct).ConfigureAwait(false);
-            if (!result)
-                return result.As<BitfinexWithdrawalResult>(default);
+            if (!result.Success)
+                return HttpResult.Fail<BitfinexWithdrawalResult>(result);
 
             var data = result.Data.First();
             if (!data.Success)
-                return result.AsError<BitfinexWithdrawalResult>(new ServerError(ErrorInfo.Unknown with { Message = data.Message }));
-            return result.As(data);
+                return HttpResult.Fail<BitfinexWithdrawalResult>(result, new ServerError(ErrorInfo.Unknown with { Message = data.Message }));
+
+            return HttpResult.Ok(result, data);
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexWithdrawalResultV2>> WithdrawV2Async(string method,
+        public async Task<HttpResult<BitfinexWithdrawalResultV2>> WithdrawV2Async(string method,
                                                                          WithdrawWallet wallet,
                                                                          decimal quantity,
                                                                          string? address = null,
@@ -305,7 +306,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexLogin[]>> GetLoginHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexLogin[]>> GetLoginHistoryAsync(DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 250);
 
@@ -320,7 +321,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexPermission[]>> GetApiKeyPermissionsAsync(CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexPermission[]>> GetApiKeyPermissionsAsync(CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/permissions", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
@@ -328,7 +329,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexChangeLog[]>> GetAccountChangeLogAsync(CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexChangeLog[]>> GetAccountChangeLogAsync(CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/r/audit/hist", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));

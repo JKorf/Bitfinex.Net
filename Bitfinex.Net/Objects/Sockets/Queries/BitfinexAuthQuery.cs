@@ -18,12 +18,12 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitfinexResponse>("auth", HandleMessage);
         }
 
-        public CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexResponse message)
+        public CallResult HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexResponse message)
         {
             if (message.Status != "OK")
-                return new CallResult<BitfinexResponse>(new ServerError(message.Code!.Value.ToString(), _client.GetErrorInfo(message.Code!.Value, message.Message!)));
+                return CallResult.Fail(new ServerError(message.Code!.Value.ToString(), _client.GetErrorInfo(message.Code!.Value, message.Message!)));
 
-            return new CallResult<BitfinexResponse>(message, originalData, null);
+            return CallResult.Ok();
         }
     }
 }

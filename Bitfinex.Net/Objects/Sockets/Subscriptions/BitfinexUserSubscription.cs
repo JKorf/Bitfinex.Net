@@ -115,7 +115,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         {
             // Heartbeat
             connection.UpdateSequenceNumber(message.Sequence);
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketPositionsEvent message)
@@ -129,7 +129,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("ps")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketPositionEvent message)
@@ -144,7 +144,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId(EnumConverter.GetString(message.EventType))
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexBalanceEvent message)
@@ -158,7 +158,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("bu")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexMarginBaseEvent message)
@@ -172,7 +172,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("miu")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexMarginSymbolEvent message)
@@ -186,7 +186,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("miu")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingInfoEvent message)
@@ -201,7 +201,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("fiu")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexWalletsEvent message)
@@ -215,7 +215,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("ws")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexWalletEvent message)
@@ -229,7 +229,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("wu")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOrdersEvent message)
@@ -243,7 +243,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("os")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOrderEvent message)
@@ -258,7 +258,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId(EnumConverter.GetString(message.EventType))
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeDetailEvent message)
@@ -273,7 +273,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId(EnumConverter.GetString(message.EventType))
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingTradeEvent message)
@@ -287,7 +287,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId(EnumConverter.GetString(message.EventType))
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOffersEvent message)
@@ -301,7 +301,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("fos")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexOfferEvent message)
@@ -316,7 +316,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId(EnumConverter.GetString(message.EventType))
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingCreditsEvent message)
@@ -330,7 +330,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("fcs")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingCreditEvent message)
@@ -345,7 +345,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId(EnumConverter.GetString(message.EventType))
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingsEvent message)
@@ -359,7 +359,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId("fls")
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexFundingEvent message)
@@ -374,7 +374,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithStreamId(EnumConverter.GetString(message.EventType))
                     .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset())
                 );
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
     }
 }

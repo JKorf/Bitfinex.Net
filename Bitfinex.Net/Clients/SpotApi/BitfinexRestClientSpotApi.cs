@@ -47,7 +47,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         #region ctor
 
         internal BitfinexRestClientSpotApi(ILogger logger, HttpClient? httpClient, BitfinexRestOptions options) :
-            base(logger, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
+            base(logger, BitfinexExchange.ExchangeName, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
         {
             Account = new BitfinexRestClientSpotApiAccount(this);
             ExchangeData = new BitfinexRestClientSpotApiExchangeData(this);
@@ -67,20 +67,20 @@ namespace Bitfinex.Net.Clients.SpotApi
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
 
-        internal Task<WebCallResult<T>> SendAsync<T>(
+        internal Task<HttpResult<T>> SendAsync<T>(
             RequestDefinition definition,
             Parameters? parameters,
             CancellationToken cancellationToken) where T : class
                 => SendToAddressAsync<T>(BaseAddress, definition, parameters, cancellationToken);
 
-        internal Task<WebCallResult<T>> SendToAddressAsync<T>(
+        internal Task<HttpResult<T>> SendToAddressAsync<T>(
             string uri,
             RequestDefinition definition,
             Parameters? parameters,
             CancellationToken cancellationToken) where T : class
                 => base.SendAsync<T>(uri, definition, parameters, cancellationToken);
 
-        protected override async ValueTask<bool> ShouldRetryRequestAsync<T>(IRateLimitGate? gate, WebCallResult<T> callResult, int tries)
+        protected override async ValueTask<bool> ShouldRetryRequestAsync<T>(IRateLimitGate? gate, HttpResult<T> callResult, int tries)
         {
             if (await base.ShouldRetryRequestAsync(gate, callResult, tries).ConfigureAwait(false))
                 return true;

@@ -16,14 +16,14 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             MessageRouter = MessageRouter.CreateWithoutTopicFilter<T>("0n", HandleMessage);
         }
 
-        public CallResult<T> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, T message)
+        public CallResult HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, T message)
         {
             connection.UpdateSequenceNumber(message.SequenceNumber);
 
             if (message.Data.Result != "SUCCESS")
-                return new CallResult<T>(new ServerError(ErrorInfo.Unknown with { Message = message.Data.ErrorMessage! }), originalData);
+                return CallResult.Fail(new ServerError(ErrorInfo.Unknown with { Message = message.Data.ErrorMessage! }));
 
-            return new CallResult<T>(message, originalData, null);
+            return CallResult.Ok();
         }
     }
 }

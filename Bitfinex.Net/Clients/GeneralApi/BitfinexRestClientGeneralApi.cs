@@ -39,7 +39,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         #region ctor
 
         internal BitfinexRestClientGeneralApi(ILogger logger, HttpClient? httpClient, BitfinexRestOptions options) :
-            base(logger, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
+            base(logger, BitfinexExchange.ExchangeName, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
         {
             Funding = new BitfinexRestClientGeneralApiFunding(this);
 
@@ -52,13 +52,13 @@ namespace Bitfinex.Net.Clients.GeneralApi
         protected override BitfinexAuthenticationProvider CreateAuthenticationProvider(BitfinexCredentials credentials)
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
-        internal Task<WebCallResult<T>> SendAsync<T>(
+        internal Task<HttpResult<T>> SendAsync<T>(
             RequestDefinition definition,
             Parameters? parameters,
             CancellationToken cancellationToken) where T : class
                 => SendToAddressAsync<T>(BaseAddress, definition, parameters, cancellationToken);
 
-        internal Task<WebCallResult<T>> SendToAddressAsync<T>(
+        internal Task<HttpResult<T>> SendToAddressAsync<T>(
             string uri,
             RequestDefinition definition,
             Parameters? parameters,

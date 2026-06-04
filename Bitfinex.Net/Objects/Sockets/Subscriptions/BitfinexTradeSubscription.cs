@@ -87,7 +87,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data], message.Sequence, message.Timestamp);
             _firstUpdate = false;
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexTradeArrayUpdate message)
@@ -97,13 +97,13 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data, message.Sequence, message.Timestamp);
             _firstUpdate = false;
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleHeartbeat(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexStringUpdate message)
         {
             connection.UpdateSequenceNumber(message.Sequence);
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
     }
 }

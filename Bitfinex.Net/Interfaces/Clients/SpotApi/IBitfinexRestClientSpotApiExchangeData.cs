@@ -24,7 +24,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Whether Bitfinex platform is running normally or not</returns>
-        Task<WebCallResult<BitfinexPlatformStatus>> GetPlatformStatusAsync(CancellationToken ct = default);
+        Task<HttpResult<BitfinexPlatformStatus>> GetPlatformStatusAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Gets a list of supported assets
@@ -37,7 +37,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexAsset[]>> GetAssetsListAsync(CancellationToken ct = default);
+        Task<HttpResult<BitfinexAsset[]>> GetAssetsListAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Returns basic market data for the provided symbols
@@ -51,7 +51,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbol">The symbol to get data for, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Symbol data</returns>
-        Task<WebCallResult<BitfinexTicker>> GetTickerAsync(string symbol, CancellationToken ct = default);
+        Task<HttpResult<BitfinexTicker>> GetTickerAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Returns basic market data for the provided funding symbols
@@ -65,7 +65,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbol">The symbol to get data for, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Symbol data</returns>
-        Task<WebCallResult<BitfinexFundingTicker>> GetFundingTickerAsync(string symbol, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingTicker>> GetFundingTickerAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Returns basic market data for the provided symbols
@@ -79,7 +79,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbols">["symbols"] The symbols to get data for, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Symbol data</returns>
-        Task<WebCallResult<BitfinexTicker[]>> GetTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexTicker[]>> GetTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
 
         /// <summary>
         /// Returns basic market data for the provided funding symbols
@@ -93,7 +93,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbols">["symbols"] The symbols to get data for, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Symbol data</returns>
-        Task<WebCallResult<BitfinexFundingTicker[]>> GetFundingTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingTicker[]>> GetFundingTickersAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get ticker history
@@ -104,7 +104,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="endTime">["end"] Filter by end time</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexTickerHistory[]>> GetTickerHistoryAsync(IEnumerable<string>? symbols = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexTickerHistory[]>> GetTickerHistoryAsync(IEnumerable<string>? symbols = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get recent trades for a symbol
@@ -122,7 +122,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="sorting">["sort"] The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Trades for the symbol</returns>
-        Task<WebCallResult<BitfinexTradeSimple[]>> GetTradeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexTradeSimple[]>> GetTradeHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets the order book for a trading symbol
@@ -138,7 +138,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">["len"] The amount of results in the book</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The order book for the symbol</returns>
-        Task<WebCallResult<BitfinexOrderBook>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexOrderBook>> GetOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets the order book for a funding symbol
@@ -154,7 +154,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">["len"] The amount of results in the book</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The order book for the symbol</returns>
-        Task<WebCallResult<BitfinexFundingOrderBook>> GetFundingOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingOrderBook>> GetFundingOrderBookAsync(string symbol, Precision precision, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the raw order book for a trading symbol
@@ -169,7 +169,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">["len"] The amount of results in the book</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexRawOrderBook>> GetRawOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexRawOrderBook>> GetRawOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the raw order book for a funding symbol
@@ -184,7 +184,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">["len"] The amount of results in the book</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexRawFundingOrderBook>> GetRawFundingOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexRawFundingOrderBook>> GetRawFundingOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the last kline for a symbol
@@ -200,7 +200,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="fundingPeriod">["fundingPeriod"] The Funding period. Only required for funding candles. Enter after the symbol (trade:1m:fUSD:p30/hist).</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The last kline for the symbol</returns>
-        Task<WebCallResult<BitfinexKline>> GetLastKlineAsync(string symbol, KlineInterval interval, string? fundingPeriod = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexKline>> GetLastKlineAsync(string symbol, KlineInterval interval, string? fundingPeriod = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets klines for a symbol
@@ -220,7 +220,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="sorting">["sort"] The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexKline[]>> GetKlinesAsync(string symbol, KlineInterval interval, string? fundingPeriod = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexKline[]>> GetKlinesAsync(string symbol, KlineInterval interval, string? fundingPeriod = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Calculate the average execution price
@@ -237,7 +237,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="period">["period"] Maximum period for margin funding</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>The average price at which the execution would happen</returns>
-        Task<WebCallResult<BitfinexAveragePrice>> GetAveragePriceAsync(string symbol, decimal quantity, decimal? rateLimit = null, int? period = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexAveragePrice>> GetAveragePriceAsync(string symbol, decimal quantity, decimal? rateLimit = null, int? period = null, CancellationToken ct = default);
 
         /// <summary>
         /// Returns the exchange rate for the assets
@@ -252,7 +252,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="asset2">["ccy2"] The second asset, for example `ETH`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Exchange rate</returns>
-        Task<WebCallResult<BitfinexForeignExchangeRate>> GetForeignExchangeRateAsync(string asset1, string asset2, CancellationToken ct = default);
+        Task<HttpResult<BitfinexForeignExchangeRate>> GetForeignExchangeRateAsync(string asset1, string asset2, CancellationToken ct = default);
 
         /// <summary>
         /// Get derivatives status info
@@ -266,7 +266,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbols">["keys"] Filter symbols, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexDerivativesStatus[]>> GetDerivativesStatusAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexDerivativesStatus[]>> GetDerivativesStatusAsync(IEnumerable<string>? symbols = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get derivatives status info history
@@ -284,7 +284,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="sorting">["sort"] The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexDerivativesStatus[]>> GetDerivativesStatusHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexDerivativesStatus[]>> GetDerivativesStatusHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get liquidation history
@@ -301,7 +301,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="sorting">["sort"] The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexLiquidation[]>> GetLiquidationsAsync(int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexLiquidation[]>> GetLiquidationsAsync(int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get a list of the most recent funding data for the given asset: FRR, average period, total amount provided, total amount used
@@ -318,7 +318,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="endTime">["end"] Filter by end time</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingStats[]>> GetFundingStatisticsAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingStats[]>> GetFundingStatisticsAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get total active funding in specified asset
@@ -332,7 +332,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="asset">["symbol"] The asset, for example `ETH`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats>> GetLastFundingSizeAsync(string asset, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats>> GetLastFundingSizeAsync(string asset, CancellationToken ct = default);
 
         /// <summary>
         /// Get total active funding in specified asset
@@ -350,7 +350,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="sorting">["sort"] Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats[]>> GetFundingSizeHistoryAsync(string asset, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats[]>> GetFundingSizeHistoryAsync(string asset, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get total funding used in positions in specified asset
@@ -364,7 +364,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="asset">["symbol"] The asset, for example `ETH`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats>> GetLastCreditSizeAsync(string asset, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats>> GetLastCreditSizeAsync(string asset, CancellationToken ct = default);
 
         /// <summary>
         /// Get total funding used in positions in specified asset
@@ -382,7 +382,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="sorting">["sort"] Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats[]>> GetCreditSizeHistoryAsync(string asset, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats[]>> GetCreditSizeHistoryAsync(string asset, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get total funding used in positions on a specific symbol in specified asset
@@ -397,7 +397,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbol">["symbol"] The symbol, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats>> GetLastCreditSizeAsync(string asset, string symbol, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats>> GetLastCreditSizeAsync(string asset, string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Get total funding used in positions on a specific symbol in specified asset
@@ -416,7 +416,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="sorting">["sort"] Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats[]>> GetCreditSizeHistoryAsync(string asset, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats[]>> GetCreditSizeHistoryAsync(string asset, string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
@@ -431,7 +431,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="side">["side"] Position side</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats>> GetLastLongsShortsTotalsAsync(string symbol, StatSide side, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats>> GetLastLongsShortsTotalsAsync(string symbol, StatSide side, CancellationToken ct = default);
 
         /// <summary>
         /// Get total longs/shorts in base currency (i.e. BTC for tBTCUSD)
@@ -450,7 +450,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="sorting">["sort"] Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats[]>> GetLongsShortsTotalsHistoryAsync(string symbol, StatSide side, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats[]>> GetLongsShortsTotalsHistoryAsync(string symbol, StatSide side, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get trading volume on the platform
@@ -464,7 +464,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="period">["period"] The period in days to get the data for. 1, 7 or 30</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats>> GetLastTradingVolumeAsync(int period, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats>> GetLastTradingVolumeAsync(int period, CancellationToken ct = default);
 
         /// <summary>
         /// Get trading volume on the platform
@@ -482,7 +482,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="sorting">["sort"] Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats[]>> GetTradingVolumeHistoryAsync(int period, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats[]>> GetTradingVolumeHistoryAsync(int period, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get volume weighted average price for the day
@@ -496,7 +496,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbol">["symbol"] The symbol, for example `tETHUSD`</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats>> GetLastVolumeWeightedAveragePriceAsync(string symbol, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats>> GetLastVolumeWeightedAveragePriceAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Get volume weighted average price for the day
@@ -514,7 +514,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="sorting">["sort"] Sorting</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexStats[]>> GetVolumeWeightedAveragePriceHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexStats[]>> GetVolumeWeightedAveragePriceHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get symbol names
@@ -528,7 +528,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="type">["type"] The types of symbol</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<string[]>> GetSymbolNamesAsync(SymbolType type, CancellationToken ct = default);
+        Task<HttpResult<string[]>> GetSymbolNamesAsync(SymbolType type, CancellationToken ct = default);
 
         /// <summary>
         /// Get asset names
@@ -541,7 +541,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<string[]>> GetAssetNamesAsync(CancellationToken ct = default);
+        Task<HttpResult<string[]>> GetAssetNamesAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get mapping of assets to their API symbol
@@ -554,7 +554,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, string>>> GetAssetSymbolsAsync(CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, string>>> GetAssetSymbolsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get mapping of assets to their full name
@@ -567,7 +567,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, string>>> GetAssetFullNamesAsync(CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, string>>> GetAssetFullNamesAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get mapping of assets to their unit of measure where applicable
@@ -580,7 +580,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, string>>> GetAssetUnitsAsync(CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, string>>> GetAssetUnitsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get mapping of derivative assets to their underlying asset
@@ -593,7 +593,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, string>>> GetAssetUnderlyingsAsync(CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, string>>> GetAssetUnderlyingsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get mapping of assets to the network they operate on
@@ -606,7 +606,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, string>>> GetAssetNetworksAsync(CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, string>>> GetAssetNetworksAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get mapping of assets to their block explorer urls
@@ -619,7 +619,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, string[]>>> GetAssetBlockExplorerUrlsAsync(CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, string[]>>> GetAssetBlockExplorerUrlsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get mapping of assets to their withdrawal fees
@@ -632,7 +632,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, decimal[]>>> GetAssetWithdrawalFeesAsync(CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, decimal[]>>> GetAssetWithdrawalFeesAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get mapping of assets to their withdrawal methods
@@ -645,7 +645,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, string[]>>> GetAssetDepositWithdrawalMethodsAsync(CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, string[]>>> GetAssetDepositWithdrawalMethodsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get list of market information for each trading pair
@@ -658,7 +658,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, BitfinexSymbolInfo>>> GetSymbolsAsync(CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, BitfinexSymbolInfo>>> GetSymbolsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get list of market information for each derivative trading pair
@@ -671,7 +671,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, BitfinexSymbolInfo>>> GetFuturesSymbolsAsync(CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, BitfinexSymbolInfo>>> GetFuturesSymbolsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get deposit/withdrawal status info for assets
@@ -684,7 +684,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexAssetInfo[]>> GetDepositWithdrawalStatusAsync(CancellationToken ct = default);
+        Task<HttpResult<BitfinexAssetInfo[]>> GetDepositWithdrawalStatusAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get lists of active haircuts and risk coefficients on margin pairs
@@ -697,7 +697,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexMarginInfo>> GetMarginInfoAsync(CancellationToken ct = default);
+        Task<HttpResult<BitfinexMarginInfo>> GetMarginInfoAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get derivatives fees config
@@ -710,6 +710,6 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexDerivativesFees>> GetDerivativesFeesAsync(CancellationToken ct = default);
+        Task<HttpResult<BitfinexDerivativesFees>> GetDerivativesFeesAsync(CancellationToken ct = default);
     }
 }
