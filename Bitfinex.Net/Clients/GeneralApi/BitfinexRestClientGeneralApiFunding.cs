@@ -95,7 +95,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
         {
             var parameters = new ParameterCollection
             {
-                { "type", EnumConverter.GetString(type) }
+                { "type", EnumConverter.GetString(type).ToLowerInvariant() }
             };
             parameters.AddOptionalParameter("id", ids);
 
