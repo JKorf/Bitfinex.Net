@@ -155,6 +155,12 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 10.13.0 - 08 Jun 2026
+    * Updated CryptoExchange.Net to version 11.2.2
+    * Added wallet parameter to GetLedgerEntriesAsync endpoint, updated max limit to 2500
+    * Fixed GeneralApi.KeepFundingAsync type parameter serialization
+    * Fixed user client provider not caching new client when previous client was disposed
+
 * Version 10.12.0 - 26 May 2026
     * Updated CryptoExchange.Net to version 11.2.0
     * Updated PlaceOrderAsync groupId and clientOrderId parameter to long
