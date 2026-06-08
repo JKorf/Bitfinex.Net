@@ -135,12 +135,13 @@ namespace Bitfinex.Net.Clients.SpotApi
         }
 
         /// <inheritdoc />
-        public async Task<WebCallResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, WalletType? walletType = null, CancellationToken ct = default)
         {
-            limit?.ValidateIntBetween(nameof(limit), 1, 500);
+            limit?.ValidateIntBetween(nameof(limit), 1, 2500);
 
             var parameters = new ParameterCollection();
             parameters.AddOptionalParameter("category", category);
+            parameters.AddOptionalEnum("wallet", walletType);
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.AddOptionalParameter("end", DateTimeConverter.ConvertToMilliseconds(endTime));

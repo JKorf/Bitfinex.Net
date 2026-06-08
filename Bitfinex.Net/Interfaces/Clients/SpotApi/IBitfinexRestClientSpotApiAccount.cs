@@ -162,9 +162,10 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="endTime">["end"] End time of the data to return</param>
         /// <param name="limit">["limit"] Max amount of results</param>
         /// <param name="category">["category"] Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
+        /// <param name="walletType">["wallet"] Filter by wallet type</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default);
+        Task<WebCallResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, WalletType? walletType = null, CancellationToken ct = default);
 
         /// <summary>
         /// Gets information about the user associated with the api key/secret
