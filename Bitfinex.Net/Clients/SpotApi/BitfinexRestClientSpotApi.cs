@@ -71,14 +71,7 @@ namespace Bitfinex.Net.Clients.SpotApi
             RequestDefinition definition,
             Parameters? parameters,
             CancellationToken cancellationToken) where T : class
-                => SendToAddressAsync<T>(BaseAddress, definition, parameters, cancellationToken);
-
-        internal Task<HttpResult<T>> SendToAddressAsync<T>(
-            string uri,
-            RequestDefinition definition,
-            Parameters? parameters,
-            CancellationToken cancellationToken) where T : class
-                => base.SendAsync<T>(uri, definition, parameters, cancellationToken);
+                => base.SendAsync<T>(definition, parameters, cancellationToken);
 
         protected override async ValueTask<bool> ShouldRetryRequestAsync<T>(IRateLimitGate? gate, HttpResult<T> callResult, int tries)
         {

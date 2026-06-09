@@ -23,22 +23,22 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             if (string.Equals(evnt, "subscribe", StringComparison.Ordinal) || string.Equals(evnt, "unsubscribe", StringComparison.Ordinal))
                 evnt += "d";
 
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitfinexResponse>(
+            MessageRouter = MessageRouter.CreateForQuery<BitfinexResponse>(
                 [evnt + channel + symbol + precision + frequency + length + key,
                 "error" + channel + symbol + precision + frequency + length + key],
                 HandleMessage);
         }
 
-        public CallResult HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexResponse message)
+        public CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexResponse message)
         {
             if (string.Equals(message.Event, "error", StringComparison.Ordinal))
             {
                 // Additional check for "dup" which means the subscription is already active
                 if (!message.Message.Equals("subscribe: dup", StringComparison.Ordinal))
-                    return CallResult.Fail(new ServerError(ErrorInfo.Unknown with { Message = message.Message! }));
+                    return CallResult.Fail<BitfinexResponse>(new ServerError(ErrorInfo.Unknown with { Message = message.Message! }));
             }
 
-            return CallResult.Ok();
+            return CallResult.Ok(message);
         }
     }
 }

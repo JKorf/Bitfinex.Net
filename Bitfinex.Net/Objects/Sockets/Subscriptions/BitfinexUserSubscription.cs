@@ -61,48 +61,48 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _marginSymbolHandler = marginSymbolHandler;
 
             MessageRouter = MessageRouter.Create([
-                MessageRoute<BitfinexStringUpdate>.CreateWithoutTopicFilter("0hb", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexStringUpdate>("0hb", DoHandleMessage),
 
-                MessageRoute<BitfinexSocketPositionsEvent>.CreateWithoutTopicFilter("0ps",DoHandleMessage),
-                MessageRoute<BitfinexSocketPositionEvent>.CreateWithoutTopicFilter("0pn",DoHandleMessage),
-                MessageRoute<BitfinexSocketPositionEvent>.CreateWithoutTopicFilter("0pu",DoHandleMessage),
-                MessageRoute<BitfinexSocketPositionEvent>.CreateWithoutTopicFilter("0pc", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexSocketPositionsEvent>("0ps",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexSocketPositionEvent>("0pn",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexSocketPositionEvent>("0pu",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexSocketPositionEvent>("0pc", DoHandleMessage),
 
-                MessageRoute<BitfinexBalanceEvent>.CreateWithoutTopicFilter("0bu", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexBalanceEvent>("0bu", DoHandleMessage),
 
-                MessageRoute<BitfinexMarginBaseEvent>.CreateWithoutTopicFilter("0miubase", DoHandleMessage),
-                MessageRoute<BitfinexMarginSymbolEvent>.CreateWithoutTopicFilter("0miusym", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexMarginBaseEvent>("0miubase", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexMarginSymbolEvent>("0miusym", DoHandleMessage),
 
-                MessageRoute<BitfinexFundingInfoEvent>.CreateWithoutTopicFilter("0fiu",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingInfoEvent>("0fiu",DoHandleMessage),
 
-                MessageRoute<BitfinexWalletsEvent>.CreateWithoutTopicFilter("0ws",DoHandleMessage),
-                MessageRoute<BitfinexWalletEvent>.CreateWithoutTopicFilter("0wu",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexWalletsEvent>("0ws",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexWalletEvent>("0wu",DoHandleMessage),
 
-                MessageRoute<BitfinexOrdersEvent>.CreateWithoutTopicFilter("0os",DoHandleMessage),
-                MessageRoute<BitfinexOrderEvent>.CreateWithoutTopicFilter("0on",DoHandleMessage),
-                MessageRoute<BitfinexOrderEvent>.CreateWithoutTopicFilter("0ou",DoHandleMessage),
-                MessageRoute<BitfinexOrderEvent>.CreateWithoutTopicFilter("0oc", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexOrdersEvent>("0os",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexOrderEvent>("0on",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexOrderEvent>("0ou",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexOrderEvent>("0oc", DoHandleMessage),
 
-                MessageRoute<BitfinexTradeDetailEvent>.CreateWithoutTopicFilter("0te",DoHandleMessage),
-                MessageRoute<BitfinexTradeDetailEvent>.CreateWithoutTopicFilter("0tu", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexTradeDetailEvent>("0te",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexTradeDetailEvent>("0tu", DoHandleMessage),
 
-                MessageRoute<BitfinexFundingTradeEvent>.CreateWithoutTopicFilter("0fte",DoHandleMessage),
-                MessageRoute<BitfinexFundingTradeEvent>.CreateWithoutTopicFilter("0ftu",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingTradeEvent>("0fte",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingTradeEvent>("0ftu",DoHandleMessage),
 
-                MessageRoute<BitfinexOffersEvent>.CreateWithoutTopicFilter("0fos", DoHandleMessage),
-                MessageRoute<BitfinexOfferEvent>.CreateWithoutTopicFilter("0fon", DoHandleMessage),
-                MessageRoute<BitfinexOfferEvent>.CreateWithoutTopicFilter("0fou", DoHandleMessage),
-                MessageRoute<BitfinexOfferEvent>.CreateWithoutTopicFilter("0foc", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexOffersEvent>("0fos", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexOfferEvent>("0fon", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexOfferEvent>("0fou", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexOfferEvent>("0foc", DoHandleMessage),
 
-                MessageRoute<BitfinexFundingCreditsEvent>.CreateWithoutTopicFilter("0fcs", DoHandleMessage),
-                MessageRoute<BitfinexFundingCreditEvent>.CreateWithoutTopicFilter("0fcn", DoHandleMessage),
-                MessageRoute<BitfinexFundingCreditEvent>.CreateWithoutTopicFilter("0fcu", DoHandleMessage),
-                MessageRoute<BitfinexFundingCreditEvent>.CreateWithoutTopicFilter("0fcc", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingCreditsEvent>("0fcs", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingCreditEvent>("0fcn", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingCreditEvent>("0fcu", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingCreditEvent>("0fcc", DoHandleMessage),
 
-                MessageRoute<BitfinexFundingsEvent>.CreateWithoutTopicFilter("0fls",DoHandleMessage),
-                MessageRoute<BitfinexFundingEvent>.CreateWithoutTopicFilter("0fln", DoHandleMessage),
-                MessageRoute<BitfinexFundingEvent>.CreateWithoutTopicFilter("0flu", DoHandleMessage),
-                MessageRoute<BitfinexFundingEvent>.CreateWithoutTopicFilter("0flc", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingsEvent>("0fls",DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingEvent>("0fln", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingEvent>("0flu", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexFundingEvent>("0flc", DoHandleMessage),
                 ]);
 
         }

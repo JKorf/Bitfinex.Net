@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         {
             _bulkUpdates = bulkUpdates;
 
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitfinexSocketInfo>("info", HandleMessage);
+            MessageRouter = MessageRouter.CreateForEvent<BitfinexSocketInfo>("info", HandleMessage);
         }
 
         public CallResult HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketInfo message)

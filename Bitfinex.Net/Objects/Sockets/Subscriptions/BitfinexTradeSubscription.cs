@@ -62,9 +62,9 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _firstUpdate = true;
 
             MessageRouter = MessageRouter.Create([
-                MessageRoute<BitfinexTradeUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "single", DoHandleMessage),
-                MessageRoute<BitfinexTradeArrayUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "array", DoHandleMessage),
-                MessageRoute<BitfinexStringUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "hb", DoHandleHeartbeat),
+                MessageRoute.CreateForEvent<BitfinexTradeUpdate>(_channelId.ToString() + "single", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexTradeArrayUpdate>(_channelId.ToString() + "array", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexStringUpdate>(_channelId.ToString() + "hb", DoHandleHeartbeat),
                 ]);
         }
 

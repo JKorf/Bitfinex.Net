@@ -56,14 +56,7 @@ namespace Bitfinex.Net.Clients.GeneralApi
             RequestDefinition definition,
             Parameters? parameters,
             CancellationToken cancellationToken) where T : class
-                => SendToAddressAsync<T>(BaseAddress, definition, parameters, cancellationToken);
-
-        internal Task<HttpResult<T>> SendToAddressAsync<T>(
-            string uri,
-            RequestDefinition definition,
-            Parameters? parameters,
-            CancellationToken cancellationToken) where T : class
-                => base.SendAsync<T>(uri, definition, parameters, cancellationToken);
+                => base.SendAsync<T>(definition, parameters, cancellationToken);
 
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));

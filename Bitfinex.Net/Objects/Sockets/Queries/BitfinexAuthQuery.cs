@@ -15,15 +15,15 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
         public BitfinexAuthQuery(SocketApiClient client, BitfinexAuthentication authRequest) : base(authRequest, true)
         {
             _client = client;
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitfinexResponse>("auth", HandleMessage);
+            MessageRouter = MessageRouter.CreateForQuery<BitfinexResponse>("auth", HandleMessage);
         }
 
-        public CallResult HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexResponse message)
+        public CallResult<BitfinexResponse> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexResponse message)
         {
             if (message.Status != "OK")
-                return CallResult.Fail(new ServerError(message.Code!.Value.ToString(), _client.GetErrorInfo(message.Code!.Value, message.Message!)));
+                return CallResult.Fail<BitfinexResponse>(new ServerError(message.Code!.Value.ToString(), _client.GetErrorInfo(message.Code!.Value, message.Message!)));
 
-            return CallResult.Ok();
+            return CallResult.Ok(message);
         }
     }
 }

@@ -16,11 +16,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         private const string _exchangeName = "Bitfinex";
         private const string _topicId = "BitfinexSpot";
 
-        public string Exchange => BitfinexExchange.ExchangeName;
         public TradingMode[] SupportedTradingModes { get; } = new[] { TradingMode.Spot };
 
         public void SetDefaultExchangeParameter(string key, object value) => ExchangeParameters.SetStaticParameter(Exchange, key, value);
         public void ResetDefaultExchangeParameters() => ExchangeParameters.ResetStaticParameters();
+        public SharedClientInfo Discover() => SharedUtils.GetClientInfo(this);
 
         #region Ticker client
         SubscribeTickerOptions ITickerSocketClient.SubscribeTickerOptions { get; } = new SubscribeTickerOptions(_exchangeName);
@@ -39,7 +39,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Trade client
 
-        EndpointOptions<SubscribeTradeRequest, ITradeSocketClient> ITradeSocketClient.SubscribeTradeOptions { get; } = new EndpointOptions<SubscribeTradeRequest, ITradeSocketClient>(_exchangeName, false);
+        SubscribeTradeOptions ITradeSocketClient.SubscribeTradeOptions { get; } = new SubscribeTradeOptions(_exchangeName, false);
         async Task<WebSocketResult<UpdateSubscription>> ITradeSocketClient.SubscribeToTradeUpdatesAsync(SubscribeTradeRequest request, Action<DataEvent<SharedTrade[]>> handler, CancellationToken ct)
         {
             var validationError = ((ITradeSocketClient)this).SubscribeTradeOptions.ValidateRequest(request, this);
@@ -65,7 +65,7 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Book Ticker client
 
-        EndpointOptions<SubscribeBookTickerRequest, IBookTickerSocketClient> IBookTickerSocketClient.SubscribeBookTickerOptions { get; } = new EndpointOptions<SubscribeBookTickerRequest, IBookTickerSocketClient>(_exchangeName, false);
+        SubscribeBookTickerOptions IBookTickerSocketClient.SubscribeBookTickerOptions { get; } = new SubscribeBookTickerOptions(_exchangeName, false);
         async Task<WebSocketResult<UpdateSubscription>> IBookTickerSocketClient.SubscribeToBookTickerUpdatesAsync(SubscribeBookTickerRequest request, Action<DataEvent<SharedBookTicker>> handler, CancellationToken ct)
         {
             var validationError = ((IBookTickerSocketClient)this).SubscribeBookTickerOptions.ValidateRequest(request, this);
@@ -80,7 +80,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
 
         #region Balance client
-        EndpointOptions<SubscribeBalancesRequest, IBalanceSocketClient> IBalanceSocketClient.SubscribeBalanceOptions { get; } = new EndpointOptions<SubscribeBalancesRequest, IBalanceSocketClient>(_exchangeName, false);
+        SubscribeBalanceOptions IBalanceSocketClient.SubscribeBalanceOptions { get; } = new SubscribeBalanceOptions(_exchangeName, false);
         async Task<WebSocketResult<UpdateSubscription>> IBalanceSocketClient.SubscribeToBalanceUpdatesAsync(SubscribeBalancesRequest request, Action<DataEvent<SharedBalance[]>> handler, CancellationToken ct)
         {
             var validationError = ((IBalanceSocketClient)this).SubscribeBalanceOptions.ValidateRequest(request, this);
@@ -106,7 +106,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
 
         #region Spot Order client
-        EndpointOptions<SubscribeSpotOrderRequest, ISpotOrderSocketClient> ISpotOrderSocketClient.SubscribeSpotOrderOptions { get; } = new EndpointOptions<SubscribeSpotOrderRequest, ISpotOrderSocketClient>(_exchangeName, false);
+        SubscribeSpotOrderOptions ISpotOrderSocketClient.SubscribeSpotOrderOptions { get; } = new SubscribeSpotOrderOptions(_exchangeName, false);
         async Task<WebSocketResult<UpdateSubscription>> ISpotOrderSocketClient.SubscribeToSpotOrderUpdatesAsync(SubscribeSpotOrderRequest request, Action<DataEvent<SharedSpotOrder[]>> handler, CancellationToken ct)
         {
             var validationError = ((ISpotOrderSocketClient)this).SubscribeSpotOrderOptions.ValidateRequest(request, this);
@@ -170,7 +170,7 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
 
         #region User Trade client
-        EndpointOptions<SubscribeUserTradeRequest, IUserTradeSocketClient> IUserTradeSocketClient.SubscribeUserTradeOptions { get; } = new EndpointOptions<SubscribeUserTradeRequest, IUserTradeSocketClient>(_exchangeName, false);
+        SubscribeUserTradeOptions IUserTradeSocketClient.SubscribeUserTradeOptions { get; } = new SubscribeUserTradeOptions(_exchangeName, false);
         async Task<WebSocketResult<UpdateSubscription>> IUserTradeSocketClient.SubscribeToUserTradeUpdatesAsync(SubscribeUserTradeRequest request, Action<DataEvent<SharedUserTrade[]>> handler, CancellationToken ct)
         {
             var result = await SubscribeToUserUpdatesAsync(

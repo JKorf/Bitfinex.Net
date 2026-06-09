@@ -13,17 +13,17 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
     {
         public BitfinexQuery(BitfinexSocketQuery request) : base(request, true, 1)
         {
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<T>("0n", HandleMessage);
+            MessageRouter = MessageRouter.CreateForQuery<T>("0n", HandleMessage);
         }
 
-        public CallResult HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, T message)
-        {
+        public CallResult<T> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, T message)
+        {   
             connection.UpdateSequenceNumber(message.SequenceNumber);
 
             if (message.Data.Result != "SUCCESS")
-                return CallResult.Fail(new ServerError(ErrorInfo.Unknown with { Message = message.Data.ErrorMessage! }));
+                return CallResult.Fail<T>(new ServerError(ErrorInfo.Unknown with { Message = message.Data.ErrorMessage! }));
 
-            return CallResult.Ok();
+            return CallResult.Ok(message);
         }
     }
 }

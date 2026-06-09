@@ -28,15 +28,15 @@ namespace Bitfinex.Net
 
         public override void ProcessRequest(RestApiClient apiClient, RestRequestConfiguration request)
         {
-            if (!request.Authenticated)
+            if (!request.RequestDefinition.Authenticated)
                 return;
 
             request.BodyParameters ??= new Parameters(BitfinexExchange._parameterSerializationSettings);
             request.Headers ??= new Dictionary<string, string>();
 
-            if (request.Path.Contains("v1"))
+            if (request.RequestDefinition.Path.Contains("v1"))
             {
-                request.BodyParameters.Add("request", request.Path);
+                request.BodyParameters.Add("request", request.RequestDefinition.Path);
                 request.BodyParameters.Add("nonce", _nonceProvider.GetNonce().ToString());
                 var requestBody = GetSerializedBody(_messageSerializer, request.BodyParameters);
                 var encodedBody = Convert.ToBase64String(Encoding.ASCII.GetBytes(requestBody));
@@ -51,7 +51,7 @@ namespace Bitfinex.Net
             {
                 var requestBody = GetSerializedBody(_messageSerializer, request.BodyParameters);
                 var nonce = _nonceProvider.GetNonce().ToString();
-                var signature = SignHMACSHA384($"/api{request.Path}{nonce}{requestBody}");
+                var signature = SignHMACSHA384($"/api{request.RequestDefinition.Path}{nonce}{requestBody}");
 
                 request.Headers.Add("bfx-apikey", Credential.Key);
                 request.Headers.Add("bfx-nonce", nonce);
