@@ -63,6 +63,7 @@ namespace Bitfinex.Net
         internal static JsonSerializerContext _serializerContext = JsonSerializerContextCache.GetOrCreate<BitfinexSourceGenerationContext>();
         internal static ParameterSerializationSettings _parameterSerializationSettings = new ParameterSerializationSettings
         {
+            Sort = false,
             Decimal = DecimalSerialization.String
         };
 

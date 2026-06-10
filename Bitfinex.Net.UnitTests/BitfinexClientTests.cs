@@ -80,15 +80,14 @@ namespace Bitfinex.Net.UnitTests
                 {
                     return headers["bfx-signature"].ToString();
                 },
-                "5bead18437434889be3fda165655289d30ee7433d5cdaa9bffd1c3291ea625971b452ca87c7ed11af4e9c959352ec91a",
-                new Dictionary<string, object>
+                "b27b3f276d8d08dc5783c4d848f94605f98c62b7ec76db2acd48d337a479efb65b8002a0aa10999650622e66d6c631de",
+                new Parameters(BitfinexExchange._parameterSerializationSettings)
                 {
                     { "type", "LIMIT" },
                     { "symbol", "tBTCUSD" },
                     { "price", 15 },
                     { "amount", 0.1 },
-                },
-                disableOrdering: true);
+                });
 
         }
 

@@ -185,14 +185,14 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="leverage">Leverage</param>
         /// <param name="cancelTime">Automatically cancel the order after this time</param>
         /// <returns></returns>
-        Task<WebSocketResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null);
+        Task<QueryResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null);
 
         /// <summary>
         /// Cancel all orders
         /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-cancel-multi" /></para>
         /// </summary>
         /// <returns></returns>
-        Task<WebSocketResult<BitfinexOrder[]>> CancelAllOrdersAsync();
+        Task<QueryResult<BitfinexOrder[]>> CancelAllOrdersAsync();
 
         /// <summary>
         /// Updates an order
@@ -206,7 +206,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="priceTrailing">The new trailing price</param>
         /// <param name="flags">The new flags</param>
         /// <returns></returns>
-        Task<WebSocketResult<BitfinexOrder>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? quantity = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null);
+        Task<QueryResult<BitfinexOrder>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? quantity = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null);
 
         /// <summary>
         /// Cancels an order
@@ -214,7 +214,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="orderId">The id of the order to cancel</param>
         /// <returns></returns>
-        Task<WebSocketResult<BitfinexOrder>> CancelOrderAsync(long orderId);
+        Task<QueryResult<BitfinexOrder>> CancelOrderAsync(long orderId);
 
         /// <summary>
         /// Cancels multiple orders based on their groupId
@@ -222,7 +222,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="groupOrderId">The group id to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        Task<WebSocketResult<BitfinexOrder[]>> CancelOrdersByGroupIdAsync(long groupOrderId);
+        Task<QueryResult<BitfinexOrder[]>> CancelOrdersByGroupIdAsync(long groupOrderId);
 
         /// <summary>
         /// Cancels multiple orders based on their groupIds
@@ -230,7 +230,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="groupOrderIds">The group ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        Task<WebSocketResult<BitfinexOrder[]>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderIds);
+        Task<QueryResult<BitfinexOrder[]>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderIds);
 
         /// <summary>
         /// Cancels multiple orders based on their order ids
@@ -238,7 +238,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="orderIds">The order ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
-        Task<WebSocketResult<BitfinexOrder[]>> CancelOrdersAsync(IEnumerable<long> orderIds);
+        Task<QueryResult<BitfinexOrder[]>> CancelOrdersAsync(IEnumerable<long> orderIds);
 
         /// <summary>
         /// Cancels multiple orders based on their clientOrderIds
@@ -246,7 +246,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
         /// <returns>True if successfully committed on server</returns>
-        Task<WebSocketResult<BitfinexOrder[]>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds);
+        Task<QueryResult<BitfinexOrder[]>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds);
 
         /// <summary>
         /// Submit a new funding offer
@@ -259,7 +259,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="period">Time period of offer. Minimum 2 days. Maximum 120 days.</param>
         /// <param name="flags">Flags</param>
         /// <returns></returns>
-        Task<WebSocketResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(FundingOfferType type, string symbol, decimal quantity, decimal price, int period, int? flags = null);
+        Task<QueryResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(FundingOfferType type, string symbol, decimal quantity, decimal price, int period, int? flags = null);
 
         /// <summary>
         /// Cancel a funding offer
@@ -267,6 +267,6 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="id">Id of the offer to cancel</param>
         /// <returns></returns>
-        Task<WebSocketResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long id);
+        Task<QueryResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long id);
     }
 }

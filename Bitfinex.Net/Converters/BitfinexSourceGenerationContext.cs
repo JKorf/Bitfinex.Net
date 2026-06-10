@@ -4,6 +4,7 @@ using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
 using Bitfinex.Net.Objects.Models.V1;
 using Bitfinex.Net.Objects.Sockets;
+using CryptoExchange.Net.Objects;
 using System;
 using System.Collections.Generic;
 
@@ -12,6 +13,7 @@ namespace Bitfinex.Net.Converters
     [JsonSerializable(typeof(IDictionary<string, object>))]
     [JsonSerializable(typeof(Dictionary<string, string>))]
     [JsonSerializable(typeof(Dictionary<string, long>))]
+    [JsonSerializable(typeof(Parameters))]
     [JsonSerializable(typeof(BitfinexAsset[][]))]
     [JsonSerializable(typeof(string[][]))]
     [JsonSerializable(typeof(decimal[]))]

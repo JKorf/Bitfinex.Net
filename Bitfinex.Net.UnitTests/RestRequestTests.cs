@@ -119,7 +119,7 @@ namespace Bitfinex.Net.UnitTests
             await tester.ValidateAsync(client => client.SpotApi.Trading.GetPositionsByIdAsync(new[] { "123" }), "GetPositionsById");
         }
 
-        private bool IsAuthenticated(WebCallResult result)
+        private bool IsAuthenticated(IHttpResult result)
         {
             return result.RequestUrl.Contains("bfx-signature") || result.RequestHeaders.Any(x => x.Key == "bfx-signature") || result.RequestHeaders.Any(x => x.Key == "X-BFX-SIGNATURE");
         }
