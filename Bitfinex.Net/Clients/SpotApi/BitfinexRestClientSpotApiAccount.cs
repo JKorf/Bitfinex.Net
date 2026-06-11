@@ -286,6 +286,13 @@ namespace Bitfinex.Net.Clients.SpotApi
                                                                          string? paymentId = null,
                                                                          bool? feeFromWithdrawalAmount = null,
                                                                          string? note = null,
+                                                                         bool? travelRuleTos = null,
+                                                                         string? vaspDid = null,
+                                                                         string? vaspName = null,
+                                                                         bool? beneficiarySelf = null,
+                                                                         string? destFirstname = null,
+                                                                         string? destLastname = null,
+                                                                         string? destCorpName = null,
                                                                          CancellationToken ct = default)
         {
             method.ValidateNotNull(nameof(method));
@@ -300,6 +307,13 @@ namespace Bitfinex.Net.Clients.SpotApi
             parameters.AddOptionalParameter("invoice", invoice);
             parameters.AddOptionalParameter("note", note);
             parameters.AddOptionalParameter("fee_deduct", feeFromWithdrawalAmount == null ? null : feeFromWithdrawalAmount == true ? 1 : 0);
+            parameters.AddOptionalParameter("travel_rule_tos", travelRuleTos);
+            parameters.AddOptionalParameter("vasp_did", vaspDid);
+            parameters.AddOptionalParameter("vasp_name", vaspName);
+            parameters.AddOptionalParameter("beneficiary_self", beneficiarySelf);
+            parameters.AddOptionalParameter("dest_firstname", destFirstname);
+            parameters.AddOptionalParameter("dest_lastname", destLastname);
+            parameters.AddOptionalParameter("dest_corp_name", destCorpName);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, "v2/auth/w/withdraw", BitfinexExchange.RateLimiter.Overall, 1, true);
             return await _baseClient.SendAsync<BitfinexWithdrawalResultV2>(request, parameters, ct).ConfigureAwait(false);

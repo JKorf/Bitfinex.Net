@@ -316,6 +316,13 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="paymentId">["payment_id"] Payment id (tag/memo)</param>
         /// <param name="feeFromWithdrawalAmount">["fee_deduct"] When true the fee will be deducted from the withdrawal quantity</param>
         /// <param name="note">["note"] Note</param>
+        /// <param name="travelRuleTos">["travel_rule_tos"] Flag to voluntarily send travel rule details for withdrawal</param>
+        /// <param name="vaspDid">["vasp_did"] Virtual asset provider identifier, optional info for travel rule purpose. DID values can be found on https://api-pub.bitfinex.com/v2/ext/vasps endpoint.</param>
+        /// <param name="vaspName">["vasp_name"] Virtual asset provider name, optional info for travel rule purpose, if self custody ignore the field</param>
+        /// <param name="beneficiarySelf">["beneficiary_self"] Set to 'true' to extract destination data from your KYC data. (If 'true', dest_firstname, dest_lastname, or dest_corp_name do not need to be supplied)</param>
+        /// <param name="destFirstname">["dest_firstname"] Destination entity first name for travel rule purpose (mandatory if dest_lastname is supplied, not required if beneficiary_self = true)</param>
+        /// <param name="destLastname">["dest_lastname"] Destination entity last name for travel rule purpose (mandatory if dest_firstname is supplied, not required if beneficiary_self = true)</param>
+        /// <param name="destCorpName">["dest_corp_name"] Destination entity corporate name for travel rule purpose. (use either dest_firstname + dest_lastname or dest_corp_name, not required if beneficiary_self = true)</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<BitfinexWithdrawalResultV2>> WithdrawV2Async(string method,
@@ -326,6 +333,13 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
                                                                          string? paymentId = null,
                                                                          bool? feeFromWithdrawalAmount = null,
                                                                          string? note = null,
+                                                                         bool? travelRuleTos = null,
+                                                                         string? vaspDid = null,
+                                                                         string? vaspName = null,
+                                                                         bool? beneficiarySelf = null,
+                                                                         string? destFirstname = null,
+                                                                         string? destLastname = null,
+                                                                         string? destCorpName = null,
                                                                          CancellationToken ct = default);
         /// <summary>
         /// Get login history
