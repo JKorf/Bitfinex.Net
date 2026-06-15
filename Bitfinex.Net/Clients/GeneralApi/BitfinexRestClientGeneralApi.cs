@@ -38,8 +38,8 @@ namespace Bitfinex.Net.Clients.GeneralApi
 
         #region ctor
 
-        internal BitfinexRestClientGeneralApi(ILogger logger, HttpClient? httpClient, BitfinexRestOptions options) :
-            base(logger, BitfinexExchange.ExchangeName, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
+        internal BitfinexRestClientGeneralApi(ILoggerFactory? loggerFactory, HttpClient? httpClient, BitfinexRestOptions options) :
+            base(loggerFactory, BitfinexExchange.ExchangeName, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
         {
             Funding = new BitfinexRestClientGeneralApiFunding(this);
 

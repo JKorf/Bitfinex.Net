@@ -49,8 +49,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
 
         #region ctor
-        internal BitfinexSocketClientSpotApi(ILogger logger, BitfinexSocketOptions options) :
-            base(logger, BitfinexExchange.ExchangeName, options.Environment.SocketPublicAddress, options, options.SpotOptions)
+        internal BitfinexSocketClientSpotApi(ILoggerFactory? loggerFactory, BitfinexSocketOptions options) :
+            base(loggerFactory, BitfinexExchange.ExchangeName, options.Environment.SocketPublicAddress, options, options.SpotOptions)
         {
             EnforceSequenceNumbers = true;
 

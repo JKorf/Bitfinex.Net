@@ -41,7 +41,7 @@ namespace Bitfinex.Net.Clients
         {
             Initialize(options.Value);
 
-            SpotApi = AddApiClient(new BitfinexSocketClientSpotApi(_logger, options.Value));
+            SpotApi = AddApiClient(new BitfinexSocketClientSpotApi(loggerFactory, options.Value));
         }
 
         #endregion

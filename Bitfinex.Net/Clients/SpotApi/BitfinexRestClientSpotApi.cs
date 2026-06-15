@@ -46,8 +46,8 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region ctor
 
-        internal BitfinexRestClientSpotApi(ILogger logger, HttpClient? httpClient, BitfinexRestOptions options) :
-            base(logger, BitfinexExchange.ExchangeName, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
+        internal BitfinexRestClientSpotApi(ILoggerFactory? loggerFactory, HttpClient? httpClient, BitfinexRestOptions options) :
+            base(loggerFactory, BitfinexExchange.ExchangeName, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
         {
             Account = new BitfinexRestClientSpotApiAccount(this);
             ExchangeData = new BitfinexRestClientSpotApiExchangeData(this);

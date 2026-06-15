@@ -1,6 +1,7 @@
 ﻿using Bitfinex.Net.Interfaces.Clients;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Clients;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -10,18 +11,17 @@ using System.Net.Http;
 namespace Bitfinex.Net.Clients
 {
     /// <inheritdoc />
-    public class BitfinexUserClientProvider : IBitfinexUserClientProvider
+    public class BitfinexUserClientProvider : UserClientProvider<
+        IBitfinexRestClient,
+        IBitfinexSocketClient,
+        BitfinexRestOptions,
+        BitfinexSocketOptions,
+        BitfinexCredentials,
+        BitfinexEnvironment
+        >, IBitfinexUserClientProvider
     {
-        private ConcurrentDictionary<string, IBitfinexRestClient> _restClients = new ConcurrentDictionary<string, IBitfinexRestClient>();
-        private ConcurrentDictionary<string, IBitfinexSocketClient> _socketClients = new ConcurrentDictionary<string, IBitfinexSocketClient>();
-
-        private readonly IOptions<BitfinexRestOptions> _restOptions;
-        private readonly IOptions<BitfinexSocketOptions> _socketOptions;
-        private readonly HttpClient _httpClient;
-        private readonly ILoggerFactory? _loggerFactory;
-
         /// <inheritdoc />
-        public string ExchangeName => BitfinexExchange.ExchangeName;
+        public override string ExchangeName => BitfinexExchange.ExchangeName;
 
         /// <summary>
         /// ctor
@@ -40,97 +40,15 @@ namespace Bitfinex.Net.Clients
             ILoggerFactory? loggerFactory,
             IOptions<BitfinexRestOptions> restOptions,
             IOptions<BitfinexSocketOptions> socketOptions)
+            : base(httpClient, loggerFactory, restOptions, socketOptions)
         {
-            _httpClient = httpClient ?? new HttpClient();
-            _httpClient.Timeout = restOptions.Value.RequestTimeout;
-            _loggerFactory = loggerFactory;
-            _restOptions = restOptions;
-            _socketOptions = socketOptions;
         }
 
         /// <inheritdoc />
-        public void InitializeUserClient(string userIdentifier, BitfinexCredentials credentials, BitfinexEnvironment? environment = null)
-        {
-            CreateRestClient(userIdentifier, credentials, environment);
-            CreateSocketClient(userIdentifier, credentials, environment);
-        }
-
+        protected override IBitfinexRestClient ConstructRestClient(HttpClient client, ILoggerFactory? loggerFactory, IOptions<BitfinexRestOptions> options)
+            => new BitfinexRestClient(client, loggerFactory, options);
         /// <inheritdoc />
-        public void ClearUserClients(string userIdentifier)
-        {
-            _restClients.TryRemove(userIdentifier, out _);
-            _socketClients.TryRemove(userIdentifier, out _);
-        }
-
-        /// <inheritdoc />
-        public IBitfinexRestClient GetRestClient(string userIdentifier, BitfinexCredentials? credentials = null, BitfinexEnvironment? environment = null)
-        {
-            if (!_restClients.TryGetValue(userIdentifier, out var client) || client.Disposed)
-                client = CreateRestClient(userIdentifier, credentials, environment);
-
-            return client;
-        }
-
-        /// <inheritdoc />
-        public IBitfinexSocketClient GetSocketClient(string userIdentifier, BitfinexCredentials? credentials = null, BitfinexEnvironment? environment = null)
-        {
-            if (!_socketClients.TryGetValue(userIdentifier, out var client) || client.Disposed)
-                client = CreateSocketClient(userIdentifier, credentials, environment);
-
-            return client;
-        }
-
-        private IBitfinexRestClient CreateRestClient(string userIdentifier, BitfinexCredentials? credentials, BitfinexEnvironment? environment)
-        {
-            var clientRestOptions = SetRestEnvironment(environment);
-            var client = new BitfinexRestClient(_httpClient, _loggerFactory, clientRestOptions);
-            if (credentials != null)
-            {
-                client.SetApiCredentials(credentials);
-                _restClients[userIdentifier] = client;
-            }
-            return client;
-        }
-
-        private IBitfinexSocketClient CreateSocketClient(string userIdentifier, BitfinexCredentials? credentials, BitfinexEnvironment? environment)
-        {
-            var clientSocketOptions = SetSocketEnvironment(environment);
-            var client = new BitfinexSocketClient(clientSocketOptions!, _loggerFactory);
-            if (credentials != null)
-            {
-                client.SetApiCredentials(credentials);
-                _socketClients[userIdentifier] = client;
-            }
-            return client;
-        }
-
-        private IOptions<BitfinexRestOptions> SetRestEnvironment(BitfinexEnvironment? environment)
-        {
-            if (environment == null)
-                return _restOptions;
-
-            var newRestClientOptions = new BitfinexRestOptions();
-            var restOptions = _restOptions.Value.Set(newRestClientOptions);
-            newRestClientOptions.Environment = environment;
-            return Options.Create(newRestClientOptions);
-        }
-
-        private IOptions<BitfinexSocketOptions> SetSocketEnvironment(BitfinexEnvironment? environment)
-        {
-            if (environment == null)
-                return _socketOptions;
-
-            var newSocketClientOptions = new BitfinexSocketOptions();
-            var restOptions = _socketOptions.Value.Set(newSocketClientOptions);
-            newSocketClientOptions.Environment = environment;
-            return Options.Create(newSocketClientOptions);
-        }
-
-        private static T ApplyOptionsDelegate<T>(Action<T>? del) where T : new()
-        {
-            var opts = new T();
-            del?.Invoke(opts);
-            return opts;
-        }
+        protected override IBitfinexSocketClient ConstructSocketClient(ILoggerFactory? loggerFactory, IOptions<BitfinexSocketOptions> options)
+            => new BitfinexSocketClient(options, loggerFactory);
     }
 }
