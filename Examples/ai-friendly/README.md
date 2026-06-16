@@ -14,6 +14,6 @@ Examples:
 - `02-margin-funding.cs` - margin positions plus public and authenticated funding APIs.
 - `03-websocket.cs` - ticker and candle subscriptions.
 - `04-multi-exchange.cs` - CryptoExchange.Net shared API usage.
-- `05-error-handling.cs` - `WebCallResult<T>` handling and retry shape.
+- `05-error-handling.cs` - `HttpResult<T>` handling and retry shape.
 
-Most REST calls return `WebCallResult<T>`. Always check `.Success` before using `.Data`; use `.Error` for exchange, validation, network and rate-limit failures.
+Most REST calls return `HttpResult<T>`. Always check `.Success` before using `.Data`; use `.Error` for exchange, validation, network and rate-limit failures.

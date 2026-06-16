@@ -22,8 +22,8 @@ Primary documentation:
 - Use `BitfinexCredentials("key", "secret")`, not generic `ApiCredentials`, for API key setup.
 - Include `using Bitfinex.Net;` when using `BitfinexCredentials` or `BitfinexEnvironment`.
 - Always check `.Success` before reading `.Data`.
-- REST methods return `WebCallResult<T>` or `WebCallResult`.
-- WebSocket subscriptions return `CallResult<UpdateSubscription>`.
+- REST methods return `HttpResult<T>` or `HttpResult`.
+- WebSocket subscriptions return `WebSocketResult<UpdateSubscription>`.
 - Reuse clients. Do not instantiate a REST or socket client per request in production code.
 - Prefer dependency injection for long-running services.
 - Store WebSocket subscriptions and unsubscribe during shutdown.

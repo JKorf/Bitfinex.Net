@@ -1,6 +1,6 @@
 // 05-error-handling.cs
 //
-// Demonstrates: WebCallResult patterns, retry logic, common error scenarios.
+// Demonstrates: HttpResult patterns, retry logic, common error scenarios.
 //
 // Setup: dotnet add package JKorf.Bitfinex.Net
 
@@ -15,7 +15,7 @@ var client = new BitfinexRestClient(options =>
 });
 
 // ---- 1. THE BASIC PATTERN ----
-// Every REST method returns WebCallResult<T> or WebCallResult.
+// Every REST method returns HttpResult<T> or HttpResult.
 // .Success is true/false. .Data is valid only when .Success is true.
 // .Error contains structured error info when .Success is false.
 
@@ -37,11 +37,11 @@ else
 // Retry only on transient errors such as rate limits, network issues, or server overload.
 // Do not retry validation errors or insufficient balance errors.
 
-async Task<WebCallResult<T>> WithRetry<T>(
-    Func<Task<WebCallResult<T>>> call,
+async Task<HttpResult<T>> WithRetry<T>(
+    Func<Task<HttpResult<T>>> call,
     int maxAttempts = 3)
 {
-    WebCallResult<T> last = default!;
+    HttpResult<T> last = default!;
     for (var attempt = 1; attempt <= maxAttempts; attempt++)
     {
         last = await call();
@@ -79,7 +79,7 @@ if (!order.Success)
 }
 
 // ---- 4. EXCEPTIONS VS ERROR RESULTS ----
-// Bitfinex.Net returns API/network/rate-limit errors via WebCallResult.Error.
+// Bitfinex.Net returns API/network/rate-limit errors via HttpResult.Error.
 // Exceptions are for misconfiguration, disposal, cancellation, or programmer errors.
 
 // Common variations:
