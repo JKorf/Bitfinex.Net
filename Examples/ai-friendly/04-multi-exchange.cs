@@ -11,7 +11,14 @@ using Bitfinex.Net.Clients;
 using CryptoExchange.Net.SharedApis;
 
 // Bitfinex exposes a SharedClient on SpotApi. Shared symbols do not use Bitfinex t/f prefixes.
-ISpotTickerRestClient bitfinexShared = new BitfinexRestClient().SpotApi.SharedClient;
+var bitfinexRest = new BitfinexRestClient();
+ISpotTickerRestClient bitfinexShared = bitfinexRest.SpotApi.SharedClient;
+
+var sharedInfo = bitfinexRest.SpotApi.SharedClient.Discover();
+var supportedFeatures = sharedInfo.Features
+    .Where(x => x.Supported)
+    .Select(x => x.EndpointName);
+Console.WriteLine($"{sharedInfo.Exchange} {sharedInfo.TypeName}: {string.Join(", ", supportedFeatures)}");
 
 var btcusd = new SharedSymbol(TradingMode.Spot, "BTC", "USD");
 
@@ -33,6 +40,7 @@ async Task PrintTicker(ISpotTickerRestClient client, SharedSymbol symbol)
 //   ISpotTickerRestClient, ISpotSymbolRestClient, ISpotOrderRestClient
 //   IBalanceRestClient, IPositionRestClient, IFeeRestClient
 //   IOrderBookRestClient, IRecentTradeRestClient, IKlineRestClient
+// Call SharedClient.Discover() before routing optional shared features.
 
 // ---- WEBSOCKET EXAMPLE - SHARED SUBSCRIPTION ----
 var bitfinexSocket = new BitfinexSocketClient();

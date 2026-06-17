@@ -1,6 +1,7 @@
 // 05-error-handling.cs
 //
-// Demonstrates: HttpResult patterns, retry logic, common error scenarios.
+// Demonstrates: HttpResult, WebSocketResult, ExchangeCallResult, retry logic,
+// and common error scenarios.
 //
 // Setup: dotnet add package JKorf.Bitfinex.Net
 
@@ -16,6 +17,8 @@ var client = new BitfinexRestClient(options =>
 
 // ---- 1. THE BASIC PATTERN ----
 // Every REST method returns HttpResult<T> or HttpResult.
+// WebSocket subscriptions return WebSocketResult<UpdateSubscription>.
+// Shared non-I/O symbol/cache helpers return ExchangeCallResult<T>.
 // .Success is true/false. .Data is valid only when .Success is true.
 // .Error contains structured error info when .Success is false.
 

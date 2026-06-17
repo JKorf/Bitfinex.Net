@@ -13,7 +13,7 @@ Examples:
 - `01-spot-quickstart.cs` - public market data, wallets, open orders and order placement.
 - `02-margin-funding.cs` - margin positions plus public and authenticated funding APIs.
 - `03-websocket.cs` - ticker and candle subscriptions.
-- `04-multi-exchange.cs` - CryptoExchange.Net shared API usage.
-- `05-error-handling.cs` - `HttpResult<T>` handling and retry shape.
+- `04-multi-exchange.cs` - CryptoExchange.Net shared API usage, capability discovery and shared subscriptions.
+- `05-error-handling.cs` - `HttpResult`, `WebSocketResult` and `ExchangeCallResult` handling and retry shape.
 
-Most REST calls return `HttpResult<T>`. Always check `.Success` before using `.Data`; use `.Error` for exchange, validation, network and rate-limit failures.
+Most REST calls return `HttpResult<T>` or `HttpResult`. Socket subscription calls return `WebSocketResult<UpdateSubscription>`. Shared non-I/O symbol/cache helpers return `ExchangeCallResult<T>`. Always check `.Success` before using `.Data`; use `.Error` for exchange, validation, network and rate-limit failures.

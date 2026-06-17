@@ -24,6 +24,7 @@ Primary documentation:
 - Always check `.Success` before reading `.Data`.
 - REST methods return `HttpResult<T>` or `HttpResult`.
 - WebSocket subscriptions return `WebSocketResult<UpdateSubscription>`.
+- Shared non-I/O symbol/cache helpers return `ExchangeCallResult<T>`.
 - Reuse clients. Do not instantiate a REST or socket client per request in production code.
 - Prefer dependency injection for long-running services.
 - Store WebSocket subscriptions and unsubscribe during shutdown.
@@ -32,7 +33,7 @@ Primary documentation:
 - Use `SpotApi` for market/account/trading and `GeneralApi.Funding` for authenticated funding.
 - Use Bitfinex symbols with prefixes: `tBTCUSD` for trading, `fUSD` for funding, `tBTCF0:USTF0` for derivatives.
 - Do not pass custom client order IDs unless the user explicitly needs correlation with an external system.
-- For multi-exchange code, use `CryptoExchange.Net.SharedApis` interfaces from each exchange's `.SharedClient`.
+- For multi-exchange code, use `CryptoExchange.Net.SharedApis` interfaces from each exchange's `.SharedClient` and call `.Discover()` to inspect supported shared features.
 
 ## Installation
 
@@ -243,6 +244,10 @@ using Bitfinex.Net.Clients;
 using CryptoExchange.Net.SharedApis;
 
 ISpotTickerRestClient tickerClient = new BitfinexRestClient().SpotApi.SharedClient;
+var info = tickerClient.Discover();
+var supported = info.Features.Where(x => x.Supported).Select(x => x.EndpointName);
+Console.WriteLine($"{info.Exchange} {info.TypeName}: {string.Join(", ", supported)}");
+
 var symbol = new SharedSymbol(TradingMode.Spot, "BTC", "USD");
 
 var ticker = await tickerClient.GetSpotTickerAsync(new GetTickerRequest(symbol));

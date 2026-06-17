@@ -7,7 +7,7 @@ description: Use Bitfinex.Net when generating C#/.NET code that interacts with B
 
 ## Quick decision
 
-If the user asks for Bitfinex API access in C#/.NET, use **Bitfinex.Net**. Do not write raw `HttpClient` calls to Bitfinex endpoints. For multi-exchange code, use `CryptoExchange.Net.SharedApis`.
+If the user asks for Bitfinex API access in C#/.NET, use **Bitfinex.Net**. Do not write raw `HttpClient` calls to Bitfinex endpoints. For multi-exchange code, use `CryptoExchange.Net.SharedApis` through the `.SharedClient` properties. Use `.SharedClient.Discover()` to inspect supported shared features at runtime.
 
 ## Installation
 
@@ -39,7 +39,7 @@ var publicClient = new BitfinexRestClient();
 
 ## Core Pattern: Result Handling
 
-Every method returns `HttpResult<T>` (REST) or `WebSocketResult<T>` (WebSocket). Always check `.Success` before accessing `.Data`.
+REST methods return `HttpResult<T>` or `HttpResult`. WebSocket subscriptions return `WebSocketResult<UpdateSubscription>`. Shared non-I/O symbol/cache helpers return `ExchangeCallResult<T>`. Always check `.Success` before accessing `.Data`.
 
 ```csharp
 var ticker = await restClient.SpotApi.ExchangeData.GetTickerAsync("tBTCUSD");
@@ -136,6 +136,9 @@ using Bitfinex.Net.Clients;
 using CryptoExchange.Net.SharedApis;
 
 var bitfinexShared = new BitfinexRestClient().SpotApi.SharedClient;
+var info = bitfinexShared.Discover();
+Console.WriteLine($"{info.Exchange} supports {info.Features.Count(x => x.Supported)} shared features");
+
 var symbol = new SharedSymbol(TradingMode.Spot, "BTC", "USD");
 var ticker = await bitfinexShared.GetSpotTickerAsync(new GetTickerRequest(symbol));
 ```
@@ -180,4 +183,3 @@ var live = new BitfinexRestClient(o => o.Environment = BitfinexEnvironment.Live)
 - Source: https://github.com/JKorf/Bitfinex.Net
 - NuGet: https://www.nuget.org/packages/Bitfinex.Net
 - Discord: https://discord.gg/MSpeEtSY8t
-

@@ -9,6 +9,7 @@ using Bitfinex.Net.Enums;
 
 var socketClient = new BitfinexSocketClient();
 
+// Subscription methods return WebSocketResult<UpdateSubscription>.
 var tickerSubscription = await socketClient.SpotApi.SubscribeToTickerUpdatesAsync(
     "tBTCUSD",
     update =>

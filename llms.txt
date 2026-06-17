@@ -4,6 +4,8 @@
 
 Bitfinex.Net provides strongly typed public and private endpoints, automatic WebSocket reconnection, comprehensive error handling via the `HttpResult<T>` / `WebSocketResult<T>` pattern, native AOT support, local order book support, and SharedApis integration for exchange-agnostic code. Current package version in this repository: 10.11.0. Targets netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
 
+REST methods return `HttpResult<T>` / `HttpResult`, WebSocket subscriptions return `WebSocketResult<UpdateSubscription>`, and shared symbol/cache helpers return `ExchangeCallResult<T>`. Call `SharedClient.Discover()` to inspect supported shared features before routing optional multi-exchange functionality.
+
 ## Documentation
 
 - [README](https://github.com/JKorf/Bitfinex.Net/blob/master/README.md): Overview, installation, supported features, basic usage examples, release notes
@@ -17,8 +19,8 @@ Bitfinex.Net provides strongly typed public and private endpoints, automatic Web
 - [Spot Quickstart](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/01-spot-quickstart.cs): Client setup, ticker, wallets, limit order placement, order status check
 - [Margin and Funding](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/02-margin-funding.cs): Margin position lookup, funding ticker, and funding offer pattern
 - [WebSocket Streams](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/03-websocket.cs): Ticker and kline subscriptions with proper teardown
-- [Multi-Exchange Pattern](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/04-multi-exchange.cs): Using CryptoExchange.Net SharedApis for exchange-agnostic code
-- [Error Handling](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/05-error-handling.cs): HttpResult pattern, retry logic, common errors and their handling
+- [Multi-Exchange Pattern](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/04-multi-exchange.cs): CryptoExchange.Net SharedApis, capability discovery, and shared subscriptions
+- [Error Handling](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/05-error-handling.cs): HttpResult, WebSocketResult, and ExchangeCallResult patterns
 
 ## Reference
 
