@@ -869,12 +869,26 @@ namespace Bitfinex.Net.Clients.SpotApi
             // Return
             return HttpResult.Ok(result, ExchangeHelpers.ApplyFilter(data, x => x.StartTime, request.StartTime, request.EndTime, direction)
                 .Select(x =>
-                    new SharedWithdrawal(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Address, Math.Abs(x.Quantity), x.Status == "COMPLETED", x.StartTime)
+                    new SharedWithdrawal(
+                        BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), 
+                        x.Address, 
+                        Math.Abs(x.Quantity),
+                        x.Status == "COMPLETED",
+                        x.StartTime,
+                        GetWithdrawalStatus(x))
                     {
                         Id = x.Id,
                         TransactionId = x.TransactionId
                     })
                 .ToArray(), nextPageRequest);
+        }
+
+        private SharedTransferStatus GetWithdrawalStatus(BitfinexMovement x)
+        {
+            if (x.Status == "COMPLETED")
+                return SharedTransferStatus.Completed;
+
+            return SharedTransferStatus.Unknown;
         }
 
         #endregion
