@@ -16,9 +16,10 @@ namespace Bitfinex.Net.Clients.ExchangeApi
     internal partial class BitfinexRestClientExchangeApi : IBitfinexRestClientExchangeApiShared
     {
         private const string _exchangeName = "Bitfinex";
-        private const string _topicId = "BitfinexSpot";
+        private const string _topicSpotId = "BitfinexSpot";
+        private const string _topicFuturesId = "BitfinexFutures";
 
-        public TradingMode[] SupportedTradingModes { get; } = new[] { TradingMode.Spot };
+        public TradingMode[] SupportedTradingModes { get; } = new[] { TradingMode.Spot, TradingMode.PerpetualLinear };
         public void SetDefaultExchangeParameter(string key, object value) => ExchangeParameters.SetStaticParameter(Exchange, key, value);
         public void ResetDefaultExchangeParameters() => ExchangeParameters.ResetStaticParameters();
         public SharedClientInfo Discover() => SharedUtils.GetClientInfo(BitfinexExchange.Metadata, this);
@@ -203,7 +204,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 };
             }).ToArray();
 
-            ExchangeSymbolCache.UpdateSymbolInfo(_topicId, EnvironmentName, null, response);
+            ExchangeSymbolCache.UpdateSymbolInfo(_topicSpotId, EnvironmentName, null, response);
             return HttpResult.Ok(result, response);
         }
 
@@ -227,14 +228,14 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
         async Task<ExchangeCallResult<SharedSymbol[]>> ISpotSymbolRestClient.GetSpotSymbolsForBaseAssetAsync(string baseAsset)
         {
-            if (!ExchangeSymbolCache.HasCached(_topicId, EnvironmentName, null))
+            if (!ExchangeSymbolCache.HasCached(_topicSpotId, EnvironmentName, null))
             {
                 var symbols = await ((ISpotSymbolRestClient)this).GetSpotSymbolsAsync(new GetSymbolsRequest()).ConfigureAwait(false);
                 if (!symbols.Success)
                     return ExchangeCallResult<SharedSymbol[]>.Fail(Exchange, symbols.Error!);
             }
 
-            return ExchangeCallResult<SharedSymbol[]>.Ok(Exchange, ExchangeSymbolCache.GetSymbolsForBaseAsset(_topicId, EnvironmentName, null, baseAsset));
+            return ExchangeCallResult<SharedSymbol[]>.Ok(Exchange, ExchangeSymbolCache.GetSymbolsForBaseAsset(_topicSpotId, EnvironmentName, null, baseAsset));
         }
 
         async Task<ExchangeCallResult<bool>> ISpotSymbolRestClient.SupportsSpotSymbolAsync(SharedSymbol symbol)
@@ -242,26 +243,107 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             if (symbol.TradingMode != TradingMode.Spot)
                 throw new ArgumentException(nameof(symbol), "Only Spot symbols allowed");
 
-            if (!ExchangeSymbolCache.HasCached(_topicId, EnvironmentName, null))
+            if (!ExchangeSymbolCache.HasCached(_topicSpotId, EnvironmentName, null))
             {
                 var symbols = await ((ISpotSymbolRestClient)this).GetSpotSymbolsAsync(new GetSymbolsRequest()).ConfigureAwait(false);
                 if (!symbols.Success)
                     return ExchangeCallResult<bool>.Fail(Exchange, symbols.Error!);
             }
 
-            return ExchangeCallResult<bool>.Ok(Exchange, ExchangeSymbolCache.SupportsSymbol(_topicId, EnvironmentName, null, symbol));
+            return ExchangeCallResult<bool>.Ok(Exchange, ExchangeSymbolCache.SupportsSymbol(_topicSpotId, EnvironmentName, null, symbol));
         }
 
         async Task<ExchangeCallResult<bool>> ISpotSymbolRestClient.SupportsSpotSymbolAsync(string symbolName)
         {
-            if (!ExchangeSymbolCache.HasCached(_topicId, EnvironmentName, null))
+            if (!ExchangeSymbolCache.HasCached(_topicSpotId, EnvironmentName, null))
             {
                 var symbols = await ((ISpotSymbolRestClient)this).GetSpotSymbolsAsync(new GetSymbolsRequest()).ConfigureAwait(false);
                 if (!symbols.Success)
                     return ExchangeCallResult<bool>.Fail(Exchange, symbols.Error!);
             }
 
-            return ExchangeCallResult<bool>.Ok(Exchange, ExchangeSymbolCache.SupportsSymbol(_topicId, EnvironmentName, null, symbolName));
+            return ExchangeCallResult<bool>.Ok(Exchange, ExchangeSymbolCache.SupportsSymbol(_topicSpotId, EnvironmentName, null, symbolName));
+        }
+        #endregion
+
+        #region Futures Symbol client
+
+        GetFuturesSymbolsOptions IFuturesSymbolRestClient.GetFuturesSymbolsOptions { get; } = new GetFuturesSymbolsOptions(_exchangeName, false);
+        async Task<HttpResult<SharedFuturesSymbol[]>> IFuturesSymbolRestClient.GetFuturesSymbolsAsync(GetSymbolsRequest request, CancellationToken ct)
+        {
+            var validationError = SharedClient.GetFuturesSymbolsOptions.ValidateRequest(request, this);
+            if (validationError != null)
+                return HttpResult.Fail<SharedFuturesSymbol[]>(Exchange, validationError);
+
+            var result = await ExchangeData.GetFuturesSymbolsAsync(ct: ct).ConfigureAwait(false);
+            if (!result.Success)
+                return HttpResult.Fail<SharedFuturesSymbol[]>(result);
+
+            var response = HttpResult.Ok(result, result.Data.Select(s =>
+            {
+                var assets = GetFuturesAssets(s.Key);
+                return new SharedFuturesSymbol(TradingMode.PerpetualLinear, assets.BaseAsset, assets.QuoteAsset, "t" + s.Key, true)
+                {
+                    // These apply to all symbols
+                    PriceSignificantFigures = 5,
+                    PriceDecimals = 8,
+                    QuantityDecimals = 8,
+
+                    MinTradeQuantity = s.Value.MinOrderQuantity,
+                    MaxTradeQuantity = s.Value.MaxOrderQuantity
+                };
+            }).ToArray());
+
+            ExchangeSymbolCache.UpdateSymbolInfo(_topicFuturesId, EnvironmentName, null, response.Data!);
+            return response;
+        }
+
+        private (string BaseAsset, string QuoteAsset) GetFuturesAssets(string input)
+        {
+            var split = input.Split(':');
+            var baseAsset = split[0].Replace("F0", "");
+            var quoteAsset = split[1].Replace("F0", "");
+
+            return (BitfinexExchange.AssetAliases.ExchangeToCommonName(baseAsset), BitfinexExchange.AssetAliases.ExchangeToCommonName(quoteAsset));
+        }
+
+        async Task<ExchangeCallResult<SharedSymbol[]>> IFuturesSymbolRestClient.GetFuturesSymbolsForBaseAssetAsync(string baseAsset)
+        {
+            if (!ExchangeSymbolCache.HasCached(_topicFuturesId, EnvironmentName, null))
+            {
+                var symbols = await ((IFuturesSymbolRestClient)this).GetFuturesSymbolsAsync(new GetSymbolsRequest()).ConfigureAwait(false);
+                if (!symbols.Success)
+                    return ExchangeCallResult<SharedSymbol[]>.Fail(Exchange, symbols.Error!);
+            }
+
+            return ExchangeCallResult<SharedSymbol[]>.Ok(Exchange, ExchangeSymbolCache.GetSymbolsForBaseAsset(_topicFuturesId, EnvironmentName, null, baseAsset));
+        }
+
+        async Task<ExchangeCallResult<bool>> IFuturesSymbolRestClient.SupportsFuturesSymbolAsync(SharedSymbol symbol)
+        {
+            if (symbol.TradingMode == TradingMode.Spot)
+                throw new ArgumentException(nameof(symbol), "Spot symbols not allowed");
+
+            if (!ExchangeSymbolCache.HasCached(_topicFuturesId, EnvironmentName, null))
+            {
+                var symbols = await ((IFuturesSymbolRestClient)this).GetFuturesSymbolsAsync(new GetSymbolsRequest()).ConfigureAwait(false);
+                if (!symbols.Success)
+                    return ExchangeCallResult<bool>.Fail(Exchange, symbols.Error!);
+            }
+
+            return ExchangeCallResult<bool>.Ok(Exchange, ExchangeSymbolCache.SupportsSymbol(_topicFuturesId, EnvironmentName, null, symbol));
+        }
+
+        async Task<ExchangeCallResult<bool>> IFuturesSymbolRestClient.SupportsFuturesSymbolAsync(string symbolName)
+        {
+            if (!ExchangeSymbolCache.HasCached(_topicFuturesId, EnvironmentName, null))
+            {
+                var symbols = await ((IFuturesSymbolRestClient)this).GetFuturesSymbolsAsync(new GetSymbolsRequest()).ConfigureAwait(false);
+                if (!symbols.Success)
+                    return ExchangeCallResult<bool>.Fail(Exchange, symbols.Error!);
+            }
+
+            return ExchangeCallResult<bool>.Ok(Exchange, ExchangeSymbolCache.SupportsSymbol(_topicFuturesId, EnvironmentName, null, symbolName));
         }
         #endregion
 
@@ -278,7 +360,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             if (!result.Success)
                 return HttpResult.Fail<SharedSpotTicker>(result);
 
-            return HttpResult.Ok(result, new SharedSpotTicker(ExchangeSymbolCache.ParseSymbol(_topicId, EnvironmentName, null, result.Data.Symbol), result.Data.Symbol, result.Data.LastPrice, result.Data.HighPrice, result.Data.LowPrice, result.Data.Volume, Math.Round(result.Data.DailyChangePercentage * 100, 2)));
+            return HttpResult.Ok(result, new SharedSpotTicker(ExchangeSymbolCache.ParseSymbol(_topicSpotId, EnvironmentName, null, result.Data.Symbol), result.Data.Symbol, result.Data.LastPrice, result.Data.HighPrice, result.Data.LowPrice, result.Data.Volume, Math.Round(result.Data.DailyChangePercentage * 100, 2)));
         }
 
         GetSpotTickersOptions ISpotTickerRestClient.GetSpotTickersOptions { get; } = new GetSpotTickersOptions(_exchangeName);
@@ -292,7 +374,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             if (!result.Success)
                 return HttpResult.Fail<SharedSpotTicker[]>(result);
 
-            return HttpResult.Ok(result, result.Data.Select(x => new SharedSpotTicker(ExchangeSymbolCache.ParseSymbol(_topicId, EnvironmentName, null, x.Symbol), x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice, x.Volume, Math.Round(x.DailyChangePercentage * 100, 2))).ToArray());
+            return HttpResult.Ok(result, result.Data.Select(x => new SharedSpotTicker(ExchangeSymbolCache.ParseSymbol(_topicSpotId, EnvironmentName, null, x.Symbol), x.Symbol, x.LastPrice, x.HighPrice, x.LowPrice, x.Volume, Math.Round(x.DailyChangePercentage * 100, 2))).ToArray());
         }
 
         #endregion
@@ -312,7 +394,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 return HttpResult.Fail<SharedBookTicker>(resultTicker);
 
             return HttpResult.Ok(resultTicker, new SharedBookTicker(
-                ExchangeSymbolCache.ParseSymbol(_topicId, EnvironmentName, null, symbol),
+                ExchangeSymbolCache.ParseSymbol(_topicSpotId, EnvironmentName, null, symbol),
                 symbol,
                 resultTicker.Data.Asks[0].Price,
                 resultTicker.Data.Asks[0].Quantity,
@@ -435,7 +517,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             var order = result.Data.Single();
             return HttpResult.Ok(result, new SharedSpotOrder(
-                ExchangeSymbolCache.ParseSymbol(_topicId, EnvironmentName, null, order.Symbol),
+                ExchangeSymbolCache.ParseSymbol(_topicSpotId, EnvironmentName, null, order.Symbol),
                 order.Symbol,
                 order.Id.ToString(),
                 ParseOrderType(order.Type, order.Flags),
@@ -468,7 +550,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 return HttpResult.Fail<SharedSpotOrder[]>(result);
 
             return HttpResult.Ok(result, result.Data.Select(x => new SharedSpotOrder(
-                ExchangeSymbolCache.ParseSymbol(_topicId, EnvironmentName, null, x.Symbol),
+                ExchangeSymbolCache.ParseSymbol(_topicSpotId, EnvironmentName, null, x.Symbol),
                 x.Symbol,
                 x.Id.ToString(),
                 ParseOrderType(x.Type, x.Flags),
@@ -522,7 +604,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             return HttpResult.Ok(result, ExchangeHelpers.ApplyFilter(result.Data, x => x.CreateTime, request.StartTime, request.EndTime, direction)
                 .Select(x =>
                     new SharedSpotOrder(
-                        ExchangeSymbolCache.ParseSymbol(_topicId, EnvironmentName, null, x.Symbol),
+                        ExchangeSymbolCache.ParseSymbol(_topicSpotId, EnvironmentName, null, x.Symbol),
                         x.Symbol,
                         x.Id.ToString(),
                         ParseOrderType(x.Type, x.Flags),
@@ -558,7 +640,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 return HttpResult.Fail<SharedUserTrade[]>(order);
 
             return HttpResult.Ok(order, order.Data.Select(x => new SharedUserTrade(
-                ExchangeSymbolCache.ParseSymbol(_topicId, EnvironmentName, null, x.Symbol),
+                ExchangeSymbolCache.ParseSymbol(_topicSpotId, EnvironmentName, null, x.Symbol),
                 x.Symbol,
                 x.OrderId.ToString(),
                 x.Id.ToString(),
@@ -607,7 +689,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             // Return
             return HttpResult.Ok(result, ExchangeHelpers.ApplyFilter(result.Data, x => x.Timestamp, request.StartTime, request.EndTime, direction)
                 .Select(x => new SharedUserTrade(
-                    ExchangeSymbolCache.ParseSymbol(_topicId, EnvironmentName, null, x.Symbol),
+                    ExchangeSymbolCache.ParseSymbol(_topicSpotId, EnvironmentName, null, x.Symbol),
                     x.Symbol,
                     x.OrderId.ToString(),
                     x.Id.ToString(),
@@ -998,7 +1080,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             var order = result.Data.Single();
             return HttpResult.Ok(result, new SharedSpotTriggerOrder(
-                ExchangeSymbolCache.ParseSymbol(_topicId, EnvironmentName, null, order.Symbol),
+                ExchangeSymbolCache.ParseSymbol(_topicSpotId, EnvironmentName, null, order.Symbol),
                 order.Symbol,
                 order.Id.ToString(),
                 order.Type == OrderType.ExchangeStop ? SharedOrderType.Market : SharedOrderType.Limit,

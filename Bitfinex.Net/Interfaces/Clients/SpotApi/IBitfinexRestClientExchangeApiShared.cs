@@ -21,7 +21,8 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         IFeeRestClient,
         ISpotTriggerOrderRestClient,
         IBookTickerRestClient,
-        ITransferRestClient
+        ITransferRestClient,
+        IFuturesSymbolRestClient
     {
     }
 }
