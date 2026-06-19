@@ -25,7 +25,8 @@ namespace Bitfinex.Net
                 "https://www.bitfinex.com",
                 ["https://docs.bitfinex.com/docs/introduction"],
                 PlatformType.CryptoCurrencyExchange,
-                CentralizationType.Centralized
+                CentralizationType.Centralized,
+                BitfinexEnvironment.All
                 );
 
         /// <summary>
