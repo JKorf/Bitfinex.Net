@@ -9,18 +9,18 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Objects.Models;
-using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using CryptoExchange.Net.RateLimiting.Guards;
+using Bitfinex.Net.Interfaces.Clients.ExchangeApi;
 
-namespace Bitfinex.Net.Clients.SpotApi
+namespace Bitfinex.Net.Clients.ExchangeApi
 {
     /// <inheritdoc />
-    internal class BitfinexRestClientSpotApiTrading : IBitfinexRestClientSpotApiTrading
+    internal class BitfinexRestClientExchangeApiTrading : IBitfinexRestClientExchangeApiTrading
     {
         private static readonly RequestDefinitionCache _definitions = new();
-        private readonly BitfinexRestClientSpotApi _baseClient;
+        private readonly BitfinexRestClientExchangeApi _baseClient;
 
-        internal BitfinexRestClientSpotApiTrading(BitfinexRestClientSpotApi baseClient)
+        internal BitfinexRestClientExchangeApiTrading(BitfinexRestClientExchangeApi baseClient)
         {
             _baseClient = baseClient;
         }

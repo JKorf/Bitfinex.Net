@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Clients.SpotApi;
-using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Objects;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using CryptoExchange.Net.Sockets.Default.Routing;
+using Bitfinex.Net.Clients.ExchangeApi;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         where TArray : BitfinexUpdate<TItem[]>
         where TSingle : BitfinexUpdate<TItem>
     {
-        private BitfinexSocketClientSpotApi _client;
+        private BitfinexSocketClientExchangeApi _client;
 
         private string _channel;
         private string? _symbol;
@@ -30,7 +30,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private Action<DataEvent<int>>? _checksumHandler;
 
         public BitfinexBookSubscription(ILogger logger,
-            BitfinexSocketClientSpotApi client,
+            BitfinexSocketClientExchangeApi client,
             string symbol,
             Action<DateTime, string?, SocketUpdateType, TItem[], long, DateTime> handler,
             Action<DataEvent<int>>? checksumHandler,

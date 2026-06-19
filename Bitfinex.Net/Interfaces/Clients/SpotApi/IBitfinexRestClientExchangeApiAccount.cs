@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.V1;
 
-namespace Bitfinex.Net.Interfaces.Clients.SpotApi
+namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 {
     /// <summary>
     /// Bitfinex account endpoints. Account endpoints include balance info, withdraw/deposit info and requesting and account settings
     /// </summary>
-    public interface IBitfinexRestClientSpotApiAccount
+    public interface IBitfinexRestClientExchangeApiAccount
     {
         /// <summary>
         /// Get all balances
@@ -53,6 +53,19 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<HttpResult<BitfinexMarginSymbol>> GetSymbolMarginInfoAsync(string symbol, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get margin info for all symbols
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/r/info/margin/sym_all
+        /// </para>
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        Task<HttpResult<BitfinexMarginSymbol[]>> GetSymbolMarginInfoSymbolsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get the withdrawal/deposit history
@@ -307,7 +320,7 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         /// POST /v2/auth/w/withdraw
         /// </para>
         /// </summary>
-        /// <param name="method">["method"] Method of withdrawal, methods can be retrieved with <see cref="IBitfinexRestClientSpotApiExchangeData.GetAssetDepositWithdrawalMethodsAsync">ExchangeData.GetAssetDepositWithdrawalMethodsAsync</see></param>
+        /// <param name="method">["method"] Method of withdrawal, methods can be retrieved with <see cref="IBitfinexRestClientExchangeApiExchangeData.GetAssetDepositWithdrawalMethodsAsync">ExchangeData.GetAssetDepositWithdrawalMethodsAsync</see></param>
         /// <param name="wallet">["wallet"] Wallet type</param>
         /// <param name="quantity">["amount"] Quantity to withdraw</param>
         /// <param name="address">["address"] Withdrawal address</param>

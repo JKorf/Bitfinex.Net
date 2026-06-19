@@ -1,6 +1,6 @@
 using Bitfinex.Net.Clients.MessageHandlers;
 using Bitfinex.Net.Enums;
-using Bitfinex.Net.Interfaces.Clients.SpotApi;
+using Bitfinex.Net.Interfaces.Clients.ExchangeApi;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
@@ -31,10 +31,10 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bitfinex.Net.Clients.SpotApi
+namespace Bitfinex.Net.Clients.ExchangeApi
 {
-    /// <inheritdoc cref="IBitfinexSocketClientSpotApi" />
-    internal partial class BitfinexSocketClientSpotApi : SocketApiClient<BitfinexEnvironment, BitfinexAuthenticationProvider, BitfinexCredentials>, IBitfinexSocketClientSpotApi
+    /// <inheritdoc cref="IBitfinexSocketClientExchangeApi" />
+    internal partial class BitfinexSocketClientExchangeApi : SocketApiClient<BitfinexEnvironment, BitfinexAuthenticationProvider, BitfinexCredentials>, IBitfinexSocketClientExchangeApi
     {
         #region fields
         private readonly Random _random = new Random();
@@ -49,8 +49,8 @@ namespace Bitfinex.Net.Clients.SpotApi
         #endregion
 
         #region ctor
-        internal BitfinexSocketClientSpotApi(ILoggerFactory? loggerFactory, BitfinexSocketOptions options) :
-            base(loggerFactory, BitfinexExchange.ExchangeName, options.Environment.SocketPublicAddress, options, options.SpotOptions)
+        internal BitfinexSocketClientExchangeApi(ILoggerFactory? loggerFactory, BitfinexSocketOptions options) :
+            base(loggerFactory, BitfinexExchange.ExchangeName, options.Environment.SocketPublicAddress, options, options.ExchangeOptions)
         {
             EnforceSequenceNumbers = true;
 
@@ -70,11 +70,11 @@ namespace Bitfinex.Net.Clients.SpotApi
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
                 => BitfinexExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
 
-        public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new BitfinexSocketSpotMessageIdentifier();
+        public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new BitfinexSocketMessageIdentifier();
 
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
-        public IBitfinexSocketClientSpotApiShared SharedClient => this;
+        public IBitfinexSocketClientExchangeApiShared SharedClient => this;
 
         protected override bool HandleUnhandledMessage(SocketConnection connection, string typeIdentifier, ReadOnlySpan<byte> data)
         {

@@ -2,34 +2,34 @@
 using CryptoExchange.Net.Interfaces.Clients;
 using System;
 
-namespace Bitfinex.Net.Interfaces.Clients.SpotApi
+namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 {
     /// <summary>
-    /// Spot API endpoints
+    /// API endpoints
     /// </summary>
-    public interface IBitfinexRestClientSpotApi : IRestApiClient<BitfinexCredentials>, IDisposable
+    public interface IBitfinexRestClientExchangeApi : IRestApiClient<BitfinexCredentials>, IDisposable
     {
         /// <summary>
         /// Endpoints related to account settings, info or actions
         /// </summary>
-        /// <see cref="IBitfinexRestClientSpotApiAccount"/>
-        public IBitfinexRestClientSpotApiAccount Account { get; }
+        /// <see cref="IBitfinexRestClientExchangeApiAccount"/>
+        public IBitfinexRestClientExchangeApiAccount Account { get; }
 
         /// <summary>
         /// Endpoints related to retrieving market and system data
         /// </summary>
-        /// <see cref="IBitfinexRestClientSpotApiExchangeData"/>
-        public IBitfinexRestClientSpotApiExchangeData ExchangeData { get; }
+        /// <see cref="IBitfinexRestClientExchangeApiExchangeData"/>
+        public IBitfinexRestClientExchangeApiExchangeData ExchangeData { get; }
 
         /// <summary>
         /// Endpoints related to orders and trades
         /// </summary>
-        /// <see cref="IBitfinexRestClientSpotApiTrading"/>
-        public IBitfinexRestClientSpotApiTrading Trading { get; }
+        /// <see cref="IBitfinexRestClientExchangeApiTrading"/>
+        public IBitfinexRestClientExchangeApiTrading Trading { get; }
 
         /// <summary>
         /// Get the shared rest requests client. This interface is shared with other exchanges to allow for a common implementation for different exchanges.
         /// </summary>
-        public IBitfinexRestClientSpotApiShared SharedClient { get; }
+        public IBitfinexRestClientExchangeApiShared SharedClient { get; }
     }
 }

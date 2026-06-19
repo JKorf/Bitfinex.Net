@@ -1,5 +1,5 @@
 using Bitfinex.Net.Clients.MessageHandlers;
-using Bitfinex.Net.Interfaces.Clients.SpotApi;
+using Bitfinex.Net.Interfaces.Clients.ExchangeApi;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Authentication;
@@ -18,10 +18,10 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bitfinex.Net.Clients.SpotApi
+namespace Bitfinex.Net.Clients.ExchangeApi
 {
-    /// <inheritdoc cref="IBitfinexRestClientSpotApi" />
-    internal partial class BitfinexRestClientSpotApi : RestApiClient<BitfinexEnvironment, BitfinexAuthenticationProvider, BitfinexCredentials>, IBitfinexRestClientSpotApi
+    /// <inheritdoc cref="IBitfinexRestClientExchangeApi" />
+    internal partial class BitfinexRestClientExchangeApi : RestApiClient<BitfinexEnvironment, BitfinexAuthenticationProvider, BitfinexCredentials>, IBitfinexRestClientExchangeApi
     {
         #region fields
         /// <inheritdoc />
@@ -37,21 +37,21 @@ namespace Bitfinex.Net.Clients.SpotApi
 
         #region Api clients
         /// <inheritdoc />
-        public IBitfinexRestClientSpotApiAccount Account { get; }
+        public IBitfinexRestClientExchangeApiAccount Account { get; }
         /// <inheritdoc />
-        public IBitfinexRestClientSpotApiExchangeData ExchangeData { get; }
+        public IBitfinexRestClientExchangeApiExchangeData ExchangeData { get; }
         /// <inheritdoc />
-        public IBitfinexRestClientSpotApiTrading Trading { get; }
+        public IBitfinexRestClientExchangeApiTrading Trading { get; }
         #endregion
 
         #region ctor
 
-        internal BitfinexRestClientSpotApi(ILoggerFactory? loggerFactory, HttpClient? httpClient, BitfinexRestOptions options) :
-            base(loggerFactory, BitfinexExchange.ExchangeName, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
+        internal BitfinexRestClientExchangeApi(ILoggerFactory? loggerFactory, HttpClient? httpClient, BitfinexRestOptions options) :
+            base(loggerFactory, BitfinexExchange.ExchangeName, httpClient, options.Environment.RestAddress, options, options.ExchangeOptions)
         {
-            Account = new BitfinexRestClientSpotApiAccount(this);
-            ExchangeData = new BitfinexRestClientSpotApiExchangeData(this);
-            Trading = new BitfinexRestClientSpotApiTrading(this);
+            Account = new BitfinexRestClientExchangeApiAccount(this);
+            ExchangeData = new BitfinexRestClientExchangeApiExchangeData(this);
+            Trading = new BitfinexRestClientExchangeApiTrading(this);
         }
 
         #endregion
@@ -90,6 +90,6 @@ namespace Bitfinex.Net.Clients.SpotApi
             return false;
         }
 
-        public IBitfinexRestClientSpotApiShared SharedClient => this;
+        public IBitfinexRestClientExchangeApiShared SharedClient => this;
     }
 }

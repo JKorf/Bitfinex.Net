@@ -10,17 +10,17 @@ using CryptoExchange.Net.Interfaces.Clients;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 
-namespace Bitfinex.Net.Interfaces.Clients.SpotApi
+namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 {
     /// <summary>
-    /// Bitfinex spot streams
+    /// Bitfinex exchange streams
     /// </summary>
-    public interface IBitfinexSocketClientSpotApi : ISocketApiClient<BitfinexCredentials>, IDisposable
+    public interface IBitfinexSocketClientExchangeApi : ISocketApiClient<BitfinexCredentials>, IDisposable
     {
         /// <summary>
         /// Get the shared socket subscription client. This interface is shared with other exchanges to allow for a common implementation for different exchanges.
         /// </summary>
-        public IBitfinexSocketClientSpotApiShared SharedClient { get; }
+        public IBitfinexSocketClientExchangeApiShared SharedClient { get; }
 
         /// <summary>
         /// Subscribes to ticker updates for a symbol. Use SubscribeToFundingTickerUpdatesAsync for funding symbol ticker updates

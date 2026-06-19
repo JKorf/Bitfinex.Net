@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Clients.SpotApi;
-using Bitfinex.Net.Objects.Models;
+﻿using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
@@ -9,12 +8,13 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using CryptoExchange.Net.Sockets.Default.Routing;
+using Bitfinex.Net.Clients.ExchangeApi;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
     internal class BitfinexUserSubscription : Subscription
     {
-        private BitfinexSocketClientSpotApi _client;
+        private BitfinexSocketClientExchangeApi _client;
 
         private readonly Action<DataEvent<BitfinexPosition[]>>? _positionHandler;
         private readonly Action<DataEvent<BitfinexWallet[]>>? _walletHandler;
@@ -30,7 +30,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private readonly Action<DataEvent<BitfinexFundingInfo>>? _fundingInfoHandler;
 
         public BitfinexUserSubscription(ILogger logger,
-            BitfinexSocketClientSpotApi client,
+            BitfinexSocketClientExchangeApi client,
             Action<DataEvent<BitfinexPosition[]>>? positionHandler,
             Action<DataEvent<BitfinexWallet[]>>? walletHandler,
             Action<DataEvent<BitfinexOrder[]>>? orderHandler,

@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace Bitfinex.Net.Clients.MessageHandlers
 {
-    internal class BitfinexSocketSpotMessageIdentifier : JsonSocketPreloadMessageHandler
+    internal class BitfinexSocketMessageIdentifier : JsonSocketPreloadMessageHandler
     {
         public override JsonSerializerOptions Options { get; } = SerializerOptions.WithConverters(BitfinexExchange._serializerContext);
 

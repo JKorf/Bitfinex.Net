@@ -49,7 +49,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
         public BitfinexSymbolOrderBook(string symbol, 
             Action<BitfinexOrderBookOptions>? optionsDelegate, 
             ILoggerFactory? logger,
-            IBitfinexSocketClient? socketClient) : base(logger, "Bitfinex", "Spot", symbol)
+            IBitfinexSocketClient? socketClient) : base(logger, "Bitfinex", "Exchange", symbol)
         {
             var options = BitfinexOrderBookOptions.Default.Copy();
             if (optionsDelegate != null)
@@ -71,7 +71,7 @@ namespace Bitfinex.Net.SymbolOrderBooks
             if (_precision == Precision.R0)
                 throw new ArgumentException("Invalid precision: R0");
 
-            var result = await _socketClient.SpotApi.SubscribeToOrderBookUpdatesAsync(Symbol, _precision, Frequency.Realtime, Levels!.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
+            var result = await _socketClient.ExchangeApi.SubscribeToOrderBookUpdatesAsync(Symbol, _precision, Frequency.Realtime, Levels!.Value, ProcessUpdate, ProcessChecksum).ConfigureAwait(false);
             if (!result.Success)
                 return CallResult.Fail<UpdateSubscription>(result.Error);
 

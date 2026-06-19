@@ -1,4 +1,4 @@
-﻿using Bitfinex.Net.Interfaces.Clients.SpotApi;
+﻿using Bitfinex.Net.Interfaces.Clients.ExchangeApi;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces.Clients;
 using CryptoExchange.Net.Objects.Options;
@@ -11,9 +11,9 @@ namespace Bitfinex.Net.Interfaces.Clients
     public interface IBitfinexSocketClient : ISocketClient<BitfinexCredentials>
     {
         /// <summary>
-        /// Spot streams
+        /// Streams
         /// </summary>
-        /// <see cref="IBitfinexSocketClientSpotApi"/>
-        IBitfinexSocketClientSpotApi SpotApi { get; }
+        /// <see cref="IBitfinexSocketClientExchangeApi"/>
+        IBitfinexSocketClientExchangeApi ExchangeApi { get; }
     }
 }

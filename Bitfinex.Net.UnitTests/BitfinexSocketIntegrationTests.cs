@@ -37,8 +37,8 @@ namespace Bitfinex.Net.UnitTests
         [Test]
         public async Task TestSubscriptions()
         {
-            await RunAndCheckUpdate<BitfinexStreamTicker>((client, updateHandler) => client.SpotApi.SubscribeToUserUpdatesAsync(default, default, default, default, default, default, default, default, default , default , default , default , default), false, true);
-            await RunAndCheckUpdate<BitfinexStreamTicker>((client, updateHandler) => client.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", updateHandler, default), true, false);
+            await RunAndCheckUpdate<BitfinexStreamTicker>((client, updateHandler) => client.ExchangeApi.SubscribeToUserUpdatesAsync(default, default, default, default, default, default, default, default, default , default , default , default , default), false, true);
+            await RunAndCheckUpdate<BitfinexStreamTicker>((client, updateHandler) => client.ExchangeApi.SubscribeToTickerUpdatesAsync("tETHUST", updateHandler, default), true, false);
         } 
     }
 }

@@ -11,9 +11,9 @@ namespace Bitfinex.Net.Interfaces
     public interface IBitfinexOrderBookFactory : IExchangeService
     {
         /// <summary>
-        /// Spot order book factory methods
+        /// order book factory methods
         /// </summary>
-        public IOrderBookFactory<BitfinexOrderBookOptions> Spot { get; }
+        public IOrderBookFactory<BitfinexOrderBookOptions> Exchange { get; }
 
         /// <summary>
         /// Create a SymbolOrderBook for the symbol

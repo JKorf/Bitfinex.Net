@@ -13,7 +13,7 @@ using CryptoExchange.Net.Testing.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Bitfinex.Net.Interfaces.Clients;
-using Bitfinex.Net.Clients.SpotApi;
+using Bitfinex.Net.Clients.ExchangeApi;
 
 namespace Bitfinex.Net.UnitTests
 {
@@ -27,7 +27,7 @@ namespace Bitfinex.Net.UnitTests
             var client = TestHelpers.CreateResponseClient("Error message", null, HttpStatusCode.BadRequest);
 
             // act
-            var result = await client.SpotApi.ExchangeData.GetAssetFullNamesAsync();
+            var result = await client.ExchangeApi.ExchangeData.GetAssetFullNamesAsync();
 
             // assert
             Assert.That(false == result.Success);
@@ -54,7 +54,7 @@ namespace Bitfinex.Net.UnitTests
             var request = TestHelpers.SetResponse((BitfinexRestClient)client, "{}");
 
             // act
-            await client.SpotApi.Trading.GetOpenOrdersAsync();
+            await client.ExchangeApi.Trading.GetOpenOrdersAsync();
 
             // assert
             request.Verify(r => r.AddHeader("bfx-nonce", It.IsAny<string>()));
@@ -69,7 +69,7 @@ namespace Bitfinex.Net.UnitTests
                 new BitfinexCredentials("hO6oQotzTE0S5FRYze2Jx2wGx7eVnJGMolpA1nZyehsoMgCcgKNWQHd4QgTFZuwl4Zt4xMe2PqGBegWXO4A", "mheO6dR8ovSsxZQCOYEFCtelpuxcWGTfHw7te326y6jOwq5WpvFQ9JNljoTwBXZGv5It07m9RXSPpDQEK2w"), 
                 new TestNonceProvider(1696751141337)
                 );
-            var client = (RestApiClient)new BitfinexRestClient().SpotApi;
+            var client = (RestApiClient)new BitfinexRestClient().ExchangeApi;
 
             CryptoExchange.Net.Testing.TestHelpers.CheckSignature(
                 client,
@@ -115,7 +115,7 @@ namespace Bitfinex.Net.UnitTests
 
             var client = provider.GetRequiredService<IBitfinexRestClient>();
 
-            var address = client.SpotApi.BaseAddress;
+            var address = client.ExchangeApi.BaseAddress;
 
             Assert.That(address, Is.EqualTo(expected));
         }
@@ -135,7 +135,7 @@ namespace Bitfinex.Net.UnitTests
 
             var client = provider.GetRequiredService<IBitfinexRestClient>();
 
-            var address = client.SpotApi.BaseAddress;
+            var address = client.ExchangeApi.BaseAddress;
 
             Assert.That(address, Is.EqualTo("https://api.bitfinex.com"));
         }
@@ -156,7 +156,7 @@ namespace Bitfinex.Net.UnitTests
 
             var client = provider.GetRequiredService<IBitfinexRestClient>();
 
-            var address = client.SpotApi.BaseAddress;
+            var address = client.ExchangeApi.BaseAddress;
 
             Assert.That(address, Is.EqualTo("https://api.bitfinex.com"));
         }
@@ -186,14 +186,14 @@ namespace Bitfinex.Net.UnitTests
             var restClient = provider.GetRequiredService<IBitfinexRestClient>();
             var socketClient = provider.GetRequiredService<IBitfinexSocketClient>();
 
-            Assert.That(((BaseApiClient)restClient.SpotApi).OutputOriginalData, Is.True);
-            Assert.That(((BaseApiClient)socketClient.SpotApi).OutputOriginalData, Is.False);
-            Assert.That(((BitfinexRestClientSpotApi)restClient.SpotApi).AuthenticationProvider.Key, Is.EqualTo("123"));
-            Assert.That(((BitfinexSocketClientSpotApi)socketClient.SpotApi).AuthenticationProvider.Key, Is.EqualTo("456"));
-            Assert.That(((BaseApiClient)restClient.SpotApi).ClientOptions.Proxy.Host, Is.EqualTo("host"));
-            Assert.That(((BaseApiClient)restClient.SpotApi).ClientOptions.Proxy.Port, Is.EqualTo(80));
-            Assert.That(((BaseApiClient)socketClient.SpotApi).ClientOptions.Proxy.Host, Is.EqualTo("host2"));
-            Assert.That(((BaseApiClient)socketClient.SpotApi).ClientOptions.Proxy.Port, Is.EqualTo(81));
+            Assert.That(((BaseApiClient)restClient.ExchangeApi).OutputOriginalData, Is.True);
+            Assert.That(((BaseApiClient)socketClient.ExchangeApi).OutputOriginalData, Is.False);
+            Assert.That(((BitfinexRestClientExchangeApi)restClient.ExchangeApi).AuthenticationProvider.Key, Is.EqualTo("123"));
+            Assert.That(((BitfinexSocketClientExchangeApi)socketClient.ExchangeApi).AuthenticationProvider.Key, Is.EqualTo("456"));
+            Assert.That(((BaseApiClient)restClient.ExchangeApi).ClientOptions.Proxy.Host, Is.EqualTo("host"));
+            Assert.That(((BaseApiClient)restClient.ExchangeApi).ClientOptions.Proxy.Port, Is.EqualTo(80));
+            Assert.That(((BaseApiClient)socketClient.ExchangeApi).ClientOptions.Proxy.Host, Is.EqualTo("host2"));
+            Assert.That(((BaseApiClient)socketClient.ExchangeApi).ClientOptions.Proxy.Port, Is.EqualTo(81));
         }
     }
 }

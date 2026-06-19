@@ -6,12 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Objects.Models;
 
-namespace Bitfinex.Net.Interfaces.Clients.SpotApi
+namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 {
     /// <summary>
     /// Bitfinex trading endpoints, placing and managing orders.
     /// </summary>
-    public interface IBitfinexRestClientSpotApiTrading
+    public interface IBitfinexRestClientExchangeApiTrading
     {
         /// <summary>
         /// Get the active orders

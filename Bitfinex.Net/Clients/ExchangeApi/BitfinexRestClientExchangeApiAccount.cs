@@ -10,19 +10,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.V1;
-using Bitfinex.Net.Interfaces.Clients.SpotApi;
 using CryptoExchange.Net.RateLimiting.Guards;
 using CryptoExchange.Net.Objects.Errors;
+using Bitfinex.Net.Interfaces.Clients.ExchangeApi;
 
-namespace Bitfinex.Net.Clients.SpotApi
+namespace Bitfinex.Net.Clients.ExchangeApi
 {
     /// <inheritdoc />
-    internal class BitfinexRestClientSpotApiAccount : IBitfinexRestClientSpotApiAccount
+    internal class BitfinexRestClientExchangeApiAccount : IBitfinexRestClientExchangeApiAccount
     {
         private static readonly RequestDefinitionCache _definitions = new();
-        private readonly BitfinexRestClientSpotApi _baseClient;
+        private readonly BitfinexRestClientExchangeApi _baseClient;
 
-        internal BitfinexRestClientSpotApiAccount(BitfinexRestClientSpotApi baseClient)
+        internal BitfinexRestClientExchangeApiAccount(BitfinexRestClientExchangeApi baseClient)
         {
             _baseClient = baseClient;
         }
@@ -51,6 +51,13 @@ namespace Bitfinex.Net.Clients.SpotApi
             var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, $"v2/auth/r/info/margin/{symbol}", BitfinexExchange.RateLimiter.Overall, 1, true,
                 limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
             return await _baseClient.SendAsync<BitfinexMarginSymbol>(request, null, ct).ConfigureAwait(false);
+        }
+
+        public async Task<HttpResult<BitfinexMarginSymbol[]>> GetSymbolMarginInfoSymbolsAsync(CancellationToken ct = default)
+        {
+            var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, $"v2/auth/r/info/margin/sym_all", BitfinexExchange.RateLimiter.Overall, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            return await _baseClient.SendAsync<BitfinexMarginSymbol[]>(request, null, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />

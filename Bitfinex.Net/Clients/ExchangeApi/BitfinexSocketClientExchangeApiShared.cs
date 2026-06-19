@@ -1,5 +1,5 @@
 using Bitfinex.Net.Enums;
-using Bitfinex.Net.Interfaces.Clients.SpotApi;
+using Bitfinex.Net.Interfaces.Clients.ExchangeApi;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
@@ -9,9 +9,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bitfinex.Net.Clients.SpotApi
+namespace Bitfinex.Net.Clients.ExchangeApi
 {
-    internal partial class BitfinexSocketClientSpotApi : IBitfinexSocketClientSpotApiShared
+    internal partial class BitfinexSocketClientExchangeApi : IBitfinexSocketClientExchangeApiShared
     {
         private const string _exchangeName = "Bitfinex";
         private const string _topicId = "BitfinexSpot";

@@ -1,11 +1,11 @@
 ﻿using CryptoExchange.Net.SharedApis;
 
-namespace Bitfinex.Net.Interfaces.Clients.SpotApi
+namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 {
     /// <summary>
-    /// Shared interface for Spot socket API usage
+    /// Shared interface for socket API usage
     /// </summary>
-    public interface IBitfinexSocketClientSpotApiShared :
+    public interface IBitfinexSocketClientExchangeApiShared :
         ITickerSocketClient,
         ITradeSocketClient,
         IBookTickerSocketClient,
