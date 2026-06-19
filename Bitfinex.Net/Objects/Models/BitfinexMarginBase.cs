@@ -52,5 +52,11 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(3)]
         public decimal MarginNet { get; set; }
+
+        /// <summary>
+        /// Margin required
+        /// </summary>
+        [ArrayProperty(4)]
+        public decimal MarginRequired { get; set; }
     }
 }
