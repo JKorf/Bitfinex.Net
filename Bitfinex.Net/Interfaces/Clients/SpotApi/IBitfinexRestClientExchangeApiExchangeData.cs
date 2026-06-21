@@ -284,7 +284,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// <param name="sorting">["sort"] The way the result is sorted</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<HttpResult<BitfinexDerivativesStatus[]>> GetDerivativesStatusHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexDerivativesStatusHist[]>> GetDerivativesStatusHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get liquidation history

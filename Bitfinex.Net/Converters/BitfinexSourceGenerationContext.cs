@@ -80,6 +80,7 @@ namespace Bitfinex.Net.Converters
     [JsonSerializable(typeof(BitfinexPerpDerivativesFees[]))]
     [JsonSerializable(typeof(BitfinexDerivativesStatus))]
     [JsonSerializable(typeof(BitfinexDerivativesStatus[]))]
+    [JsonSerializable(typeof(BitfinexDerivativesStatusHist[]))]
     [JsonSerializable(typeof(BitfinexDerivativesStatusUpdate))]
     [JsonSerializable(typeof(BitfinexDerivativesStatusUpdate[]))]
     [JsonSerializable(typeof(BitfinexForeignExchangeRate))]

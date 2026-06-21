@@ -29,7 +29,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         public async Task<HttpResult<BitfinexOrder[]>> GetOpenOrdersAsync(
             string? symbol = null,
             IEnumerable<long>? orderIds = null,
-            string? clientOrderId = null,
+            long? clientOrderId = null,
             DateTime? clientOrderIdDate = null,
             CancellationToken ct = default)
         {

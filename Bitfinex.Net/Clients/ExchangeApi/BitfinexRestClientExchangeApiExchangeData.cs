@@ -544,7 +544,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
         #region Get Derivatives Status History
         /// <inheritdoc />
-        public async Task<HttpResult<BitfinexDerivativesStatus[]>> GetDerivativesStatusHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexDerivativesStatusHist[]>> GetDerivativesStatusHistoryAsync(string symbol, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, Sorting? sorting = null, CancellationToken ct = default)
         {
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
             parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
@@ -554,7 +554,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, $"/v2/status/deriv/{symbol}/hist", BitfinexExchange.RateLimiter.Overall, 1, false,
                 new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
-            return await _baseClient.SendAsync<BitfinexDerivativesStatus[]>(request, parameters, ct).ConfigureAwait(false);
+            return await _baseClient.SendAsync<BitfinexDerivativesStatusHist[]>(request, parameters, ct).ConfigureAwait(false);
         }
         #endregion
 
