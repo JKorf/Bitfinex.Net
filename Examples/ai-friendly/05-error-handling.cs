@@ -22,7 +22,7 @@ var client = new BitfinexRestClient(options =>
 // .Success is true/false. .Data is valid only when .Success is true.
 // .Error contains structured error info when .Success is false.
 
-var result = await client.SpotApi.ExchangeData.GetTickerAsync("tBTCUSD");
+var result = await client.ExchangeApi.ExchangeData.GetTickerAsync("tBTCUSD");
 
 if (result.Success)
 {
@@ -57,7 +57,7 @@ async Task<HttpResult<T>> WithRetry<T>(
 }
 
 var ticker = await WithRetry(
-    () => client.SpotApi.ExchangeData.GetTickerAsync("tBTCUSD"));
+    () => client.ExchangeApi.ExchangeData.GetTickerAsync("tBTCUSD"));
 
 if (!ticker.Success)
 {
@@ -65,7 +65,7 @@ if (!ticker.Success)
 }
 
 // ---- 3. ORDER PLACEMENT WITH RESULT CATEGORIZATION ----
-var order = await client.SpotApi.Trading.PlaceOrderAsync(
+var order = await client.ExchangeApi.Trading.PlaceOrderAsync(
     symbol: "tBTCUSD",
     side: OrderSide.Buy,
     type: OrderType.ExchangeLimit,
@@ -88,5 +88,5 @@ if (!order.Success)
 // Common variations:
 //   With CancellationToken:       pass `ct: cancellationToken` to any method
 //   With timeout per request:     options.RequestTimeout = TimeSpan.FromSeconds(10)
-//   Margin positions:            client.SpotApi.Trading.GetPositionsAsync()
+//   Margin positions:            client.ExchangeApi.Trading.GetPositionsAsync()
 //   Funding management:          client.GeneralApi.Funding.*

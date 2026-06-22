@@ -462,7 +462,11 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             var filterType = request.AccountType?.IsMarginAccount() == true ? WalletType.Margin : request.AccountType == SharedAccountType.Funding ? WalletType.Funding : WalletType.Exchange;
             return HttpResult.Ok(result, result.Data.Where(x => x.Type == filterType).Select(x =>
-                new SharedBalance(BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset), x.Available ?? 0, x.Total)).ToArray());
+                new SharedBalance(
+                        SupportedTradingModes, 
+                        BitfinexExchange.AssetAliases.ExchangeToCommonName(x.Asset),
+                        x.Available ?? 0, 
+                        x.Total)).ToArray());
         }
 
         #endregion
@@ -1239,7 +1243,6 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
         #endregion
 
-
         #region Futures Order Client
         SharedFeeDeductionType IFuturesOrderRestClient.FuturesFeeDeductionType => SharedFeeDeductionType.AddToCost;
         SharedFeeAssetType IFuturesOrderRestClient.FuturesFeeAssetType => SharedFeeAssetType.QuoteAsset;
@@ -1268,18 +1271,28 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             var result = await Trading.PlaceOrderAsync(
                 request.Symbol!.GetSymbol(FormatSymbol),
                 request.Side == SharedOrderSide.Buy ? Enums.OrderSide.Buy : Enums.OrderSide.Sell,
-                GetPlaceOrderType(request.OrderType, request.TimeInForce),
+                GetFuturesPlaceOrderType(request.OrderType, request.TimeInForce),
                 quantity: request.Quantity?.QuantityInBaseAsset ?? 0,
                 flags: request.OrderType == SharedOrderType.LimitMaker ? Enums.OrderFlags.PostOnly : null,
                 price: request.Price ?? 0,
                 leverage: (int?)request.Leverage,
-                clientOrderId: request.ClientOrderId != null ? clientOrderId : null,
+                clientOrderId: request.ClientOrderId != null ? clientOrderId : null,                
                 ct: ct).ConfigureAwait(false);
 
             if (!result.Success)
                 return HttpResult.Fail<SharedId>(result);
 
             return HttpResult.Ok(result, new SharedId(result.Data.Data!.Id.ToString()));
+        }
+
+        private Enums.OrderType GetFuturesPlaceOrderType(SharedOrderType type, SharedTimeInForce? tif)
+        {
+            if ((type == SharedOrderType.Limit || type == SharedOrderType.LimitMaker) && (tif == null || tif == SharedTimeInForce.GoodTillCanceled)) return Enums.OrderType.Limit;
+            if (type == SharedOrderType.Limit && tif == SharedTimeInForce.ImmediateOrCancel) return Enums.OrderType.ImmediateOrCancel;
+            if (type == SharedOrderType.Limit && tif == SharedTimeInForce.FillOrKill) return Enums.OrderType.FillOrKill;
+            if (type == SharedOrderType.Market) return Enums.OrderType.Market;
+
+            throw new ArgumentException($"The combination of order type `{type}` and time in force `{tif}` in invalid");
         }
 
         GetFuturesOrderOptions IFuturesOrderRestClient.GetFuturesOrderOptions { get; } = new GetFuturesOrderOptions(_exchangeName, true);
@@ -1576,43 +1589,5 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
         #endregion
 
-        //#region Funding Rate client
-        //GetFundingRateHistoryOptions IFundingRateRestClient.GetFundingRateHistoryOptions { get; } = new GetFundingRateHistoryOptions(_exchangeName, true, true, true, 5000, false);
-
-        //async Task<HttpResult<SharedFundingRate[]>> IFundingRateRestClient.GetFundingRateHistoryAsync(GetFundingRateHistoryRequest request, PageRequest? pageRequest, CancellationToken ct)
-        //{
-        //    var validationError = SharedClient.GetFundingRateHistoryOptions.ValidateRequest(request, this);
-        //    if (validationError != null)
-        //        return HttpResult.Fail<SharedFundingRate[]>(Exchange, validationError);
-
-        //    int limit = request.Limit ?? 1000;
-        //    var direction = DataDirection.Descending;
-        //    var pageParams = Pagination.GetPaginationParameters(direction, limit, request.StartTime, request.EndTime ?? DateTime.UtcNow, pageRequest, true);
-
-        //    // Get data
-        //    var result = await ExchangeData.GetDerivativesStatusHistoryAsync(
-        //        request.Symbol!.GetSymbol(FormatSymbol),
-        //        startTime: pageParams.StartTime,
-        //        endTime: pageParams.EndTime,
-        //        limit: pageParams.Limit,
-        //        sorting: direction == DataDirection.Ascending? Sorting.OldFirst : Sorting.NewFirst,
-        //        ct: ct).ConfigureAwait(false);
-        //    if (!result.Success)
-        //        return HttpResult.Fail<SharedFundingRate[]>(result);
-
-        //    var nextPageRequest = Pagination.GetNextPageRequest(
-        //                 () => Pagination.NextPageFromTime(pageParams, result.Data.Min(x => x.Timestamp)),
-        //                 result.Data.Length,
-        //                 result.Data.Select(x => x.Timestamp),
-        //                 request.StartTime,
-        //                 request.EndTime ?? DateTime.UtcNow,
-        //                 pageParams);
-
-        //    return HttpResult.Ok(result, ExchangeHelpers.ApplyFilter(result.Data, x => x.Timestamp, request.StartTime, request.EndTime, direction)
-        //        .Select(x =>
-        //            new SharedFundingRate(x.CurrentFunding, x.Timestamp))
-        //        .ToArray(), nextPageRequest);
-        //}
-        //#endregion
     }
 }

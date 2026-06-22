@@ -24,7 +24,7 @@ static async Task PlaceSpotLimitOrderAsync(BitfinexRestClient client)
 {
     Console.WriteLine($"Placing spot limit buy order for {symbol}...");
 
-    var ticker = await client.SpotApi.ExchangeData.GetTickersAsync(new[] { symbol });
+    var ticker = await client.ExchangeApi.ExchangeData.GetTickersAsync(new[] { symbol });
     if (!ticker.Success)
     {
         Console.WriteLine($"Failed to get ticker: {ticker.Error}");
@@ -32,7 +32,7 @@ static async Task PlaceSpotLimitOrderAsync(BitfinexRestClient client)
     }
 
     var safePrice = Math.Round(ticker.Data.Single().LastPrice * 0.95m, 2);
-    var order = await client.SpotApi.Trading.PlaceOrderAsync(
+    var order = await client.ExchangeApi.Trading.PlaceOrderAsync(
         symbol: symbol,
         side: OrderSide.Buy,
         type: OrderType.ExchangeLimit,
@@ -47,13 +47,13 @@ static async Task PlaceSpotLimitOrderAsync(BitfinexRestClient client)
 
     Console.WriteLine($"Placed order {order.Data.Data.Id}, status: {order.Data.Data.Status}");
 
-    var openOrders = await client.SpotApi.Trading.GetOpenOrdersAsync(symbol, new[] { order.Data.Data.Id });
+    var openOrders = await client.ExchangeApi.Trading.GetOpenOrdersAsync(symbol, new[] { order.Data.Data.Id });
     if (openOrders.Success)
         Console.WriteLine($"Open order status: {openOrders.Data.SingleOrDefault()?.StatusString ?? "not open"}");
     else
         Console.WriteLine($"Failed to query open order: {openOrders.Error}");
 
-    var cancel = await client.SpotApi.Trading.CancelOrderAsync(order.Data.Data.Id);
+    var cancel = await client.ExchangeApi.Trading.CancelOrderAsync(order.Data.Data.Id);
     Console.WriteLine(cancel.Success
         ? $"Cancelled order {order.Data.Data.Id}"
         : $"Failed to cancel order: {cancel.Error}");

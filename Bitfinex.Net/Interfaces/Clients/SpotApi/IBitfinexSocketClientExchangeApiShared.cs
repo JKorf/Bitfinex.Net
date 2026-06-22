@@ -12,7 +12,9 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         IBalanceSocketClient,
         ISpotOrderSocketClient,
         IKlineSocketClient,
-        IUserTradeSocketClient
+        IUserTradeSocketClient,
+        IFuturesOrderSocketClient,
+        IPositionSocketClient
     {
     }
 }

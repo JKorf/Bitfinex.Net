@@ -27,7 +27,7 @@ app.UseHttpsRedirection();
 // Map the endpoints and inject the Bitfinex rest client
 app.MapGet("/{Symbol}", async ([FromServices] IBitfinexRestClient client, string symbol) =>
 {
-    var result = await client.SpotApi.ExchangeData.GetTickersAsync(new[] { symbol });
+    var result = await client.ExchangeApi.ExchangeData.GetTickersAsync(new[] { symbol });
     return result.Success
         ? Results.Ok(result.Data.Single())
         : Results.Problem(result.Error?.Message, statusCode: 502);
@@ -36,7 +36,7 @@ app.MapGet("/{Symbol}", async ([FromServices] IBitfinexRestClient client, string
 
 app.MapGet("/Balances", async ([FromServices] IBitfinexRestClient client) =>
 {
-    var result = await client.SpotApi.Account.GetBalancesAsync();
+    var result = await client.ExchangeApi.Account.GetBalancesAsync();
     return result.Success
         ? Results.Ok(result.Data)
         : Results.Problem(result.Error?.Message, statusCode: 502);

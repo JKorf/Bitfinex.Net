@@ -14,6 +14,7 @@ namespace Bitfinex.Net.Converters
     [JsonSerializable(typeof(Dictionary<string, string>))]
     [JsonSerializable(typeof(Dictionary<string, long>))]
     [JsonSerializable(typeof(Parameters))]
+    [JsonSerializable(typeof(Parameters[]))]
     [JsonSerializable(typeof(BitfinexAsset[][]))]
     [JsonSerializable(typeof(string[][]))]
     [JsonSerializable(typeof(decimal[]))]

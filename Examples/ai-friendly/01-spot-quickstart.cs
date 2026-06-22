@@ -16,7 +16,7 @@ var client = new BitfinexRestClient(options =>
 const string symbol = "tBTCUSD";
 
 // ---- 1. PUBLIC MARKET DATA ----
-var ticker = await client.SpotApi.ExchangeData.GetTickerAsync(symbol);
+var ticker = await client.ExchangeApi.ExchangeData.GetTickerAsync(symbol);
 if (!ticker.Success)
 {
     Console.WriteLine($"Ticker failed: {ticker.Error}");
@@ -27,7 +27,7 @@ Console.WriteLine($"{symbol} last price: {ticker.Data.LastPrice}");
 Console.WriteLine($"{symbol} 24h volume: {ticker.Data.Volume}");
 
 // ---- 2. AUTHENTICATED ACCOUNT DATA ----
-var wallets = await client.SpotApi.Account.GetBalancesAsync();
+var wallets = await client.ExchangeApi.Account.GetBalancesAsync();
 if (!wallets.Success)
 {
     Console.WriteLine($"Wallets failed: {wallets.Error}");
@@ -42,7 +42,7 @@ foreach (var wallet in wallets.Data.Where(x => x.Asset is "BTC" or "USD"))
 // ---- 3. PLACE A SMALL EXCHANGE LIMIT ORDER ----
 // Use ExchangeLimit for spot exchange wallet orders. Use Limit for margin orders.
 var safePrice = Math.Max(ticker.Data.LastPrice * 0.5m, 1m);
-var order = await client.SpotApi.Trading.PlaceOrderAsync(
+var order = await client.ExchangeApi.Trading.PlaceOrderAsync(
     symbol: symbol,
     side: OrderSide.Buy,
     type: OrderType.ExchangeLimit,
@@ -58,7 +58,7 @@ if (!order.Success)
 Console.WriteLine($"Placed order {order.Data.Data.Id}: {order.Data.Data.Status}");
 
 // ---- 4. QUERY AND CANCEL OPEN ORDERS ----
-var openOrders = await client.SpotApi.Trading.GetOpenOrdersAsync(symbol);
+var openOrders = await client.ExchangeApi.Trading.GetOpenOrdersAsync(symbol);
 if (openOrders.Success)
 {
     var matchingOrder = openOrders.Data.FirstOrDefault(x => x.Id == order.Data.Data.Id);
@@ -67,7 +67,7 @@ if (openOrders.Success)
         : $"Open order remaining quantity: {matchingOrder.QuantityRemaining}");
 }
 
-var cancel = await client.SpotApi.Trading.CancelOrderAsync(orderId: order.Data.Data.Id);
+var cancel = await client.ExchangeApi.Trading.CancelOrderAsync(orderId: order.Data.Data.Id);
 Console.WriteLine(cancel.Success
     ? "Cancel request accepted"
     : $"Cancel failed: {cancel.Error}");

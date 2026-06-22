@@ -14,7 +14,7 @@ var client = new BitfinexRestClient(options =>
 });
 
 // ---- 1. MARGIN POSITIONS LIVE UNDER SPOT TRADING ----
-var positions = await client.SpotApi.Trading.GetPositionsAsync();
+var positions = await client.ExchangeApi.Trading.GetPositionsAsync();
 if (!positions.Success)
 {
     Console.WriteLine($"Positions failed: {positions.Error}");
@@ -30,7 +30,7 @@ else
 // ---- 2. PUBLIC FUNDING MARKET DATA IS UNDER SPOT EXCHANGE DATA ----
 const string fundingSymbol = "fUSD";
 
-var fundingTicker = await client.SpotApi.ExchangeData.GetFundingTickerAsync(fundingSymbol);
+var fundingTicker = await client.ExchangeApi.ExchangeData.GetFundingTickerAsync(fundingSymbol);
 if (!fundingTicker.Success)
 {
     Console.WriteLine($"Funding ticker failed: {fundingTicker.Error}");
