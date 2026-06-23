@@ -15,7 +15,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
     {
         /// <summary>
         /// Get the active funding offers
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-offers" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-offers" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to return the funding offer for</param>
         /// <param name="ct">Cancellation token</param>
@@ -24,7 +24,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 
         /// <summary>
         /// Get the funding offer history
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-offers-hist" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-offers-hist" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get history for</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -36,7 +36,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 
         /// <summary>
         /// Submit a new funding offer.
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-submit-funding-offer" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-submit-funding-offer" /></para>
         /// </summary>
         /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
         /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
@@ -59,7 +59,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 
         /// <summary>
         /// Cancels an existing Funding Offer based on the offer ID entered.
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-cancel-funding-offer" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-cancel-funding-offer" /></para>
         /// </summary>
         /// <param name="offerId">The id of the offer to cancel</param>
         /// <param name="ct">Cancellation token</param>
@@ -77,7 +77,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 
         /// <summary>
         /// Get the funding loans
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-loans" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-loans" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get the funding loans for</param>
         /// <param name="ct">Cancellation token</param>
@@ -86,7 +86,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 
         /// <summary>
         /// Get the funding loan history
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-loans-hist" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-loans-hist" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get history for</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -98,7 +98,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 
         /// <summary>
         /// Get the funding credits
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-credits" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-credits" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get the funding credits for</param>
         /// <param name="ct">Cancellation token</param>
@@ -107,7 +107,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 
         /// <summary>
         /// Get the funding credits history
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-credits-hist" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-credits-hist" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get history for</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -119,7 +119,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 
         /// <summary>
         /// Get the funding trades history
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-trades-hist" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-trades-hist" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get history for</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -131,7 +131,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
 
         /// <summary>
         /// Get funding info for a symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-funding" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-info-funding" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get the info for</param>
         /// <param name="ct">Cancellation token</param>

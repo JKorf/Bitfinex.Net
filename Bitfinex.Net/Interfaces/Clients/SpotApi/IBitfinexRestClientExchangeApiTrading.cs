@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the active orders
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-orders" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-retrieve-orders" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/orders
         /// </para>
@@ -39,7 +39,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the order history for a symbol for this account
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-orders-history" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-orders-history" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/orders/{symbol}/hist
         /// </para>
@@ -57,7 +57,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the individual trades for an order
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-order-trades" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-order-trades" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/order/{symbol}:{orderId}/trades
         /// </para>
@@ -72,7 +72,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the trade history for a symbol
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-trades" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-trades" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/trades/{symbol}/hist
         /// </para>
@@ -90,7 +90,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get a list of historical positions
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-positions-hist" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-positions-hist" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/positions/hist
         /// </para>
@@ -106,7 +106,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Place a new order
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-submit-order" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-submit-order" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/w/order/submit
         /// </para>
@@ -150,7 +150,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Cancel a specific order
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-cancel-order" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-cancel-order" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/w/order/cancel
         /// </para>
@@ -228,7 +228,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the active positions
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-positions" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-positions" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/positions
         /// </para>
@@ -241,7 +241,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get positions by id
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-positions-audit" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-positions-audit" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/positions/audit
         /// </para>

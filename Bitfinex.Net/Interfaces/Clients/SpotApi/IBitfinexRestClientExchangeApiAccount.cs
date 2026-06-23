@@ -18,7 +18,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get all balances
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-wallets" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-wallets" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/wallets
         /// </para>
@@ -31,7 +31,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the base margin info
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-info-margin" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/info/margin/base
         /// </para>
@@ -44,7 +44,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the margin info for a symbol
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-info-margin" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/info/margin/{symbol}
         /// </para>
@@ -58,7 +58,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get margin info for all symbols
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-info-margin" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-info-margin" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/info/margin/sym_all
         /// </para>
@@ -71,7 +71,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the withdrawal/deposit history
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-movements" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-movements" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/movements/{asset}/hist
         /// </para>
@@ -104,7 +104,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the list of alerts
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-alerts" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-alerts" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/alerts
         /// </para>
@@ -117,7 +117,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Set an alert
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-alert-set" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-alert-set" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/w/alert/set
         /// </para>
@@ -132,7 +132,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Delete an existing alert
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-alert-del" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-alert-del" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/w/alert/price:{symbol}:{price}/del
         /// </para>
@@ -147,7 +147,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Calculates the available balance for a symbol at a specific rate
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-calc-order-avail" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-calc-order-avail" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/calc/order/avail
         /// </para>
@@ -165,7 +165,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get changes in your balance for an asset
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-ledgers" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-ledgers" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/ledgers/{asset}/hist
         /// </para>
@@ -174,7 +174,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// <param name="startTime">["start"] Start time of the data to return</param>
         /// <param name="endTime">["end"] End time of the data to return</param>
         /// <param name="limit">["limit"] Max amount of results</param>
-        /// <param name="category">["category"] Filter by category, see https://docs.bitfinex.com/reference#rest-auth-ledgers</param>
+        /// <param name="category">["category"] Filter by category, see https://docs.bitfinex.com/reference/rest-auth-ledgers</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<HttpResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default);
@@ -183,7 +183,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Gets information about the user associated with the api key/secret
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-auth-info-user" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-info-user" /><br />
         /// Endpoint:<br />
         /// POST /v2/auth/r/info/user
         /// </para>

@@ -24,7 +24,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Subscribes to ticker updates for a symbol. Use SubscribeToFundingTickerUpdatesAsync for funding symbol ticker updates
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-public-ticker" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="handler">The handler for the data</param>
@@ -34,7 +34,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Subscribes to funding ticker updates a symbol. Use SubscribeToTickerUpdatesAsync for trade symbol ticker updates
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-public-ticker" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-public-ticker" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="handler">The handler for the data</param>
@@ -44,7 +44,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Subscribes to order book updates for a symbol. Use SubscribeToFundingOrderBookUpdatesAsync for funding symbol ticker updates
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-public-books" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-public-books" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="precision">The precision of the updates</param>
@@ -58,7 +58,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Subscribes to funding order book updates for a symbol. Use SubscribeToOrderBookUpdatesAsync for trade symbol ticker updates
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-public-books" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-public-books" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="precision">The precision of the updates</param>
@@ -72,7 +72,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Subscribes to raw order book updates for a symbol. Use SubscribeToRawFundingOrderBookUpdatesAsync for funding symbol ticker updates
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-public-raw-books" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-public-raw-books" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="limit">The range for the order book updates</param>
@@ -84,7 +84,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Subscribes to raw order book updates for a symbol. Use SubscribeToRawOrderBookUpdatesAsync for trade symbol ticker updates
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-public-raw-books" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-public-raw-books" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="limit">The range for the order book updates</param>
@@ -96,7 +96,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Subscribes to public trade updates for a symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-public-trades" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-public-trades" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`</param>
         /// <param name="handler">The handler for the data</param>
@@ -106,7 +106,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Subscribes to kline updates for a symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-public-candles" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-public-candles" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to subscribe to, for example `tETHUSD`. For funding klines use {symbol}:p{period}, for example fUSD:p30</param>
         /// <param name="interval">The interval of the klines</param>
@@ -136,7 +136,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Subscribe to trading information updates
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-trades" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-trades" /></para>
         /// </summary>
         /// <param name="orderHandler">Data handler for order updates. Can be null if not interested</param>
         /// <param name="tradeHandler">Data handler for trade execution updates. Can be null if not interested</param>
@@ -169,7 +169,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Places a new order
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-new" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-new" /></para>
         /// </summary>
         /// <param name="side">The order side</param>
         /// <param name="type">The type of the order</param>
@@ -196,7 +196,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Updates an order
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-update" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-update" /></para>
         /// </summary>
         /// <param name="orderId">The id of the order to update</param>
         /// <param name="price">The new price of the order</param>
@@ -210,7 +210,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Cancels an order
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-cancel" /></para>
         /// </summary>
         /// <param name="orderId">The id of the order to cancel</param>
         /// <returns></returns>
@@ -218,7 +218,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Cancels multiple orders based on their groupId
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-cancel" /></para>
         /// </summary>
         /// <param name="groupOrderId">The group id to cancel</param>
         /// <returns>True if successfully committed on server</returns>
@@ -226,7 +226,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Cancels multiple orders based on their groupIds
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-cancel-multi" /></para>
         /// </summary>
         /// <param name="groupOrderIds">The group ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
@@ -234,7 +234,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Cancels multiple orders based on their order ids
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-cancel-multi" /></para>
         /// </summary>
         /// <param name="orderIds">The order ids to cancel</param>
         /// <returns>True if successfully committed on server</returns>
@@ -242,7 +242,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 
         /// <summary>
         /// Cancels multiple orders based on their clientOrderIds
-        /// <para><a href="https://docs.bitfinex.com/reference#ws-auth-input-order-cancel-multi" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/ws-auth-input-order-cancel-multi" /></para>
         /// </summary>
         /// <param name="clientOrderIds">The client order ids to cancel, listed as (clientOrderId, Day) pair. ClientOrderIds are unique per day, so timestamp should be provided</param>
         /// <returns>True if successfully committed on server</returns>

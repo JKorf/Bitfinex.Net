@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Gets the platform status
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-platform-status" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-platform-status" /><br />
         /// Endpoint:<br />
         /// GET /v2/platform/status
         /// </para>
@@ -30,7 +30,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Gets a list of supported assets
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-conf" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-conf" /><br />
         /// Endpoint:<br />
         /// GET /v2/conf/pub:map:currency:label
         /// </para>
@@ -43,7 +43,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Returns basic market data for the provided symbols
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-ticker" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-ticker" /><br />
         /// Endpoint:<br />
         /// GET /v2/tickers
         /// </para>
@@ -57,7 +57,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Returns basic market data for the provided funding symbols
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-ticker" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-ticker" /><br />
         /// Endpoint:<br />
         /// GET /v2/tickers
         /// </para>
@@ -71,7 +71,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Returns basic market data for the provided symbols
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-tickers" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-tickers" /><br />
         /// Endpoint:<br />
         /// GET /v2/tickers
         /// </para>
@@ -85,7 +85,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Returns basic market data for the provided funding symbols
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-tickers" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-tickers" /><br />
         /// Endpoint:<br />
         /// GET /v2/tickers
         /// </para>
@@ -110,7 +110,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get recent trades for a symbol
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-trades" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-trades" /><br />
         /// Endpoint:<br />
         /// GET /v2/trades/{symbol}/hist
         /// </para>
@@ -128,7 +128,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Gets the order book for a trading symbol
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-book" /><br />
         /// Endpoint:<br />
         /// GET /v2/book/{symbol}/{precision}
         /// </para>
@@ -144,7 +144,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Gets the order book for a funding symbol
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-book" /><br />
         /// Endpoint:<br />
         /// GET /v2/book/{symbol}/{precision}
         /// </para>
@@ -160,7 +160,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the raw order book for a trading symbol
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-book" /><br />
         /// Endpoint:<br />
         /// GET /v2/book/{symbol}/R0
         /// </para>
@@ -175,7 +175,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the raw order book for a funding symbol
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-book" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-book" /><br />
         /// Endpoint:<br />
         /// GET /v2/book/{symbol}/R0
         /// </para>
@@ -190,7 +190,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Get the last kline for a symbol
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-candles" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-candles" /><br />
         /// Endpoint:<br />
         /// GET /v2/candles/trade:{interval}:{symbol}/last
         /// </para>
@@ -206,7 +206,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Gets klines for a symbol
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-candles" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-candles" /><br />
         /// Endpoint:<br />
         /// GET /v2/candles/trade:{interval}:{symbol}/hist
         /// </para>
@@ -226,7 +226,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Calculate the average execution price
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-calc-market-average-price" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-market-average-price" /><br />
         /// Endpoint:<br />
         /// POST /v2/calc/trade/avg
         /// </para>
@@ -243,7 +243,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         /// Returns the exchange rate for the assets
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.bitfinex.com/reference#rest-public-calc-foreign-exchange-rate" /><br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-public-foreign-exchange-rate" /><br />
         /// Endpoint:<br />
         /// POST /v2/calc/fx
         /// </para>
