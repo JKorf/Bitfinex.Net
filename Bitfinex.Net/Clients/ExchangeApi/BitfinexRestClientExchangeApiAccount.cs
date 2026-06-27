@@ -142,12 +142,13 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         /// <inheritdoc />
-        public async Task<HttpResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, CancellationToken ct = default)
+        public async Task<HttpResult<BitfinexLedgerEntry[]>> GetLedgerEntriesAsync(string? asset = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? category = null, WalletType? walletType = null, CancellationToken ct = default)
         {
-            limit?.ValidateIntBetween(nameof(limit), 1, 500);
+            limit?.ValidateIntBetween(nameof(limit), 1, 2500);
 
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
             parameters.Add("category", category);
+            parameters.Add("wallet", walletType);
             parameters.Add("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.Add("start", DateTimeConverter.ConvertToMilliseconds(startTime));
             parameters.Add("end", DateTimeConverter.ConvertToMilliseconds(endTime));
@@ -293,6 +294,13 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                                                                          string? paymentId = null,
                                                                          bool? feeFromWithdrawalAmount = null,
                                                                          string? note = null,
+                                                                         bool? travelRuleTos = null,
+                                                                         string? vaspDid = null,
+                                                                         string? vaspName = null,
+                                                                         bool? beneficiarySelf = null,
+                                                                         string? destFirstname = null,
+                                                                         string? destLastname = null,
+                                                                         string? destCorpName = null,
                                                                          CancellationToken ct = default)
         {
             method.ValidateNotNull(nameof(method));
@@ -301,12 +309,20 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 { "method", method },
                 { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
             };
+			
             parameters.Add("wallet", wallet);
             parameters.Add("address", address);
             parameters.Add("payment_id", paymentId);
             parameters.Add("invoice", invoice);
             parameters.Add("note", note);
             parameters.Add("fee_deduct", feeFromWithdrawalAmount == null ? null : feeFromWithdrawalAmount == true ? 1 : 0);
+            parameters.Add("travel_rule_tos", travelRuleTos);
+            parameters.Add("vasp_did", vaspDid);
+            parameters.Add("vasp_name", vaspName);
+            parameters.Add("beneficiary_self", beneficiarySelf);
+            parameters.Add("dest_firstname", destFirstname);
+            parameters.Add("dest_lastname", destLastname);
+            parameters.Add("dest_corp_name", destCorpName);
 
             var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "v2/auth/w/withdraw", BitfinexExchange.RateLimiter.Overall, 1, true);
             return await _baseClient.SendAsync<BitfinexWithdrawalResultV2>(request, parameters, ct).ConfigureAwait(false);
