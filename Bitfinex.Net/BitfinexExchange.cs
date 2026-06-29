@@ -1,4 +1,4 @@
-﻿using Bitfinex.Net.Converters;
+using Bitfinex.Net.Converters;
 using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.RateLimiting;
@@ -25,7 +25,8 @@ namespace Bitfinex.Net
                 "https://www.bitfinex.com",
                 ["https://docs.bitfinex.com/docs/introduction"],
                 PlatformType.CryptoCurrencyExchange,
-                CentralizationType.Centralized
+                CentralizationType.Centralized,
+                BitfinexEnvironment.All
                 );
 
         /// <summary>
@@ -61,6 +62,11 @@ namespace Bitfinex.Net
         public static ExchangeType Type { get; } = ExchangeType.CEX;
 
         internal static JsonSerializerContext _serializerContext = JsonSerializerContextCache.GetOrCreate<BitfinexSourceGenerationContext>();
+        internal static ParameterSerializationSettings _parameterSerializationSettings = new ParameterSerializationSettings
+        {
+            Sort = false,
+            Decimal = DecimalSerialization.String
+        };
 
         /// <summary>
         /// Format a base and quote asset to a Bitfinex recognized symbol 
@@ -102,7 +108,7 @@ namespace Bitfinex.Net
         /// <summary>
         /// Rate limiter configuration for the Bitfinex API
         /// </summary>
-        public static BitfinexRateLimiters RateLimiter { get; } = new BitfinexRateLimiters();
+        public static BitfinexRateLimiters RateLimiter { get; set; } = new BitfinexRateLimiters();
 
     }
 
@@ -122,13 +128,19 @@ namespace Bitfinex.Net
         public event Action<RateLimitUpdateEvent> RateLimitUpdated;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        internal BitfinexRateLimiters()
+        /// <summary>
+        /// ctor
+        /// </summary>
+        public BitfinexRateLimiters()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             Initialize();
         }
 
-        private void Initialize()
+        /// <summary>
+        /// Initialize the rate limits
+        /// </summary>
+        protected virtual void Initialize()
         {
             Overall = new RateLimitGate("Overall");
             RestConf = new RateLimitGate("Rest Config")

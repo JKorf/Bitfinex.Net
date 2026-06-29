@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         {
             _bulkUpdates = bulkUpdates;
 
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitfinexSocketInfo>("info", HandleMessage);
+            MessageRouter = MessageRouter.CreateForEvent<BitfinexSocketInfo>("info", HandleMessage);
         }
 
         public CallResult HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexSocketInfo message)
@@ -31,7 +31,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     131072 + // Send checksum messages
                     (_bulkUpdates ? 536870912 : 0) // Bulk updates
                     ));
-                return CallResult.SuccessResult;
+                return CallResult.Ok();
             }
 
             var code = message.Code;
@@ -55,7 +55,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     break;
             }
 
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
     }
 }

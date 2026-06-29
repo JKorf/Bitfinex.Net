@@ -40,7 +40,7 @@ namespace Bitfinex.Net.UnitTests
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
             BitfinexOrderBookEntry[] result;
-            var subTask = client.SpotApi.SubscribeToOrderBookUpdatesAsync("tBTCUSD", prec, freq, 25, data => result = data.Data.ToArray());
+            var subTask = client.ExchangeApi.SubscribeToOrderBookUpdatesAsync("tBTCUSD", prec, freq, 25, data => result = data.Data.ToArray());
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -78,7 +78,7 @@ namespace Bitfinex.Net.UnitTests
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
             BitfinexOrderBookEntry[] result = null;
-            var subTask = client.SpotApi.SubscribeToOrderBookUpdatesAsync("tBTCUSD", prec, freq, 25, data => result = data.Data.ToArray());
+            var subTask = client.ExchangeApi.SubscribeToOrderBookUpdatesAsync("tBTCUSD", prec, freq, 25, data => result = data.Data.ToArray());
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -119,7 +119,7 @@ namespace Bitfinex.Net.UnitTests
             var client = new BitfinexSocketClient();
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
-            var subTask = client.SpotApi.SubscribeToKlineUpdatesAsync("tBTCUSD", timeframe, data => { });
+            var subTask = client.ExchangeApi.SubscribeToKlineUpdatesAsync("tBTCUSD", timeframe, data => { });
 
             var subResponse = new CandleSubscriptionResponse()
             {
@@ -156,7 +156,7 @@ namespace Bitfinex.Net.UnitTests
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
             BitfinexKline[] result = null;
-            var subTask = client.SpotApi.SubscribeToKlineUpdatesAsync("tBTCUSD", timeframe, data => result = data.Data.ToArray());
+            var subTask = client.ExchangeApi.SubscribeToKlineUpdatesAsync("tBTCUSD", timeframe, data => result = data.Data.ToArray());
 
             var subResponse = new CandleSubscriptionResponse()
             {
@@ -183,7 +183,7 @@ namespace Bitfinex.Net.UnitTests
             var client = new BitfinexSocketClient();
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
-            var subTask = client.SpotApi.SubscribeToTickerUpdatesAsync("tBTCUSD", data => { });
+            var subTask = client.ExchangeApi.SubscribeToTickerUpdatesAsync("tBTCUSD", data => { });
 
             var subResponse = new TickerSubscriptionResponse()
             {
@@ -211,7 +211,7 @@ namespace Bitfinex.Net.UnitTests
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
             BitfinexStreamTicker result = null;
-            var subTask = client.SpotApi.SubscribeToTickerUpdatesAsync("tBTCUSD", data => result = data.Data);
+            var subTask = client.ExchangeApi.SubscribeToTickerUpdatesAsync("tBTCUSD", data => result = data.Data);
 
             var subResponse = new TickerSubscriptionResponse()
             {
@@ -239,7 +239,7 @@ namespace Bitfinex.Net.UnitTests
             var client = new BitfinexSocketClient();
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
-            var subTask = client.SpotApi.SubscribeToRawOrderBookUpdatesAsync("tBTCUSD", 10, data => { });
+            var subTask = client.ExchangeApi.SubscribeToRawOrderBookUpdatesAsync("tBTCUSD", 10, data => { });
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -270,7 +270,7 @@ namespace Bitfinex.Net.UnitTests
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
             BitfinexRawOrderBookEntry[] result = null;
-            var subTask = client.SpotApi.SubscribeToRawOrderBookUpdatesAsync("tBTCUSD", 10, data => result = data.Data.ToArray());
+            var subTask = client.ExchangeApi.SubscribeToRawOrderBookUpdatesAsync("tBTCUSD", 10, data => result = data.Data.ToArray());
 
             var subResponse = new BookSubscriptionResponse()
             {
@@ -301,7 +301,7 @@ namespace Bitfinex.Net.UnitTests
             var client = new BitfinexSocketClient();
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
-            var subTask = client.SpotApi.SubscribeToTradeUpdatesAsync("BTCUSD", data => { });
+            var subTask = client.ExchangeApi.SubscribeToTradeUpdatesAsync("BTCUSD", data => { });
 
             var subResponse = new TradesSubscriptionResponse()
             {
@@ -329,7 +329,7 @@ namespace Bitfinex.Net.UnitTests
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
             BitfinexTradeSimple[] result = null;
-            var subTask = client.SpotApi.SubscribeToTradeUpdatesAsync("BTCUSD", data => result = data.Data.ToArray());
+            var subTask = client.ExchangeApi.SubscribeToTradeUpdatesAsync("BTCUSD", data => result = data.Data.ToArray());
 
             var subResponse = new TradesSubscriptionResponse()
             {
@@ -371,7 +371,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            var placeTask = client.SpotApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
+            var placeTask = client.ExchangeApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
             socket.InvokeMessage(JsonSerializer.Serialize(new BitfinexResponse() { Event = "auth", Status = "OK" }));
             Thread.Sleep(100);
             socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonSerializer.Serialize(expected)}, 0, \"SUCCESS\", \"Submitted\"], 7, 1768997393433]");
@@ -394,7 +394,7 @@ namespace Bitfinex.Net.UnitTests
             var order = new BitfinexOrder() { ClientOrderId = 123 };
 
             // act
-            var placeTask = client.SpotApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
+            var placeTask = client.ExchangeApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
             socket.InvokeMessage(JsonSerializer.Serialize(new BitfinexResponse() { Event = "auth", Status = "OK" }));
             Thread.Sleep(100);
             socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonSerializer.Serialize(order)}, 0, \"error\", \"order placing failed\"], 7, 1768997393433]");
@@ -417,7 +417,7 @@ namespace Bitfinex.Net.UnitTests
             var socket = CryptoExchange.Net.Testing.TestHelpers.ConfigureSocketClient(client, "wss://localhost");
 
             // act
-            var placeTask = client.SpotApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
+            var placeTask = client.ExchangeApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeLimit, "tBTCUSD", 1, price: 1, clientOrderId: 123);
             socket.InvokeMessage(JsonSerializer.Serialize(new BitfinexResponse() { Event = "auth", Status = "OK" }));
             var result = placeTask.Result;
 
@@ -447,7 +447,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            var placeTask = client.SpotApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeMarket, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
+            var placeTask = client.ExchangeApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeMarket, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
             socket.InvokeMessage(JsonSerializer.Serialize(new BitfinexResponse() { Event = "auth", Status = "OK" }));
             Thread.Sleep(100);
             socket.InvokeMessage($"[0, \"n\", [0, \"on-req\", 0, 0, {JsonSerializer.Serialize(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");
@@ -480,7 +480,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            var placeTask = client.SpotApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeFillOrKill, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
+            var placeTask = client.ExchangeApi.PlaceOrderAsync(OrderSide.Buy, OrderType.ExchangeFillOrKill, "tBTCUSD", 1, price: 1, clientOrderId: 1234);
             await Task.Delay(100);
             socket.InvokeMessage(JsonSerializer.Serialize(new BitfinexResponse() { Event = "auth", Status = "OK" }));
             await Task.Delay(100);
@@ -515,7 +515,7 @@ namespace Bitfinex.Net.UnitTests
             };
 
             // act
-            var placeTask = client.SpotApi.SubmitFundingOfferAsync(FundingOfferType.Limit, "fUSD", 1, 1, 1);
+            var placeTask = client.ExchangeApi.SubmitFundingOfferAsync(FundingOfferType.Limit, "fUSD", 1, 1, 1);
             socket.InvokeMessage(JsonSerializer.Serialize(new BitfinexResponse() { Event = "auth", Status = "OK" }));
             Thread.Sleep(100);
             socket.InvokeMessage($"[0, \"n\", [0, \"fon-req\", 0, 0, {JsonSerializer.Serialize(expected)}, 0, \"SUCCESS\", \"Submitted\"]]");

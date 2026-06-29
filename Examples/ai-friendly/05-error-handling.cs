@@ -1,6 +1,7 @@
 // 05-error-handling.cs
 //
-// Demonstrates: WebCallResult patterns, retry logic, common error scenarios.
+// Demonstrates: HttpResult, WebSocketResult, ExchangeCallResult, retry logic,
+// and common error scenarios.
 //
 // Setup: dotnet add package JKorf.Bitfinex.Net
 
@@ -15,11 +16,13 @@ var client = new BitfinexRestClient(options =>
 });
 
 // ---- 1. THE BASIC PATTERN ----
-// Every REST method returns WebCallResult<T> or WebCallResult.
+// Every REST method returns HttpResult<T> or HttpResult.
+// WebSocket subscriptions return WebSocketResult<UpdateSubscription>.
+// Shared non-I/O symbol/cache helpers return ExchangeCallResult<T>.
 // .Success is true/false. .Data is valid only when .Success is true.
 // .Error contains structured error info when .Success is false.
 
-var result = await client.SpotApi.ExchangeData.GetTickerAsync("tBTCUSD");
+var result = await client.ExchangeApi.ExchangeData.GetTickerAsync("tBTCUSD");
 
 if (result.Success)
 {
@@ -37,11 +40,11 @@ else
 // Retry only on transient errors such as rate limits, network issues, or server overload.
 // Do not retry validation errors or insufficient balance errors.
 
-async Task<WebCallResult<T>> WithRetry<T>(
-    Func<Task<WebCallResult<T>>> call,
+async Task<HttpResult<T>> WithRetry<T>(
+    Func<Task<HttpResult<T>>> call,
     int maxAttempts = 3)
 {
-    WebCallResult<T> last = default!;
+    HttpResult<T> last = default!;
     for (var attempt = 1; attempt <= maxAttempts; attempt++)
     {
         last = await call();
@@ -54,7 +57,7 @@ async Task<WebCallResult<T>> WithRetry<T>(
 }
 
 var ticker = await WithRetry(
-    () => client.SpotApi.ExchangeData.GetTickerAsync("tBTCUSD"));
+    () => client.ExchangeApi.ExchangeData.GetTickerAsync("tBTCUSD"));
 
 if (!ticker.Success)
 {
@@ -62,7 +65,7 @@ if (!ticker.Success)
 }
 
 // ---- 3. ORDER PLACEMENT WITH RESULT CATEGORIZATION ----
-var order = await client.SpotApi.Trading.PlaceOrderAsync(
+var order = await client.ExchangeApi.Trading.PlaceOrderAsync(
     symbol: "tBTCUSD",
     side: OrderSide.Buy,
     type: OrderType.ExchangeLimit,
@@ -79,11 +82,11 @@ if (!order.Success)
 }
 
 // ---- 4. EXCEPTIONS VS ERROR RESULTS ----
-// Bitfinex.Net returns API/network/rate-limit errors via WebCallResult.Error.
+// Bitfinex.Net returns API/network/rate-limit errors via HttpResult.Error.
 // Exceptions are for misconfiguration, disposal, cancellation, or programmer errors.
 
 // Common variations:
 //   With CancellationToken:       pass `ct: cancellationToken` to any method
 //   With timeout per request:     options.RequestTimeout = TimeSpan.FromSeconds(10)
-//   Margin positions:            client.SpotApi.Trading.GetPositionsAsync()
+//   Margin positions:            client.ExchangeApi.Trading.GetPositionsAsync()
 //   Funding management:          client.GeneralApi.Funding.*

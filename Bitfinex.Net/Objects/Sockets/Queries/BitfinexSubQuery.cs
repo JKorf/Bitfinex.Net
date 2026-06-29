@@ -23,7 +23,7 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             if (string.Equals(evnt, "subscribe", StringComparison.Ordinal) || string.Equals(evnt, "unsubscribe", StringComparison.Ordinal))
                 evnt += "d";
 
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitfinexResponse>(
+            MessageRouter = MessageRouter.CreateForQuery<BitfinexResponse>(
                 [evnt + channel + symbol + precision + frequency + length + key,
                 "error" + channel + symbol + precision + frequency + length + key],
                 HandleMessage);
@@ -35,10 +35,10 @@ namespace Bitfinex.Net.Objects.Sockets.Queries
             {
                 // Additional check for "dup" which means the subscription is already active
                 if (!message.Message.Equals("subscribe: dup", StringComparison.Ordinal))
-                    return new CallResult<BitfinexResponse>(new ServerError(ErrorInfo.Unknown with { Message = message.Message! }), originalData);
+                    return CallResult.Fail<BitfinexResponse>(new ServerError(ErrorInfo.Unknown with { Message = message.Message! }));
             }
 
-            return new CallResult<BitfinexResponse>(message, originalData, null);
+            return CallResult.Ok(message);
         }
     }
 }

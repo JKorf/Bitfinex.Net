@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Clients.SpotApi;
-using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
@@ -7,6 +6,7 @@ using CryptoExchange.Net.Sockets.Default;
 using Microsoft.Extensions.Logging;
 using System;
 using CryptoExchange.Net.Sockets.Default.Routing;
+using Bitfinex.Net.Clients.ExchangeApi;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
@@ -23,11 +23,11 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private string? _key;
         private int _channelId;
         private bool _firstUpdate;
-        private BitfinexSocketClientSpotApi _client;
+        private BitfinexSocketClientExchangeApi _client;
         private Action<DateTime, string?, SocketUpdateType, TItem[], long, DateTime> _handler;
 
         public BitfinexSubscription(ILogger logger,
-            BitfinexSocketClientSpotApi client,
+            BitfinexSocketClientExchangeApi client,
             string channel,
             string? symbol,
             Action<DateTime, string?, SocketUpdateType, TItem[], long, DateTime> handler,
@@ -82,9 +82,9 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _firstUpdate = true;
 
             MessageRouter = MessageRouter.Create([
-                MessageRoute<TSingle>.CreateWithoutTopicFilter(_channelId.ToString() + "single", DoHandleMessage),
-                MessageRoute<TArray>.CreateWithoutTopicFilter(_channelId.ToString() + "array", DoHandleMessage),
-                MessageRoute<BitfinexStringUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "hb", DoHandleHeartbeat),
+                MessageRoute.CreateForEvent<TSingle>(_channelId.ToString() + "single", DoHandleMessage),
+                MessageRoute.CreateForEvent<TArray>(_channelId.ToString() + "array", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexStringUpdate>(_channelId.ToString() + "hb", DoHandleHeartbeat),
                 ]);
         }
 
@@ -108,7 +108,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data], message.Sequence, message.Timestamp);
             _firstUpdate = false;
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TArray message)
@@ -118,13 +118,13 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data, message.Sequence, message.Timestamp);
             _firstUpdate = false;
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleHeartbeat(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexStringUpdate message)
         {
             connection.UpdateSequenceNumber(message.Sequence);
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
     }
 }

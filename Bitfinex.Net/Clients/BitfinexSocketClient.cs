@@ -1,13 +1,13 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using Bitfinex.Net.Interfaces.Clients;
-using Bitfinex.Net.Interfaces.Clients.SpotApi;
-using Bitfinex.Net.Clients.SpotApi;
 using CryptoExchange.Net.Authentication;
 using Bitfinex.Net.Objects.Options;
 using CryptoExchange.Net.Clients;
 using Microsoft.Extensions.Options;
 using CryptoExchange.Net.Objects.Options;
+using Bitfinex.Net.Clients.ExchangeApi;
+using Bitfinex.Net.Interfaces.Clients.ExchangeApi;
 
 namespace Bitfinex.Net.Clients
 {
@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Clients
         #region Api clients
 
         /// <inheritdoc />
-        public IBitfinexSocketClientSpotApi SpotApi { get; }
+        public IBitfinexSocketClientExchangeApi ExchangeApi { get; }
 
         #endregion
 
@@ -41,7 +41,7 @@ namespace Bitfinex.Net.Clients
         {
             Initialize(options.Value);
 
-            SpotApi = AddApiClient(new BitfinexSocketClientSpotApi(_logger, options.Value));
+            ExchangeApi = AddApiClient(new BitfinexSocketClientExchangeApi(loggerFactory, options.Value));
         }
 
         #endregion

@@ -1,5 +1,5 @@
-﻿using Bitfinex.Net.Interfaces.Clients.GeneralApi;
-using Bitfinex.Net.Interfaces.Clients.SpotApi;
+﻿using Bitfinex.Net.Interfaces.Clients.ExchangeApi;
+using Bitfinex.Net.Interfaces.Clients.GeneralApi;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces.Clients;
 using CryptoExchange.Net.Objects.Options;
@@ -18,9 +18,9 @@ namespace Bitfinex.Net.Interfaces.Clients
         IBitfinexRestClientGeneralApi GeneralApi { get; }
 
         /// <summary>
-        /// Spot endpoints
+        /// Exchange endpoints
         /// </summary>
-        /// <see cref="IBitfinexRestClientSpotApi"/>
-        IBitfinexRestClientSpotApi SpotApi { get; }
+        /// <see cref="IBitfinexRestClientExchangeApi"/>
+        IBitfinexRestClientExchangeApi ExchangeApi { get; }
     }
 }

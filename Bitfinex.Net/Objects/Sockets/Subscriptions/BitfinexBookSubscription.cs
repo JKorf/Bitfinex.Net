@@ -1,5 +1,4 @@
-﻿using Bitfinex.Net.Clients.SpotApi;
-using Bitfinex.Net.Enums;
+﻿using Bitfinex.Net.Enums;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Objects;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using CryptoExchange.Net.Sockets.Default.Routing;
+using Bitfinex.Net.Clients.ExchangeApi;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         where TArray : BitfinexUpdate<TItem[]>
         where TSingle : BitfinexUpdate<TItem>
     {
-        private BitfinexSocketClientSpotApi _client;
+        private BitfinexSocketClientExchangeApi _client;
 
         private string _channel;
         private string? _symbol;
@@ -30,7 +30,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private Action<DataEvent<int>>? _checksumHandler;
 
         public BitfinexBookSubscription(ILogger logger,
-            BitfinexSocketClientSpotApi client,
+            BitfinexSocketClientExchangeApi client,
             string symbol,
             Action<DateTime, string?, SocketUpdateType, TItem[], long, DateTime> handler,
             Action<DataEvent<int>>? checksumHandler,
@@ -81,10 +81,10 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             _firstUpdate = true;
 
             MessageRouter = MessageRouter.Create([
-                MessageRoute<TSingle>.CreateWithoutTopicFilter(_channelId.ToString() + "single", DoHandleMessage),
-                MessageRoute<TArray>.CreateWithoutTopicFilter(_channelId.ToString() + "array", DoHandleMessage),
-                MessageRoute<BitfinexChecksum>.CreateWithoutTopicFilter(_channelId.ToString() + "cs", DoHandleMessage),
-                MessageRoute<BitfinexStringUpdate>.CreateWithoutTopicFilter(_channelId.ToString() + "hb", DoHandleHeartbeat),
+                MessageRoute.CreateForEvent<TSingle>(_channelId.ToString() + "single", DoHandleMessage),
+                MessageRoute.CreateForEvent<TArray>(_channelId.ToString() + "array", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexChecksum>(_channelId.ToString() + "cs", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitfinexStringUpdate>(_channelId.ToString() + "hb", DoHandleHeartbeat),
                 ]);
         }
 
@@ -111,7 +111,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
                     .WithUpdateType(_firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update)
                 );
             _firstUpdate = false;
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TSingle message)
@@ -121,7 +121,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data], message.Sequence, message.Timestamp);
             _firstUpdate = false;
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, TArray message)
@@ -131,13 +131,13 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data, message.Sequence, message.Timestamp);
             _firstUpdate = false;
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleHeartbeat(SocketConnection connection, DateTime receiveTime, string? originalData, BitfinexStringUpdate message)
         {
             connection.UpdateSequenceNumber(message.Sequence);
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
     }
 }

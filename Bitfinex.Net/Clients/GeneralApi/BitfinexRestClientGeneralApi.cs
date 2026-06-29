@@ -1,4 +1,4 @@
-﻿using Bitfinex.Net.Clients.MessageHandlers;
+using Bitfinex.Net.Clients.MessageHandlers;
 using Bitfinex.Net.Interfaces.Clients.GeneralApi;
 using Bitfinex.Net.Objects.Internal;
 using Bitfinex.Net.Objects.Options;
@@ -38,8 +38,8 @@ namespace Bitfinex.Net.Clients.GeneralApi
 
         #region ctor
 
-        internal BitfinexRestClientGeneralApi(ILogger logger, HttpClient? httpClient, BitfinexRestOptions options) :
-            base(logger, httpClient, options.Environment.RestAddress, options, options.SpotOptions)
+        internal BitfinexRestClientGeneralApi(ILoggerFactory? loggerFactory, HttpClient? httpClient, BitfinexRestOptions options) :
+            base(loggerFactory, BitfinexExchange.ExchangeName, httpClient, options.Environment.RestAddress, options, options.ExchangeOptions)
         {
             Funding = new BitfinexRestClientGeneralApiFunding(this);
 
@@ -52,18 +52,11 @@ namespace Bitfinex.Net.Clients.GeneralApi
         protected override BitfinexAuthenticationProvider CreateAuthenticationProvider(BitfinexCredentials credentials)
             => new BitfinexAuthenticationProvider(credentials, ClientOptions.NonceProvider ?? new BitfinexNonceProvider());
 
-        internal Task<WebCallResult<T>> SendAsync<T>(
+        internal Task<HttpResult<T>> SendAsync<T>(
             RequestDefinition definition,
-            ParameterCollection? parameters,
+            Parameters? parameters,
             CancellationToken cancellationToken) where T : class
-                => SendToAddressAsync<T>(BaseAddress, definition, parameters, cancellationToken);
-
-        internal Task<WebCallResult<T>> SendToAddressAsync<T>(
-            string uri,
-            RequestDefinition definition,
-            ParameterCollection? parameters,
-            CancellationToken cancellationToken) where T : class
-                => base.SendAsync<T>(uri, definition, parameters, cancellationToken);
+                => base.SendAsync<T>(definition, parameters, cancellationToken);
 
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));

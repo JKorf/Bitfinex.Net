@@ -1,11 +1,11 @@
 ﻿using CryptoExchange.Net.SharedApis;
 
-namespace Bitfinex.Net.Interfaces.Clients.SpotApi
+namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
 {
     /// <summary>
-    /// Shared interface for Spot rest API usage
+    /// Shared interface for rest API usage
     /// </summary>
-    public interface IBitfinexRestClientSpotApiShared :
+    public interface IBitfinexRestClientExchangeApiShared :
         IAssetsRestClient,
         IBalanceRestClient,
         IDepositRestClient,
@@ -21,7 +21,11 @@ namespace Bitfinex.Net.Interfaces.Clients.SpotApi
         IFeeRestClient,
         ISpotTriggerOrderRestClient,
         IBookTickerRestClient,
-        ITransferRestClient
+        ITransferRestClient,
+        IFuturesSymbolRestClient,
+        IFuturesTickerRestClient,
+        IFuturesOrderRestClient
+        //IFundingRateRestClient
     {
     }
 }

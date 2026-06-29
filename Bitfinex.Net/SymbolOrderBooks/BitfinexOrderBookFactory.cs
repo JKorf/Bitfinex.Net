@@ -28,11 +28,11 @@ namespace Bitfinex.Net.SymbolOrderBooks
         {
             _serviceProvider = serviceProvider;
 
-            Spot = new OrderBookFactory<BitfinexOrderBookOptions>(Create, Create);
+            Exchange = new OrderBookFactory<BitfinexOrderBookOptions>(Create, Create);
         }
 
         /// <inheritdoc />
-        public IOrderBookFactory<BitfinexOrderBookOptions> Spot { get; }
+        public IOrderBookFactory<BitfinexOrderBookOptions> Exchange { get; }
 
         /// <inheritdoc />
         public ISymbolOrderBook Create(SharedSymbol symbol, Action<BitfinexOrderBookOptions>? options = null)

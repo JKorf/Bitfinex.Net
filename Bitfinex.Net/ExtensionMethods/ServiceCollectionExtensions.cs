@@ -116,8 +116,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 x.GetRequiredService<IOptions<BitfinexRestOptions>>(),
                 x.GetRequiredService<IOptions<BitfinexSocketOptions>>()));
 
-            services.RegisterSharedRestInterfaces(x => x.GetRequiredService<IBitfinexRestClient>().SpotApi.SharedClient);
-            services.RegisterSharedSocketInterfaces(x => x.GetRequiredService<IBitfinexSocketClient>().SpotApi.SharedClient);
+            services.RegisterSharedRestInterfaces(x => x.GetRequiredService<IBitfinexRestClient>().ExchangeApi.SharedClient);
+            services.RegisterSharedSocketInterfaces(x => x.GetRequiredService<IBitfinexSocketClient>().ExchangeApi.SharedClient);
             
             return services;
         }

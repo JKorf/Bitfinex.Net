@@ -88,7 +88,7 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
         {
             IBitfinexRestClient client;
             client = options != null ? new BitfinexRestClient(options) : new BitfinexRestClient();
-            client.SpotApi.RequestFactory = Mock.Of<IRequestFactory>();
+            client.ExchangeApi.RequestFactory = Mock.Of<IRequestFactory>();
             client.GeneralApi.RequestFactory = Mock.Of<IRequestFactory>();
             return client;
         }
@@ -117,7 +117,7 @@ namespace Bitfinex.Net.UnitTests.TestImplementations
             request.Setup(c => c.GetResponseAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(response.Object));
             request.Setup(c => c.GetHeaders()).Returns(new HttpRequestMessage().Headers);
 
-            var factory = Mock.Get(client.SpotApi.RequestFactory);
+            var factory = Mock.Get(client.ExchangeApi.RequestFactory);
             factory.Setup(c => c.Create(It.IsAny<Version>(), It.IsAny<HttpMethod>(), It.IsAny<Uri>(), It.IsAny<int>()))
                 .Returns(request.Object);
             factory = Mock.Get(client.GeneralApi.RequestFactory);

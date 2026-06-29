@@ -15,16 +15,16 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
     {
         /// <summary>
         /// Get the active funding offers
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-offers" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-offers" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to return the funding offer for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingOffer[]>> GetActiveFundingOffersAsync(string symbol, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingOffer[]>> GetActiveFundingOffersAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Get the funding offer history
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-offers-hist" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-offers-hist" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get history for</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -32,11 +32,11 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingOffer[]>> GetFundingOfferHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingOffer[]>> GetFundingOfferHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Submit a new funding offer.
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-submit-funding-offer" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-submit-funding-offer" /></para>
         /// </summary>
         /// <param name="fundingOrderType">Order Type (LIMIT, FRRDELTAVAR, FRRDELTAFIX).</param>
         /// <param name="symbol">Symbol for desired pair (fUSD, fBTC, etc..).</param>
@@ -46,7 +46,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="flags">Funding flags</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResultFundingOffer>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal quantity, decimal rate, int period, int? flags = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexWriteResultFundingOffer>> SubmitFundingOfferAsync(FundingOrderType fundingOrderType, string symbol, decimal quantity, decimal rate, int period, int? flags = null, CancellationToken ct = default);
 
         /// <summary>
         /// Return Taken "Used" or "Unused" funding.
@@ -55,16 +55,16 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="id"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResult>> CloseFundingAsync(int id, CancellationToken ct = default);
+        Task<HttpResult<BitfinexWriteResult>> CloseFundingAsync(int id, CancellationToken ct = default);
 
         /// <summary>
         /// Cancels an existing Funding Offer based on the offer ID entered.
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-cancel-funding-offer" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-cancel-funding-offer" /></para>
         /// </summary>
         /// <param name="offerId">The id of the offer to cancel</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResultFundingOffer>> CancelFundingOfferAsync(long offerId, CancellationToken ct = default);
+        Task<HttpResult<BitfinexWriteResultFundingOffer>> CancelFundingOfferAsync(long offerId, CancellationToken ct = default);
 
         /// <summary>
         /// Cancel all funding offers
@@ -73,20 +73,20 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="asset">Only cancel funding offers in this asset</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResult>> CancelAllFundingOffersAsync(string? asset = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexWriteResult>> CancelAllFundingOffersAsync(string? asset = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the funding loans
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-loans" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-loans" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get the funding loans for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFunding[]>> GetFundingLoansAsync(string symbol, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFunding[]>> GetFundingLoansAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Get the funding loan history
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-loans-hist" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-loans-hist" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get history for</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -94,20 +94,20 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFunding[]>> GetFundingLoansHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFunding[]>> GetFundingLoansHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the funding credits
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-credits" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-credits" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get the funding credits for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingCredit[]>> GetFundingCreditsAsync(string symbol, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingCredit[]>> GetFundingCreditsAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Get the funding credits history
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-credits-hist" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-credits-hist" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get history for</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -115,11 +115,11 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingCredit[]>> GetFundingCreditsHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingCredit[]>> GetFundingCreditsHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get the funding trades history
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-funding-trades-hist" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-funding-trades-hist" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get history for</param>
         /// <param name="startTime">Start time of the data to return</param>
@@ -127,16 +127,16 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="limit">Max amount of results</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingTrade[]>> GetFundingTradesHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingTrade[]>> GetFundingTradesHistoryAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get funding info for a symbol
-        /// <para><a href="https://docs.bitfinex.com/reference#rest-auth-info-funding" /></para>
+        /// <para><a href="https://docs.bitfinex.com/reference/rest-auth-info-funding" /></para>
         /// </summary>
         /// <param name="symbol">The symbol to get the info for</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingInfo>> GetFundingInfoAsync(string symbol, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingInfo>> GetFundingInfoAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Activate or deactivate auto-renew. Allows you to specify the currency, amount, rate, and period.
@@ -149,7 +149,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="period">Period in days.</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResultFundingAutoRenew>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexWriteResultFundingAutoRenew>> SubmitFundingAutoRenewAsync(string asset, bool status, decimal? quantity = null, decimal? rate = null, int? period = null, CancellationToken ct = default);
 
         /// <summary>
         /// Toggle to keep funding taken. Specify loan for unused funding and credit for used funding.
@@ -159,7 +159,7 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="ids">Ids</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexWriteResult>> KeepFundingAsync(FundType type, IEnumerable<long>? ids = null, CancellationToken ct = default);
+        Task<HttpResult<BitfinexWriteResult>> KeepFundingAsync(FundType type, IEnumerable<long>? ids = null, CancellationToken ct = default);
 
         /// <summary>
         /// Status of auto-renew.
@@ -167,6 +167,6 @@ namespace Bitfinex.Net.Interfaces.Clients.GeneralApi
         /// <param name="asset">Currency for which to enable auto-renew</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<BitfinexFundingAutoRenewStatus>> GetFundingAutoRenewStatusAsync(string asset, CancellationToken ct = default);
+        Task<HttpResult<BitfinexFundingAutoRenewStatus>> GetFundingAutoRenewStatusAsync(string asset, CancellationToken ct = default);
     }
 }

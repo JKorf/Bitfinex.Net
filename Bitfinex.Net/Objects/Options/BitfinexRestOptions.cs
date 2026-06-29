@@ -36,16 +36,16 @@ namespace Bitfinex.Net.Objects.Options
         public INonceProvider? NonceProvider { get; set; }
 
         /// <summary>
-        /// Spot API options
+        /// API options
         /// </summary>
-        public RestApiOptions SpotOptions { get; private set; } = new RestApiOptions();
+        public RestApiOptions ExchangeOptions { get; private set; } = new RestApiOptions();
 
         internal BitfinexRestOptions Set(BitfinexRestOptions targetOptions)
         {
             targetOptions = base.Set<BitfinexRestOptions>(targetOptions);
             targetOptions.AffiliateCode = AffiliateCode;
             targetOptions.NonceProvider = NonceProvider;
-            targetOptions.SpotOptions = SpotOptions.Set(targetOptions.SpotOptions);
+            targetOptions.ExchangeOptions = ExchangeOptions.Set(targetOptions.ExchangeOptions);
             return targetOptions;
         }
     }

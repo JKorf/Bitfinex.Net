@@ -44,9 +44,9 @@ namespace Bitfinex.Net.Objects.Options
         public INonceProvider? NonceProvider { get; set; }
 
         /// <summary>
-        /// Spot API options
+        /// API options
         /// </summary>
-        public SocketApiOptions SpotOptions { get; private set; } = new SocketApiOptions();
+        public SocketApiOptions ExchangeOptions { get; private set; } = new SocketApiOptions();
 
         internal BitfinexSocketOptions Set(BitfinexSocketOptions targetOptions)
         {
@@ -54,7 +54,7 @@ namespace Bitfinex.Net.Objects.Options
             targetOptions.AffiliateCode = AffiliateCode;
             targetOptions.NonceProvider = NonceProvider;
             targetOptions.OrderBookBulkUpdates = OrderBookBulkUpdates;
-            targetOptions.SpotOptions = SpotOptions.Set(targetOptions.SpotOptions);
+            targetOptions.ExchangeOptions = ExchangeOptions.Set(targetOptions.ExchangeOptions);
             return targetOptions;
         }
     }
