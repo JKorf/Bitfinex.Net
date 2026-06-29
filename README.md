@@ -49,7 +49,7 @@ The NuGet package files are added along side the source with the latest GitHub r
 ```csharp
 // Get the ETH/USDT ticker via rest request
 var restClient = new BitfinexRestClient();
-var tickerResult = await restClient.SpotApi.ExchangeData.GetTickerAsync("tETHUST");
+var tickerResult = await restClient.ExchangeApi.ExchangeData.GetTickerAsync("tETHUST");
 var lastPrice = tickerResult.Data.LastPrice;
 ```
 
@@ -60,7 +60,7 @@ var restClient = new BitfinexRestClient(opts => {
 });
 
 // Place Limit order for 0.1 ETH at 2000
-var orderResult = await restClient.SpotApi.Trading.PlaceOrderAsync(
+var orderResult = await restClient.ExchangeApi.Trading.PlaceOrderAsync(
     "tETHUST",
     OrderSide.Buy,
     OrderType.ExchangeLimit,
@@ -72,7 +72,7 @@ var orderResult = await restClient.SpotApi.Trading.PlaceOrderAsync(
 ```csharp
 // Subscribe to ETH/USDT ticker updates via the websocket API
 var socketClient = new BitfinexSocketClient();
-var tickerSubscriptionResult = socketClient.SpotApi.SubscribeToTickerUpdatesAsync("tETHUST", (update) => 
+var tickerSubscriptionResult = socketClient.ExchangeApi.SubscribeToTickerUpdatesAsync("tETHUST", (update) => 
 {
   var lastPrice = update.Data.LastPrice;
 });
@@ -115,6 +115,7 @@ CryptoExchange.Net also allows for [easy access to different exchange API's](htt
 |HyperLiquid|[JKorf/HyperLiquid.Net](https://github.com/JKorf/HyperLiquid.Net)|[![Nuget version](https://img.shields.io/nuget/v/HyperLiquid.Net.svg?style=flat-square)](https://www.nuget.org/packages/HyperLiquid.Net)|
 |Kraken|[JKorf/Kraken.Net](https://github.com/JKorf/Kraken.Net)|[![Nuget version](https://img.shields.io/nuget/v/KrakenExchange.net.svg?style=flat-square)](https://www.nuget.org/packages/KrakenExchange.Net)|
 |Kucoin|[JKorf/Kucoin.Net](https://github.com/JKorf/Kucoin.Net)|[![Nuget version](https://img.shields.io/nuget/v/Kucoin.net.svg?style=flat-square)](https://www.nuget.org/packages/Kucoin.Net)|
+|Lighter|[JKorf/Lighter.Net](https://github.com/JKorf/Lighter.Net)|[![Nuget version](https://img.shields.io/nuget/v/JKorf.Lighter.net.svg?style=flat-square)](https://www.nuget.org/packages/JKorf.Lighter.Net)|
 |Mexc|[JKorf/Mexc.Net](https://github.com/JKorf/Mexc.Net)|[![Nuget version](https://img.shields.io/nuget/v/JK.Mexc.net.svg?style=flat-square)](https://www.nuget.org/packages/JK.Mexc.Net)|
 |OKX|[JKorf/OKX.Net](https://github.com/JKorf/OKX.Net)|[![Nuget version](https://img.shields.io/nuget/v/JK.OKX.net.svg?style=flat-square)](https://www.nuget.org/packages/JK.OKX.Net)|
 |Polymarket|[JKorf/Polymarket.Net](https://github.com/JKorf/Polymarket.Net)|[![Nuget version](https://img.shields.io/nuget/v/Polymarket.net.svg?style=flat-square)](https://www.nuget.org/packages/Polymarket.Net)|
@@ -131,15 +132,15 @@ A Discord server is available [here](https://discord.gg/MSpeEtSY8t). Feel free t
 ## Supported functionality
 |API|Supported|Location|
 |--|--:|--|
-|Rest Public Endpoints|✓|`restClient.SpotApi.ExchangeData`|
+|Rest Public Endpoints|✓|`restClient.ExchangeApi.ExchangeData`|
 |Rest Public Pulse Endpoints|X||
-|Calculation Endpoints|✓|`restClient.SpotApi.ExchangeData`|
-|Rest Authenticated Endpoints|✓|`restClient.SpotApi.Account` / `restClient.SpotApi.Trading`|
+|Calculation Endpoints|✓|`restClient.ExchangeApi.ExchangeData`|
+|Rest Authenticated Endpoints|✓|`restClient.ExchangeApi.Account` / `restClient.ExchangeApi.Trading`|
 |Rest Authenticated Pulse Endpoints|X||
 |Rest Authenticated Merchant Endpoints|X||
-|Websocket Public Channels|✓|`socketClient.SpotApi`|
-|Websocket Authenticated Channels|✓|`socketClient.SpotApi`|
-|Websocket Authenticated Inputs|✓|`socketClient.SpotApi`|
+|Websocket Public Channels|✓|`socketClient.ExchangeApi`|
+|Websocket Authenticated Channels|✓|`socketClient.ExchangeApi`|
+|Websocket Authenticated Inputs|✓|`socketClient.ExchangeApi`|
 
 ## Support the project
 Any support is greatly appreciated.
