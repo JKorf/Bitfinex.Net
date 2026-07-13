@@ -36,8 +36,8 @@ namespace Bitfinex.Net
 
             if (request.RequestDefinition.Path.Contains("v1"))
             {
-                request.BodyParameters.Add("request", request.RequestDefinition.Path);
-                request.BodyParameters.Add("nonce", _nonceProvider.GetNonce().ToString());
+                request.BodyParameters["request"] = request.RequestDefinition.Path;
+                request.BodyParameters["nonce"] = _nonceProvider.GetNonce().ToString();
                 var requestBody = GetSerializedBody(_messageSerializer, request.BodyParameters);
                 var encodedBody = Convert.ToBase64String(Encoding.ASCII.GetBytes(requestBody));
 
