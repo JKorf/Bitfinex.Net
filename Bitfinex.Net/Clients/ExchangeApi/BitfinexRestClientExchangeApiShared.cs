@@ -25,6 +25,10 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         public void ResetDefaultExchangeParameters() => ExchangeParameters.ResetStaticParameters();
         public SharedClientInfo Discover() => SharedUtils.GetClientInfo(BitfinexExchange.Metadata, this);
 
+        private static HashSet<string> _exchangeSupportedFiat = ["USD", "EUR", "GBP"];
+        private static HashSet<string> _knownMetals = ["XAUT", "XPD", "XAG", "XPL", "XPT"];
+        private static HashSet<string> _knownCommodities = ["UKOIL"];
+
         #region Kline client
 
         GetKlinesOptions IKlineRestClient.GetKlinesOptions { get; } = new GetKlinesOptions(_exchangeName, true, true, true, 10000, false);
@@ -179,6 +183,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
         #region Spot Symbol client
 
+        SharedSymbolCatalog? ISpotSymbolRestClient.SpotSymbolCatalog => ExchangeSymbolCache.GetSymbolCatalog(_topicSpotId, EnvironmentName, null);
         GetSpotSymbolsOptions ISpotSymbolRestClient.GetSpotSymbolsOptions { get; } = new GetSpotSymbolsOptions(_exchangeName, false);
         async Task<HttpResult<SharedSpotSymbol[]>> ISpotSymbolRestClient.GetSpotSymbolsAsync(GetSymbolsRequest request, CancellationToken ct)
         {
@@ -190,23 +195,58 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             if (!result.Success)
                 return HttpResult.Fail<SharedSpotSymbol[]>(result);
 
-            var response = result.Data.Select(s =>
+            var data = result.Data
+                .Select(x => ParseSymbol(x))
+                .ToArray();
+
+            ExchangeSymbolCache.UpdateSymbolInfo(_topicSpotId, EnvironmentName, null, data);
+            return HttpResult.Ok(result, SharedUtils.ApplySymbolFilter(data, request));
+        }
+
+        private SharedSpotSymbol ParseSymbol(KeyValuePair<string, BitfinexSymbolInfo> s)
+        {
+            var assets = GetAssets(s.Key);
+            var result = new SharedSpotSymbol(assets.BaseAsset, assets.QuoteAsset, "t" + s.Key, true)
             {
-                var assets = GetAssets(s.Key);
-                return new SharedSpotSymbol(assets.BaseAsset, assets.QuoteAsset, "t" + s.Key, true)
-                {
-                    // These apply to all symbols
-                    PriceSignificantFigures = 5,
-                    PriceDecimals = 8,
-                    QuantityDecimals = 8,
+                // These apply to all symbols
+                PriceSignificantFigures = 5,
+                PriceDecimals = 8,
+                QuantityDecimals = 8,
 
-                    MinTradeQuantity = s.Value.MinOrderQuantity,
-                    MaxTradeQuantity = s.Value.MaxOrderQuantity
-                };
-            }).ToArray();
+                MinTradeQuantity = s.Value.MinOrderQuantity,
+                MaxTradeQuantity = s.Value.MaxOrderQuantity,
+                DisplayName = s.Key
+            };
 
-            ExchangeSymbolCache.UpdateSymbolInfo(_topicSpotId, EnvironmentName, null, response);
-            return HttpResult.Ok(result, response);
+            if (_exchangeSupportedFiat.Contains(result.BaseAsset))
+            {
+                result.BaseAssetType = SharedAssetType.Fiat;
+            }
+            else if (_knownMetals.Contains(result.BaseAsset))
+            {
+                result.BaseAssetType = SharedAssetType.TradFi;
+                result.BaseAssetSubType = SharedAssetSubType.Commodity;
+            }
+            else
+            {
+                result.BaseAssetType = SharedAssetType.Crypto;
+            }
+
+            if (_exchangeSupportedFiat.Contains(result.QuoteAsset))
+            {
+                result.QuoteAssetType = SharedAssetType.Fiat;
+            }
+            else if (_knownMetals.Contains(result.QuoteAsset))
+            {
+                result.QuoteAssetType = SharedAssetType.TradFi;
+                result.QuoteAssetSubType = SharedAssetSubType.Commodity;
+            }
+            else
+            {
+                result.QuoteAssetType = SharedAssetType.Crypto;
+            }
+
+            return result;
         }
 
         private (string BaseAsset, string QuoteAsset) GetAssets(string input)
@@ -269,6 +309,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
         #region Futures Symbol client
 
+        SharedSymbolCatalog? IFuturesSymbolRestClient.FuturesSymbolCatalog => ExchangeSymbolCache.GetSymbolCatalog(_topicFuturesId, EnvironmentName, null);
         GetFuturesSymbolsOptions IFuturesSymbolRestClient.GetFuturesSymbolsOptions { get; } = new GetFuturesSymbolsOptions(_exchangeName, false);
         async Task<HttpResult<SharedFuturesSymbol[]>> IFuturesSymbolRestClient.GetFuturesSymbolsAsync(GetSymbolsRequest request, CancellationToken ct)
         {
@@ -280,23 +321,58 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             if (!result.Success)
                 return HttpResult.Fail<SharedFuturesSymbol[]>(result);
 
-            var response = HttpResult.Ok(result, result.Data.Select(s =>
+            var data = result.Data
+                .Select(x => ParseFuturesSymbol(x))
+                .ToArray();
+
+            ExchangeSymbolCache.UpdateSymbolInfo(_topicSpotId, EnvironmentName, null, data);
+            return HttpResult.Ok(result, SharedUtils.ApplySymbolFilter(data, request));
+        }
+
+        private SharedFuturesSymbol ParseFuturesSymbol(KeyValuePair<string, BitfinexSymbolInfo> s)
+        {
+            var assets = GetFuturesAssets(s.Key);
+            var result = new SharedFuturesSymbol(TradingMode.PerpetualLinear, assets.BaseAsset, assets.QuoteAsset, "t" + s.Key, true)
             {
-                var assets = GetFuturesAssets(s.Key);
-                return new SharedFuturesSymbol(TradingMode.PerpetualLinear, assets.BaseAsset, assets.QuoteAsset, "t" + s.Key, true)
-                {
-                    // These apply to all symbols
-                    PriceSignificantFigures = 5,
-                    PriceDecimals = 8,
-                    QuantityDecimals = 8,
+                // These apply to all symbols
+                PriceSignificantFigures = 5,
+                PriceDecimals = 8,
+                QuantityDecimals = 8,
 
-                    MinTradeQuantity = s.Value.MinOrderQuantity,
-                    MaxTradeQuantity = s.Value.MaxOrderQuantity
-                };
-            }).ToArray());
+                MinTradeQuantity = s.Value.MinOrderQuantity,
+                MaxTradeQuantity = s.Value.MaxOrderQuantity
+            };
 
-            ExchangeSymbolCache.UpdateSymbolInfo(_topicFuturesId, EnvironmentName, null, response.Data!);
-            return response;
+            if (_exchangeSupportedFiat.Contains(result.BaseAsset))
+            {
+                result.BaseAssetType = SharedAssetType.Fiat;
+            }
+            else if (_knownMetals.Contains(result.BaseAsset) || _knownCommodities.Contains(result.BaseAsset))
+            {
+                result.BaseAssetType = SharedAssetType.TradFi;
+                result.BaseAssetSubType = SharedAssetSubType.Commodity;
+            }
+            else if (result.BaseAsset.EndsWith("IX"))
+            {
+                result.BaseAssetType = SharedAssetType.TradFi;
+                result.BaseAssetSubType = SharedAssetSubType.Index;
+            }
+            else
+            {
+                result.BaseAssetType = SharedAssetType.Crypto;
+            }
+
+            if (_exchangeSupportedFiat.Contains(result.QuoteAsset))
+            {
+                result.QuoteAssetType = SharedAssetType.Fiat;
+            }
+            else
+            {
+                result.QuoteAssetType = SharedAssetType.Crypto;
+                result.QuoteAssetSubType = SharedAssetSubType.StableCoin;
+            }
+
+            return result;
         }
 
         private (string BaseAsset, string QuoteAsset) GetFuturesAssets(string input)
