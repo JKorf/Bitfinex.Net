@@ -26,8 +26,6 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         public SharedClientInfo Discover() => SharedUtils.GetClientInfo(BitfinexExchange.Metadata, this);
 
         private static HashSet<string> _exchangeSupportedFiat = ["USD", "EUR", "GBP"];
-        private static HashSet<string> _knownMetals = ["XAUT", "XPD", "XAG", "XPL", "XPT"];
-        private static HashSet<string> _knownCommodities = ["UKOIL"];
 
         #region Kline client
 
@@ -222,7 +220,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             {
                 result.BaseAssetType = SharedAssetType.Fiat;
             }
-            else if (_knownMetals.Contains(result.BaseAsset))
+            else if (LibraryHelpers.IsCommodity(result.BaseAsset))
             {
                 result.BaseAssetType = SharedAssetType.TradFi;
                 result.BaseAssetSubType = SharedAssetSubType.Commodity;
@@ -236,7 +234,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             {
                 result.QuoteAssetType = SharedAssetType.Fiat;
             }
-            else if (_knownMetals.Contains(result.QuoteAsset))
+            else if (LibraryHelpers.IsCommodity(result.QuoteAsset))
             {
                 result.QuoteAssetType = SharedAssetType.TradFi;
                 result.QuoteAssetSubType = SharedAssetSubType.Commodity;
@@ -347,7 +345,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             {
                 result.BaseAssetType = SharedAssetType.Fiat;
             }
-            else if (_knownMetals.Contains(result.BaseAsset) || _knownCommodities.Contains(result.BaseAsset))
+            else if (LibraryHelpers.IsCommodity(result.BaseAsset))
             {
                 result.BaseAssetType = SharedAssetType.TradFi;
                 result.BaseAssetSubType = SharedAssetSubType.Commodity;
