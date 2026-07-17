@@ -353,7 +353,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             else if (result.BaseAsset.EndsWith("IX"))
             {
                 result.BaseAssetType = SharedAssetType.TradFi;
-                result.BaseAssetSubType = SharedAssetSubType.Index;
+                result.BaseAssetSubType = SharedAssetSubType.Equity;
             }
             else
             {
