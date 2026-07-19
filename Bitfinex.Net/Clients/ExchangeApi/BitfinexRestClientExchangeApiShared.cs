@@ -242,6 +242,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             else
             {
                 result.QuoteAssetType = SharedAssetType.Crypto;
+                if (LibraryHelpers.IsStableCoin(result.QuoteAsset, ["UST"]))
+                    result.QuoteAssetSubType = SharedAssetSubType.StableCoin;
             }
 
             return result;
@@ -338,7 +340,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 QuantityDecimals = 8,
 
                 MinTradeQuantity = s.Value.MinOrderQuantity,
-                MaxTradeQuantity = s.Value.MaxOrderQuantity
+                MaxTradeQuantity = s.Value.MaxOrderQuantity,
+                DisplayName = s.Key
             };
 
             if (_exchangeSupportedFiat.Contains(result.BaseAsset))
