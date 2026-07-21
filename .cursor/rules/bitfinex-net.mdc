@@ -85,6 +85,8 @@ var ticker = await shared.GetSpotTickerAsync(
 
 Same pattern works against other CryptoExchange.Net libraries.
 
+Shared spot/futures symbol calls support `GetSymbolsRequest` filters and return `DisplayName` plus base/quote asset type and subtype metadata. After a successful call, the corresponding `SpotSymbolCatalog` or `FuturesSymbolCatalog` is available on `ISpotSymbolRestClient` or `IFuturesSymbolRestClient`.
+
 ## Hard rules
 
 - Never write raw `HttpClient` to Bitfinex endpoints.
@@ -103,4 +105,3 @@ Same pattern works against other CryptoExchange.Net libraries.
 - Skill: `AGENTS.md` in repo root has fuller examples
 - `llms.txt` in repo root for AI context
 - Examples: `Examples/ai-friendly/`
-

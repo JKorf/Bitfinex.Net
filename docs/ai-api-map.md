@@ -150,12 +150,18 @@ Use this file to route common user intents to the correct Bitfinex.Net client me
 | Shared spot REST client | `new BitfinexRestClient().SpotApi.SharedClient` |
 | Shared spot socket client | `new BitfinexSocketClient().SpotApi.SharedClient` |
 | Discover shared capabilities | `client.SpotApi.SharedClient.Discover()` |
+| Get filtered shared spot symbols and populate the catalog | `ISpotSymbolRestClient.GetSpotSymbolsAsync(new GetSymbolsRequest(...))` |
+| Read the populated shared spot symbol catalog | `ISpotSymbolRestClient.SpotSymbolCatalog` |
+| Get filtered shared futures symbols and populate the catalog | `IFuturesSymbolRestClient.GetFuturesSymbolsAsync(new GetSymbolsRequest(...))` |
+| Read the populated shared futures symbol catalog | `IFuturesSymbolRestClient.FuturesSymbolCatalog` |
 | Shared spot ticker REST | `ISpotTickerRestClient.GetSpotTickerAsync(new GetTickerRequest(symbol))` |
 | Shared spot order REST | `ISpotOrderRestClient.PlaceSpotOrderAsync(...)` |
 | Shared ticker socket | `ITickerSocketClient.SubscribeToTickerUpdatesAsync(...)` |
 | Shared order book socket | `IOrderBookSocketClient.SubscribeToOrderBookUpdatesAsync(...)` |
 
 Shared REST calls return `HttpResult<T>` / `HttpResult`. Shared socket subscriptions return `WebSocketResult<UpdateSubscription>`. Shared non-I/O symbol/cache helpers such as symbol support checks return `ExchangeCallResult<T>`.
+
+Shared spot/futures symbol results include `DisplayName`, base/quote asset types, and relevant stablecoin, commodity, or derivative-equity subtypes. The catalog properties are available after the corresponding successful symbol retrieval.
 
 For shared socket subscriptions, keep the concrete socket client and unsubscribe with `await socketClient.UnsubscribeAsync(subscription.Data)`.
 

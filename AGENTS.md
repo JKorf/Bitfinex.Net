@@ -131,6 +131,8 @@ await socketClient.UnsubscribeAsync(subscription.Data);
 
 For exchange-agnostic code, use unified shared interfaces. Same pattern works against Bitfinex, Binance, Bybit, OKX, Kraken, and other CryptoExchange.Net libraries.
 
+`ISpotSymbolRestClient.GetSpotSymbolsAsync(...)` and `IFuturesSymbolRestClient.GetFuturesSymbolsAsync(...)` support `GetSymbolsRequest` filters and return symbols with `DisplayName`, base/quote asset types, and relevant stablecoin, commodity, or equity subtypes. A successful call also populates `SpotSymbolCatalog` or `FuturesSymbolCatalog` on the corresponding interface.
+
 ```csharp
 using Bitfinex.Net.Clients;
 using CryptoExchange.Net.SharedApis;

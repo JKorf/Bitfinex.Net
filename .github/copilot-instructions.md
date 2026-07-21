@@ -54,6 +54,8 @@ Store the returned `UpdateSubscription` and unsubscribe on shutdown via `socketC
 
 For code that needs to work across multiple exchanges, use `CryptoExchange.Net.SharedApis` interfaces (`ISpotTickerRestClient`, `ISpotOrderRestClient`, etc.) accessed via `.SharedClient` properties.
 
+Shared spot/futures symbol retrieval supports `GetSymbolsRequest` filters and returns display names plus base/quote asset type and subtype metadata. After a successful retrieval, the corresponding symbol interface exposes `SpotSymbolCatalog` or `FuturesSymbolCatalog`.
+
 ## Avoid
 
 - Raw `HttpClient` calls to Bitfinex endpoints
@@ -68,4 +70,3 @@ For code that needs to work across multiple exchanges, use `CryptoExchange.Net.S
 ## Reference
 
 For detailed patterns and pitfalls see `AGENTS.md`, `llms.txt`, `docs/ai-api-map.md`, and `Examples/ai-friendly/`.
-
