@@ -68,7 +68,15 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             // Return
             return HttpResult.Ok<SharedKline[]>(result, ExchangeHelpers.ApplyFilter(result.Data, x => x.OpenTime, request.StartTime, request.EndTime, direction)
                     .Select(x =>
-                        new SharedKline(request.Symbol, symbol, x.OpenTime, x.ClosePrice, x.HighPrice, x.LowPrice, x.OpenPrice, x.Volume))
+                        new SharedKline(
+                            request.Symbol,
+                            symbol, 
+                            x.OpenTime,
+                            x.ClosePrice, 
+                            x.HighPrice, 
+                            x.LowPrice, 
+                            x.OpenPrice, 
+                            new SharedOrderQuantity(x.Volume)))
                     .ToArray(), nextPageRequest);
         }
 
@@ -445,7 +453,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                     result.Data.LastPrice, 
                     result.Data.HighPrice,
                     result.Data.LowPrice, 
-                    result.Data.Volume, 
+                    new SharedOrderQuantity(result.Data.Volume),
                     Math.Round(result.Data.DailyChangePercentage * 100, 2)));
         }
 
@@ -466,8 +474,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                     x.Symbol, 
                     x.LastPrice,
                     x.HighPrice, 
-                    x.LowPrice, 
-                    x.Volume, 
+                    x.LowPrice,
+                    new SharedOrderQuantity(x.Volume),
                     Math.Round(x.DailyChangePercentage * 100, 2))).ToArray());
         }
 
@@ -516,7 +524,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 return HttpResult.Fail<SharedTrade[]>(result);
 
             return HttpResult.Ok(result, result.Data.Select(x =>
-            new SharedTrade(request.Symbol, symbol, Math.Abs(x.Quantity), x.Price, x.Timestamp)
+            new SharedTrade(request.Symbol, symbol, new SharedOrderQuantity(Math.Abs(x.Quantity)), x.Price, x.Timestamp)
             {
                 Side = x.Quantity > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell
             }).ToArray());
@@ -1004,7 +1012,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             // Return
             return HttpResult.Ok(result, ExchangeHelpers.ApplyFilter(result.Data, x => x.Timestamp, request.StartTime, request.EndTime, direction)
                     .Select(x =>
-                        new SharedTrade(request.Symbol, symbol, Math.Abs(x.Quantity), x.Price, x.Timestamp)
+                        new SharedTrade(request.Symbol, symbol, new SharedOrderQuantity(Math.Abs(x.Quantity)), x.Price, x.Timestamp)
                         {
                             Side = x.Quantity > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell
                         }).ToArray(), nextPageRequest);
@@ -1292,7 +1300,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                     result.Data.LastPrice,
                     result.Data.HighPrice,
                     result.Data.LowPrice,
-                    result.Data.Volume, 
+                    new SharedOrderQuantity(result.Data.Volume),
                     Math.Round(result.Data.DailyChangePercentage * 100, 2)));
         }
 
@@ -1314,7 +1322,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                     x.LastPrice,
                     x.HighPrice,
                     x.LowPrice,
-                    x.Volume,
+                    new SharedOrderQuantity(x.Volume),
                     Math.Round(x.DailyChangePercentage * 100, 2))).ToArray());
         }
 

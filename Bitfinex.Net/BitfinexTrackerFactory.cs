@@ -78,6 +78,7 @@ namespace Bitfinex.Net
                 symbol,
                 limit,
                 period,
+                TradeQuantityType.BaseAsset,
                 exchangeParameters
                 );
         }

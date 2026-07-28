@@ -43,7 +43,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                     update.Data.LastPrice, 
                     update.Data.HighPrice,
                     update.Data.LowPrice, 
-                    update.Data.Volume,
+                    new SharedOrderQuantity(update.Data.Volume),
                     Math.Round(update.Data.DailyChangePercentage * 100, 2)))), ct).ConfigureAwait(false);
 
             return result;
@@ -69,7 +69,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 new SharedTrade(
                     request.Symbol, 
                     symbol,
-                    x.QuantityAbs,
+                    new SharedOrderQuantity(x.QuantityAbs),
                     x.Price,
                     x.Timestamp)
                 {
@@ -315,7 +315,18 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                     return;
 
                 foreach (var item in update.Data)
-                    handler(update.ToType(new SharedKline(request.Symbol, symbol, item.OpenTime, item.ClosePrice, item.HighPrice, item.LowPrice, item.OpenPrice, item.Volume)));
+                {
+                    handler(update.ToType(
+                        new SharedKline(
+                            request.Symbol, 
+                            symbol, 
+                            item.OpenTime,
+                            item.ClosePrice,
+                            item.HighPrice,
+                            item.LowPrice,
+                            item.OpenPrice,
+                            new SharedOrderQuantity(item.Volume))));
+                }
                 }
             , ct).ConfigureAwait(false);
 
