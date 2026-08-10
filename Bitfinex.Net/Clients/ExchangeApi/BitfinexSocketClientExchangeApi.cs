@@ -85,8 +85,23 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             if (doc.RootElement.ValueKind != JsonValueKind.Array)
                 return false;
 
-            // Sequence number is in second to last field
-            var sequenceField = doc.RootElement.GetArrayLength() - 2;
+            int sequenceField;
+            if (doc.RootElement[0].GetInt32() == 0)
+            {
+                // Messages on the authenticated channel carry two sequence numbers:
+                // [0, TYPE, PAYLOAD, MESSAGE_SEQUENCE, ACCOUNT_SEQUENCE, TIMESTAMP]
+                // Only MESSAGE_SEQUENCE increases by one per message, so that's the one to track. The second to last
+                // field would be ACCOUNT_SEQUENCE, which only changes on account activity and is a much larger number.
+                // Heartbeats have no payload, so their sequence number is one position earlier: [0, "hb", SEQUENCE, TIMESTAMP]
+                var payloadKind = doc.RootElement[2].ValueKind;
+                sequenceField = payloadKind == JsonValueKind.Array || payloadKind == JsonValueKind.Object ? 3 : 2;
+            }
+            else
+            {
+                // Public channel messages have a single sequence number in the second to last field
+                sequenceField = doc.RootElement.GetArrayLength() - 2;
+            }
+
             try
             {
                 var sequenceValue = doc.RootElement[sequenceField].GetInt64();
