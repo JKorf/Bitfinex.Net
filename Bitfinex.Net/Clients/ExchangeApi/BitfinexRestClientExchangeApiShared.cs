@@ -120,13 +120,13 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 FullName = asset.FullName,
                 Networks = assetMethods.Result.Data.Where(y => y.Value.Contains(symbol))?.Select(x =>
                 {
-                    var status = assetTxStatus.Result.Data.Single(s => s.Method.Equals(x.Key, StringComparison.OrdinalIgnoreCase));
+                    var status = assetTxStatus.Result.Data.SingleOrDefault(s => s.Method.Equals(x.Key, StringComparison.OrdinalIgnoreCase));
                     return new SharedAssetNetwork(x.Key)
                     {
                         WithdrawFee = fees.Value?.Skip(1).First(),
-                        DepositEnabled = status.DepositStatus,
-                        WithdrawEnabled = status.WithdrawalStatus,
-                        MinConfirmations = status.DepositConfirmations
+                        DepositEnabled = status?.DepositStatus ?? false,
+                        WithdrawEnabled = status?.WithdrawalStatus ?? false,
+                        MinConfirmations = status?.DepositConfirmations
                     };
                 }).ToArray()
             };
@@ -172,13 +172,13 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                         FullName = x.FullName,
                         Networks = assetMethods.Result.Data.Where(y => y.Value.Contains(symbol))?.Select(x =>
                         {
-                            var status = assetTxStatus.Result.Data.Single(s => s.Method.Equals(x.Key, StringComparison.OrdinalIgnoreCase));
+                            var status = assetTxStatus.Result.Data.SingleOrDefault(s => s.Method.Equals(x.Key, StringComparison.OrdinalIgnoreCase));
                             return new SharedAssetNetwork(x.Key)
                             {
                                 WithdrawFee = fees.Value.Skip(1).First(),
-                                DepositEnabled = status.DepositStatus,
-                                WithdrawEnabled = status.WithdrawalStatus,
-                                MinConfirmations = status.DepositConfirmations
+                                DepositEnabled = status?.DepositStatus ?? false,
+                                WithdrawEnabled = status?.WithdrawalStatus ?? false,
+                                MinConfirmations = status?.DepositConfirmations
                             };
                         }).ToArray()
                     };
