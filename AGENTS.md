@@ -145,6 +145,8 @@ var symbol = new SharedSymbol(TradingMode.Spot, "BTC", "USD");
 var ticker = await bitfinexShared.GetSpotTickerAsync(new GetTickerRequest(symbol));
 ```
 
+The socket `.SharedClient` implements `ISpotOrderManagementSocketClient` and `IFuturesOrderManagementSocketClient`, so exchange-agnostic code can place and cancel spot or derivatives orders over WebSocket.
+
 ## Dependency Injection
 
 ```csharp

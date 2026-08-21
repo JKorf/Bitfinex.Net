@@ -85,6 +85,8 @@ var ticker = await shared.GetSpotTickerAsync(
 
 Same pattern works against other CryptoExchange.Net libraries.
 
+The socket `.SharedClient` implements `ISpotOrderManagementSocketClient` and `IFuturesOrderManagementSocketClient` for shared spot and derivatives order placement/cancellation.
+
 Shared spot/futures symbol calls support `GetSymbolsRequest` filters and return `DisplayName` plus base/quote asset type and subtype metadata. After a successful call, the corresponding `SpotSymbolCatalog` or `FuturesSymbolCatalog` is available on `ISpotSymbolRestClient` or `IFuturesSymbolRestClient`.
 
 ## Hard rules

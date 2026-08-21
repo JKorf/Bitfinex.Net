@@ -56,6 +56,8 @@ For code that needs to work across multiple exchanges, use `CryptoExchange.Net.S
 
 Shared spot/futures symbol retrieval supports `GetSymbolsRequest` filters and returns display names plus base/quote asset type and subtype metadata. After a successful retrieval, the corresponding symbol interface exposes `SpotSymbolCatalog` or `FuturesSymbolCatalog`.
 
+The socket `.SharedClient` implements `ISpotOrderManagementSocketClient` and `IFuturesOrderManagementSocketClient` for exchange-agnostic spot and derivatives order placement/cancellation over WebSocket.
+
 ## Avoid
 
 - Raw `HttpClient` calls to Bitfinex endpoints

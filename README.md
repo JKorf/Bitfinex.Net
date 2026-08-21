@@ -217,6 +217,11 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 11.4.0 - 21 Aug 2026
+    * Updated to CryptoExchange.Net v12.5.0
+    * Added CancellationToken parameter to socket queries
+    * Added Shared ISpotOrderManagementSocketClient, IFuturesOrderManagementSocketClient implementations
+
 * Version 11.3.1 - 12 Aug 2026
     * Fixed sequence number read for unhandled messages on the authenticated channel
 
