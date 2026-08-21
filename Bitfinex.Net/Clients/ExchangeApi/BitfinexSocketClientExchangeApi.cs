@@ -416,9 +416,22 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         /// <inheritdoc />
-        public async Task<QueryResult<BitfinexOrder>> PlaceOrderAsync(OrderSide side, OrderType type, string symbol, decimal quantity, long? groupId = null, long? clientOrderId = null, decimal? price = null, decimal? priceTrailing = null, decimal? priceAuxiliaryLimit = null, decimal? priceOcoStop = null, OrderFlags? flags = null, int? leverage = null, DateTime? cancelTime = null)
+        public async Task<QueryResult<BitfinexOrder>> PlaceOrderAsync(
+            OrderSide side, 
+            OrderType type,
+            string symbol,
+            decimal quantity,
+            long? groupId = null, 
+            long? clientOrderId = null, 
+            decimal? price = null,
+            decimal? priceTrailing = null, 
+            decimal? priceAuxiliaryLimit = null,
+            decimal? priceOcoStop = null,
+            OrderFlags? flags = null, 
+            int? leverage = null,
+            DateTime? cancelTime = null,
+            CancellationToken ct = default)
         {
-            _logger.Log(LogLevel.Information, "Going to place order");
             clientOrderId ??= GenerateClientOrderId();
 
             var query = new BitfinexSocketQuery(clientOrderId.ToString(), BitfinexEventType.OrderNew, new BitfinexNewOrder
@@ -439,7 +452,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             });
 
             var bitfinexQuery = new BitfinexQuery<BitfinexOrderNotificationEvent, BitfinexOrderNotification>(query);
-            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery, ct).ConfigureAwait(false);
             if (!result.Success)
                 return QueryResult.Fail<BitfinexOrder>(result);
 
@@ -447,9 +460,16 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         /// <inheritdoc />
-        public async Task<QueryResult<BitfinexOrder>> UpdateOrderAsync(long orderId, decimal? price = null, decimal? quantity = null, decimal? delta = null, decimal? priceAuxiliaryLimit = null, decimal? priceTrailing = null, OrderFlags? flags = null)
+        public async Task<QueryResult<BitfinexOrder>> UpdateOrderAsync(
+            long orderId, 
+            decimal? price = null,
+            decimal? quantity = null, 
+            decimal? delta = null, 
+            decimal? priceAuxiliaryLimit = null, 
+            decimal? priceTrailing = null,
+            OrderFlags? flags = null,
+            CancellationToken ct = default)
         {
-            _logger.Log(LogLevel.Information, "Going to update order " + orderId);
             var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderUpdate, new BitfinexUpdateOrder
             {
                 OrderId = orderId,
@@ -461,7 +481,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             });
 
             var bitfinexQuery = new BitfinexQuery<BitfinexOrderNotificationEvent, BitfinexOrderNotification>(query);
-            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery, ct).ConfigureAwait(false);
             if (!result.Success)
                 return QueryResult.Fail<BitfinexOrder>(result);
 
@@ -469,11 +489,11 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         /// <inheritdoc />
-        public async Task<QueryResult<BitfinexOrder[]>> CancelAllOrdersAsync()
+        public async Task<QueryResult<BitfinexOrder[]>> CancelAllOrdersAsync(CancellationToken ct = default)
         {
             var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, new BitfinexMultiCancel { All = true });
             var bitfinexQuery = new BitfinexQuery<BitfinexOrdersNotificationEvent, BitfinexOrdersNotification>(query);
-            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery, ct).ConfigureAwait(false);
             if (!result.Success)
                 return QueryResult.Fail<BitfinexOrder[]>(result);
 
@@ -481,11 +501,11 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         /// <inheritdoc />
-        public async Task<QueryResult<BitfinexOrder>> CancelOrderAsync(long orderId)
+        public async Task<QueryResult<BitfinexOrder>> CancelOrderAsync(long orderId, CancellationToken ct = default)
         {
             var query = new BitfinexSocketQuery(orderId.ToString(CultureInfo.InvariantCulture), BitfinexEventType.OrderCancel, new Dictionary<string, long> { ["id"] = orderId });
             var bitfinexQuery = new BitfinexQuery<BitfinexOrderNotificationEvent, BitfinexOrderNotification>(query);
-            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery, ct).ConfigureAwait(false);
             if (!result.Success)
                 return QueryResult.Fail<BitfinexOrder>(result);
 
@@ -493,37 +513,36 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         /// <inheritdoc />
-        public async Task<QueryResult<BitfinexOrder[]>> CancelOrdersByGroupIdAsync(long groupOrderId)
+        public async Task<QueryResult<BitfinexOrder[]>> CancelOrdersByGroupIdAsync(long groupOrderId, CancellationToken ct = default)
         {
-            return await CancelOrdersAsync(null, null, new Dictionary<long, long?> { { groupOrderId, null } }).ConfigureAwait(false);
+            return await CancelOrdersAsync(null, null, new Dictionary<long, long?> { { groupOrderId, null } }, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<QueryResult<BitfinexOrder[]>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderIds)
+        public async Task<QueryResult<BitfinexOrder[]>> CancelOrdersByGroupIdsAsync(IEnumerable<long> groupOrderIds, CancellationToken ct = default)
         {
             groupOrderIds.ValidateNotNull(nameof(groupOrderIds));
-            return await CancelOrdersAsync(null, null, groupOrderIds.ToDictionary(v => v, k => (long?)null)).ConfigureAwait(false);
+            return await CancelOrdersAsync(null, null, groupOrderIds.ToDictionary(v => v, k => (long?)null), ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<QueryResult<BitfinexOrder[]>> CancelOrdersAsync(IEnumerable<long> orderIds)
+        public async Task<QueryResult<BitfinexOrder[]>> CancelOrdersAsync(IEnumerable<long> orderIds, CancellationToken ct = default)
         {
             orderIds.ValidateNotNull(nameof(orderIds));
-            return await CancelOrdersAsync(orderIds, null).ConfigureAwait(false);
+            return await CancelOrdersAsync(orderIds, null, null, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<QueryResult<BitfinexOrder[]>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds)
+        public async Task<QueryResult<BitfinexOrder[]>> CancelOrdersByClientOrderIdsAsync(Dictionary<long, DateTime> clientOrderIds, CancellationToken ct = default)
         {
-            return await CancelOrdersAsync(null, clientOrderIds).ConfigureAwait(false);
+            return await CancelOrdersAsync(null, clientOrderIds, null, ct).ConfigureAwait(false);
         }
 
-        private async Task<QueryResult<BitfinexOrder[]>> CancelOrdersAsync(IEnumerable<long>? orderIds = null, Dictionary<long, DateTime>? clientOrderIds = null, Dictionary<long, long?>? groupOrderIds = null)
+        private async Task<QueryResult<BitfinexOrder[]>> CancelOrdersAsync(IEnumerable<long>? orderIds = null, Dictionary<long, DateTime>? clientOrderIds = null, Dictionary<long, long?>? groupOrderIds = null, CancellationToken ct = default)
         {
             if (orderIds == null && clientOrderIds == null && groupOrderIds == null)
                 throw new ArgumentException("Either orderIds, clientOrderIds or groupOrderIds should be provided");
 
-            _logger.Log(LogLevel.Information, "Going to cancel multiple orders");
             var cancelObject = new BitfinexMultiCancel { OrderIds = orderIds };
             if (clientOrderIds != null)
             {
@@ -542,7 +561,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             var query = new BitfinexSocketQuery(null, BitfinexEventType.OrderCancelMulti, cancelObject);
             var bitfinexQuery = new BitfinexQuery<BitfinexOrdersNotificationEvent, BitfinexOrdersNotification>(query);
-            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery, ct).ConfigureAwait(false);
             if (!result.Success)
                 return QueryResult.Fail<BitfinexOrder[]>(result);
 
@@ -550,7 +569,14 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         /// <inheritdoc />
-        public async Task<QueryResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(FundingOfferType type, string symbol, decimal quantity, decimal price, int period, int? flags = null)
+        public async Task<QueryResult<BitfinexFundingOffer>> SubmitFundingOfferAsync(
+            FundingOfferType type,
+            string symbol, 
+            decimal quantity,
+            decimal price, 
+            int period, 
+            int? flags = null,
+            CancellationToken ct = default)
         {
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
@@ -564,7 +590,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             var query = new BitfinexSocketQuery(ExchangeHelpers.NextId().ToString(CultureInfo.InvariantCulture), BitfinexEventType.FundingOfferNew, parameters);
             var bitfinexQuery = new BitfinexQuery<BitfinexFundingOfferNotificationEvent, BitfinexFundingOfferNotification>(query);
-            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery, ct).ConfigureAwait(false);
             if (!result.Success)
                 return QueryResult.Fail<BitfinexFundingOffer>(result);
 
@@ -572,7 +598,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         /// <inheritdoc />
-        public async Task<QueryResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long id)
+        public async Task<QueryResult<BitfinexFundingOffer>> CancelFundingOfferAsync(long id, CancellationToken ct = default)
         {
             var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings)
             {
@@ -581,7 +607,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             var query = new BitfinexSocketQuery(id.ToString(CultureInfo.InvariantCulture), BitfinexEventType.FundingOfferCancel, parameters);
             var bitfinexQuery = new BitfinexQuery<BitfinexFundingOfferNotificationEvent, BitfinexFundingOfferNotification>(query);
-            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery).ConfigureAwait(false);
+            var result = await QueryAsync(_baseAddressPrivate.AppendPath("ws/2"), bitfinexQuery, ct).ConfigureAwait(false);
             if (!result.Success)
                 return QueryResult.Fail<BitfinexFundingOffer>(result);
 

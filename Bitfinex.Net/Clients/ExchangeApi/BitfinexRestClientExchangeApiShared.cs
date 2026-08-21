@@ -499,9 +499,9 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 ExchangeSymbolCache.ParseSymbol(_topicSpotId, EnvironmentName, null, symbol),
                 symbol,
                 resultTicker.Data.Asks[0].Price,
-                resultTicker.Data.Asks[0].Quantity,
+                new SharedOrderQuantity(resultTicker.Data.Asks[0].Quantity),
                 resultTicker.Data.Bids[0].Price,
-                resultTicker.Data.Bids[0].Quantity));
+                new SharedOrderQuantity(resultTicker.Data.Bids[0].Quantity)));
         }
 
         #endregion
@@ -751,7 +751,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 x.OrderId.ToString(),
                 x.Id.ToString(),
                 x.QuantityRaw > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell,
-                x.Quantity,
+                new SharedOrderQuantity(x.Quantity),
                 x.Price,
                 x.Timestamp)
             {
@@ -800,7 +800,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                     x.OrderId.ToString(),
                     x.Id.ToString(),
                     x.QuantityRaw > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell,
-                    x.Quantity,
+                    new SharedOrderQuantity(x.Quantity),
                     x.Price,
                     x.Timestamp)
                 {
@@ -970,7 +970,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             if (!result.Success)
                 return HttpResult.Fail<SharedOrderBook>(result);
 
-            return HttpResult.Ok(result, new SharedOrderBook(result.Data.Asks, result.Data.Bids));
+            return HttpResult.Ok(result, new SharedOrderBook(SharedQuantityType.BaseAsset, result.Data.Asks, result.Data.Bids));
         }
         #endregion
 
@@ -1534,7 +1534,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 x.OrderId.ToString(),
                 x.Id.ToString(),
                 x.QuantityRaw > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell,
-                x.Quantity,
+                new SharedOrderQuantity(x.Quantity),
                 x.Price,
                 x.Timestamp)
             {
@@ -1583,7 +1583,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                     x.OrderId.ToString(),
                     x.Id.ToString(),
                     x.QuantityRaw > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell,
-                    x.Quantity,
+                    new SharedOrderQuantity(x.Quantity),
                     x.Price,
                     x.Timestamp)
                 {
@@ -1631,7 +1631,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             new SharedPosition(
                 ExchangeSymbolCache.ParseSymbol(_topicFuturesId, EnvironmentName, null, x.Symbol),
                 x.Symbol, 
-                Math.Abs(x.Quantity),
+                new SharedOrderQuantity(Math.Abs(x.Quantity)),
                 DateTime.UtcNow)
             {
                 UnrealizedPnl = x.ProfitLoss,
