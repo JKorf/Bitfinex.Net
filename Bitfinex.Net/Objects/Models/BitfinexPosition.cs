@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Bitfinex.Net.Enums;
+using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
@@ -107,5 +109,12 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(18)]
         public decimal? MinCollateral { get; set; }
+        /// <summary>
+        /// Additional meta information about the position. On the positions audit endpoint a force-liquidated
+        /// position is marked here (reason "LIQ"), distinguishing a liquidation from a regular close.
+        /// </summary>
+        [ArrayProperty(19)]
+        [JsonConversion]
+        public IDictionary<string, object>? Meta { get; set; }
     }
 }
