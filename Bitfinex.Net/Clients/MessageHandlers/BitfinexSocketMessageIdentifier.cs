@@ -29,12 +29,22 @@ namespace Bitfinex.Net.Clients.MessageHandlers
                 var nodeType1 = document.RootElement[1].ValueKind;
                 if (nodeType1 != JsonValueKind.Array)
                 {
-                    var nodeValue1 = document.RootElement[1].GetString();
-                    if (nodeValue1!.Equals("hb") || nodeValue1.Equals("cs"))
-                        return id + nodeValue1;
+                    // Element 1 is not always a string; a live message can carry a JSON null here, and
+                    // GetString() then returns null, so only genuine strings get the hb/cs test
+                    if (nodeType1 == JsonValueKind.String)
+                    {
+                        var nodeValue1 = document.RootElement[1].GetString();
+                        if (nodeValue1!.Equals("hb") || nodeValue1.Equals("cs"))
+                            return id + nodeValue1;
+                    }
 
-                    var nodeTypeData = document.RootElement[2][0].ValueKind;
-                    return nodeTypeData == JsonValueKind.Array ? id + "array" : id + "single";
+                    if (document.RootElement.GetArrayLength() > 2)
+                    {
+                        var nodeTypeData = document.RootElement[2][0].ValueKind;
+                        return nodeTypeData == JsonValueKind.Array ? id + "array" : id + "single";
+                    }
+
+                    return id + "single";
                 }
                 else
                 {
