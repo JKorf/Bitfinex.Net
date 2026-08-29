@@ -147,6 +147,37 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
             CancellationToken ct = default);
 
         /// <summary>
+        /// Update an existing order in place, keeping its order id. The order's price, quantity and the
+        /// auxiliary and trailing prices can each be changed; for a stop order the price is the trigger.
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitfinex.com/reference/rest-auth-update-order" /><br />
+        /// Endpoint:<br />
+        /// POST /v2/auth/w/order/update
+        /// </para>
+        /// </summary>
+        /// <param name="orderId">["id"] The id of the order to update</param>
+        /// <param name="price">["price"] The new price of the order</param>
+        /// <param name="quantity">["amount"] The new quantity of the order, negative for a sell</param>
+        /// <param name="delta">["delta"] Change the quantity by this amount instead of setting it outright</param>
+        /// <param name="priceAuxiliaryLimit">["price_aux_limit"] The new auxiliary limit price</param>
+        /// <param name="priceTrailing">["price_trailing"] The new trailing price</param>
+        /// <param name="flags">["flags"] The new order flags</param>
+        /// <param name="leverage">["lev"] The new leverage, for derivatives</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<HttpResult<BitfinexWriteResultOrder>> UpdateOrderAsync(
+            long orderId,
+            decimal? price = null,
+            decimal? quantity = null,
+            decimal? delta = null,
+            decimal? priceAuxiliaryLimit = null,
+            decimal? priceTrailing = null,
+            OrderFlags? flags = null,
+            int? leverage = null,
+            CancellationToken ct = default);
+
+        /// <summary>
         /// Cancel a specific order
         /// <para>
         /// Docs:<br />
