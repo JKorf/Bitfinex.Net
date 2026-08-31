@@ -167,6 +167,34 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
 
         /// <inheritdoc />
+        public async Task<HttpResult<BitfinexWriteResultOrder>> UpdateOrderAsync(
+            long orderId,
+            decimal? price = null,
+            decimal? quantity = null,
+            decimal? delta = null,
+            decimal? priceAuxiliaryLimit = null,
+            decimal? priceTrailing = null,
+            OrderFlags? flags = null,
+            int? leverage = null,
+            CancellationToken ct = default)
+        {
+            var parameters = new Parameters(BitfinexExchange._parameterSerializationSettings);
+            parameters.Add("id", orderId);
+            parameters.Add("amount", quantity?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("delta", delta?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("price", price?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("price_aux_limit", priceAuxiliaryLimit?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("price_trailing", priceTrailing?.ToString(CultureInfo.InvariantCulture));
+            parameters.Add("flags", (int?)flags);
+            parameters.Add("lev", leverage);
+
+            var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/v2/auth/w/order/update", BitfinexExchange.RateLimiter.Overall, 1, true,
+                limitGuard: new SingleLimitGuard(90, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding));
+            var result = await _baseClient.SendAsync<BitfinexWriteResultOrder>(request, parameters, ct).ConfigureAwait(false);
+            return result;
+        }
+
+        /// <inheritdoc />
         public async Task<HttpResult<BitfinexWriteResultOrder>> CancelOrderAsync(long? orderId = null, long? clientOrderId = null, DateTime? clientOrderIdDate = null, CancellationToken ct = default)
         {
             if (orderId != null && clientOrderId != null)
