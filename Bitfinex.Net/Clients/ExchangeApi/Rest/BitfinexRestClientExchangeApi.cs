@@ -24,6 +24,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
     internal partial class BitfinexRestClientExchangeApi : RestApiClient<BitfinexEnvironment, BitfinexAuthenticationProvider, BitfinexCredentials>, IBitfinexRestClientExchangeApi
     {
         #region fields
+        private readonly BitfinexRestClientExchangeSharedApi _sharedApi;
+
         /// <inheritdoc />
         public new BitfinexRestOptions ClientOptions => (BitfinexRestOptions)base.ClientOptions;
 
@@ -52,6 +54,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             Account = new BitfinexRestClientExchangeApiAccount(this);
             ExchangeData = new BitfinexRestClientExchangeApiExchangeData(this);
             Trading = new BitfinexRestClientExchangeApiTrading(this);
+
+            _sharedApi = new BitfinexRestClientExchangeSharedApi(this);
         }
 
         #endregion
@@ -90,6 +94,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             return false;
         }
 
-        public IBitfinexRestClientExchangeApiShared SharedClient => this;
+        public IBitfinexRestClientExchangeApiShared SharedClient => _sharedApi;
+        public IBitfinexRestClientExchangeSharedApi SharedApi => _sharedApi;
     }
 }

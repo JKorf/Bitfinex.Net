@@ -195,5 +195,23 @@ namespace Bitfinex.Net.UnitTests
             Assert.That(((BaseApiClient)socketClient.ExchangeApi).ClientOptions.Proxy.Host, Is.EqualTo("host2"));
             Assert.That(((BaseApiClient)socketClient.ExchangeApi).ClientOptions.Proxy.Port, Is.EqualTo(81));
         }
+
+        [Test]
+        public void TestRestSharedApiDiscoveryMatchesAggregate()
+        {
+            var (missingOptions, missingInterfaces) = CryptoExchange.Net.Testing.TestHelpers.ValidateSharedApi(new BitfinexRestClient().ExchangeApi.SharedApi);
+
+            Assert.That(missingOptions, Is.Empty);
+            Assert.That(missingInterfaces, Is.Empty);
+        }
+
+        [Test]
+        public void TestSocketSharedApiDiscoveryMatchesAggregate()
+        {
+            var (missingOptions, missingInterfaces) = CryptoExchange.Net.Testing.TestHelpers.ValidateSharedApi(new BitfinexSocketClient().ExchangeApi.SharedApi);
+
+            Assert.That(missingOptions, Is.Empty);
+            Assert.That(missingInterfaces, Is.Empty);
+        }
     }
 }

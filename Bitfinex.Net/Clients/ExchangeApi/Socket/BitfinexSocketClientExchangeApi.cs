@@ -37,6 +37,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
     internal partial class BitfinexSocketClientExchangeApi : SocketApiClient<BitfinexEnvironment, BitfinexAuthenticationProvider, BitfinexCredentials>, IBitfinexSocketClientExchangeApi
     {
         #region fields
+        private readonly BitfinexSocketClientExchangeSharedApi _sharedApi;
+
         private readonly Random _random = new Random();
 
         /// <inheritdoc />
@@ -53,6 +55,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             base(loggerFactory, BitfinexExchange.ExchangeName, options.Environment.SocketPublicAddress, options, options.ExchangeOptions)
         {
             EnforceSequenceNumbers = true;
+
+            _sharedApi = new BitfinexSocketClientExchangeSharedApi(this);
 
             AddSystemSubscription(new BitfinexInfoSubscription(_logger, options.OrderBookBulkUpdates));
 
@@ -74,7 +78,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitfinexExchange._serializerContext));
-        public IBitfinexSocketClientExchangeApiShared SharedClient => this;
+        public IBitfinexSocketClientExchangeApiShared SharedClient => _sharedApi;
+        public IBitfinexSocketClientExchangeSharedApi SharedApi => _sharedApi;
 
         protected override bool HandleUnhandledMessage(SocketConnection connection, string typeIdentifier, ReadOnlySpan<byte> data)
         {
