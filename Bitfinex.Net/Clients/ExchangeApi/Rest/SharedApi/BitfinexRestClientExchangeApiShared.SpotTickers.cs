@@ -16,9 +16,12 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 {
     internal partial class BitfinexRestClientExchangeSharedApi
     {
-        #region Ticker client
+        #region Get Spot Ticker
 
         public GetSpotTickerOptions GetSpotTickerOptions { get; } = new GetSpotTickerOptions(_exchangeName);
+        async Task<ICallResult<SharedSpotTicker>> IGetSpotTicker.GetSpotTickerAsync(GetTickerRequest request, CancellationToken ct)
+            => await GetSpotTickerAsync(request, ct).ConfigureAwait(false);
+
         public async Task<HttpResult<SharedSpotTicker>> GetSpotTickerAsync(GetTickerRequest request, CancellationToken ct)
         {
             var validationError = GetSpotTickerOptions.ValidateRequest(request, this);
@@ -40,11 +43,18 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                     Math.Round(result.Data.DailyChangePercentage * 100, 2)));
         }
 
+        #endregion
+
+        #region Get All Spot Tickers
+
         Task<HttpResult<SharedSpotTicker[]>> ISpotTickerRestClient.GetSpotTickersAsync(GetTickersRequest request, CancellationToken ct)
             => GetAllSpotTickersAsync(request, ct);
         GetAllSpotTickersOptions ISpotTickerRestClient.GetSpotTickersOptions => GetAllSpotTickersOptions;
 
         public GetAllSpotTickersOptions GetAllSpotTickersOptions { get; } = new GetAllSpotTickersOptions(_exchangeName);
+        async Task<ICallResult<SharedSpotTicker[]>> IGetAllSpotTickers.GetAllSpotTickersAsync(GetTickersRequest request, CancellationToken ct)
+            => await GetAllSpotTickersAsync(request, ct).ConfigureAwait(false);
+
         public async Task<HttpResult<SharedSpotTicker[]>> GetAllSpotTickersAsync(GetTickersRequest request, CancellationToken ct)
         {
             var validationError = GetAllSpotTickersOptions.ValidateRequest(request, this);
@@ -67,5 +77,6 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         #endregion
+
     }
 }

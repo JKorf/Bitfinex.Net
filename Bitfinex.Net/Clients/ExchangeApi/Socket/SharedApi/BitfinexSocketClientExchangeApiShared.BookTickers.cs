@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 {
     internal partial class BitfinexSocketClientExchangeSharedApi
     {
-        #region Book Ticker client
+        #region Subscribe To Book Ticker Updates
 
         public SubscribeBookTickerOptions SubscribeBookTickerOptions { get; } = new SubscribeBookTickerOptions(_exchangeName, false);
         public async Task<WebSocketResult<UpdateSubscription>> SubscribeToBookTickerUpdatesAsync(SubscribeBookTickerRequest request, Action<DataEvent<SharedBookTicker>> handler, CancellationToken ct)
@@ -39,6 +39,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             return result;
         }
+
         #endregion
     }
 }

@@ -16,13 +16,16 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 {
     internal partial class BitfinexRestClientExchangeSharedApi
     {
-        #region Withdrawal client
+        #region Get Withdrawal History
 
         Task<HttpResult<SharedWithdrawal[]>> IWithdrawalRestClient.GetWithdrawalsAsync(GetWithdrawalsRequest request, PageRequest? nextPageToken, CancellationToken ct)
             => GetWithdrawalHistoryAsync(request, nextPageToken, ct);
         GetWithdrawalHistoryOptions IWithdrawalRestClient.GetWithdrawalsOptions => GetWithdrawalHistoryOptions;
 
         public GetWithdrawalHistoryOptions GetWithdrawalHistoryOptions { get; } = new GetWithdrawalHistoryOptions(_exchangeName, false, true, true, 1000);
+        async Task<ICallResult<SharedWithdrawal[]>> IGetWithdrawalHistory.GetWithdrawalHistoryAsync(GetWithdrawalsRequest request, PageRequest? pageRequest, CancellationToken ct)
+            => await GetWithdrawalHistoryAsync(request, pageRequest, ct).ConfigureAwait(false);
+
         public async Task<HttpResult<SharedWithdrawal[]>> GetWithdrawalHistoryAsync(GetWithdrawalsRequest request, PageRequest? pageRequest, CancellationToken ct)
         {
             var validationError = GetWithdrawalHistoryOptions.ValidateRequest(request, this);
@@ -72,6 +75,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 .ToArray(), nextPageRequest);
         }
 
+        #endregion
+
         private SharedTransferStatus GetWithdrawalStatus(BitfinexMovement x)
         {
             if (x.Status == "COMPLETED")
@@ -80,9 +85,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             return SharedTransferStatus.Unknown;
         }
 
-        #endregion
-
-        #region Withdraw client
+        #region Withdraw
 
         public WithdrawOptions WithdrawOptions { get; } = new WithdrawOptions(_exchangeName)
         {
@@ -91,6 +94,9 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 new ParameterDescription(nameof(WithdrawRequest.Network), typeof(string), "Network to use", "tetheruse")
             }
         };
+
+        async Task<ICallResult<SharedId>> IWithdraw.WithdrawAsync(WithdrawRequest request, CancellationToken ct)
+            => await WithdrawAsync(request, ct).ConfigureAwait(false);
 
         public async Task<HttpResult<SharedId>> WithdrawAsync(WithdrawRequest request, CancellationToken ct)
         {
@@ -113,5 +119,6 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         #endregion
+
     }
 }

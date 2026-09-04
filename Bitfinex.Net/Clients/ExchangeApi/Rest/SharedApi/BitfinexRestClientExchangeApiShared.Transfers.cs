@@ -16,7 +16,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 {
     internal partial class BitfinexRestClientExchangeSharedApi
     {
-        #region Transfer client
+        #region Transfer
 
         public TransferOptions TransferOptions { get; } = new TransferOptions(_exchangeName, [
             SharedAccountType.Funding,
@@ -24,6 +24,9 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             SharedAccountType.CrossMargin,
             SharedAccountType.IsolatedMargin
             ]);
+        async Task<ICallResult<SharedId>> ITransfer.TransferAsync(TransferRequest request, CancellationToken ct)
+            => await TransferAsync(request, ct).ConfigureAwait(false);
+
         public async Task<HttpResult<SharedId>> TransferAsync(TransferRequest request, CancellationToken ct)
         {
             var validationError = TransferOptions.ValidateRequest(request, this);
@@ -48,6 +51,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             return HttpResult.Ok(transfer, new SharedId(""));
         }
 
+        #endregion
+
         private WithdrawWallet? GetTransferType(SharedAccountType type)
         {
             if (type == SharedAccountType.Funding) return WithdrawWallet.Deposit;
@@ -56,6 +61,5 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             return null;
         }
 
-        #endregion
     }
 }

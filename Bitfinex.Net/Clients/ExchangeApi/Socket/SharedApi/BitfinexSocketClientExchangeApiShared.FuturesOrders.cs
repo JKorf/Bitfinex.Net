@@ -17,7 +17,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 {
     internal partial class BitfinexSocketClientExchangeSharedApi
     {
-        #region Futures Order client
+        #region Subscribe To Futures Order Updates
 
         async Task<WebSocketResult<UpdateSubscription>> IFuturesOrderSocketClient.SubscribeToFuturesOrderUpdatesAsync(SubscribeFuturesOrderRequest request, Action<DataEvent<SharedFuturesOrder[]>> handler, CancellationToken ct)
             => await SubscribeToFuturesOrderUpdatesAsync(request, x => handler(x.ToType<SharedFuturesOrder[]>(x.Data)), ct).ConfigureAwait(false);
@@ -65,9 +65,11 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             return result;
         }
+
         #endregion
 
-        #region Futures Order Client
+        #region Place Futures Order
+
         public SharedFeeDeductionType FuturesFeeDeductionType => SharedFeeDeductionType.AddToCost;
         public SharedFeeAssetType FuturesFeeAssetType => SharedFeeAssetType.QuoteAsset;
 
@@ -79,7 +81,13 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 SharedQuantityType.BaseAsset,
                 SharedQuantityType.BaseAsset);
 
+        PlaceFuturesOrderOptions IPlaceFuturesOrder.PlaceFuturesOrderOptions
+            => PlaceFuturesOrderOptions;
+
         public PlaceFuturesOrderSocketOptions PlaceFuturesOrderOptions { get; } = new PlaceFuturesOrderSocketOptions   (_exchangeName, true);
+        async Task<ICallResult<SharedId>> IPlaceFuturesOrder.PlaceFuturesOrderAsync(PlaceFuturesOrderRequest request, CancellationToken ct)
+            => await PlaceFuturesOrderAsync(request, ct).ConfigureAwait(false);
+
         public async Task<QueryResult<SharedId>> PlaceFuturesOrderAsync(PlaceFuturesOrderRequest request, CancellationToken ct)
         {
             var validationError = PlaceFuturesOrderOptions.ValidateRequest(request, this);
@@ -107,7 +115,17 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             return QueryResult.Ok(result, new SharedId(result.Data.Id.ToString()));
         }
 
+        #endregion
+
+        #region Cancel Futures Order
+
+        CancelFuturesOrderOptions ICancelFuturesOrder.CancelFuturesOrderOptions
+            => CancelFuturesOrderOptions;
+
         public CancelFuturesOrderSocketOptions CancelFuturesOrderOptions { get; } = new CancelFuturesOrderSocketOptions(_exchangeName, true);
+        async Task<ICallResult<SharedId>> ICancelFuturesOrder.CancelFuturesOrderAsync(CancelOrderRequest request, CancellationToken ct)
+            => await CancelFuturesOrderAsync(request, ct).ConfigureAwait(false);
+
         public async Task<QueryResult<SharedId>> CancelFuturesOrderAsync(CancelOrderRequest request, CancellationToken ct)
         {
             var validationError = CancelFuturesOrderOptions.ValidateRequest(request, this);
@@ -124,6 +142,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             return QueryResult.Ok(order, new SharedId(order.Data.ToString()));
         }
 
+        #endregion
+
         private Enums.OrderType GetFuturesPlaceOrderType(SharedOrderType type, SharedTimeInForce? tif)
         {
             if ((type == SharedOrderType.Limit || type == SharedOrderType.LimitMaker) && (tif == null || tif == SharedTimeInForce.GoodTillCanceled)) return Enums.OrderType.Limit;
@@ -133,6 +153,5 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             throw new ArgumentException($"The combination of order type `{type}` and time in force `{tif}` in invalid");
         }
-        #endregion
     }
 }

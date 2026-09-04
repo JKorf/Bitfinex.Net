@@ -17,7 +17,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 {
     internal partial class BitfinexSocketClientExchangeSharedApi
     {
-        #region User Trade client
+        #region Subscribe To User Trade Updates
+
         public SubscribeUserTradeOptions SubscribeUserTradeOptions { get; } = new SubscribeUserTradeOptions(_exchangeName, false);
         public async Task<WebSocketResult<UpdateSubscription>> SubscribeToUserTradeUpdatesAsync(SubscribeUserTradeRequest request, Action<DataEvent<SharedUserTrade[]>> handler, CancellationToken ct)
         {
@@ -55,6 +56,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             return result;
         }
+
         #endregion
     }
 }

@@ -17,7 +17,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 {
     internal partial class BitfinexSocketClientExchangeSharedApi
     {
-        #region Spot Order client
+        #region Subscribe To Spot Order Updates
+
         async Task<WebSocketResult<UpdateSubscription>> ISpotOrderSocketClient.SubscribeToSpotOrderUpdatesAsync(SubscribeSpotOrderRequest request, Action<DataEvent<SharedSpotOrder[]>> handler, CancellationToken ct)
             => await SubscribeToSpotOrderUpdatesAsync(request, x => handler(x.ToType<SharedSpotOrder[]>(x.Data)), ct).ConfigureAwait(false);
 
@@ -64,6 +65,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             return result;
         }
 
+        #endregion
+
         private SharedOrderStatus ParseOrderStatus(OrderStatus status)
         {
             if (status == Enums.OrderStatus.Canceled)
@@ -86,9 +89,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             return SharedOrderType.Other;
         }
-        #endregion
 
-        #region Spot Order client
+        #region Place Spot Order
 
         public SharedFeeDeductionType SpotFeeDeductionType => SharedFeeDeductionType.DeductFromOutput;
         public SharedFeeAssetType SpotFeeAssetType => SharedFeeAssetType.OutputAsset;
@@ -135,7 +137,17 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             return QueryResult.Ok(result, new SharedId(result.Data.Id.ToString()));
         }
 
+        #endregion
+
+        #region Cancel Spot Order
+
+        CancelSpotOrderOptions ICancelSpotOrder.CancelSpotOrderOptions
+            => CancelSpotOrderOptions;
+
         public CancelSpotOrderSocketOptions CancelSpotOrderOptions { get; } = new CancelSpotOrderSocketOptions(_exchangeName, true);
+        async Task<ICallResult<SharedId>> ICancelSpotOrder.CancelSpotOrderAsync(CancelOrderRequest request, CancellationToken ct)
+            => await CancelSpotOrderAsync(request, ct).ConfigureAwait(false);
+
         public async Task<QueryResult<SharedId>> CancelSpotOrderAsync(CancelOrderRequest request, CancellationToken ct)
         {
             var validationError = CancelSpotOrderOptions.ValidateRequest(request, this);
@@ -152,6 +164,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             return QueryResult.Ok(order, new SharedId(order.Data.ToString()));
         }
 
+        #endregion
+
         private Enums.OrderType GetPlaceOrderType(SharedOrderType type, SharedTimeInForce? tif)
         {
             if ((type == SharedOrderType.Limit || type == SharedOrderType.LimitMaker) && (tif == null || tif == SharedTimeInForce.GoodTillCanceled)) return Enums.OrderType.ExchangeLimit;
@@ -161,6 +175,5 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             throw new ArgumentException($"The combination of order type `{type}` and time in force `{tif}` in invalid");
         }
-        #endregion
     }
 }

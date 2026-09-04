@@ -16,8 +16,12 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 {
     internal partial class BitfinexRestClientExchangeSharedApi
     {
-        #region Order Book client
+        #region Get Order Book
+
         public GetOrderBookOptions GetOrderBookOptions { get; } = new GetOrderBookOptions(_exchangeName, new[] { 1, 25, 100 }, false);
+        async Task<ICallResult<SharedOrderBook>> IGetOrderBook.GetOrderBookAsync(GetOrderBookRequest request, CancellationToken ct)
+            => await GetOrderBookAsync(request, ct).ConfigureAwait(false);
+
         public async Task<HttpResult<SharedOrderBook>> GetOrderBookAsync(GetOrderBookRequest request, CancellationToken ct)
         {
             var validationError = GetOrderBookOptions.ValidateRequest(request, this);
@@ -34,6 +38,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
             return HttpResult.Ok(result, new SharedOrderBook(SharedQuantityType.BaseAsset, null, result.Data.Asks, result.Data.Bids));
         }
+
         #endregion
     }
 }

@@ -1,4 +1,4 @@
-﻿using Bitfinex.Net;
+using Bitfinex.Net;
 using Bitfinex.Net.Clients;
 using Bitfinex.Net.Interfaces;
 using Bitfinex.Net.Interfaces.Clients;
@@ -115,6 +115,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 x.GetRequiredService<ILoggerFactory>(),
                 x.GetRequiredService<IOptions<BitfinexRestOptions>>(),
                 x.GetRequiredService<IOptions<BitfinexSocketOptions>>()));
+
+            services.AddTransient<IBitfinexSharedApiClient, BitfinexSharedApiClient>();
+
+            services.RegisterSharedApi(x => x.GetRequiredService<IBitfinexRestClient>().ExchangeApi.SharedApi);
+            services.RegisterSharedApi(x => x.GetRequiredService<IBitfinexSocketClient>().ExchangeApi.SharedApi);
 
             services.RegisterSharedRestInterfaces(x => x.GetRequiredService<IBitfinexRestClient>().ExchangeApi.SharedClient);
             services.RegisterSharedSocketInterfaces(x => x.GetRequiredService<IBitfinexSocketClient>().ExchangeApi.SharedClient);

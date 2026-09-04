@@ -16,9 +16,12 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 {
     internal partial class BitfinexRestClientExchangeSharedApi
     {
-        #region Recent Trade client
+        #region Get Recent Trades
 
         public GetRecentTradesOptions GetRecentTradesOptions { get; } = new GetRecentTradesOptions(_exchangeName, 10000, false);
+        async Task<ICallResult<SharedTrade[]>> IGetRecentTrades.GetRecentTradesAsync(GetRecentTradesRequest request, CancellationToken ct)
+            => await GetRecentTradesAsync(request, ct).ConfigureAwait(false);
+
         public async Task<HttpResult<SharedTrade[]>> GetRecentTradesAsync(GetRecentTradesRequest request, CancellationToken ct)
         {
             var validationError = GetRecentTradesOptions.ValidateRequest(request, this);
@@ -42,9 +45,12 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
         #endregion
 
-        #region Trade History client
+        #region Get Trade History
 
         public GetTradeHistoryOptions GetTradeHistoryOptions { get; } = new GetTradeHistoryOptions(_exchangeName, true, true, true, 10000, false);
+        async Task<ICallResult<SharedTrade[]>> IGetTradeHistory.GetTradeHistoryAsync(GetTradeHistoryRequest request, PageRequest? pageRequest, CancellationToken ct)
+            => await GetTradeHistoryAsync(request, pageRequest, ct).ConfigureAwait(false);
+
         public async Task<HttpResult<SharedTrade[]>> GetTradeHistoryAsync(GetTradeHistoryRequest request, PageRequest? pageRequest, CancellationToken ct)
         {
             var validationError = GetTradeHistoryOptions.ValidateRequest(request, this);
@@ -85,6 +91,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                             Side = x.Quantity > 0 ? SharedOrderSide.Buy : SharedOrderSide.Sell
                         }).ToArray(), nextPageRequest);
         }
+
         #endregion
     }
 }
