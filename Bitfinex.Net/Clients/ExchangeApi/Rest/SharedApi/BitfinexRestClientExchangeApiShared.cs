@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Bitfinex.Net.Clients.ExchangeApi
 {
-    internal partial class BitfinexRestClientExchangeSharedApi : 
+    internal partial class BitfinexRestClientExchangeSharedApi :
         SharedApiBase,
         IBitfinexRestClientExchangeApiShared,
         IBitfinexRestClientExchangeSharedApi
@@ -45,8 +45,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 GetAssetOptions,
                 GetSpotSymbolsOptions,
                 GetFuturesSymbolsOptions,
-                GetSpotTickerOptions,
-                GetAllSpotTickersOptions,
+                GetTickerOptions,
+                GetAllTickersOptions,
                 GetBookTickerOptions,
                 GetRecentTradesOptions,
                 GetBalancesOptions,
@@ -68,7 +68,6 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 PlaceSpotTriggerOrderOptions,
                 CancelSpotTriggerOrderOptions,
                 TransferOptions,
-                GetFuturesTickerOptions,
                 GetOpenFuturesOrdersOptions,
                 PlaceFuturesOrderOptions,
                 GetFuturesOrderOptions,
@@ -77,9 +76,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 GetFuturesOrderTradesOptions,
                 GetFuturesUserTradeHistoryOptions,
                 CancelFuturesOrderOptions,
-                GetPositionsOptions,
-                ClosePositionOptions,
-                GetAllFuturesTickersOptions
+                GetPositionsOptions
                 );
         }
     }

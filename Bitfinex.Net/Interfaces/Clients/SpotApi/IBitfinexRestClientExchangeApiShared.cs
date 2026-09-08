@@ -51,8 +51,8 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         IGetSpotUserTradeHistoryRest,
         ICancelSpotOrderRest,
         IGetSpotSymbolsRest,
-        IGetSpotTickerRest,
-        IGetAllSpotTickersRest,
+        IGetTickerRest,
+        IGetAllTickersRest,
         IGetTradeHistoryRest,
         IGetWithdrawalHistoryRest,
         IWithdrawRest,
@@ -63,8 +63,6 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         IGetBookTickerRest,
         ITransferRest,
         IGetFuturesSymbolsRest,
-        IGetFuturesTickerRest,
-        IGetAllFuturesTickersRest,
         IPlaceFuturesOrderRest,
         IGetFuturesOrderRest,
         IGetOpenFuturesOrdersRest,
@@ -72,7 +70,6 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         IGetFuturesOrderTradesRest,
         IGetFuturesUserTradeHistoryRest,
         ICancelFuturesOrderRest,
-        IGetPositionsRest,
-        IClosePositionRest
+        IGetPositionsRest
     { }
 }

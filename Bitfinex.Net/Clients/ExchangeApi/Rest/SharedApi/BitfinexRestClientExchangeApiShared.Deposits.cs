@@ -20,10 +20,9 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
         public GetDepositAddressesOptions GetDepositAddressesOptions { get; } = new GetDepositAddressesOptions(_exchangeName, true)
         {
-            RequiredRequestParameters = new List<ParameterDescription>
-            {
-                new ParameterDescription(nameof(GetDepositAddressesRequest.Network), typeof(string), "The network the deposit address should be for", "bitcoin")
-            }
+            ParameterRuleOverwrites = [
+                RequestParameterRuleOverride<GetDepositAddressesRequest>.Required(x => x.Network)
+            ]
         };
 
         async Task<ICallResult<SharedDepositAddress[]>> IGetDepositAddresses.GetDepositAddressesAsync(GetDepositAddressesRequest request, CancellationToken ct)

@@ -89,10 +89,9 @@ namespace Bitfinex.Net.Clients.ExchangeApi
 
         public WithdrawOptions WithdrawOptions { get; } = new WithdrawOptions(_exchangeName)
         {
-            RequiredRequestParameters = new List<ParameterDescription>
-            {
-                new ParameterDescription(nameof(WithdrawRequest.Network), typeof(string), "Network to use", "tetheruse")
-            }
+            ParameterRuleOverwrites = [
+                RequestParameterRuleOverride<WithdrawRequest>.Required(x => x.Network)
+            ]
         };
 
         async Task<ICallResult<SharedId>> IWithdraw.WithdrawAsync(WithdrawRequest request, CancellationToken ct)
