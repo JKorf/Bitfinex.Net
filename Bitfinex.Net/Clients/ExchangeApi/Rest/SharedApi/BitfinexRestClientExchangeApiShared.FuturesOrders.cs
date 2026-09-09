@@ -29,7 +29,14 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 SharedQuantityType.BaseAsset,
                 SharedQuantityType.BaseAsset);
 
-        public PlaceFuturesOrderOptions PlaceFuturesOrderOptions { get; } = new PlaceFuturesOrderOptions(_exchangeName, true);
+        public PlaceFuturesOrderOptions PlaceFuturesOrderOptions { get; } = new PlaceFuturesOrderOptions(_exchangeName, false)
+        {
+            ParameterRuleOverwrites = [
+                RequestParameterRuleOverride<PlaceFuturesOrderRequest>.NotSupported(x => x.StopLossPrice),
+                RequestParameterRuleOverride<PlaceFuturesOrderRequest>.NotSupported(x => x.TakeProfitPrice),
+                RequestParameterRuleOverride<PlaceFuturesOrderRequest>.NotSupported(x => x.PositionSide),
+                ]
+        };
         async Task<ICallResult<SharedId>> IPlaceFuturesOrder.PlaceFuturesOrderAsync(PlaceFuturesOrderRequest request, CancellationToken ct)
             => await PlaceFuturesOrderAsync(request, ct).ConfigureAwait(false);
 
@@ -48,7 +55,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 request.Side == SharedOrderSide.Buy ? Enums.OrderSide.Buy : Enums.OrderSide.Sell,
                 GetFuturesPlaceOrderType(request.OrderType, request.TimeInForce),
                 quantity: request.Quantity?.QuantityInBaseAsset ?? 0,
-                flags: request.OrderType == SharedOrderType.LimitMaker ? Enums.OrderFlags.PostOnly : null,
+                flags: GetOrderFlags(request),
                 price: request.Price ?? 0,
                 leverage: (int?)request.Leverage,
                 clientOrderId: request.ClientOrderId != null ? clientOrderId : null,                
@@ -61,6 +68,17 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         #endregion
+
+        private OrderFlags? GetOrderFlags(PlaceFuturesOrderRequest request)
+        {
+            var result = (OrderFlags)0;
+            if (request.OrderType == SharedOrderType.LimitMaker)
+                result |= OrderFlags.PostOnly;
+            if (request.ReduceOnly == true)
+                result |= OrderFlags.ReduceOnly;
+
+            return result == 0 ? null : result;
+        }
 
         private Enums.OrderType GetFuturesPlaceOrderType(SharedOrderType type, SharedTimeInForce? tif)
         {
