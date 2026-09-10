@@ -25,7 +25,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
             SharedAccountType.IsolatedMargin
             ])
         {
-            ParameterRuleOverwrites = [
+            ParameterRuleOverrides = [
                 RequestParameterRuleOverride<TransferRequest>.NotSupported(x => x.FromSymbol),
                 RequestParameterRuleOverride<TransferRequest>.NotSupported(x => x.ToSymbol),
                 ]
