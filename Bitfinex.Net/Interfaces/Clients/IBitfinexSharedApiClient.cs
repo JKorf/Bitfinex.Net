@@ -1,11 +1,12 @@
 using Bitfinex.Net.Interfaces.Clients.ExchangeApi;
+using CryptoExchange.Net.SharedApis;
 
 namespace Bitfinex.Net.Interfaces.Clients
 {
     /// <summary>
     /// Client for the shared REST and WebSocket API implementations of Bitfinex
     /// </summary>
-    public interface IBitfinexSharedApiClient
+    public interface IBitfinexSharedApiClient : ISharedApiClientBase
     {
         /// <summary>
         /// REST shared API implementations
