@@ -6,6 +6,7 @@ using Bitfinex.Net.Objects.Options;
 using Bitfinex.Net.SymbolOrderBooks;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -118,16 +119,15 @@ namespace Microsoft.Extensions.DependencyInjection
                 x.GetRequiredService<IOptions<BitfinexRestOptions>>(),
                 x.GetRequiredService<IOptions<BitfinexSocketOptions>>()));
 
-            services.AddTransient<IBitfinexSharedApiClient, BitfinexSharedApiClient>();
-
-            services.RegisterSharedApi(x => x.GetRequiredService<IBitfinexRestClient>().ExchangeApi.SharedApi);
-            services.RegisterSharedApi(x => x.GetRequiredService<IBitfinexSocketClient>().ExchangeApi.SharedApi);
-
-            services.RegisterSharedApiClientCapabilities<IBitfinexSharedApiClient>();
-
             services.RegisterSharedRestInterfaces(x => x.GetRequiredService<IBitfinexRestClient>().ExchangeApi.SharedClient);
             services.RegisterSharedSocketInterfaces(x => x.GetRequiredService<IBitfinexSocketClient>().ExchangeApi.SharedClient);
-            
+
+            services.RegisterSharedApiClient<
+                IBitfinexSharedApiClient,
+                BitfinexSharedApiClient>(sharedApis => sharedApis
+                    .Add(client => client.Rest)
+                    .Add(client => client.Socket));
+
             return services;
         }
     }
