@@ -350,7 +350,8 @@ namespace Bitfinex.Net.Converters
     [JsonSerializable(typeof(BitfinexStreamTicker))]
     [JsonSerializable(typeof(BitfinexStreamTicker[]))]
     
-    [JsonSerializable(typeof(BitfinexWithdrawalResult))]
+    [JsonSerializable(typeof(BitfinexAccountSecurity))]
+    [JsonSerializable(typeof(BitfinexTetherProtocol))]
     [JsonSerializable(typeof(BitfinexWithdrawalResult[]))]
     
     [JsonSerializable(typeof(BitfinexEventType))]

@@ -243,6 +243,15 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         Task<HttpResult<BitfinexWriteResultTransfer>> WalletTransferAsync(string asset, decimal quantity, WithdrawWallet fromWallet, WithdrawWallet toWallet, string? toAsset = null, string? emailDestination = null, long? userIdDestination = null, CancellationToken ct = default);
 
         /// <summary>
+        /// Get account security settings, including the whitelisted withdrawal addresses
+        /// <para>
+        /// Endpoint:<br />
+        /// POST /v1/account_security
+        /// </para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<BitfinexAccountSecurity>> GetAccountSecurityAsync(CancellationToken ct = default);
+        /// <summary>
         /// Withdraw funds from Bitfinex, either to a crypto currency address or a bank account
         /// All withdrawals need the withdrawType, wallet and quantity parameters
         /// CryptoCurrency withdrawals need the address parameters, the paymentId can be used for Monero as payment id and for Ripple as tag
