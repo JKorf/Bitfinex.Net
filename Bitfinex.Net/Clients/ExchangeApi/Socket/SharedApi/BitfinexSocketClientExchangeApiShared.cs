@@ -31,7 +31,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         public BitfinexSocketClientExchangeSharedApi(BitfinexSocketClientExchangeApi api)
             : base(
                   SharedTransport.Socket,
-                  api.Exchange,
+                  api,
                   new[] { TradingMode.Spot, TradingMode.PerpetualLinear },
                   () => api.Authenticated,
                   api.FormatSymbol)

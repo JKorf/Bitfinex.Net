@@ -32,7 +32,7 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         public BitfinexRestClientExchangeSharedApi(BitfinexRestClientExchangeApi api)
             : base(
                   SharedTransport.Rest,
-                  api.Exchange,
+                  api,
                   new[] { TradingMode.Spot, TradingMode.PerpetualLinear },
                   () => api.Authenticated,
                   api.FormatSymbol)
