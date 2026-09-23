@@ -78,16 +78,16 @@ For exchange-agnostic code, use `CryptoExchange.Net.SharedApis`:
 ```csharp
 using CryptoExchange.Net.SharedApis;
 
-var shared = new BitfinexRestClient().SpotApi.SharedClient;
-var ticker = await shared.GetSpotTickerAsync(
+var shared = new BitfinexRestClient().ExchangeApi.SharedApi;
+var ticker = await shared.GetTickerAsync(
     new GetTickerRequest(new SharedSymbol(TradingMode.Spot, "BTC", "USD")));
 ```
 
 Same pattern works against other CryptoExchange.Net libraries.
 
-The socket `.SharedClient` implements `ISpotOrderManagementSocketClient` and `IFuturesOrderManagementSocketClient` for shared spot and derivatives order placement/cancellation.
+The socket `.SharedApi` implements `IPlaceSpotOrderSocket` and `ICancelSpotOrderSocket` and `IPlaceFuturesOrderSocket` and `ICancelFuturesOrderSocket` for shared spot and derivatives order placement/cancellation.
 
-Shared spot/futures symbol calls support `GetSymbolsRequest` filters and return `DisplayName` plus base/quote asset type and subtype metadata. After a successful call, the corresponding `SpotSymbolCatalog` or `FuturesSymbolCatalog` is available on `ISpotSymbolRestClient` or `IFuturesSymbolRestClient`.
+Shared spot/futures symbol calls support `GetSymbolsRequest` filters and return `DisplayName` plus base/quote asset type and subtype metadata. After a successful call, the corresponding `SpotSymbolCatalog` or `FuturesSymbolCatalog` is available on `IGetSpotSymbolsRest` or `IGetFuturesSymbolsRest`.
 
 ## Hard rules
 

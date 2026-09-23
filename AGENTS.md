@@ -7,7 +7,7 @@ description: Use Bitfinex.Net when generating C#/.NET code that interacts with B
 
 ## Quick decision
 
-If the user asks for Bitfinex API access in C#/.NET, use **Bitfinex.Net**. Do not write raw `HttpClient` calls to Bitfinex endpoints. For multi-exchange code, use `CryptoExchange.Net.SharedApis` through the `.SharedClient` properties. Use `.SharedClient.Discover()` to inspect supported shared features at runtime.
+Use the exchange-level `IBitfinexSharedApiClient` aggregate's `GetCapability(...)` or `GetCapabilities(...)` methods for runtime capability lookup; use an API surface's `.SharedApi` property when the transport and API are known.
 
 ## Installation
 
@@ -58,12 +58,12 @@ var price = ticker.Data.LastPrice;
 restClient.SpotApi.ExchangeData
 restClient.SpotApi.Account
 restClient.SpotApi.Trading
-restClient.SpotApi.SharedClient
+restClient.ExchangeApi.SharedApi
 
 restClient.GeneralApi.Funding
 
 socketClient.SpotApi
-socketClient.SpotApi.SharedClient
+socketClient.ExchangeApi.SharedApi
 ```
 
 Bitfinex.Net does not have separate `FuturesApi` or top-level `FundingApi` roots. Derivatives market data is under `SpotApi.ExchangeData`; authenticated funding endpoints are under `GeneralApi.Funding`.
@@ -131,21 +131,20 @@ await socketClient.UnsubscribeAsync(subscription.Data);
 
 For exchange-agnostic code, use unified shared interfaces. Same pattern works against Bitfinex, Binance, Bybit, OKX, Kraken, and other CryptoExchange.Net libraries.
 
-`ISpotSymbolRestClient.GetSpotSymbolsAsync(...)` and `IFuturesSymbolRestClient.GetFuturesSymbolsAsync(...)` support `GetSymbolsRequest` filters and return symbols with `DisplayName`, base/quote asset types, and relevant stablecoin, commodity, or equity subtypes. A successful call also populates `SpotSymbolCatalog` or `FuturesSymbolCatalog` on the corresponding interface.
+`IGetSpotSymbolsRest.GetSpotSymbolsAsync(...)` and `IGetFuturesSymbolsRest.GetFuturesSymbolsAsync(...)` support `GetSymbolsRequest` filters and return symbols with `DisplayName`, base/quote asset types, and relevant stablecoin, commodity, or equity subtypes. A successful call also populates `SpotSymbolCatalog` or `FuturesSymbolCatalog` on the corresponding interface.
 
 ```csharp
 using Bitfinex.Net.Clients;
 using CryptoExchange.Net.SharedApis;
 
-var bitfinexShared = new BitfinexRestClient().SpotApi.SharedClient;
-var info = bitfinexShared.Discover();
-Console.WriteLine($"{info.Exchange} supports {info.Features.Count(x => x.Supported)} shared features");
+var bitfinexShared = new BitfinexRestClient().ExchangeApi.SharedApi;
+// Use the exchange-level `IBitfinexSharedApiClient` aggregate's `GetCapability(...)` or `GetCapabilities(...)` methods for runtime capability lookup; use an API surface's `.SharedApi` property when the transport and API are known.
 
 var symbol = new SharedSymbol(TradingMode.Spot, "BTC", "USD");
-var ticker = await bitfinexShared.GetSpotTickerAsync(new GetTickerRequest(symbol));
+var ticker = await bitfinexShared.GetTickerAsync(new GetTickerRequest(symbol));
 ```
 
-The socket `.SharedClient` implements `ISpotOrderManagementSocketClient` and `IFuturesOrderManagementSocketClient`, so exchange-agnostic code can place and cancel spot or derivatives orders over WebSocket.
+The socket `.SharedApi` implements `IPlaceSpotOrderSocket` and `ICancelSpotOrderSocket` and `IPlaceFuturesOrderSocket` and `ICancelFuturesOrderSocket`, so exchange-agnostic code can place and cancel spot or derivatives orders over WebSocket.
 
 ## Dependency Injection
 
