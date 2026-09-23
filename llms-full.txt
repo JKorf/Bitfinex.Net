@@ -33,7 +33,7 @@ Primary documentation:
 - Use `SpotApi` for market/account/trading and `GeneralApi.Funding` for authenticated funding.
 - Use Bitfinex symbols with prefixes: `tBTCUSD` for trading, `fUSD` for funding, `tBTCF0:USTF0` for derivatives.
 - Do not pass custom client order IDs unless the user explicitly needs correlation with an external system.
-- For multi-exchange code, use `CryptoExchange.Net.SharedApis` interfaces from each exchange's `.SharedClient` and call `.Discover()` to inspect supported shared features.
+- Use the exchange-level `IBitfinexSharedApiClient` aggregate's `GetCapability(...)` or `GetCapabilities(...)` methods for runtime capability lookup; use an API surface's `.SharedApi` property when the transport and API are known.
 
 ## Installation
 
@@ -138,7 +138,7 @@ BitfinexRestClient
     .ExchangeData
     .Account
     .Trading
-    .SharedClient
+    .SharedApi
   .GeneralApi
     .Funding
 ```
@@ -148,7 +148,7 @@ WebSocket:
 ```text
 BitfinexSocketClient
   .SpotApi
-    .SharedClient
+    .SharedApi
     SubscribeToTickerUpdatesAsync(...)
     SubscribeToOrderBookUpdatesAsync(...)
     SubscribeToTradeUpdatesAsync(...)
@@ -239,20 +239,18 @@ await socketClient.UnsubscribeAsync(tickerSub.Data);
 
 ## SharedApis Multi-Exchange Pattern
 
-Shared spot and futures symbol calls support `GetSymbolsRequest` filters. Returned `SharedSpotSymbol` and `SharedFuturesSymbol` values include `DisplayName`, base/quote `SharedAssetType` values, and relevant `SharedAssetSubType` classifications for stablecoins, commodities, and derivative equities. After the first successful symbol call, `ISpotSymbolRestClient.SpotSymbolCatalog` or `IFuturesSymbolRestClient.FuturesSymbolCatalog` exposes the cached catalog.
+Shared spot and futures symbol calls support `GetSymbolsRequest` filters. Returned `SharedSpotSymbol` and `SharedFuturesSymbol` values include `DisplayName`, base/quote `SharedAssetType` values, and relevant `SharedAssetSubType` classifications for stablecoins, commodities, and derivative equities. After the first successful symbol call, `IGetSpotSymbolsRest.SpotSymbolCatalog` or `IGetFuturesSymbolsRest.FuturesSymbolCatalog` exposes the cached catalog.
 
 ```csharp
 using Bitfinex.Net.Clients;
 using CryptoExchange.Net.SharedApis;
 
-ISpotTickerRestClient tickerClient = new BitfinexRestClient().SpotApi.SharedClient;
-var info = tickerClient.Discover();
-var supported = info.Features.Where(x => x.Supported).Select(x => x.EndpointName);
-Console.WriteLine($"{info.Exchange} {info.TypeName}: {string.Join(", ", supported)}");
+IGetTickerRest tickerClient = new BitfinexRestClient().ExchangeApi.SharedApi;
+// Use the exchange-level `IBitfinexSharedApiClient` aggregate's `GetCapability(...)` or `GetCapabilities(...)` methods for runtime capability lookup; use an API surface's `.SharedApi` property when the transport and API are known.
 
 var symbol = new SharedSymbol(TradingMode.Spot, "BTC", "USD");
 
-var ticker = await tickerClient.GetSpotTickerAsync(new GetTickerRequest(symbol));
+var ticker = await tickerClient.GetTickerAsync(new GetTickerRequest(symbol));
 if (!ticker.Success)
 {
     Console.WriteLine(ticker.Error);
@@ -262,7 +260,7 @@ if (!ticker.Success)
 Console.WriteLine(ticker.Data.LastPrice);
 ```
 
-The socket shared client also implements `ISpotOrderManagementSocketClient` and `IFuturesOrderManagementSocketClient` for exchange-agnostic order placement and cancellation:
+The socket shared client also implements `IPlaceSpotOrderSocket` and `ICancelSpotOrderSocket` and `IPlaceFuturesOrderSocket` and `ICancelFuturesOrderSocket` for exchange-agnostic order placement and cancellation:
 
 ```csharp
 var socketClient = new BitfinexSocketClient(options =>
@@ -270,7 +268,7 @@ var socketClient = new BitfinexSocketClient(options =>
     options.ApiCredentials = new BitfinexCredentials("API_KEY", "API_SECRET");
 });
 
-ISpotOrderManagementSocketClient orders = socketClient.ExchangeApi.SharedClient;
+IPlaceSpotOrderSocket orders = socketClient.ExchangeApi.SharedApi;
 var result = await orders.PlaceSpotOrderAsync(
     new PlaceSpotOrderRequest(
         new SharedSymbol(TradingMode.Spot, "BTC", "USD"),

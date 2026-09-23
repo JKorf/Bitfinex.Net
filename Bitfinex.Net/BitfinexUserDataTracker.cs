@@ -16,12 +16,16 @@ namespace Bitfinex.Net
             string? userIdentifier,
             SpotUserDataTrackerConfig? config) : base(
                 logger,
-                restClient.ExchangeApi.SharedClient,
-                restClient.ExchangeApi.SharedClient,
-                socketClient.ExchangeApi.SharedClient,
-                restClient.ExchangeApi.SharedClient,
-                socketClient.ExchangeApi.SharedClient,
-                socketClient.ExchangeApi.SharedClient,
+                restClient.ExchangeApi.SharedApi,
+                restClient.ExchangeApi.SharedApi,
+                socketClient.ExchangeApi.SharedApi,
+
+                restClient.ExchangeApi.SharedApi,
+                restClient.ExchangeApi.SharedApi,
+                socketClient.ExchangeApi.SharedApi,
+
+                restClient.ExchangeApi.SharedApi,
+                socketClient.ExchangeApi.SharedApi,
                 userIdentifier,
                 config ?? new SpotUserDataTrackerConfig())
         {
