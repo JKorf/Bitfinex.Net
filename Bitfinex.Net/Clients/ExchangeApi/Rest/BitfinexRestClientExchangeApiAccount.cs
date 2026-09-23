@@ -286,6 +286,12 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         }
 
         /// <inheritdoc />
+        public async Task<HttpResult<BitfinexAccountSecurity>> GetAccountSecurityAsync(CancellationToken ct = default)
+        {
+            var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "v1/account_security", BitfinexExchange.RateLimiter.Overall, 1, true);
+            return await _baseClient.SendAsync<BitfinexAccountSecurity>(request, null, ct).ConfigureAwait(false);
+        }
+        /// <inheritdoc />
         public async Task<HttpResult<BitfinexWithdrawalResultV2>> WithdrawV2Async(string method,
                                                                          WithdrawWallet wallet,
                                                                          decimal quantity,
