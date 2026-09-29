@@ -1,5 +1,6 @@
 ﻿using CryptoExchange.Net.Converters.SystemTextJson.MessageHandlers;
 using CryptoExchange.Net.Objects;
+using Bitfinex.Net.Objects.Models;
 using CryptoExchange.Net.Objects.Errors;
 using System.IO;
 using System.Net.Http.Headers;
@@ -17,6 +18,18 @@ namespace Bitfinex.Net.Clients.MessageHandlers
         public BitfinexRestMessageHandler(ErrorMapping errorMapping)
         {
             _errorMapping = errorMapping;
+        }
+
+        /// <inheritdoc />
+        public override Error? CheckDeserializedResponse<T>(HttpResponseHeaders responseHeaders, T result)
+        {
+            if (result is BitfinexWriteResult notification && notification.Status != "SUCCESS")
+            {
+                var code = notification.Code?.ToString();
+                return new ServerError(code, _errorMapping.GetErrorInfo(code, notification.Text));
+            }
+
+            return null;
         }
 
         public override async ValueTask<Error> ParseErrorResponse(
