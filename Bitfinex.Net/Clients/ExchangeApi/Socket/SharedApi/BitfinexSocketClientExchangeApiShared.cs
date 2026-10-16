@@ -54,5 +54,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 SubscribeKlineOptions
                 );
         }
+
+        /// <inheritdoc />
+        public Task UnsubscribeAllAsync() => _api.UnsubscribeAllAsync();
     }
 }
