@@ -25,7 +25,7 @@ namespace Bitfinex.Net.Clients.MessageHandlers
         {
             if (result is BitfinexWriteResult notification && notification.Status != "SUCCESS")
             {
-                var code = notification.Code?.ToString();
+                var code = notification.Code?.ToString() ?? string.Empty;
                 return new ServerError(code, _errorMapping.GetErrorInfo(code, notification.Text));
             }
 
