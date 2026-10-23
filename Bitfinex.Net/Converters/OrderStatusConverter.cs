@@ -32,6 +32,8 @@ namespace Bitfinex.Net.Converters
 
             if (statusStr.Contains("EXECUTED @"))
                 return OrderStatus.Executed;
+            if (statusStr.Contains("PARTIALLY FILLED @"))
+                return OrderStatus.PartiallyFilled;
 
             return (OrderStatus)(-9); // Return unknown
         }
