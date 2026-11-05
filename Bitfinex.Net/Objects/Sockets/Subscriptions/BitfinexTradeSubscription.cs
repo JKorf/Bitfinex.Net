@@ -18,12 +18,12 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private string _symbol;
         private int _channelId;
         private bool _firstUpdate;
-        private Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[], long, DateTime> _handler;
+        private Action<DateTime, string?, SocketUpdateType, string?, BitfinexTradeSimple[], long, DateTime> _handler;
 
         public BitfinexTradeSubscription(ILogger logger,
             BitfinexSocketClientExchangeApi client,
             string symbol,
-            Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[], long, DateTime> handler,
+            Action<DateTime, string?, SocketUpdateType, string?, BitfinexTradeSimple[], long, DateTime> handler,
             bool authenticated = false)
             : base(logger, authenticated)
         {
@@ -85,7 +85,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             connection.UpdateSequenceNumber(message.Sequence);
             _client.UpdateTimeOffset(message.Timestamp);
 
-            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data], message.Sequence, message.Timestamp);
+            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Topic, [message.Data], message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.Ok();
         }
@@ -95,7 +95,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             connection.UpdateSequenceNumber(message.Sequence);
             _client.UpdateTimeOffset(message.Timestamp);
 
-            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, message.Data, message.Sequence, message.Timestamp);
+            _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, null, message.Data, message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.Ok();
         }
