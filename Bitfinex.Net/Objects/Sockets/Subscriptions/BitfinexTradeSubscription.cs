@@ -85,6 +85,7 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
             connection.UpdateSequenceNumber(message.Sequence);
             _client.UpdateTimeOffset(message.Timestamp);
 
+            message.Data.UpdateType = message.EventType;
             _handler?.Invoke(receiveTime, originalData, _firstUpdate ? SocketUpdateType.Snapshot : SocketUpdateType.Update, [message.Data], message.Sequence, message.Timestamp);
             _firstUpdate = false;
             return CallResult.Ok();
