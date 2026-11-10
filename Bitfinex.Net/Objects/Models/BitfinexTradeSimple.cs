@@ -1,4 +1,5 @@
 using System;
+using Bitfinex.Net.Enums;
 using CryptoExchange.Net.Converters;
 
 namespace Bitfinex.Net.Objects.Models
@@ -35,6 +36,10 @@ namespace Bitfinex.Net.Objects.Models
         /// </summary>
         [ArrayProperty(4)]
         public int? Period { get; set; }
+        /// <summary>
+        /// The trade event type, when provided
+        /// </summary>
+        public BitfinexEventType? UpdateType { get; internal set; }
         /// <summary>
         /// Quantity as a positive number
         /// </summary>

@@ -300,12 +300,11 @@ namespace Bitfinex.Net.Clients.ExchangeApi
         /// <inheritdoc />
         public async Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<BitfinexTradeSimple[]>> handler, CancellationToken ct = default)
         {
-            var internalHandler = new Action<DateTime, string?, SocketUpdateType, string?, BitfinexTradeSimple[], long, DateTime>((receiveTime, originalData, updateType, topic, message, seq, timestamp) =>
+            var internalHandler = new Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[], long, DateTime>((receiveTime, originalData, updateType, message, seq, timestamp) =>
             {
                 handler?.Invoke(
                     new DataEvent<BitfinexTradeSimple[]>(Exchange, message, receiveTime, originalData)
-                        // Preserve the discriminator so consumers can distinguish executions from confirmations.
-                        .WithStreamId(topic == null ? "trades" : "trades." + topic)
+                        .WithStreamId("trades")
                         .WithSymbol(symbol)
                         .WithUpdateType(updateType)
                         .WithDataTimestamp(timestamp, GetTimeOffset())

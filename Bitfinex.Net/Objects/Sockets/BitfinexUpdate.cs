@@ -1,4 +1,5 @@
-﻿using Bitfinex.Net.Objects.Models;
+﻿using Bitfinex.Net.Enums;
+using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
 using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
@@ -79,7 +80,7 @@ namespace Bitfinex.Net.Objects.Sockets
         [ArrayProperty(0)]
         public int ChannelId { get; set; }
         [ArrayProperty(1)]
-        public string Topic { get; set; } = string.Empty;
+        public BitfinexEventType? EventType { get; set; }
         [ArrayProperty(2)]
         public BitfinexTradeSimple Data { get; set; } = default!;
         [ArrayProperty(3)]
