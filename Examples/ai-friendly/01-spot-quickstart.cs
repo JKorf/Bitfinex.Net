@@ -2,7 +2,7 @@
 //
 // Demonstrates: Bitfinex spot market data, authenticated wallets and order flow.
 //
-// Setup: dotnet add package JKorf.Bitfinex.Net
+// Setup: dotnet add package Bitfinex.Net
 
 using Bitfinex.Net;
 using Bitfinex.Net.Clients;

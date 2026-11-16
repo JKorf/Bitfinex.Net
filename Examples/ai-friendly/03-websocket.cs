@@ -2,7 +2,7 @@
 //
 // Demonstrates: Bitfinex public websocket subscriptions.
 //
-// Setup: dotnet add package JKorf.Bitfinex.Net
+// Setup: dotnet add package Bitfinex.Net
 
 using Bitfinex.Net.Clients;
 using Bitfinex.Net.Enums;

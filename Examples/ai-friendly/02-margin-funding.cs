@@ -2,7 +2,7 @@
 //
 // Demonstrates: margin positions, public funding market data and authenticated funding offers.
 //
-// Setup: dotnet add package JKorf.Bitfinex.Net
+// Setup: dotnet add package Bitfinex.Net
 
 using Bitfinex.Net;
 using Bitfinex.Net.Clients;
@@ -13,7 +13,7 @@ var client = new BitfinexRestClient(options =>
     options.ApiCredentials = new BitfinexCredentials("API_KEY", "API_SECRET");
 });
 
-// ---- 1. MARGIN POSITIONS LIVE UNDER SPOT TRADING ----
+// ---- 1. MARGIN POSITIONS LIVE UNDER EXCHANGE API TRADING ----
 var positions = await client.ExchangeApi.Trading.GetPositionsAsync();
 if (!positions.Success)
 {
@@ -27,7 +27,7 @@ else
     }
 }
 
-// ---- 2. PUBLIC FUNDING MARKET DATA IS UNDER SPOT EXCHANGE DATA ----
+// ---- 2. PUBLIC FUNDING MARKET DATA IS UNDER EXCHANGE API EXCHANGE DATA ----
 const string fundingSymbol = "fUSD";
 
 var fundingTicker = await client.ExchangeApi.ExchangeData.GetFundingTickerAsync(fundingSymbol);
@@ -58,6 +58,16 @@ var offer = await client.GeneralApi.Funding.SubmitFundingOfferAsync(
     rate: 0.0002m,
     period: 2);
 
-Console.WriteLine(offer.Success
-    ? $"Funding offer submitted: {offer.Data.Data.Id}"
-    : $"Funding offer rejected: {offer.Error}");
+if (!offer.Success)
+{
+    Console.WriteLine($"Funding offer rejected: {offer.Error}");
+    return;
+}
+
+Console.WriteLine($"Funding offer submitted: {offer.Data.Data.Id}");
+// Request cleanup; an offer may already have matched, so cancellation is not
+// a guarantee that the funds have not become a loan or credit.
+var cancel = await client.GeneralApi.Funding.CancelFundingOfferAsync(offer.Data.Data.Id);
+Console.WriteLine(cancel.Success
+    ? "Funding offer cancellation accepted"
+    : $"Funding offer cancellation failed: {cancel.Error}");

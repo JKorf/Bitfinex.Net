@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bitfinex.Net"
+  short_description: "Build C# Bitfinex integrations with Bitfinex.Net."
+  default_prompt: "Use $bitfinex-net to implement a Bitfinex.Net REST or websocket workflow."

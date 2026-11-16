@@ -1,36 +1,18 @@
 # Bitfinex.Net
 
-> Strongly typed .NET client library for the Bitfinex REST and WebSocket APIs. Supports spot trading, margin, derivatives symbols, funding, account management, market data, and order placement. Part of the CryptoExchange.Net ecosystem providing a unified abstraction across cryptocurrency exchanges.
+> A .NET client library for Bitfinex spot, margin, derivatives, and funding REST and WebSocket APIs.
 
-Bitfinex.Net provides strongly typed public and private endpoints, automatic WebSocket reconnection, comprehensive error handling via the `HttpResult<T>` / `WebSocketResult<T>` pattern, native AOT support, local order book support, and SharedApis integration for exchange-agnostic code. Current package version in this repository: 11.8.0. Targets netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
+## Library usage
 
-REST methods return `HttpResult<T>` / `HttpResult`, WebSocket subscriptions return `WebSocketResult<UpdateSubscription>`, and shared symbol/cache helpers return `ExchangeCallResult<T>`.
+- [Bitfinex.Net skill](.claude/skills/bitfinex-net/SKILL.md): Consumer conventions and task-specific guidance.
+- [API surfaces](.claude/skills/bitfinex-net/references/api-surfaces.md): Client roots, intent-to-method routing, and Shared APIs.
+- [Usage examples](.claude/skills/bitfinex-net/references/usage.md): Authentication, REST, WebSockets, and dependency injection.
+- [Operational considerations](.claude/skills/bitfinex-net/references/safety.md): Credentials, order handling, and retry decisions.
 
-Use the exchange-level `IBitfinexSharedApiClient` aggregate's `GetCapability(...)` or `GetCapabilities(...)` methods for runtime capability lookup; use an API surface's `.SharedApi` property when the transport and API are known.
+## Repository and reference
 
-Shared spot and futures symbol retrieval supports `GetSymbolsRequest` filters and returns display names plus base/quote asset type and subtype metadata. After a successful retrieval, use `IGetSpotSymbolsRest.SpotSymbolCatalog` or `IGetFuturesSymbolsRest.FuturesSymbolCatalog` for the cached catalog.
-
-The socket `.SharedApi` supports shared spot and futures order placement/cancellation through `IPlaceSpotOrderSocket` and `ICancelSpotOrderSocket` and `IPlaceFuturesOrderSocket` and `ICancelFuturesOrderSocket`. Authenticated socket commands accept an optional `CancellationToken`.
-
-## Documentation
-
-- [README](https://github.com/JKorf/Bitfinex.Net/blob/master/README.md): Overview, installation, supported features, basic usage examples, release notes
-- [Documentation Site](https://cryptoexchange.jkorf.dev/Bitfinex.Net/): Full documentation hub including client reference, WebSocket subscriptions, dependency injection, and shared interfaces
-- [AI API Quick Map](https://github.com/JKorf/Bitfinex.Net/blob/master/docs/ai-api-map.md): Quick intent-to-method map for routing common user requests to the correct client member
-- [Full LLM Context](https://github.com/JKorf/Bitfinex.Net/blob/master/llms-full.txt): Detailed AI/LLM guide with code patterns, endpoint map, common mistakes, and anti-hallucination rules
-
-## Examples
-
-- [AI-friendly examples directory](https://github.com/JKorf/Bitfinex.Net/tree/master/Examples/ai-friendly): Compact examples optimized for AI assistants and quick onboarding
-- [Spot Quickstart](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/01-spot-quickstart.cs): Client setup, ticker, wallets, limit order placement, order status check
-- [Margin and Funding](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/02-margin-funding.cs): Margin position lookup, funding ticker, and funding offer pattern
-- [WebSocket Streams](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/03-websocket.cs): Ticker and kline subscriptions with proper teardown
-- [Multi-Exchange Pattern](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/04-multi-exchange.cs): CryptoExchange.Net SharedApis, capability discovery, and shared subscriptions
-- [Error Handling](https://github.com/JKorf/Bitfinex.Net/blob/master/Examples/ai-friendly/05-error-handling.cs): HttpResult, WebSocketResult, and ExchangeCallResult patterns
-
-## Reference
-
-- [CryptoExchange.Net base library](https://github.com/JKorf/CryptoExchange.Net): Base abstractions used by Bitfinex.Net and other exchange libraries
-- [CryptoClients.Net](https://github.com/JKorf/CryptoClients.Net): Bundle package providing unified access to exchange libraries
-- [NuGet Package](https://www.nuget.org/packages/Bitfinex.Net): Latest stable release on NuGet
-- [Discord Community](https://discord.gg/MSpeEtSY8t): Maintainer-supported Discord for questions and discussion
+- [README](README.md): Overview, installation, release notes, and documentation site link.
+- [Repository instructions](AGENTS.md): Development workflow and documentation ownership.
+- [Client interfaces](Bitfinex.Net/Interfaces/Clients/): Exact endpoint signatures and XML documentation.
+- [Library project](Bitfinex.Net/Bitfinex.Net.csproj): Package version, dependencies, and target frameworks.
+- [AI-friendly examples](Examples/ai-friendly/): Complete programs compiled by the documentation test.

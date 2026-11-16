@@ -3,7 +3,7 @@
 // Demonstrates: HttpResult, WebSocketResult, ExchangeCallResult, retry logic,
 // and common error scenarios.
 //
-// Setup: dotnet add package JKorf.Bitfinex.Net
+// Setup: dotnet add package Bitfinex.Net
 
 using Bitfinex.Net;
 using Bitfinex.Net.Clients;
@@ -75,7 +75,7 @@ var order = await client.ExchangeApi.Trading.PlaceOrderAsync(
 if (!order.Success)
 {
     var category = order.Error?.IsTransient == true
-        ? "Transient - retry may be appropriate"
+        ? "Transient - reconcile the order state before resubmitting"
         : "Permanent - surface to user";
 
     Console.WriteLine($"{category}: {order.Error?.Code} {order.Error?.Message}");
