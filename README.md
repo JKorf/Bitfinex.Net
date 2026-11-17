@@ -197,6 +197,9 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 11.9.0 - 17 Nov 2026
+    * Updated CryptoExchange.Net to v13.3.0
+
 * Version 11.8.0 - 23 Oct 2026
     * Updated CryptoExchange.Net to v13.2.2
     * Added ParentOrderId to BingXFuturesOrderUpdate model
