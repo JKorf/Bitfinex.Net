@@ -1,0 +1,18 @@
+{
+  "baseBranch": "master",
+  "sdk": "11.0.100",
+  "packages": [
+    {
+      "key": "bitfinex",
+      "project": "Bitfinex.Net/Bitfinex.Net.csproj",
+      "testProjects": [
+        "Bitfinex.Net.UnitTests/Bitfinex.Net.UnitTests.csproj"
+      ],
+      "packageId": "Bitfinex.Net",
+      "readme": "README.md",
+      "tagPrefix": "Bitfinex.Net.",
+      "releaseIntegrationTests": false,
+      "publishToGitHubPackages": true
+    }
+  ]
+}
