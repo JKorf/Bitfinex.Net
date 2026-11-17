@@ -49,8 +49,8 @@ namespace Bitfinex.Net
         /// <inheritdoc />
         public IKlineTracker CreateKlineTracker(SharedSymbol symbol, SharedKlineInterval interval, int? limit = null, TimeSpan? period = null, ExchangeParameters? exchangeParameters = null)
         {
-            var restClient = (_serviceProvider?.GetRequiredService<IBitfinexRestClient>() ?? new BitfinexRestClient()).ExchangeApi.SharedClient;
-            var socketClient = (_serviceProvider?.GetRequiredService<IBitfinexSocketClient>() ?? new BitfinexSocketClient()).ExchangeApi.SharedClient;
+            var restClient = (_serviceProvider?.GetRequiredService<IBitfinexRestClient>() ?? new BitfinexRestClient()).ExchangeApi.SharedApi;
+            var socketClient = (_serviceProvider?.GetRequiredService<IBitfinexSocketClient>() ?? new BitfinexSocketClient()).ExchangeApi.SharedApi;
 
             return new KlineTracker(
                 _serviceProvider?.GetRequiredService<ILoggerFactory>().CreateLogger(restClient.Exchange),
@@ -67,8 +67,8 @@ namespace Bitfinex.Net
         /// <inheritdoc />
         public ITradeTracker CreateTradeTracker(SharedSymbol symbol, int? limit = null, TimeSpan? period = null, ExchangeParameters? exchangeParameters = null)
         {
-            var restClient = (_serviceProvider?.GetRequiredService<IBitfinexRestClient>() ?? new BitfinexRestClient()).ExchangeApi.SharedClient;
-            var socketClient = (_serviceProvider?.GetRequiredService<IBitfinexSocketClient>() ?? new BitfinexSocketClient()).ExchangeApi.SharedClient;
+            var restClient = (_serviceProvider?.GetRequiredService<IBitfinexRestClient>() ?? new BitfinexRestClient()).ExchangeApi.SharedApi;
+            var socketClient = (_serviceProvider?.GetRequiredService<IBitfinexSocketClient>() ?? new BitfinexSocketClient()).ExchangeApi.SharedApi;
 
             return new TradeTracker(
                 _serviceProvider?.GetRequiredService<ILoggerFactory>().CreateLogger(restClient.Exchange),
