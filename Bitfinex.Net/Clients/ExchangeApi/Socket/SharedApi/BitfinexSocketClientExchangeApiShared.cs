@@ -51,7 +51,8 @@ namespace Bitfinex.Net.Clients.ExchangeApi
                 CancelFuturesOrderOptions,
                 PlaceSpotOrderOptions,
                 CancelSpotOrderOptions,
-                SubscribeKlineOptions
+                SubscribeKlineOptions,
+                SubscribeIncrementalOrderBookOptions
                 );
         }
 
