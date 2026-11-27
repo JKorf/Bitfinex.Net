@@ -1,14 +1,17 @@
-﻿using Bitfinex.Net.Objects.Models;
+﻿using Bitfinex.Net.Clients.ExchangeApi;
+using Bitfinex.Net.Enums;
+using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Models.Socket;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
+using CryptoExchange.Net.Sockets.Default.Routing;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
-using CryptoExchange.Net.Sockets.Default.Routing;
-using Bitfinex.Net.Clients.ExchangeApi;
+using System.Threading.Channels;
+using static CryptoExchange.Net.SharedApis.SharedCapabilities;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
