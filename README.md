@@ -197,6 +197,11 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf).
 
 ## Release notes
+* Version 11.10.0 - 27 Nov 2026
+    * Updated CryptoExchange.Net to v13.4.0
+    * Added UpdateType to BitfinexTradeSimple model
+    * Added Shared API SubscribeIncrementalOrderBookOptions implementation
+
 * Version 11.9.1 - 17 Nov 2026
     * Fix CryptoExchange.Net reference version
 
