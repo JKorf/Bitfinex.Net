@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using CryptoExchange.Net.Sockets.Default.Routing;
 using Bitfinex.Net.Clients.ExchangeApi;
+using System.Linq;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
@@ -21,10 +22,12 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private string? _frequency;
         private string? _length;
         private string? _key;
-        private int _channelId;
+        internal int _channelId;
         private bool _firstUpdate;
         private BitfinexSocketClientExchangeApi _client;
         private Action<DateTime, string?, SocketUpdateType, TItem[], long, DateTime> _handler;
+
+        public override string[] SubscriptionIdentifiers => [];
 
         public BitfinexSubscription(ILogger logger,
             BitfinexSocketClientExchangeApi client,

@@ -29,6 +29,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private Action<DateTime, string?, SocketUpdateType, TItem[], long, DateTime> _handler;
         private Action<DataEvent<int>>? _checksumHandler;
 
+        public override string[] SubscriptionIdentifiers => [];
+
         public BitfinexBookSubscription(ILogger logger,
             BitfinexSocketClientExchangeApi client,
             string symbol,

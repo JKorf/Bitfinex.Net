@@ -32,6 +32,7 @@ namespace Bitfinex.Net.Interfaces.Clients.ExchangeApi
         ISubscribeBalancesSocket,
         ISubscribeSpotOrdersSocket,
         ISubscribeKlinesSocket,
+        ISubscribeIncrementalOrderBookSocket,
         ISubscribeUserTradesSocket,
         ISubscribeFuturesOrdersSocket,
         ISubscribePositionsSocket,

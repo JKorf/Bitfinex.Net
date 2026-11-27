@@ -1,12 +1,13 @@
-﻿using Bitfinex.Net.Objects.Models;
+﻿using Bitfinex.Net.Clients.ExchangeApi;
+using Bitfinex.Net.Enums;
+using Bitfinex.Net.Objects.Models;
 using Bitfinex.Net.Objects.Sockets.Queries;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
+using CryptoExchange.Net.Sockets.Default.Routing;
 using Microsoft.Extensions.Logging;
 using System;
-using CryptoExchange.Net.Sockets.Default.Routing;
-using Bitfinex.Net.Clients.ExchangeApi;
 
 namespace Bitfinex.Net.Objects.Sockets.Subscriptions
 {
@@ -19,6 +20,8 @@ namespace Bitfinex.Net.Objects.Sockets.Subscriptions
         private int _channelId;
         private bool _firstUpdate;
         private Action<DateTime, string?, SocketUpdateType, BitfinexTradeSimple[], long, DateTime> _handler;
+
+        public override string[] SubscriptionIdentifiers => [];
 
         public BitfinexTradeSubscription(ILogger logger,
             BitfinexSocketClientExchangeApi client,
